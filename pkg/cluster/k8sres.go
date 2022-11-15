@@ -2616,6 +2616,10 @@ func (c *Cluster) generateLogicalBackupPodEnvVars() []v1.EnvVar {
 func (c *Cluster) getLogicalBackupJobName() (jobName string) {
 	return trimCronjobName(fmt.Sprintf("%s%s", c.OpConfig.LogicalBackupJobPrefix, c.clusterName().Name))
 }
+// getLogicalBackupJobName returns the name; the job itself may not exists
+func (c *Cluster) getPgbackrestConfigmapName() (jobName string) {
+	return fmt.Sprintf("%s-pgbackrest-config", c.Name)
+}
 
 func (c *Cluster) getPgbackrestConfigmapName() (jobName string) {
 	return fmt.Sprintf("%s-pgbackrest-config", c.Name)

@@ -1016,8 +1016,8 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 		}
 
 		if newSpec.Spec.Backup.Pgbackrest != nil {
-			if err := c.createPgbackrestConfig(); err != nil {
-				c.logger.Errorf("could not create a pgbackrest config: %v", err)
+			if err := c.syncPgbackrestConfig(); err != nil {
+				err = fmt.Errorf("could not sync pgbackrest config: %v", err)
 				updateFailed = true
 				return
 			}

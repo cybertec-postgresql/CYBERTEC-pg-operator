@@ -302,3 +302,7 @@ type Configuration struct {
 type TDE struct {
 	Enable bool `json:"enable"`
 }
+
+type Configuration struct {
+	Secret string `json:"secret"`
+}

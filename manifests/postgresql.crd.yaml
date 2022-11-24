@@ -829,8 +829,6 @@ spec:
                       restore:
                         type: object
                         properties:
-                          id:
-                            type: string
                           repo:
                             type: string
                           options:

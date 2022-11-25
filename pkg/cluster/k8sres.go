@@ -2738,15 +2738,12 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 
 	c.logger.Debug("Generating pgbackrest pod template")
 
-	// // allocate for the backup pod the same amount of resources as for normal DB pods
-	// resourceRequirements, err = c.generateResourceRequirements(
-	// 	c.Spec.Resources, makeDefaultResources(&c.OpConfig), pgbackrestContainerName)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("could not generate resource requirements for logical backup pods: %v", err)
-	// }
-	// Using empty resources
-	emptyResourceRequirements := v1.ResourceRequirements{}
-	resourceRequirements = &emptyResourceRequirements
+	// allocate for the backup pod the same amount of resources as for normal DB pods
+	resourceRequirements, err = c.generateResourceRequirements(
+		c.Spec.Resources, makeDefaultResources(&c.OpConfig), pgbackrestContainerName)
+	if err != nil {
+		return nil, fmt.Errorf("could not generate resource requirements for logical backup pods: %v", err)
+	}
 
 	envVars := c.generatePgbbackrestPodEnvVars(name)
 	pgbackrestContainer := generateContainer(

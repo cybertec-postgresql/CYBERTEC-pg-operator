@@ -272,18 +272,12 @@ type Backup struct {
 }
 
 type Pgbackrest struct {
-<<<<<<< HEAD
 	Image         string            `json:"image"`
 	Global        map[string]string `json:"global"`
 	Repos         []Repo            `json:"repos"`
 	Restore       Restore           `json:"restore"`
 	Configuration Configuration     `json:"configuration"`
 	Resources     *Resources        `json:"resources,omitempty"`
-=======
-	Global        map[string]string `json:"global"`
-	Repos         []Repo            `json:"repos"`
-	Configuration Configuration     `json:"configuration"`
->>>>>>> 776e73e4 (mount pgbackrest config into the container)
 }
 
 type Repo struct {
@@ -307,12 +301,4 @@ type Configuration struct {
 
 type TDE struct {
 	Enable bool `json:"enable"`
-}
-
-type Configuration struct {
-	Secret string `json:"secret"`
-}
-
-type Configuration struct {
-	Secret string `json:"secret"`
 }

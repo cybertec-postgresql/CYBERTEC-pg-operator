@@ -313,7 +313,11 @@ func (c *Cluster) Create() (err error) {
 	}
 	c.logger.Infof("pod disruption budget %q has been successfully created", util.NameFromMeta(pdb.ObjectMeta))
 
+<<<<<<< HEAD
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
+=======
+	if c.Postgresql.Spec.Backup.Pgbackrest != nil {
+>>>>>>> 9fa280b0 (create cronjob before creating the statefulset)
 		if err = c.syncPgbackrestConfig(); err != nil {
 			err = fmt.Errorf("could not sync pgbackrest config: %v", err)
 			return err

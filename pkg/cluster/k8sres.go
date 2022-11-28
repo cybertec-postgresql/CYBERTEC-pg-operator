@@ -2864,13 +2864,10 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(name string) []v1.EnvVar {
 			Value: "postgres",
 		},
 		{
-<<<<<<< HEAD
 			Name:  "PGUSER",
 			Value: "postgres",
 		},
 		{
-=======
->>>>>>> 9fa280b0 (create cronjob before creating the statefulset)
 			Name:  "MODE",
 			Value: "pgbackrest",
 		},

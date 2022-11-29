@@ -1795,7 +1795,7 @@ func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secret
 
 	name := "pgbackrest-config"
 	path := "/etc/pgbackrest/conf.d"
-	defaultMode := int32(0640)
+	defaultMode := int32(0644)
 	postgresContainerIdx := 0
 
 	volumes := append(podSpec.Volumes, v1.Volume{
@@ -2656,7 +2656,7 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(name string) []v1.EnvVar {
 		},
 		{
 			Name:  "COMMAND_OPTS",
-			Value: fmt.Sprintf("--stanza=db --repo=1 --type=%s", name),
+			Value: fmt.Sprintf("--log-path=/tmp --pg1-user=postgres --stanza=db --repo=1 --type=%s", name),
 		},
 		{
 			Name:  "COMPARE_HASH",
@@ -2664,6 +2664,10 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(name string) []v1.EnvVar {
 		},
 		{
 			Name:  "CONTAINER",
+			Value: "postgres",
+		},
+		{
+			Name:  "PGUSER",
 			Value: "postgres",
 		},
 		{

@@ -314,10 +314,14 @@ func (c *Cluster) Create() (err error) {
 	c.logger.Infof("pod disruption budget %q has been successfully created", util.NameFromMeta(pdb.ObjectMeta))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 =======
 	if c.Postgresql.Spec.Backup.Pgbackrest != nil {
 >>>>>>> 9fa280b0 (create cronjob before creating the statefulset)
+=======
+	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
+>>>>>>> 5eba77fc (fixes issue with not defined backup)
 		if err = c.syncPgbackrestConfig(); err != nil {
 			err = fmt.Errorf("could not sync pgbackrest config: %v", err)
 			return err
@@ -392,7 +396,11 @@ func (c *Cluster) Create() (err error) {
 	}
 
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
+<<<<<<< HEAD
 		if err := c.syncPgbackrestJob(false); err != nil {
+=======
+		if err := c.syncPgbackrestJob(); err != nil {
+>>>>>>> 5eba77fc (fixes issue with not defined backup)
 			return fmt.Errorf("could not create a k8s cron job for pgbackrest: %v", err)
 		}
 		c.logger.Info("a k8s cron job for pgbackrest has been successfully created")
@@ -1018,7 +1026,7 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 
 		}
 
-		if newSpec.Spec.Backup.Pgbackrest != nil {
+		if newSpec.Spec.Backup != nil && newSpec.Spec.Backup.Pgbackrest != nil {
 			if err := c.syncPgbackrestJob(); err != nil {
 				err = fmt.Errorf("could not create a k8s cron job for pgbackrest: %v", err)
 				updateFailed = true

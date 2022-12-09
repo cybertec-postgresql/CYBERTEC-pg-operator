@@ -388,7 +388,7 @@ func (c *Cluster) Create() (err error) {
 	}
 
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
-		if err := c.syncPgbackrestJob(); err != nil {
+		if err := c.syncPgbackrestJob(false); err != nil {
 			return fmt.Errorf("could not create a k8s cron job for pgbackrest: %v", err)
 		}
 		c.logger.Info("a k8s cron job for pgbackrest has been successfully created")
@@ -1115,7 +1115,7 @@ func (c *Cluster) Delete() {
 		c.logger.Warningf("could not remove the logical backup k8s cron job; %v", err)
 	}
 
-	if err := c.deletePgbackrestJob(); err != nil {
+	if err := c.syncPgbackrestJob(true); err != nil {
 		c.logger.Warningf("could not delete pgbackrest jobs: %v", err)
 	}
 

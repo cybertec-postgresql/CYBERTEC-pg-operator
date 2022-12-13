@@ -1940,7 +1940,7 @@ func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secret
 	path := "/etc/pgbackrest/conf.d"
 	defaultMode := int32(0644)
 	postgresContainerIdx := 0
-	postgresInitContainerIdx := -1
+	postgresInitContainerIdx := 0
 
 	volumes := append(podSpec.Volumes, v1.Volume{
 		Name: name,

@@ -687,7 +687,7 @@ spec:
                                 - "s3"
                                 - "gcs"
                                 - "azure"
-                            ressource:
+                            resource:
                               type: string
                             endpoint:
                               type: string
@@ -705,7 +705,7 @@ spec:
                           required:
                           - name
                           - storage
-                          - ressource
+                          - resource
                           type: object
                         minItems: 1
                         x-kubernetes-list-map-keys:

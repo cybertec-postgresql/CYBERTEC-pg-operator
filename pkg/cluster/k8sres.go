@@ -1820,6 +1820,7 @@ func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secret
 	path := "/etc/pgbackrest/conf.d"
 	defaultMode := int32(0644)
 	postgresContainerIdx := 0
+	postgresInitContainerIdx := 0
 
 	volumes := append(podSpec.Volumes, v1.Volume{
 		Name: name,
@@ -1855,6 +1856,15 @@ func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secret
 		})
 
 	podSpec.Containers[postgresContainerIdx].VolumeMounts = mounts
+
+	// Add pgbackrest-Config to init-container
+	for i, container := range podSpec.InitContainers {
+		if container.Name == "pgbackrest-restore"{
+			postgresInitContainerIdx = i
+		}
+	}
+
+	podSpec.InitContainers[postgresInitContainerIdx].VolumeMounts = mounts
 
 	podSpec.Volumes = volumes
 }

@@ -1162,6 +1162,9 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 									"restore": {
 										Type: "object",
 										Properties: map[string]apiextv1.JSONSchemaProps{
+											"id": {
+												Type: "string",
+											},
 											"repo": {
 												Type: "string",
 											},

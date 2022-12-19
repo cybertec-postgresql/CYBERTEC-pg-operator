@@ -295,6 +295,7 @@ type Restore struct {
 	Options []string `json:"options"`
 }
 
+<<<<<<< HEAD
 type Configuration struct {
 	Secret string `json:"secret"`
 }
@@ -303,6 +304,8 @@ type TDE struct {
 	Enable bool `json:"enable"`
 }
 
+=======
+>>>>>>> 2946be4d (restore init container implemented)
 type Configuration struct {
 	Secret string `json:"secret"`
 }

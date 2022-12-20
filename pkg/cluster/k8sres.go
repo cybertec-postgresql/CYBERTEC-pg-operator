@@ -845,11 +845,6 @@ func (c *Cluster) generatePodTemplate(
 		addPgbackrestConfigVolume(&podSpec, configmapName, secretName)
 	}
 
-	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
-		configmapName := c.getPgbackrestRestoreConfigmapName()
-		addPgbackrestRestoreConfigVolume(&podSpec, configmapName)
-	}
-
 	if podAntiAffinity {
 		podSpec.Affinity = podAffinity(
 			labels,
@@ -1994,48 +1989,6 @@ func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secret
 	}
 
 	podSpec.Volumes = volumes
-}
-
-func addPgbackrestRestoreConfigVolume(podSpec *v1.PodSpec, configmapName string) {
-
-	name := "pgbackrest-restore"
-	path := "/opt/pgbackrest/config"
-	defaultMode := int32(0644)
-	initContainerIdx := -1
-
-	for i, container := range podSpec.InitContainers {
-		if container.Name == "pgbackrest-restore" {
-			initContainerIdx = i
-		}
-	}
-
-	if initContainerIdx >= 0 {
-		volumes := append(podSpec.Volumes, v1.Volume{
-			Name: name,
-			VolumeSource: v1.VolumeSource{
-				Projected: &v1.ProjectedVolumeSource{
-					DefaultMode: &defaultMode,
-					Sources: []v1.VolumeProjection{
-						{ConfigMap: &v1.ConfigMapProjection{
-							LocalObjectReference: v1.LocalObjectReference{Name: configmapName},
-							Optional:             util.True(),
-						},
-						},
-					},
-				},
-			},
-		})
-
-		mounts := append(podSpec.InitContainers[initContainerIdx].VolumeMounts,
-			v1.VolumeMount{
-				Name:      name,
-				MountPath: path,
-			})
-
-		podSpec.InitContainers[initContainerIdx].VolumeMounts = mounts
-
-		podSpec.Volumes = volumes
-	}
 }
 
 func (c *Cluster) generatePersistentVolumeClaimTemplate(volumeSize, volumeStorageClass string,

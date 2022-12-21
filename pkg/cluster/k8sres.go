@@ -1559,6 +1559,17 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 				},
 			},
 			v1.EnvVar{
+				Name: "RESTORE_BASEBACKUP",
+				ValueFrom: &v1.EnvVarSource{
+					ConfigMapKeyRef: &v1.ConfigMapKeySelector{
+						LocalObjectReference: v1.LocalObjectReference{
+							Name: c.getPgbackrestRestoreConfigmapName(),
+						},
+						Key: "restore_basebackup",
+					},
+				},
+			},
+			v1.EnvVar{
 				Name: "RESTORE_METHOD",
 				ValueFrom: &v1.EnvVarSource{
 					ConfigMapKeyRef: &v1.ConfigMapKeySelector{

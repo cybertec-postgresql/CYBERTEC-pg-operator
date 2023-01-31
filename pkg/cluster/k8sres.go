@@ -1517,6 +1517,7 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 				Value: "pgbackrest",
 			},
 		)
+<<<<<<< HEAD
 		var cpuLimit, memLimit, cpuReq, memReq string
 		var resources v1.ResourceRequirements
 		if spec.Backup.Pgbackrest.Resources != nil {
@@ -1542,6 +1543,17 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 				return nil, fmt.Errorf("could not generate resource requirements: %v", err)
 			}
 			resources = *resourceRequirements
+=======
+		resources := v1.ResourceRequirements{
+			Limits: v1.ResourceList{
+				"cpu":    resource.MustParse("500m"),
+				"memory": resource.MustParse("1Gi"),
+			},
+			Requests: v1.ResourceList{
+				"cpu":    resource.MustParse("500m"),
+				"memory": resource.MustParse("1Gi"),
+			},
+>>>>>>> b80cf2d7 (added resources request for pgbackrest init container)
 		}
 		initContainers = append(initContainers, v1.Container{
 			Name:         "pgbackrest-restore",

@@ -2734,6 +2734,7 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 		pgbackrestContainer,
 		[]v1.Container{},
 		[]v1.Container{},
+		util.False(),
 		&[]v1.Toleration{},
 		nil,
 		nil,
@@ -2747,6 +2748,7 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 		util.False(),
 		false,
 		"",
+		false,
 		c.OpConfig.AdditionalSecretMount,
 		c.OpConfig.AdditionalSecretMountPath,
 		[]acidv1.AdditionalVolume{}); err != nil {

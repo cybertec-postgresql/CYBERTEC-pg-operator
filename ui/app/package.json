@@ -1,0 +1,53 @@
+{
+  "name": "postgres-operator-ui",
+  "version": "1.9.0",
+  "description": "PostgreSQL Operator UI",
+  "main": "src/app.js",
+  "config": {
+    "buildDir": "../operator_ui/static/build"
+  },
+  "scripts": {
+    "prestart": "npm install",
+    "start": "NODE_ENV=development webpack --watch",
+    "webpack": "webpack --config ./webpack.config.js",
+    "build": "NODE_ENV=development npm run webpack",
+    "prewebpack": "npm run clean",
+    "lint": "eslint ./src/**/*.js",
+    "clean": "rimraf $npm_package_config_buildDir && mkdir $npm_package_config_buildDir"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zalando/postgres-operator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zalando/postgres-operator.git/issues"
+  },
+  "homepage": "https://github.com/zalando/postgres-operator.git#readme",
+  "dependencies": {
+    "@babel/core": "^7.20.12",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/runtime": "^7.20.13",
+    "pixi.js": "^7.1.1"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.19.6",
+    "@babel/preset-env": "^7.20.2",
+    "babel-loader": "^8.2.5",
+    "brfs": "^2.0.2",
+    "dedent-js": "1.0.1",
+    "eslint": "^8.32.0",
+    "js-yaml": "4.1.0",
+    "pug": "^3.0.2",
+    "rimraf": "^4.1.2",
+    "riot": "^3.13.2",
+    "riot-hot-reload": "1.0.0",
+    "riot-route": "^3.1.4",
+    "riot-tag-loader": "2.1.0",
+    "sort-by": "^1.2.0",
+    "transform-loader": "^0.2.4",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.10.0"
+  }
+}

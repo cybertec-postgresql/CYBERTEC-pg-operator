@@ -59,6 +59,39 @@ production for over five years.
 * Rolling update procedure for adjustments to the pods and minor updates
 * Major upgrade with minimum interruption time
 * Reduction of downtime thanks to redundancy, pod anti-affinity, auto-failover and self-healing
+* Supports PostgreSQL 15, starting from 10+
+* Streaming replication cluster via Patroni
+* Point-In-Time-Recovery with
+[pg_basebackup](https://www.postgresql.org/docs/11/app-pgbasebackup.html) /
+[WAL-E](https://github.com/wal-e/wal-e) via [Spilo](https://github.com/zalando/spilo)
+* Preload libraries: [bg_mon](https://github.com/CyberDem0n/bg_mon),
+[pg_stat_statements](https://www.postgresql.org/docs/15/pgstatstatements.html),
+[pgextwlist](https://github.com/dimitri/pgextwlist),
+[pg_auth_mon](https://github.com/RafiaSabih/pg_auth_mon)
+* Incl. popular Postgres extensions such as
+[decoderbufs](https://github.com/debezium/postgres-decoderbufs),
+[hypopg](https://github.com/HypoPG/hypopg),
+[pg_cron](https://github.com/citusdata/pg_cron),
+[pg_partman](https://github.com/pgpartman/pg_partman),
+[pg_stat_kcache](https://github.com/powa-team/pg_stat_kcache),
+[pgq](https://github.com/pgq/pgq),
+[plpgsql_check](https://github.com/okbob/plpgsql_check),
+[postgis](https://postgis.net/),
+[set_user](https://github.com/pgaudit/set_user) and
+[timescaledb](https://github.com/timescale/timescaledb)
+
+The Postgres Operator has been developed at Zalando and is being used in
+production for over five years.
+
+## Supported Postgres & K8s versions
+
+| Release   | Postgres versions | K8s versions      | Golang  |
+| :-------- | :---------------: | :---------------: | :-----: |
+| v1.10.*   | 10 &rarr; 15      | 1.25+             | 1.19.8  |
+| v1.9.0    | 10 &rarr; 15      | 1.25+             | 1.18.9  |
+| v1.8.*    | 9.5 &rarr; 14     | 1.20 &rarr; 1.24  | 1.17.4  |
+| v1.7.1    | 9.5 &rarr; 14     | 1.20 &rarr; 1.24  | 1.16.9  |
+
 
 ## Getting started
 

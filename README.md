@@ -104,16 +104,14 @@ production for over five years.
 
 ## Getting started
 
-[Getting started - Documentation](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/documentation/how-to-use/installation/) 
-
-[Tutorials](https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials).
-
-
-## Documentation
-
 Coming soon 
 
 Until then, please use the following:
+
+[tutorial](docs/quickstart.md).
+
+
+## Documentation
 
 Coming soon 
 
@@ -134,5 +132,4 @@ There is a browser-friendly version of this documentation at
 
 ## Community
 
-Coming soon 
 Coming soon 

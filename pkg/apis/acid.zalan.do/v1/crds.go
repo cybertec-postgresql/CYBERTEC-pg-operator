@@ -1224,6 +1224,15 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							},
 						},
 					},
+					"tde": {
+						Type:     "object",
+						Nullable: true,
+						Properties: map[string]apiextv1.JSONSchemaProps{
+							"enable": {
+								Type: "boolean",
+							},
+						},
+					},
 				},
 			},
 			"status": {

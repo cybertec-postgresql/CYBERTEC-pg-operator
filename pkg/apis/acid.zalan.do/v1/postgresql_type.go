@@ -93,6 +93,7 @@ type PostgresSpec struct {
 	InitContainersOld       []v1.Container `json:"init_containers,omitempty"`
 	PodPriorityClassNameOld string         `json:"pod_priority_class_name,omitempty"`
 	Backup                  *Backup        `json:"backup,omitempty"`
+	TDE                     *TDE           `json:"tde,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -294,4 +295,8 @@ type Restore struct {
 
 type Configuration struct {
 	Secret string `json:"secret"`
+}
+
+type TDE struct {
+	Enable     bool   `json:"enable"`
 }

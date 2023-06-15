@@ -316,13 +316,16 @@ func (c *Cluster) generateResourceRequirements(
 	return &result, nil
 }
 
-func generateSpiloJSONConfiguration(pg *acidv1.PostgresqlParam, patroni *acidv1.Patroni, opConfig *config.Config, logger *logrus.Entry) (string, error) {
+func generateSpiloJSONConfiguration(pg *acidv1.PostgresqlParam, patroni *acidv1.Patroni, opConfig *config.Config, enableTDE bool, logger *logrus.Entry) (string, error) {
 	config := spiloConfiguration{}
 
 	config.Bootstrap = pgBootstrap{}
 
 	config.Bootstrap.Initdb = []interface{}{map[string]string{"auth-host": "md5"},
 		map[string]string{"auth-local": "trust"}}
+	if enableTDE {
+		config.Bootstrap.Initdb = append(config.Bootstrap.Initdb, map[string]string{"encryption-key-command": "/scripts/pgee/tde.sh"})
+	}
 
 	initdbOptionNames := []string{}
 
@@ -979,6 +982,20 @@ func (c *Cluster) generateSpiloPodEnvVars(
 		envVars = append(envVars, v1.EnvVar{Name: "USE_PGBACKREST", Value: "true"})
 	}
 
+	if spec.TDE != nil && spec.TDE.Enable {
+		envVars = append(envVars, v1.EnvVar{Name: "TDE", Value: "true"})
+		envVars = append(envVars, v1.EnvVar{Name: "PGENCRKEYCMD", Value: "/scripts/pgee/tde.sh"})
+		envVars = append(envVars, v1.EnvVar{Name: "TDE_KEY", ValueFrom: &v1.EnvVarSource{
+			SecretKeyRef: &v1.SecretKeySelector{
+				LocalObjectReference: v1.LocalObjectReference{
+					Name: c.getTDESecretName(),
+				},
+				Key: "key",
+			},
+		},
+		})
+	}
+
 	if c.OpConfig.EnablePgVersionEnvVar {
 		envVars = append(envVars, v1.EnvVar{Name: "PGVERSION", Value: c.GetDesiredMajorVersion()})
 	}
@@ -1276,7 +1293,11 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 		}
 	}
 
-	spiloConfiguration, err := generateSpiloJSONConfiguration(&spec.PostgresqlParam, &spec.Patroni, &c.OpConfig, c.logger)
+	enableTDE := false
+	if spec.TDE != nil && spec.TDE.Enable {
+		enableTDE = true
+	}
+	spiloConfiguration, err := generateSpiloJSONConfiguration(&spec.PostgresqlParam, &spec.Patroni, &c.OpConfig, enableTDE, c.logger)
 	if err != nil {
 		return nil, fmt.Errorf("could not generate Spilo JSON configuration: %v", err)
 	}
@@ -2529,6 +2550,10 @@ func (c *Cluster) getLogicalBackupJobName() (jobName string) {
 
 func (c *Cluster) getPgbackrestConfigmapName() (jobName string) {
 	return fmt.Sprintf("%s-pgbackrest-config", c.Name)
+}
+
+func (c *Cluster) getTDESecretName() string {
+	return fmt.Sprintf("%s-tde", c.Name)
 }
 
 func (c *Cluster) getPgbackrestRestoreConfigmapName() (jobName string) {

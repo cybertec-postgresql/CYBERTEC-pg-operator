@@ -394,6 +394,7 @@ func (c *Cluster) Create() (err error) {
 		c.logger.Info("a k8s cron job for pgbackrest has been successfully created")
 	}
 
+
 	if err := c.listResources(); err != nil {
 		c.logger.Errorf("could not list resources: %v", err)
 	}

@@ -2700,14 +2700,6 @@ func (c *Cluster) getPgbackrestConfigmapName() (jobName string) {
 	return fmt.Sprintf("%s-pgbackrest-config", c.Name)
 }
 
-func (c *Cluster) getPgbackrestConfigmapName() (jobName string) {
-	return fmt.Sprintf("%s-pgbackrest-config", c.Name)
-}
-
-func (c *Cluster) getPgbackrestConfigmapName() (jobName string) {
-	return fmt.Sprintf("%s-pgbackrest-config", c.Name)
-}
-
 func (c *Cluster) getTDESecretName() string {
 	return fmt.Sprintf("%s-tde", c.Name)
 }

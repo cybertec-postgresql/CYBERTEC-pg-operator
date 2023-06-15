@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-<html>
-    <head></head>
-    <body>
-        <p>Hello World</p>
-    </body>
-</html>
-=======
 <h1>Concepts</h1>
 
 The Postgres [operator](https://coreos.com/blog/introducing-operators.html)
@@ -108,4 +100,3 @@ Please, report any issues discovered to https://github.com/zalando/postgres-oper
 - "Running PostgreSQL in Google Kubernetes Engine" by Kenneth Rørvik on [Repill Linpro blog](https://www.redpill-linpro.com/techblog/2019/09/28/postgres-in-kubernetes.html), Sep. 2019.
 
 - "Zalando Postgres Operator: One Year Later" by Sergey Dudoladov on [Open Source Zalando](https://opensource.zalando.com/blog/2018/11/postgres-operator/), Nov. 2018
->>>>>>> pgbackrest

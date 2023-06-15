@@ -337,6 +337,12 @@ func (c *Cluster) Create() error {
 		}
 
 	}
+	if c.Postgresql.Spec.TDE != nil && c.Postgresql.Spec.TDE.Enable {
+		if err := c.createTDESecret(); err != nil {
+			return fmt.Errorf("could not create the TDE secret: %v", err)
+		}
+		c.logger.Info("a TDE secret was successfully created")
+	}
 
 	if c.Statefulset != nil {
 		return fmt.Errorf("statefulset already exists in the cluster")
@@ -388,6 +394,7 @@ func (c *Cluster) Create() error {
 		}
 		c.logger.Info("a k8s cron job for pgbackrest has been successfully created")
 	}
+
 
 	if err := c.listResources(); err != nil {
 		c.logger.Errorf("could not list resources: %v", err)

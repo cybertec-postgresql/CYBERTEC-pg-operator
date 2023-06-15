@@ -3,6 +3,11 @@
 CPO (CYBERTEC PG Operator) allows you to create and run PostgreSQL clusters on Kubernetes.
 
 The operator reduces your efforts and simplifies the administration of your PostgreSQL clusters so that you can concentrate on other things.
+# CYBERTEC PG Operator
+
+CPO (CYBERTEC PG Operator) allows you to create and run PostgreSQL clusters on Kubernetes.
+
+The operator reduces your efforts and simplifies the administration of your PostgreSQL clusters so that you can concentrate on other things.
 
 ### Operator features
 
@@ -92,12 +97,18 @@ production for over five years.
 | v1.8.*    | 9.5 &rarr; 14     | 1.20 &rarr; 1.24  | 1.17.4  |
 | v1.7.1    | 9.5 &rarr; 14     | 1.20 &rarr; 1.24  | 1.16.9  |
 
+* Integrated backup solution, automatic backups and very easy restore (snapshot & PITR)
+* Rolling update procedure for adjustments to the pods and minor updates
+* Major upgrade with minimum interruption time
+* Reduction of downtime thanks to redundancy, pod anti-affinity, auto-failover and self-healing
 
 ## Getting started
 
-[Getting started - Documentation](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/documentation/how-to-use/installation/) 
+Coming soon 
 
-[Tutorials](https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials).
+Until then, please use the following:
+
+[tutorial](docs/quickstart.md).
 
 ## Supported setups of Postgres and Applications
 
@@ -105,6 +116,10 @@ production for over five years.
 ![Features](docs/diagrams/neutral_operator_light.png#gh-light-mode-only)
 
 ## Documentation
+
+Coming soon 
+
+Until then, please use the following:
 
 Coming soon 
 
@@ -125,4 +140,5 @@ There is a browser-friendly version of this documentation at
 
 ## Community
 
+Coming soon 
 Coming soon 

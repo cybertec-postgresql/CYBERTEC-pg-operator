@@ -1,13 +1,21 @@
+# Postgres Operator
+
+![Tests](https://github.com/zalando/postgres-operator/workflows/operator-tests/badge.svg)
+![E2E Tests](https://github.com/zalando/postgres-operator/workflows/operator-e2e-tests/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/zalando/postgres-operator/badge.svg?branch=master)](https://coveralls.io/github/zalando/postgres-operator?branch=master)
+
+The operator reduces your efforts and simplifies the administration of your PostgreSQL clusters so that you can concentrate on other things.
 # CYBERTEC PG Operator
 
 CPO (CYBERTEC PG Operator) allows you to create and run PostgreSQL clusters on Kubernetes.
 
 The operator reduces your efforts and simplifies the administration of your PostgreSQL clusters so that you can concentrate on other things.
-# CYBERTEC PG Operator
+<img src="docs/diagrams/logo.png" width="200">
 
-CPO (CYBERTEC PG Operator) allows you to create and run PostgreSQL clusters on Kubernetes.
-
-The operator reduces your efforts and simplifies the administration of your PostgreSQL clusters so that you can concentrate on other things.
+The Postgres Operator delivers an easy to run highly-available [PostgreSQL](https://www.postgresql.org/)
+clusters on Kubernetes (K8s) powered by [Patroni](https://github.com/zalando/patroni).
+It is configured only through Postgres manifests (CRDs) to ease integration into automated CI/CD
+pipelines with no access to Kubernetes API directly, promoting infrastructure as code vs manual operations.
 
 ### Operator features
 
@@ -104,18 +112,14 @@ production for over five years.
 
 ## Getting started
 
-Coming soon 
-
-Until then, please use the following:
-
+For a quick first impression follow the instructions of this
 [tutorial](docs/quickstart.md).
 
+## Supported setups of Postgres and Applications
+
+![Features](docs/diagrams/neutral_operator.png)
 
 ## Documentation
-
-Coming soon 
-
-Until then, please use the following:
 
 There is a browser-friendly version of this documentation at
 [postgres-operator.readthedocs.io](https://postgres-operator.readthedocs.io)
@@ -132,4 +136,6 @@ There is a browser-friendly version of this documentation at
 
 ## Community
 
-Coming soon 
+There are two places to get in touch with the community:
+1. The [GitHub issue tracker](https://github.com/zalando/postgres-operator/issues)
+2. The **#postgres-operator** [slack channel](https://postgres-slack.herokuapp.com)

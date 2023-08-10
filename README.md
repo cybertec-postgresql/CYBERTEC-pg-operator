@@ -1,8 +1,6 @@
-# Postgres Operator
+# CYBERTEC PG Operator
 
-![Tests](https://github.com/zalando/postgres-operator/workflows/operator-tests/badge.svg)
-![E2E Tests](https://github.com/zalando/postgres-operator/workflows/operator-e2e-tests/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/zalando/postgres-operator/badge.svg?branch=master)](https://coveralls.io/github/zalando/postgres-operator?branch=master)
+CPO (CYBERTEC PG Operator) allows you to create and run PostgreSQL clusters on Kubernetes.
 
 The operator reduces your efforts and simplifies the administration of your PostgreSQL clusters so that you can concentrate on other things.
 # CYBERTEC PG Operator
@@ -106,14 +104,12 @@ production for over five years.
 
 ## Getting starteds
 
-For a quick first impression follow the instructions of this
+Coming soon 
+
+Until then, please use the following:
+
 [tutorial](docs/quickstart.md).
 
-## Supported setups of Postgres and Applications
-
-![Features](docs/diagrams/neutral_operator_dark.png#gh-dark-mode-only)
-![Features](docs/diagrams/neutral_operator_light.png#gh-light-mode-only)
-![Features](docs/diagrams/neutral_operator.png)
 
 ## Documentation
 

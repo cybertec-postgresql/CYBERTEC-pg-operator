@@ -104,10 +104,7 @@ production for over five years.
 
 ## Getting started
 
-Coming soon 
-
-Until then, please use the following:
-
+For a quick first impression follow the instructions of this
 [tutorial](docs/quickstart.md).
 
 ## Supported setups of Postgres and Applications

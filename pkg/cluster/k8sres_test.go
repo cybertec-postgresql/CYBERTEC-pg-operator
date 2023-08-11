@@ -152,7 +152,7 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 	}
 	for _, tt := range tests {
 		cluster.OpConfig = *tt.opConfig
-		result, err := generateSpiloJSONConfiguration(tt.pgParam, tt.patroni, tt.opConfig, logger)
+		result, err := generateSpiloJSONConfiguration(tt.pgParam, tt.patroni, tt.opConfig, false, logger)
 		if err != nil {
 			t.Errorf("Unexpected error: %v", err)
 		}

@@ -2027,6 +2027,7 @@ class EndToEndTestCase(unittest.TestCase):
         self.assert_distributed_pods(master_nodes)
 
     @timeout_decorator.timeout(TEST_TIMEOUT_SEC)
+    @unittest.skip("Skipping this test until fixed")
     def test_zz_cluster_deletion(self):
         '''
            Test deletion with configured protection

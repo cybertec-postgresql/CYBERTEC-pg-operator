@@ -1606,21 +1606,24 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 			memLimit = spec.Backup.Pgbackrest.Resources.ResourceLimits.Memory
 			cpuReq = spec.Backup.Pgbackrest.Resources.ResourceRequests.CPU
 			memReq = spec.Backup.Pgbackrest.Resources.ResourceRequests.Memory
+			resources = v1.ResourceRequirements{
+				Limits: v1.ResourceList{
+					"cpu":    resource.MustParse(cpuLimit),
+					"memory": resource.MustParse(memLimit),
+				},
+				Requests: v1.ResourceList{
+					"cpu":    resource.MustParse(cpuReq),
+					"memory": resource.MustParse(memReq),
+				},
+			}
 		} else {
-			cpuLimit = "500m"
-			memLimit = "1Gi"
-			cpuReq = "500m"
-			memReq = "1Gi"
-		}
-		resources := v1.ResourceRequirements{
-			Limits: v1.ResourceList{
-				"cpu":    resource.MustParse(cpuLimit),
-				"memory": resource.MustParse(memLimit),
-			},
-			Requests: v1.ResourceList{
-				"cpu":    resource.MustParse(cpuReq),
-				"memory": resource.MustParse(memReq),
-			},
+			defaultResources := makeDefaultResources(&c.OpConfig)
+			resourceRequirements, err := c.generateResourceRequirements(
+				spec.Resources, defaultResources, constants.PostgresContainerName)
+			if err != nil {
+				return nil, fmt.Errorf("could not generate resource requirements: %v", err)
+			}
+			resources = *resourceRequirements
 		}
 		initContainers = append(initContainers, v1.Container{
 			Name:         "pgbackrest-restore",
@@ -2808,12 +2811,15 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 
 	c.logger.Debug("Generating pgbackrest pod template")
 
-	// allocate for the backup pod the same amount of resources as for normal DB pods
-	resourceRequirements, err = c.generateResourceRequirements(
-		c.Spec.Resources, makeDefaultResources(&c.OpConfig), pgbackrestContainerName)
-	if err != nil {
-		return nil, fmt.Errorf("could not generate resource requirements for logical backup pods: %v", err)
-	}
+	// // allocate for the backup pod the same amount of resources as for normal DB pods
+	// resourceRequirements, err = c.generateResourceRequirements(
+	// 	c.Spec.Resources, makeDefaultResources(&c.OpConfig), pgbackrestContainerName)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("could not generate resource requirements for logical backup pods: %v", err)
+	// }
+	// Using empty resources
+	emptyResourceRequirements := v1.ResourceRequirements{}
+	resourceRequirements = &emptyResourceRequirements
 
 	envVars := c.generatePgbbackrestPodEnvVars(name)
 	pgbackrestContainer := generateContainer(

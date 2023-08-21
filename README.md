@@ -27,7 +27,7 @@ The operator reduces your efforts and simplifies the administration of your Post
 * Major upgrade with minimum interruption time
 * Reduction of downtime thanks to redundancy, pod anti-affinity, auto-failover and self-healing
 
-## Getting starteds
+## Getting started
 
 [Getting started - Documentation](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/documentation/how-to-use/installation/) 
 

@@ -104,11 +104,9 @@ production for over five years.
 
 ## Getting starteds
 
-Coming soon 
+[Getting started - Documentation](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/documentation/how-to-use/installation/) 
 
-Until then, please use the following:
-
-[tutorial](docs/quickstart.md).
+[Tutorials](https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials).
 
 
 ## Documentation

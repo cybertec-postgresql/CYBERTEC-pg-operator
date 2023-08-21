@@ -108,7 +108,7 @@ production for over five years.
 * Major upgrade with minimum interruption time
 * Reduction of downtime thanks to redundancy, pod anti-affinity, auto-failover and self-healing
 
-## Getting started
+## Getting starteds
 
 [Getting started - Documentation](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/documentation/how-to-use/installation/) 
 

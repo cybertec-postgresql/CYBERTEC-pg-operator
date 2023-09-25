@@ -67,7 +67,7 @@ the operator is deployed to multiple K8s clusters, where users deploy
 manifests via our CI/CD infrastructure or rely on a slim user interface to
 create manifests.
 
-Please, report any issues discovered to https://github.com/zalando/postgres-operator/issues.
+Please, report any issues discovered to https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/issues.
 
 ## Talks
 

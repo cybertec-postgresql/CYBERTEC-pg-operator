@@ -67,7 +67,7 @@ spec:
           apiVersion:
             type: string
             enum:
-              - cpo.opensource.cybertec.at/v1
+              - acid.zalan.do/v1
           spec:
             type: object
             required:
@@ -547,7 +547,7 @@ spec:
                       memory:
                         type: string
                         # You can express memory as a plain integer or as a fixed-point
-                        # integer using one of these suffixes: E, P, T, G, M, k. You can
+                        # integer using one of these
                         # also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki
                         #
                         # https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-memory
@@ -631,6 +631,12 @@ spec:
                             type: string
                           payloadColumn:
                             type: string
+              tde:
+                nullable: true
+                properties:
+                  enable:
+                    type: boolean
+                type: object
               teamId:
                 type: string
               tls:
@@ -854,7 +860,7 @@ spec:
                               memory:
                                 type: string
                                 pattern: '^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$'
-                    required:
+                    required: 
                       - image
                       - repos
           status:

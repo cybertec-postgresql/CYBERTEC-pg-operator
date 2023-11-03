@@ -3,8 +3,8 @@ package teams
 import (
 	"testing"
 
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	"github.com/zalando/postgres-operator/pkg/util"
+	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/util"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -18,7 +18,7 @@ var (
 			{
 				TypeMeta: metav1.TypeMeta{
 					Kind:       "PostgresTeam",
-					APIVersion: "acid.zalan.do/v1",
+					APIVersion: "cpo.opensource.cybertec.at/v1",
 				},
 				ObjectMeta: metav1.ObjectMeta{
 					Name: "teamAB",
@@ -31,7 +31,7 @@ var (
 			}, {
 				TypeMeta: metav1.TypeMeta{
 					Kind:       "PostgresTeam",
-					APIVersion: "acid.zalan.do/v1",
+					APIVersion: "cpo.opensource.cybertec.at/v1",
 				},
 				ObjectMeta: metav1.ObjectMeta{
 					Name: "teamC",

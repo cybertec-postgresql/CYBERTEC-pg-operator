@@ -481,8 +481,8 @@ github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9de
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/yuin/goldmark v1.4.0/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
-github.com/zalando/postgres-operator v1.9.0 h1:8Ab/zSXkpzBT+G6EQvQGC30DXCV7aDX27bfSTf99W7c=
-github.com/zalando/postgres-operator v1.9.0/go.mod h1:9AUgDFbuNeJXxkehPLvUSIqNg+Yn99M7bLvF2C36gzQ=
+github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI v1.9.0 h1:8Ab/zSXkpzBT+G6EQvQGC30DXCV7aDX27bfSTf99W7c=
+github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI v1.9.0/go.mod h1:9AUgDFbuNeJXxkehPLvUSIqNg+Yn99M7bLvF2C36gzQ=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.6/go.mod h1:qXsaaIqmgQH0T+OPdb99Bf+PKfBBQVAdyD6TY9G8XM4=
 go.etcd.io/etcd/api/v3 v3.5.0/go.mod h1:cbVKeC6lCfl7j/8jBhAK6aIYO9XOjdptoxU/nLQcPvs=

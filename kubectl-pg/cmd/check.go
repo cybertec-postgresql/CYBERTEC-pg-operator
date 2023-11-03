@@ -28,7 +28,7 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
-	postgresConstants "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
+	postgresConstants "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/apis/cpo.opensource.cybertec.at/v1"
 	v1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	apiextv1 "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/typed/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

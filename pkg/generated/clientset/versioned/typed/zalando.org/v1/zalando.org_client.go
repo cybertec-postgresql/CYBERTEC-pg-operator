@@ -27,8 +27,8 @@ package v1
 import (
 	"net/http"
 
-	v1 "github.com/zalando/postgres-operator/pkg/apis/zalando.org/v1"
-	"github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/scheme"
+	v1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/apis/zalando.org/v1"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/generated/clientset/versioned/scheme"
 	rest "k8s.io/client-go/rest"
 )
 

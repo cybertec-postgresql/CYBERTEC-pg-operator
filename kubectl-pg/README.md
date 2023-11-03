@@ -11,9 +11,9 @@ From Go >=1.13 Go modules will be enabled by default.
 ```bash
 # Assumes you have a working KUBECONFIG
 $ GO111MODULE="on"
-$ GOPATH/src/github.com/zalando/postgres-operator/kubectl-pg  go mod vendor
+$ GOPATH/src/github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/kubectl-pg  go mod vendor
 # This generate a vendor directory with all dependencies needed by the plugin.
-$ $GOPATH/src/github.com/zalando/postgres-operator/kubectl-pg  go install
+$ $GOPATH/src/github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/kubectl-pg  go install
 # This will place the kubectl-pg binary in your $GOPATH/bin
 ```
 

@@ -1,4 +1,4 @@
-module github.com/zalando/postgres-operator
+module github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI
 
 go 1.18
 

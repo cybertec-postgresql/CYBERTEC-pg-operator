@@ -11,11 +11,11 @@ import (
 	batchv1 "k8s.io/api/batch/v1"
 	clientbatchv1 "k8s.io/client-go/kubernetes/typed/batch/v1"
 
-	apiacidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	zalandoclient "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned"
-	acidv1 "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/typed/acid.zalan.do/v1"
-	zalandov1 "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/typed/zalando.org/v1"
-	"github.com/zalando/postgres-operator/pkg/spec"
+	apiacidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/apis/cpo.opensource.cybertec.at/v1"
+	zalandoclient "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/generated/clientset/versioned"
+	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/generated/clientset/versioned/typed/cpo.opensource.cybertec.at/v1"
+	zalandov1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/generated/clientset/versioned/typed/zalando.org/v1"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/spec"
 	apiappsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	apipolicyv1 "k8s.io/api/policy/v1"
@@ -171,7 +171,7 @@ func NewFromConfig(cfg *rest.Config) (KubernetesClient, error) {
 
 	kubeClient.AcidV1ClientSet = zalandoclient.NewForConfigOrDie(cfg)
 	if err != nil {
-		return kubeClient, fmt.Errorf("could not create acid.zalan.do clientset: %v", err)
+		return kubeClient, fmt.Errorf("could not create cpo.opensource.cybertec.at clientset: %v", err)
 	}
 	kubeClient.Zalandov1ClientSet = zalandoclient.NewForConfigOrDie(cfg)
 	if err != nil {

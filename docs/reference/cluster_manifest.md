@@ -4,9 +4,9 @@ Individual Postgres clusters are described by the Kubernetes *cluster manifest*
 that has the structure defined by the `postgresql` CRD (custom resource
 definition). The following section describes the structure of the manifest and
 the purpose of individual keys. You can take a look at the examples of the
-[minimal](https://github.com/zalando/postgres-operator/blob/master/manifests/minimal-postgres-manifest.yaml)
+[minimal](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/blob/master/manifests/minimal-postgres-manifest.yaml)
 and the
-[complete](https://github.com/zalando/postgres-operator/blob/master/manifests/complete-postgres-manifest.yaml)
+[complete](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/blob/master/manifests/complete-postgres-manifest.yaml)
 cluster manifests.
 
 When Kubernetes resources, such as memory, CPU or volumes, are configured,
@@ -132,7 +132,7 @@ These parameters are grouped directly under  the `spec` key in the manifest.
   be added in the database replacing the `username` value in the secret of
   the listed user. Although, rotation users inherit all rights from the
   original role, keep in mind that ownership is not transferred. See more
-  details in the [administrator docs](https://github.com/zalando/postgres-operator/blob/master/docs/administrator.md#password-rotation-in-k8s-secrets).
+  details in the [administrator docs](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/blob/master/docs/administrator.md#password-rotation-in-k8s-secrets).
 
 * **usersWithInPlaceSecretRotation**
   list of users to enable in-place password rotation in K8s secrets. The
@@ -140,7 +140,7 @@ These parameters are grouped directly under  the `spec` key in the manifest.
   password value will be replaced in the secrets which the operator reflects
   in the database, too. List only users here that rarely connect to the
   database, like a flyway user running a migration on Pod start. See more
-  details in the [administrator docs](https://github.com/zalando/postgres-operator/blob/master/docs/administrator.md#password-replacement-without-extra-users).
+  details in the [administrator docs](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/blob/master/docs/administrator.md#password-replacement-without-extra-users).
 
 * **databases**
   a map of database names to database owners for the databases that should be
@@ -170,13 +170,13 @@ These parameters are grouped directly under  the `spec` key in the manifest.
 * **serviceAnnotations**
   A map of key value pairs that gets attached as [annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)
   to the services created for the database cluster. Check the
-  [administrator docs](https://github.com/zalando/postgres-operator/blob/master/docs/administrator.md#load-balancers-and-allowed-ip-ranges)
+  [administrator docs](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/blob/master/docs/administrator.md#load-balancers-and-allowed-ip-ranges)
   for more information regarding default values and overwrite rules.
 
 * **masterServiceAnnotations**
   A map of key value pairs that gets attached as [annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)
   to the master service created for the database cluster. Check the
-  [administrator docs](https://github.com/zalando/postgres-operator/blob/master/docs/administrator.md#load-balancers-and-allowed-ip-ranges)
+  [administrator docs](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/blob/master/docs/administrator.md#load-balancers-and-allowed-ip-ranges)
   for more information regarding default values and overwrite rules.
   This field overrides `serviceAnnotations` with the same key for the master
   service if not empty.
@@ -184,7 +184,7 @@ These parameters are grouped directly under  the `spec` key in the manifest.
 * **replicaServiceAnnotations**
   A map of key value pairs that gets attached as [annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)
   to the replica service created for the database cluster. Check the
-  [administrator docs](https://github.com/zalando/postgres-operator/blob/master/docs/administrator.md#load-balancers-and-allowed-ip-ranges)
+  [administrator docs](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/blob/master/docs/administrator.md#load-balancers-and-allowed-ip-ranges)
   for more information regarding default values and overwrite rules.
   This field overrides `serviceAnnotations` with the same key for the replica
   service if not empty.

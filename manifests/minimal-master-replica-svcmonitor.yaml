@@ -6,7 +6,7 @@ kind: Namespace
 metadata:
   name: test-pg
 ---
-apiVersion: "acid.zalan.do/v1"
+apiVersion: "cpo.opensource.cybertec.at/v1"
 kind: postgresql
 metadata:
   name: acid-minimal-cluster

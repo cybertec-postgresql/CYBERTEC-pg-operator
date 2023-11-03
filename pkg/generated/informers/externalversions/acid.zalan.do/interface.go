@@ -25,8 +25,8 @@ SOFTWARE.
 package acid
 
 import (
-	v1 "github.com/zalando/postgres-operator/pkg/generated/informers/externalversions/acid.zalan.do/v1"
-	internalinterfaces "github.com/zalando/postgres-operator/pkg/generated/informers/externalversions/internalinterfaces"
+	v1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/generated/informers/externalversions/cpo.opensource.cybertec.at/v1"
+	internalinterfaces "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/generated/informers/externalversions/internalinterfaces"
 )
 
 // Interface provides access to each of this group's versions.

@@ -9,14 +9,14 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	fakeacidv1 "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/fake"
-	"github.com/zalando/postgres-operator/pkg/spec"
-	"github.com/zalando/postgres-operator/pkg/util"
-	"github.com/zalando/postgres-operator/pkg/util/config"
-	"github.com/zalando/postgres-operator/pkg/util/constants"
-	"github.com/zalando/postgres-operator/pkg/util/k8sutil"
-	"github.com/zalando/postgres-operator/pkg/util/teams"
+	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/apis/cpo.opensource.cybertec.at/v1"
+	fakeacidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/generated/clientset/versioned/fake"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/spec"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/util"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/util/config"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/util/constants"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/util/k8sutil"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/util/teams"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"
@@ -1244,14 +1244,14 @@ func TestCompareServices(t *testing.T) {
 			about: "two equal services",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeClusterIP,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeClusterIP,
@@ -1262,14 +1262,14 @@ func TestCompareServices(t *testing.T) {
 			about: "services differ on service type",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeClusterIP,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
@@ -1281,14 +1281,14 @@ func TestCompareServices(t *testing.T) {
 			about: "services differ on lb source ranges",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
@@ -1300,14 +1300,14 @@ func TestCompareServices(t *testing.T) {
 			about: "new service doesn't have lb source ranges",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
@@ -1319,33 +1319,33 @@ func TestCompareServices(t *testing.T) {
 			about: "services differ on DNS annotation",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "new_clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "new_clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			match:  false,
-			reason: `new service's annotations does not match the current one: "external-dns.alpha.kubernetes.io/hostname" changed from "clstr.acid.zalan.do" to "new_clstr.acid.zalan.do".`,
+			reason: `new service's annotations does not match the current one: "external-dns.alpha.kubernetes.io/hostname" changed from "clstr.cpo.opensource.cybertec.at" to "new_clstr.cpo.opensource.cybertec.at".`,
 		},
 		{
 			about: "services differ on AWS ELB annotation",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: "1800",
 				},
 				v1.ServiceTypeLoadBalancer,
@@ -1357,7 +1357,7 @@ func TestCompareServices(t *testing.T) {
 			about: "service changes existing annotation",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "bar",
 				},
@@ -1365,7 +1365,7 @@ func TestCompareServices(t *testing.T) {
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "baz",
 				},
@@ -1378,7 +1378,7 @@ func TestCompareServices(t *testing.T) {
 			about: "service changes multiple existing annotations",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "bar",
 					"bar":                              "foo",
@@ -1387,7 +1387,7 @@ func TestCompareServices(t *testing.T) {
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "baz",
 					"bar":                              "fooz",
@@ -1402,14 +1402,14 @@ func TestCompareServices(t *testing.T) {
 			about: "service adds a new custom annotation",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "bar",
 				},
@@ -1422,7 +1422,7 @@ func TestCompareServices(t *testing.T) {
 			about: "service removes a custom annotation",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "bar",
 				},
@@ -1430,7 +1430,7 @@ func TestCompareServices(t *testing.T) {
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
@@ -1442,7 +1442,7 @@ func TestCompareServices(t *testing.T) {
 			about: "service removes a custom annotation and adds a new one",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "bar",
 				},
@@ -1450,7 +1450,7 @@ func TestCompareServices(t *testing.T) {
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"bar":                              "foo",
 				},
@@ -1463,7 +1463,7 @@ func TestCompareServices(t *testing.T) {
 			about: "service removes a custom annotation, adds a new one and change another",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "bar",
 					"zalan":                            "do",
@@ -1472,7 +1472,7 @@ func TestCompareServices(t *testing.T) {
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"bar":                              "foo",
 					"zalan":                            "do.com",
@@ -1491,7 +1491,7 @@ func TestCompareServices(t *testing.T) {
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,

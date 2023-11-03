@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
 rules:
 - apiGroups:
-  - acid.zalan.do
+  - cpo.opensource.cybertec.at
   resources:
   - postgresqls
   verbs:

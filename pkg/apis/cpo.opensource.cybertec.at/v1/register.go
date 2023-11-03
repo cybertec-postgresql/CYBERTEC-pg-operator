@@ -1,7 +1,7 @@
 package v1
 
 import (
-	acidzalando "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do"
+	acidzalando "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/apis/cpo.opensource.cybertec.at"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"

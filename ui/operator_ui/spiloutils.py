@@ -94,7 +94,7 @@ def request_delete(cluster, path, **kwargs):
 
 def resource_api_version(resource_type):
     return {
-        'postgresqls': 'apis/acid.zalan.do/v1',
+        'postgresqls': 'apis/cpo.opensource.cybertec.at/v1',
         'statefulsets': 'apis/apps/v1',
         'deployments': 'apis/apps/v1',
     }.get(resource_type, 'api/v1')

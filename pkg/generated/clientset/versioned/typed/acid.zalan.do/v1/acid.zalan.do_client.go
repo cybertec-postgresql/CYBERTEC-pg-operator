@@ -27,8 +27,8 @@ package v1
 import (
 	"net/http"
 
-	v1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	"github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/scheme"
+	v1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/generated/clientset/versioned/scheme"
 	rest "k8s.io/client-go/rest"
 )
 
@@ -39,7 +39,7 @@ type AcidV1Interface interface {
 	PostgresqlsGetter
 }
 
-// AcidV1Client is used to interact with features provided by the acid.zalan.do group.
+// AcidV1Client is used to interact with features provided by the cpo.opensource.cybertec.at group.
 type AcidV1Client struct {
 	restClient rest.Interface
 }

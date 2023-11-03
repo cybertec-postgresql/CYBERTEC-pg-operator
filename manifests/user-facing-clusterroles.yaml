@@ -6,7 +6,7 @@ metadata:
   name: zalando-postgres-operator:users:admin
 rules:
 - apiGroups:
-  - acid.zalan.do
+  - cpo.opensource.cybertec.at
   resources:
   - postgresqls
   - postgresqls/status
@@ -29,7 +29,7 @@ metadata:
   name: zalando-postgres-operator:users:edit
 rules:
 - apiGroups:
-  - acid.zalan.do
+  - cpo.opensource.cybertec.at
   resources:
   - postgresqls
   verbs:
@@ -47,7 +47,7 @@ metadata:
   name: zalando-postgres-operator:users:view
 rules:
 - apiGroups:
-  - acid.zalan.do
+  - cpo.opensource.cybertec.at
   resources:
   - postgresqls
   - postgresqls/status

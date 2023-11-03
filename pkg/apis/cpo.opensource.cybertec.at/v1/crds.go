@@ -3,8 +3,8 @@ package v1
 import (
 	"fmt"
 
-	acidzalando "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do"
-	"github.com/zalando/postgres-operator/pkg/util"
+	acidzalando "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/apis/cpo.opensource.cybertec.at"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/pkg/util"
 	apiextv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -132,7 +132,7 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 				Type: "string",
 				Enum: []apiextv1.JSON{
 					{
-						Raw: []byte(`"acid.zalan.do/v1"`),
+						Raw: []byte(`"cpo.opensource.cybertec.at/v1"`),
 					},
 				},
 			},
@@ -1259,7 +1259,7 @@ var OperatorConfigCRDResourceValidation = apiextv1.CustomResourceValidation{
 				Type: "string",
 				Enum: []apiextv1.JSON{
 					{
-						Raw: []byte(`"acid.zalan.do/v1"`),
+						Raw: []byte(`"cpo.opensource.cybertec.at/v1"`),
 					},
 				},
 			},

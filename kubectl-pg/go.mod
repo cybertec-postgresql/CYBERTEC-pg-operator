@@ -1,11 +1,11 @@
-module github.com/zalando/postgres-operator/kubectl-pg
+module github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI/kubectl-pg
 
 go 1.18
 
 require (
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.9.0
-	github.com/zalando/postgres-operator v1.9.0
+	github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0_changeAPI v1.9.0
 	k8s.io/api v0.23.5
 	k8s.io/apiextensions-apiserver v0.23.5
 	k8s.io/apimachinery v0.23.5

@@ -152,7 +152,7 @@ function start_operator(){
     fi
 
     local -r msg="Wait for the postgresql custom resource definition to register..."
-    local -r cmd="kubectl get crd | grep --quiet 'postgresqls.acid.zalan.do'"
+    local -r cmd="kubectl get crd | grep --quiet 'postgresqls.cpo.opensource.cybertec.at'"
     retry "$cmd" "$msg "
 
 }

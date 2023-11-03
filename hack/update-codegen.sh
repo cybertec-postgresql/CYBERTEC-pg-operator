@@ -17,7 +17,7 @@ trap "cleanup" EXIT SIGINT
 echo "${OPERATOR_PACKAGE_ROOT} - ${CODEGEN_PKG}"
 bash "${CODEGEN_PKG}/generate-groups.sh" all \
   "${OPERATOR_PACKAGE_ROOT}/pkg/generated" "${OPERATOR_PACKAGE_ROOT}/pkg/apis" \
-  "acid.zalan.do:v1 zalando.org:v1" \
+  "cpo.opensource.cybertec.at:v1 zalando.org:v1" \
   --go-header-file "${SCRIPT_ROOT}"/hack/custom-boilerplate.go.txt \
   -o ./
 

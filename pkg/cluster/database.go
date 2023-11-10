@@ -136,7 +136,6 @@ func (c *Cluster) initDbConnWithName(dbname string) error {
 		func() (bool, error) {
 			var err error
 			conn, err = sql.Open("postgres", connstring)
-			c.logger.Warningf("connstring: ", connstring)
 			if err == nil {
 				err = conn.Ping()
 			}

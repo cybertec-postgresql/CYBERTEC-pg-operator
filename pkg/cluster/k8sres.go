@@ -321,7 +321,7 @@ func generateSpiloJSONConfiguration(pg *acidv1.PostgresqlParam, patroni *acidv1.
 
 	config.Bootstrap = pgBootstrap{}
 
-	config.Bootstrap.Initdb = []interface{}{map[string]string{"auth-host": "scram-sha-256"},
+	config.Bootstrap.Initdb = []interface{}{map[string]string{"auth-host": "md5"},
 		map[string]string{"auth-local": "trust"}}
 	if enableTDE {
 		config.Bootstrap.Initdb = append(config.Bootstrap.Initdb, map[string]string{"encryption-key-command": "/scripts/pgee/tde.sh"})

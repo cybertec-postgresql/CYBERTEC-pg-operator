@@ -1342,6 +1342,9 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 				keyName = "SSL_CA_FILE"
 			default:
 				panic(fmt.Sprintf("TLS env key unknown %s", k))
+			}
+			return keyName
+		}
 		// this is combined with the FSGroup in the section above
 		// to give read access to the postgres user
 		defaultMode := int32(0644)
@@ -1366,15 +1369,6 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 			v1.EnvVar{Name: "SSL_PRIVATE_KEY_FILE", Value: privateKeyFile},
 		)
 
-		if spec.TLS.CAFile != "" {
-			// support scenario when the ca.crt resides in a different secret, diff path
-			mountPathCA := mountPath
-			if spec.TLS.CASecretName != "" {
-				mountPathCA = mountPath + "ca"
-			}
-
-			return keyName
-		}
 		tlsEnv, tlsVolumes := generateTlsMounts(spec, getSpiloTLSEnv)
 		for _, env := range tlsEnv {
 			spiloEnvVars = appendEnvVars(spiloEnvVars, env)

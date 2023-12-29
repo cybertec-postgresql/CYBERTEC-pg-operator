@@ -1297,6 +1297,7 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 	if spec.TDE != nil && spec.TDE.Enable {
 		enableTDE = true
 	}
+
 	spiloConfiguration, err := generateSpiloJSONConfiguration(&spec.PostgresqlParam, &spec.Patroni, &c.OpConfig, enableTDE, c.logger)
 	if err != nil {
 		return nil, fmt.Errorf("could not generate Spilo JSON configuration: %v", err)
@@ -1342,39 +1343,33 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 				keyName = "SSL_CA_FILE"
 			default:
 				panic(fmt.Sprintf("TLS env key unknown %s", k))
-		// this is combined with the FSGroup in the section above
-		// to give read access to the postgres user
-		defaultMode := int32(0644)
-		mountPath := "/tls"
-		additionalVolumes = append(additionalVolumes, acidv1.AdditionalVolume{
-			Name:      spec.TLS.SecretName,
-			MountPath: mountPath,
-			VolumeSource: v1.VolumeSource{
-				Secret: &v1.SecretVolumeSource{
-					SecretName:  spec.TLS.SecretName,
-					DefaultMode: &defaultMode,
-				},
-			},
-		})
-
-		// use the same filenames as Secret resources by default
-		certFile := ensurePath(spec.TLS.CertificateFile, mountPath, "tls.crt")
-		privateKeyFile := ensurePath(spec.TLS.PrivateKeyFile, mountPath, "tls.key")
-		spiloEnvVars = appendEnvVars(
-			spiloEnvVars,
-			v1.EnvVar{Name: "SSL_CERTIFICATE_FILE", Value: certFile},
-			v1.EnvVar{Name: "SSL_PRIVATE_KEY_FILE", Value: privateKeyFile},
-		)
-
-		if spec.TLS.CAFile != "" {
-			// support scenario when the ca.crt resides in a different secret, diff path
-			mountPathCA := mountPath
-			if spec.TLS.CASecretName != "" {
-				mountPathCA = mountPath + "ca"
 			}
+			// this is combined with the FSGroup in the section above
+			// to give read access to the postgres user
+			defaultMode := int32(0644)
+			mountPath := "/tls"
+			additionalVolumes = append(additionalVolumes, acidv1.AdditionalVolume{
+				Name:      spec.TLS.SecretName,
+				MountPath: mountPath,
+				VolumeSource: v1.VolumeSource{
+					Secret: &v1.SecretVolumeSource{
+						SecretName:  spec.TLS.SecretName,
+						DefaultMode: &defaultMode,
+					},
+				},
+			})
 
+			// use the same filenames as Secret resources by default
+			certFile := ensurePath(spec.TLS.CertificateFile, mountPath, "tls.crt")
+			privateKeyFile := ensurePath(spec.TLS.PrivateKeyFile, mountPath, "tls.key")
+			spiloEnvVars = appendEnvVars(
+				spiloEnvVars,
+				v1.EnvVar{Name: "SSL_CERTIFICATE_FILE", Value: certFile},
+				v1.EnvVar{Name: "SSL_PRIVATE_KEY_FILE", Value: privateKeyFile},
+			)
 			return keyName
 		}
+
 		tlsEnv, tlsVolumes := generateTlsMounts(spec, getSpiloTLSEnv)
 		for _, env := range tlsEnv {
 			spiloEnvVars = appendEnvVars(spiloEnvVars, env)
@@ -1519,89 +1514,6 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 		)
 		var cpuLimit, memLimit, cpuReq, memReq string
 		var resources v1.ResourceRequirements
-		if spec.Backup.Pgbackrest.Resources != nil {
-			cpuLimit = spec.Backup.Pgbackrest.Resources.ResourceLimits.CPU
-			memLimit = spec.Backup.Pgbackrest.Resources.ResourceLimits.Memory
-			cpuReq = spec.Backup.Pgbackrest.Resources.ResourceRequests.CPU
-			memReq = spec.Backup.Pgbackrest.Resources.ResourceRequests.Memory
-			resources = v1.ResourceRequirements{
-				Limits: v1.ResourceList{
-					"cpu":    resource.MustParse(cpuLimit),
-					"memory": resource.MustParse(memLimit),
-				},
-				Requests: v1.ResourceList{
-					"cpu":    resource.MustParse(cpuReq),
-					"memory": resource.MustParse(memReq),
-				},
-			}
-		} else {
-			defaultResources := makeDefaultResources(&c.OpConfig)
-			resourceRequirements, err := c.generateResourceRequirements(
-				spec.Resources, defaultResources, constants.PostgresContainerName)
-			if err != nil {
-				return nil, fmt.Errorf("could not generate resource requirements: %v", err)
-			}
-			resources = *resourceRequirements
-		}
-
-	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
-
-		pgbackrestRestoreEnvVars := appendEnvVars(
-			spiloEnvVars,
-			v1.EnvVar{
-				Name: "RESTORE_ENABLE",
-				ValueFrom: &v1.EnvVarSource{
-					ConfigMapKeyRef: &v1.ConfigMapKeySelector{
-						LocalObjectReference: v1.LocalObjectReference{
-							Name: c.getPgbackrestRestoreConfigmapName(),
-						},
-						Key: "restore_enable",
-					},
-				},
-			},
-			v1.EnvVar{
-				Name: "RESTORE_BASEBACKUP",
-				ValueFrom: &v1.EnvVarSource{
-					ConfigMapKeyRef: &v1.ConfigMapKeySelector{
-						LocalObjectReference: v1.LocalObjectReference{
-							Name: c.getPgbackrestRestoreConfigmapName(),
-						},
-						Key: "restore_basebackup",
-					},
-				},
-			},
-			v1.EnvVar{
-				Name: "RESTORE_METHOD",
-				ValueFrom: &v1.EnvVarSource{
-					ConfigMapKeyRef: &v1.ConfigMapKeySelector{
-						LocalObjectReference: v1.LocalObjectReference{
-							Name: c.getPgbackrestRestoreConfigmapName(),
-						},
-						Key: "restore_method",
-					},
-				},
-			},
-			v1.EnvVar{
-				Name: "RESTORE_COMMAND",
-				ValueFrom: &v1.EnvVarSource{
-					ConfigMapKeyRef: &v1.ConfigMapKeySelector{
-						LocalObjectReference: v1.LocalObjectReference{
-							Name: c.getPgbackrestRestoreConfigmapName(),
-						},
-						Key: "restore_command",
-					},
-				},
-			},
-			v1.EnvVar{
-				Name:  "SELECTOR",
-				Value: fmt.Sprintf("cluster-name=%s,spilo-role=master", c.Name),
-			},
-			v1.EnvVar{
-				Name:  "MODE",
-				Value: "pgbackrest",
-			},
-		)
-		var cpuLimit, memLimit, cpuReq, memReq string
 		if spec.Backup.Pgbackrest.Resources != nil {
 			cpuLimit = spec.Backup.Pgbackrest.Resources.ResourceLimits.CPU
 			memLimit = spec.Backup.Pgbackrest.Resources.ResourceLimits.Memory

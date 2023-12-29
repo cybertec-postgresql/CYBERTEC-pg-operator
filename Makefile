@@ -61,6 +61,7 @@ macos: ${SOURCES}
 	GOOS=darwin GOARCH=amd64 CGO_ENABLED=${CGO_ENABLED} go build -o build/macos/${BINARY} ${BUILD_FLAGS} -ldflags "$(LDFLAGS)" $^
 
 docker: ${DOCKERDIR}/${DOCKERFILE}
+
 	echo `(env)`
 	echo "Tag ${TAG}"
 	echo "Version ${VERSION}"

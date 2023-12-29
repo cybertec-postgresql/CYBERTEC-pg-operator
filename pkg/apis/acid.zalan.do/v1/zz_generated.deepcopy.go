@@ -281,6 +281,13 @@ func (in *KubernetesMetaConfiguration) DeepCopyInto(out *KubernetesMetaConfigura
 		}
 	}
 	out.PodEnvironmentConfigMap = in.PodEnvironmentConfigMap
+	if in.PersistentVolumeClaimRetentionPolicy != nil {
+		in, out := &in.PersistentVolumeClaimRetentionPolicy, &out.PersistentVolumeClaimRetentionPolicy
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
+	}
 	return
 }
 
@@ -1348,6 +1355,11 @@ func (in *Stream) DeepCopyInto(out *Stream) {
 	if in.BatchSize != nil {
 		in, out := &in.BatchSize, &out.BatchSize
 		*out = new(uint32)
+		**out = **in
+	}
+	if in.EnableRecovery != nil {
+		in, out := &in.EnableRecovery, &out.EnableRecovery
+		*out = new(bool)
 		**out = **in
 	}
 	return

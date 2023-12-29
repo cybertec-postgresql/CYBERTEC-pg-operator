@@ -1331,6 +1331,17 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 
 	// configure TLS with a custom secret volume
 	if spec.TLS != nil && spec.TLS.SecretName != "" {
+		getSpiloTLSEnv := func(k string) string {
+			keyName := ""
+			switch k {
+			case "tls.crt":
+				keyName = "SSL_CERTIFICATE_FILE"
+			case "tls.key":
+				keyName = "SSL_PRIVATE_KEY_FILE"
+			case "tls.ca":
+				keyName = "SSL_CA_FILE"
+			default:
+				panic(fmt.Sprintf("TLS env key unknown %s", k))
 		// this is combined with the FSGroup in the section above
 		// to give read access to the postgres user
 		defaultMode := int32(0644)
@@ -1362,26 +1373,13 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 				mountPathCA = mountPath + "ca"
 			}
 
-			caFile := ensurePath(spec.TLS.CAFile, mountPathCA, "")
-			spiloEnvVars = appendEnvVars(
-				spiloEnvVars,
-				v1.EnvVar{Name: "SSL_CA_FILE", Value: caFile},
-			)
-
-			// the ca file from CASecretName secret takes priority
-			if spec.TLS.CASecretName != "" {
-				additionalVolumes = append(additionalVolumes, acidv1.AdditionalVolume{
-					Name:      spec.TLS.CASecretName,
-					MountPath: mountPathCA,
-					VolumeSource: v1.VolumeSource{
-						Secret: &v1.SecretVolumeSource{
-							SecretName:  spec.TLS.CASecretName,
-							DefaultMode: &defaultMode,
-						},
-					},
-				})
-			}
+			return keyName
 		}
+		tlsEnv, tlsVolumes := generateTlsMounts(spec, getSpiloTLSEnv)
+		for _, env := range tlsEnv {
+			spiloEnvVars = appendEnvVars(spiloEnvVars, env)
+		}
+		additionalVolumes = append(additionalVolumes, tlsVolumes...)
 	}
 
 	// generate the spilo container
@@ -1545,6 +1543,90 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 			}
 			resources = *resourceRequirements
 		}
+
+	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
+
+		pgbackrestRestoreEnvVars := appendEnvVars(
+			spiloEnvVars,
+			v1.EnvVar{
+				Name: "RESTORE_ENABLE",
+				ValueFrom: &v1.EnvVarSource{
+					ConfigMapKeyRef: &v1.ConfigMapKeySelector{
+						LocalObjectReference: v1.LocalObjectReference{
+							Name: c.getPgbackrestRestoreConfigmapName(),
+						},
+						Key: "restore_enable",
+					},
+				},
+			},
+			v1.EnvVar{
+				Name: "RESTORE_BASEBACKUP",
+				ValueFrom: &v1.EnvVarSource{
+					ConfigMapKeyRef: &v1.ConfigMapKeySelector{
+						LocalObjectReference: v1.LocalObjectReference{
+							Name: c.getPgbackrestRestoreConfigmapName(),
+						},
+						Key: "restore_basebackup",
+					},
+				},
+			},
+			v1.EnvVar{
+				Name: "RESTORE_METHOD",
+				ValueFrom: &v1.EnvVarSource{
+					ConfigMapKeyRef: &v1.ConfigMapKeySelector{
+						LocalObjectReference: v1.LocalObjectReference{
+							Name: c.getPgbackrestRestoreConfigmapName(),
+						},
+						Key: "restore_method",
+					},
+				},
+			},
+			v1.EnvVar{
+				Name: "RESTORE_COMMAND",
+				ValueFrom: &v1.EnvVarSource{
+					ConfigMapKeyRef: &v1.ConfigMapKeySelector{
+						LocalObjectReference: v1.LocalObjectReference{
+							Name: c.getPgbackrestRestoreConfigmapName(),
+						},
+						Key: "restore_command",
+					},
+				},
+			},
+			v1.EnvVar{
+				Name:  "SELECTOR",
+				Value: fmt.Sprintf("cluster-name=%s,spilo-role=master", c.Name),
+			},
+			v1.EnvVar{
+				Name:  "MODE",
+				Value: "pgbackrest",
+			},
+		)
+		var cpuLimit, memLimit, cpuReq, memReq string
+		if spec.Backup.Pgbackrest.Resources != nil {
+			cpuLimit = spec.Backup.Pgbackrest.Resources.ResourceLimits.CPU
+			memLimit = spec.Backup.Pgbackrest.Resources.ResourceLimits.Memory
+			cpuReq = spec.Backup.Pgbackrest.Resources.ResourceRequests.CPU
+			memReq = spec.Backup.Pgbackrest.Resources.ResourceRequests.Memory
+			resources = v1.ResourceRequirements{
+				Limits: v1.ResourceList{
+					"cpu":    resource.MustParse(cpuLimit),
+					"memory": resource.MustParse(memLimit),
+				},
+				Requests: v1.ResourceList{
+					"cpu":    resource.MustParse(cpuReq),
+					"memory": resource.MustParse(memReq),
+				},
+			}
+		} else {
+			defaultResources := makeDefaultResources(&c.OpConfig)
+			resourceRequirements, err := c.generateResourceRequirements(
+				spec.Resources, defaultResources, constants.PostgresContainerName)
+			if err != nil {
+				return nil, fmt.Errorf("could not generate resource requirements: %v", err)
+			}
+			resources = *resourceRequirements
+		}
+
 		initContainers = append(initContainers, v1.Container{
 			Name:         "pgbackrest-restore",
 			Image:        spec.Backup.Pgbackrest.Image,
@@ -1608,6 +1690,19 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 		return nil, fmt.Errorf("could not set the pod management policy to the unknown value: %v", c.OpConfig.PodManagementPolicy)
 	}
 
+	var persistentVolumeClaimRetentionPolicy appsv1.StatefulSetPersistentVolumeClaimRetentionPolicy
+	if c.OpConfig.PersistentVolumeClaimRetentionPolicy["when_deleted"] == "delete" {
+		persistentVolumeClaimRetentionPolicy.WhenDeleted = appsv1.DeletePersistentVolumeClaimRetentionPolicyType
+	} else {
+		persistentVolumeClaimRetentionPolicy.WhenDeleted = appsv1.RetainPersistentVolumeClaimRetentionPolicyType
+	}
+
+	if c.OpConfig.PersistentVolumeClaimRetentionPolicy["when_scaled"] == "delete" {
+		persistentVolumeClaimRetentionPolicy.WhenScaled = appsv1.DeletePersistentVolumeClaimRetentionPolicyType
+	} else {
+		persistentVolumeClaimRetentionPolicy.WhenScaled = appsv1.RetainPersistentVolumeClaimRetentionPolicyType
+	}
+
 	statefulSet := &appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        c.statefulSetName(),
@@ -1616,17 +1711,71 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 			Annotations: c.AnnotationsToPropagate(c.annotationsSet(nil)),
 		},
 		Spec: appsv1.StatefulSetSpec{
-			Replicas:             &numberOfInstances,
-			Selector:             c.labelsSelector(),
-			ServiceName:          c.serviceName(Master),
-			Template:             *podTemplate,
-			VolumeClaimTemplates: []v1.PersistentVolumeClaim{*volumeClaimTemplate},
-			UpdateStrategy:       updateStrategy,
-			PodManagementPolicy:  podManagementPolicy,
+			Replicas:                             &numberOfInstances,
+			Selector:                             c.labelsSelector(),
+			ServiceName:                          c.serviceName(Master),
+			Template:                             *podTemplate,
+			VolumeClaimTemplates:                 []v1.PersistentVolumeClaim{*volumeClaimTemplate},
+			UpdateStrategy:                       updateStrategy,
+			PodManagementPolicy:                  podManagementPolicy,
+			PersistentVolumeClaimRetentionPolicy: &persistentVolumeClaimRetentionPolicy,
 		},
 	}
 
 	return statefulSet, nil
+}
+
+func generateTlsMounts(spec *acidv1.PostgresSpec, tlsEnv func(key string) string) ([]v1.EnvVar, []acidv1.AdditionalVolume) {
+	// this is combined with the FSGroup in the section above
+	// to give read access to the postgres user
+	defaultMode := int32(0640)
+	mountPath := "/tls"
+	env := make([]v1.EnvVar, 0)
+	volumes := make([]acidv1.AdditionalVolume, 0)
+
+	volumes = append(volumes, acidv1.AdditionalVolume{
+		Name:      spec.TLS.SecretName,
+		MountPath: mountPath,
+		VolumeSource: v1.VolumeSource{
+			Secret: &v1.SecretVolumeSource{
+				SecretName:  spec.TLS.SecretName,
+				DefaultMode: &defaultMode,
+			},
+		},
+	})
+
+	// use the same filenames as Secret resources by default
+	certFile := ensurePath(spec.TLS.CertificateFile, mountPath, "tls.crt")
+	privateKeyFile := ensurePath(spec.TLS.PrivateKeyFile, mountPath, "tls.key")
+	env = append(env, v1.EnvVar{Name: tlsEnv("tls.crt"), Value: certFile})
+	env = append(env, v1.EnvVar{Name: tlsEnv("tls.key"), Value: privateKeyFile})
+
+	if spec.TLS.CAFile != "" {
+		// support scenario when the ca.crt resides in a different secret, diff path
+		mountPathCA := mountPath
+		if spec.TLS.CASecretName != "" {
+			mountPathCA = mountPath + "ca"
+		}
+
+		caFile := ensurePath(spec.TLS.CAFile, mountPathCA, "")
+		env = append(env, v1.EnvVar{Name: tlsEnv("tls.ca"), Value: caFile})
+
+		// the ca file from CASecretName secret takes priority
+		if spec.TLS.CASecretName != "" {
+			volumes = append(volumes, acidv1.AdditionalVolume{
+				Name:      spec.TLS.CASecretName,
+				MountPath: mountPathCA,
+				VolumeSource: v1.VolumeSource{
+					Secret: &v1.SecretVolumeSource{
+						SecretName:  spec.TLS.CASecretName,
+						DefaultMode: &defaultMode,
+					},
+				},
+			})
+		}
+	}
+
+	return env, volumes
 }
 
 func (c *Cluster) generatePodAnnotations(spec *acidv1.PostgresSpec) map[string]string {
@@ -1963,7 +2112,7 @@ func (c *Cluster) generatePersistentVolumeClaimTemplate(volumeSize, volumeStorag
 }
 
 func (c *Cluster) generateUserSecrets() map[string]*v1.Secret {
-	secrets := make(map[string]*v1.Secret, len(c.pgUsers))
+	secrets := make(map[string]*v1.Secret, len(c.pgUsers)+len(c.systemUsers))
 	namespace := c.Namespace
 	for username, pgUser := range c.pgUsers {
 		//Skip users with no password i.e. human users (they'll be authenticated using pam)

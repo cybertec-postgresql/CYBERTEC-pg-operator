@@ -302,3 +302,39 @@ type Configuration struct {
 type TDE struct {
 	Enable bool `json:"enable"`
 }
+
+type Backup struct {
+	Pgbackrest *Pgbackrest `json:"pgbackrest"`
+}
+
+type Pgbackrest struct {
+	Image         string            `json:"image"`
+	Global        map[string]string `json:"global"`
+	Repos         []Repo            `json:"repos"`
+	Restore       Restore           `json:"restore"`
+	Configuration Configuration     `json:"configuration"`
+	Resources     *Resources        `json:"resources,omitempty"`
+}
+
+type Repo struct {
+	Name     string            `json:"name"`
+	Storage  string            `json:"storage"`
+	Resource string            `json:"resource"`
+	Endpoint string            `json:"endpoint"`
+	Region   string            `json:"region"`
+	Schedule map[string]string `json:"schedule"`
+}
+
+type Restore struct {
+	ID      string   `json:"id"`
+	Repo    string   `json:"repo"`
+	Options []string `json:"options"`
+}
+
+type Configuration struct {
+	Secret string `json:"secret"`
+}
+
+type TDE struct {
+	Enable     bool   `json:"enable"`
+}

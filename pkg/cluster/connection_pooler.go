@@ -380,6 +380,7 @@ func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (
 	poolerContainer.Env = envVars
 	poolerContainer.VolumeMounts = volumeMounts
 	tolerationsSpec := tolerations(&spec.Tolerations, c.OpConfig.PodToleration)
+
 	securityContext := v1.PodSecurityContext{}
 
 	// determine the User, Group and FSGroup for the pooler pod
@@ -393,6 +394,7 @@ func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (
 	if effectiveFSGroup != nil {
 		securityContext.FSGroup = effectiveFSGroup
 	}
+
 	topologySpreadConstraintsSpec := topologySpreadConstraints(&spec.TopologySpreadConstraints)
 
 	podTemplate := &v1.PodTemplateSpec{

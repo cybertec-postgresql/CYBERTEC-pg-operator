@@ -982,7 +982,6 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 				c.Status.PgbackrestRestoreID = c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID
 				c.logger.Info("a pgbackrest restore config has been successfully synced")
 			}
-
 		} else {
 
 			if err := c.deletePgbackrestConfig(); err != nil {

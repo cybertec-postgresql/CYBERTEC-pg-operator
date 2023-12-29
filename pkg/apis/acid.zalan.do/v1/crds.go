@@ -372,6 +372,7 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 										Ref:     ref("k8s.io/api/core/v1.TopologySpreadConstraint"),
 									},
 								},
+
 							},
 						},
 					},

@@ -1543,6 +1543,7 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 			}
 			resources = *resourceRequirements
 		}
+
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 
 		pgbackrestRestoreEnvVars := appendEnvVars(
@@ -1625,6 +1626,7 @@ func (c *Cluster) generateStatefulSet(spec *acidv1.PostgresSpec) (*appsv1.Statef
 			}
 			resources = *resourceRequirements
 		}
+
 		initContainers = append(initContainers, v1.Container{
 			Name:         "pgbackrest-restore",
 			Image:        spec.Backup.Pgbackrest.Image,

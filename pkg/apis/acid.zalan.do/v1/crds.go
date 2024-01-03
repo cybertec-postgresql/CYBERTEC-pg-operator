@@ -7,6 +7,7 @@ import (
 	"github.com/zalando/postgres-operator/pkg/util"
 	apiextv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/kube-openapi/pkg/validation/spec"
 )
 
 // CRDResource* define names necesssary for the k8s CRD API
@@ -339,6 +340,49 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							Schema: &apiextv1.JSONSchemaProps{
 								Type:                   "object",
 								XPreserveUnknownFields: util.True(),
+							},
+						},
+					},
+					// "topologySpreadConstraints": {
+					// 	Type:     "array",
+					// 	Nullable: true,
+					// 	Items: &apiextv1.JSONSchemaPropsOrArray{
+					// 		Schema: &apiextv1.JSONSchemaProps{
+					// 			Type:                   "object",
+					// 			XPreserveUnknownFields: util.True(),
+					// 			VendorExtensible: spec.VendorExtensible{
+					// 				Extensions: spec.Extensions{
+					// 					"x-kubernetes-list-map-keys": []interface{}{
+					// 					"topologyKey",
+					// 					"whenUnsatisfiable",
+					// 					},
+					// 				},
+					// 				"x-kubernetes-list-type":       "map",
+					// 				"x-kubernetes-patch-merge-key": "topologyKey",
+					// 				"x-kubernetes-patch-strategy":  "merge",
+					// 			},
+					// 		},
+					// 		SchemaProps: spec.SchemaProps{
+					// 			Description: "TopologySpreadConstraints describes how a group of pods ought to spread across topology domains. Scheduler will schedule pods in a way which abides by the constraints. All topologySpreadConstraints are ANDed.",
+					// 			Type:        []string{"array"},
+					// 			Items: &spec.SchemaOrArray{
+					// 				Schema: &spec.Schema{
+					// 					SchemaProps: spec.SchemaProps{
+					// 						Default: map[string]interface{}{},
+					// 						Ref:     ref("k8s.io/api/core/v1.TopologySpreadConstraint"),
+					// 					},
+					// 				},
+					// 			},
+					// 		},
+					// 	},
+					"topologySpreadConstraints": {
+						Type:     "array",
+						Nullable: true,
+						Items: &apiextv1.JSONSchemaPropsOrArray{
+							Schema: &apiextv1.JSONSchemaProps{
+								Type:                   "object",
+								XPreserveUnknownFields: util.True(),
+								},
 							},
 						},
 					},
@@ -1064,6 +1108,160 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							},
 							"throughput": {
 								Type: "integer",
+							},
+						},
+					},
+					"backup": {
+						Type: "object",
+						Properties: map[string]apiextv1.JSONSchemaProps{
+							"pgbackrest": {
+								Type:     "object",
+								Required: []string{"image", "repos"},
+								Properties: map[string]apiextv1.JSONSchemaProps{
+									"image": {
+										Type: "string",
+									},
+									"configuration": {
+										Type: "object",
+										Properties: map[string]apiextv1.JSONSchemaProps{
+											"secret": {
+												Type: "string",
+											},
+											"protection": {
+												Type: "object",
+												Properties: map[string]apiextv1.JSONSchemaProps{
+													"restore": {
+														Type: "boolean",
+													},
+												},
+											},
+										},
+									},
+									"global": {
+										Type: "object",
+										AdditionalProperties: &apiextv1.JSONSchemaPropsOrBool{
+											Schema: &apiextv1.JSONSchemaProps{
+												Type: "string",
+											},
+										},
+									},
+									"repos": {
+										Type:         "array",
+										Nullable:     true,
+										MinItems:     &min1int64,
+										XListType:    &mapString,
+										XListMapKeys: []string{"name"},
+										Items: &apiextv1.JSONSchemaPropsOrArray{
+											Schema: &apiextv1.JSONSchemaProps{
+												Type:     "object",
+												Required: []string{"name", "storage", "resource"},
+												Properties: map[string]apiextv1.JSONSchemaProps{
+													"name": {
+														Type:    "string",
+														Pattern: "^repo[1-4]",
+													},
+													"storage": {
+														Type: "string",
+														Enum: []apiextv1.JSON{
+															{
+																Raw: []byte(`"s3"`),
+															},
+															{
+																Raw: []byte(`"gcs"`),
+															},
+															{
+																Raw: []byte(`"azure"`),
+															},
+														},
+													},
+													"resource": {
+														Type: "string",
+													},
+													"endpoint": {
+														Type: "string",
+													},
+													"region": {
+														Type: "string",
+													},
+													"schedule": {
+														Type: "object",
+														Properties: map[string]apiextv1.JSONSchemaProps{
+															"full": {
+																Type: "string",
+															},
+															"incr": {
+																Type: "string",
+															},
+															"diff": {
+																Type: "string",
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+									"restore": {
+										Type: "object",
+										Properties: map[string]apiextv1.JSONSchemaProps{
+											"id": {
+												Type: "string",
+											},
+											"repo": {
+												Type: "string",
+											},
+											"options": {
+												Type:     "array",
+												Nullable: true,
+												Items: &apiextv1.JSONSchemaPropsOrArray{
+													Schema: &apiextv1.JSONSchemaProps{
+														Type: "string",
+													},
+												},
+											},
+										},
+									},
+									"resources": {
+										Type: "object",
+										Properties: map[string]apiextv1.JSONSchemaProps{
+											"limits": {
+												Type: "object",
+												Properties: map[string]apiextv1.JSONSchemaProps{
+													"cpu": {
+														Type:    "string",
+														Pattern: "^(\\d+m|\\d+(\\.\\d{1,3})?)$",
+													},
+													"memory": {
+														Type:    "string",
+														Pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$",
+													},
+												},
+											},
+											"requests": {
+												Type: "object",
+												Properties: map[string]apiextv1.JSONSchemaProps{
+													"cpu": {
+														Type:    "string",
+														Pattern: "^(\\d+m|\\d+(\\.\\d{1,3})?)$",
+													},
+													"memory": {
+														Type:    "string",
+														Pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					"tde": {
+						Type:     "object",
+						Nullable: true,
+						Properties: map[string]apiextv1.JSONSchemaProps{
+							"enable": {
+								Type: "boolean",
 							},
 						},
 					},

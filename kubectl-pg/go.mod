@@ -1,11 +1,11 @@
-module github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/kubectl-pg
+module github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/kubectl-pg
 
 go 1.18
 
 require (
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.9.0
-	github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3 v1.10.0
+	github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5 v1.10.0
 	k8s.io/api v0.25.9
 	k8s.io/apiextensions-apiserver v0.25.9
 	k8s.io/apimachinery v0.25.9

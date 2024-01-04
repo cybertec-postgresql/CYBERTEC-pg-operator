@@ -11,13 +11,13 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/apis/cpo.opensource.cybertec.at/v1"
-	fakeacidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/generated/clientset/versioned/fake"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/spec"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util/config"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util/constants"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util/k8sutil"
+	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at/v1"
+	fakeacidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/generated/clientset/versioned/fake"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/spec"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/config"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/constants"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/k8sutil"
 
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"

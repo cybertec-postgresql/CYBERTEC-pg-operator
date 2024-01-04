@@ -28,7 +28,7 @@ SOFTWARE.
 package v1
 
 import (
-	config "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util/config"
+	config "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/config"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"

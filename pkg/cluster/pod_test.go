@@ -9,12 +9,12 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/mocks"
-	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/apis/cpo.opensource.cybertec.at/v1"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/spec"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util/config"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util/k8sutil"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util/patroni"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/mocks"
+	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/spec"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/config"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/k8sutil"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/patroni"
 )
 
 func TestGetSwitchoverCandidate(t *testing.T) {

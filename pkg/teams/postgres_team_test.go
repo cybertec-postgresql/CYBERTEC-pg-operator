@@ -3,8 +3,8 @@ package teams
 import (
 	"testing"
 
-	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/apis/cpo.opensource.cybertec.at/v1"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util"
+	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

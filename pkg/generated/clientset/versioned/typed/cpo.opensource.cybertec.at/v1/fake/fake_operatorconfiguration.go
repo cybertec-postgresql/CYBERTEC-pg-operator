@@ -27,7 +27,7 @@ package fake
 import (
 	"context"
 
-	acidzalandov1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/apis/cpo.opensource.cybertec.at/v1"
+	acidzalandov1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	testing "k8s.io/client-go/testing"

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/spec"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util/constants"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util/filesystems"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/spec"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/constants"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/filesystems"
 )
 
 func (c *Cluster) getPostgresFilesystemInfo(podName *spec.NamespacedName) (device, fstype string, err error) {

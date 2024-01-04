@@ -7,7 +7,6 @@ import (
 	"github.com/zalando/postgres-operator/pkg/util"
 	apiextv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/kube-openapi/pkg/validation/spec"
 )
 
 // CRDResource* define names necesssary for the k8s CRD API
@@ -382,7 +381,6 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							Schema: &apiextv1.JSONSchemaProps{
 								Type:                   "object",
 								XPreserveUnknownFields: util.True(),
-								},
 							},
 						},
 					},

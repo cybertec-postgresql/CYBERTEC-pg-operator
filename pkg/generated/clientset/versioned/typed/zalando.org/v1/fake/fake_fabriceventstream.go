@@ -27,7 +27,7 @@ package fake
 import (
 	"context"
 
-	zalandoorgv1 "github.com/zalando/postgres-operator/pkg/apis/zalando.org/v1"
+	zalandoorgv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/apis/zalando.org/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"

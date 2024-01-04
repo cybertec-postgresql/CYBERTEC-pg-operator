@@ -253,7 +253,7 @@ class EndToEndTestCase(unittest.TestCase):
         # add team and member to custom-team-membership
         # contains already elephant user
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-        'acid.zalan.do', 'v1', 'default',
+        'cpo.opensource.cybertec.at', 'v1', 'default',
         'postgresteams', 'custom-team-membership',
         {
             'spec': {
@@ -281,7 +281,7 @@ class EndToEndTestCase(unittest.TestCase):
 
         # replace additional member and check if the removed member's role is renamed
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-        'acid.zalan.do', 'v1', 'default',
+        'cpo.opensource.cybertec.at', 'v1', 'default',
         'postgresteams', 'custom-team-membership',
         {
             'spec': {
@@ -311,7 +311,7 @@ class EndToEndTestCase(unittest.TestCase):
 
         # re-add additional member and check if the role is renamed back
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-        'acid.zalan.do', 'v1', 'default',
+        'cpo.opensource.cybertec.at', 'v1', 'default',
         'postgresteams', 'custom-team-membership',
         {
             'spec': {
@@ -342,7 +342,7 @@ class EndToEndTestCase(unittest.TestCase):
         # re-add other additional member, operator should grant LOGIN back to tester
         # but nothing happens to deleted role
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-        'acid.zalan.do', 'v1', 'default',
+        'cpo.opensource.cybertec.at', 'v1', 'default',
         'postgresteams', 'custom-team-membership',
         {
             'spec': {
@@ -416,7 +416,7 @@ class EndToEndTestCase(unittest.TestCase):
 
         try:
             k8s.api.custom_objects_api.patch_namespaced_custom_object(
-                "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_config)
+                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_config)
 
             self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
 
@@ -486,7 +486,7 @@ class EndToEndTestCase(unittest.TestCase):
             }
 
             k8s.api.custom_objects_api.patch_namespaced_custom_object(
-                "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_max_connections)
+                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_max_connections)
 
             self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
 
@@ -531,7 +531,7 @@ class EndToEndTestCase(unittest.TestCase):
                 pg_patch_config["spec"]["patroni"]["slots"][slot_name] = slot_details
 
             k8s.api.custom_objects_api.patch_namespaced_custom_object(
-                "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_add_new_slots_patch)
+                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_add_new_slots_patch)
 
             self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
             self.eventuallyTrue(compare_config, "Postgres config not applied")
@@ -558,7 +558,7 @@ class EndToEndTestCase(unittest.TestCase):
             del pg_patch_config["spec"]["patroni"]["slots"][slot_to_remove]
             
             k8s.api.custom_objects_api.patch_namespaced_custom_object(
-                "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_delete_slot_patch)
+                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_delete_slot_patch)
 
             self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
             self.eventuallyTrue(compare_config, "Postgres config not applied")
@@ -607,7 +607,7 @@ class EndToEndTestCase(unittest.TestCase):
 
         # create secret in test namespace
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            'acid.zalan.do', 'v1', 'default',
+            'cpo.opensource.cybertec.at', 'v1', 'default',
             'postgresqls', 'acid-minimal-cluster',
             {
                 'spec': {
@@ -651,7 +651,7 @@ class EndToEndTestCase(unittest.TestCase):
                 }
             }
             k8s.api.custom_objects_api.patch_namespaced_custom_object(
-                "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_tls)
+                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_tls)
 
             # wait for switched over
             k8s.wait_for_pod_failover(replica_nodes, 'spilo-role=master,' + cluster_label)
@@ -680,7 +680,7 @@ class EndToEndTestCase(unittest.TestCase):
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
 
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            'acid.zalan.do', 'v1', 'default',
+            'cpo.opensource.cybertec.at', 'v1', 'default',
             'postgresqls', 'acid-minimal-cluster',
             {
                 'spec': {
@@ -702,7 +702,7 @@ class EndToEndTestCase(unittest.TestCase):
         self.eventuallyEqual(lambda: k8s.count_pods_with_volume_mount("pg-tls", pooler_label), 4, "TLS volume mount missing in pooler pods")
 
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            'acid.zalan.do', 'v1', 'default',
+            'cpo.opensource.cybertec.at', 'v1', 'default',
             'postgresqls', 'acid-minimal-cluster',
             {
                 'spec': {
@@ -734,7 +734,7 @@ class EndToEndTestCase(unittest.TestCase):
 
         # Turn off only master connection pooler
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            'acid.zalan.do', 'v1', 'default',
+            'cpo.opensource.cybertec.at', 'v1', 'default',
             'postgresqls', 'acid-minimal-cluster',
             {
                 'spec': {
@@ -758,7 +758,7 @@ class EndToEndTestCase(unittest.TestCase):
 
         # Turn off only replica connection pooler
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            'acid.zalan.do', 'v1', 'default',
+            'cpo.opensource.cybertec.at', 'v1', 'default',
             'postgresqls', 'acid-minimal-cluster',
             {
                 'spec': {
@@ -786,7 +786,7 @@ class EndToEndTestCase(unittest.TestCase):
 
         # scale up connection pooler deployment
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            'acid.zalan.do', 'v1', 'default',
+            'cpo.opensource.cybertec.at', 'v1', 'default',
             'postgresqls', 'acid-minimal-cluster',
             {
                 'spec': {
@@ -803,7 +803,7 @@ class EndToEndTestCase(unittest.TestCase):
 
         # turn it off, keeping config should be overwritten by false
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            'acid.zalan.do', 'v1', 'default',
+            'cpo.opensource.cybertec.at', 'v1', 'default',
             'postgresqls', 'acid-minimal-cluster',
             {
                 'spec': {
@@ -839,7 +839,7 @@ class EndToEndTestCase(unittest.TestCase):
 
         # remove config section to make test work next time
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            'acid.zalan.do', 'v1', 'default',
+            'cpo.opensource.cybertec.at', 'v1', 'default',
             'postgresqls', 'acid-minimal-cluster',
             {
                 'spec': {
@@ -870,7 +870,7 @@ class EndToEndTestCase(unittest.TestCase):
                 }
             }
             k8s.api.custom_objects_api.patch_namespaced_custom_object(
-                "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_enable_lbs)
+                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_enable_lbs)
 
             self.eventuallyEqual(lambda: k8s.get_service_type(cluster_label.format("master")),
                                  'LoadBalancer',
@@ -888,7 +888,7 @@ class EndToEndTestCase(unittest.TestCase):
                 }
             }
             k8s.api.custom_objects_api.patch_namespaced_custom_object(
-                "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_disable_lbs)
+                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_disable_lbs)
 
             self.eventuallyEqual(lambda: k8s.get_service_type(cluster_label.format("master")),
                                  'ClusterIP',
@@ -1126,7 +1126,7 @@ class EndToEndTestCase(unittest.TestCase):
             }
         }
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_enable_backup)
+            "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_enable_backup)
 
         try:
             self.eventuallyEqual(lambda: len(k8s.get_logical_backup_job().items), 1, "failed to create logical backup job")
@@ -1162,7 +1162,7 @@ class EndToEndTestCase(unittest.TestCase):
                 }
             }
             k8s.api.custom_objects_api.patch_namespaced_custom_object(
-                "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_disable_backup)
+                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_disable_backup)
 
             self.eventuallyEqual(lambda: len(k8s.get_logical_backup_job().items), 0, "failed to create logical backup job")
 
@@ -1189,7 +1189,7 @@ class EndToEndTestCase(unittest.TestCase):
             }
         }
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            "acid.zalan.do", "v1", "default", "postgresqls", "acid-upgrade-test", pg_patch_version)
+            "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-upgrade-test", pg_patch_version)
 
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
 
@@ -1227,7 +1227,7 @@ class EndToEndTestCase(unittest.TestCase):
         }
         # decrease the number of instances
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            'acid.zalan.do', 'v1', 'default', 'postgresqls', 'acid-minimal-cluster', pg_patch_scale_down_instances)
+            'cpo.opensource.cybertec.at', 'v1', 'default', 'postgresqls', 'acid-minimal-cluster', pg_patch_scale_down_instances)
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"},"Operator does not get in sync")
         self.eventuallyEqual(lambda: k8s.count_pvcs_with_label(cluster_label), 1, "PVCs is not deleted when scaled down")
 
@@ -1237,7 +1237,7 @@ class EndToEndTestCase(unittest.TestCase):
             }
         }
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            'acid.zalan.do', 'v1', 'default', 'postgresqls', 'acid-minimal-cluster', pg_patch_scale_up_instances)
+            'cpo.opensource.cybertec.at', 'v1', 'default', 'postgresqls', 'acid-minimal-cluster', pg_patch_scale_up_instances)
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"},"Operator does not get in sync")
         self.eventuallyEqual(lambda: k8s.count_pvcs_with_label(cluster_label), 2, "PVCs is not equal to number of instances")
 
@@ -1252,13 +1252,13 @@ class EndToEndTestCase(unittest.TestCase):
  
         # decrease the number of instances
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            'acid.zalan.do', 'v1', 'default', 'postgresqls', 'acid-minimal-cluster', pg_patch_scale_down_instances)
+            'cpo.opensource.cybertec.at', 'v1', 'default', 'postgresqls', 'acid-minimal-cluster', pg_patch_scale_down_instances)
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"},"Operator does not get in sync")
         self.eventuallyEqual(lambda: k8s.count_running_pods(), 1, "Scale down to 1 failed")
         self.eventuallyEqual(lambda: k8s.count_pvcs_with_label(cluster_label), 2, "PVCs is deleted when scaled down")
 
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            'acid.zalan.do', 'v1', 'default', 'postgresqls', 'acid-minimal-cluster', pg_patch_scale_up_instances)
+            'cpo.opensource.cybertec.at', 'v1', 'default', 'postgresqls', 'acid-minimal-cluster', pg_patch_scale_up_instances)
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"},"Operator does not get in sync")
         k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
         self.eventuallyEqual(lambda: k8s.count_pvcs_with_label(cluster_label), 2, "PVCs is not equal to number of instances")
@@ -1307,7 +1307,7 @@ class EndToEndTestCase(unittest.TestCase):
             }
         }
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_resources)
+            "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_resources)
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"},
                              "Operator does not get in sync")
 
@@ -1356,7 +1356,7 @@ class EndToEndTestCase(unittest.TestCase):
             # ideally we should delete the 'test' namespace here but
             # the pods inside the namespace stuck in the Terminating state making the test time out
             k8s.api.custom_objects_api.delete_namespaced_custom_object(
-                "acid.zalan.do", "v1", self.test_namespace, "postgresqls", "acid-test-cluster")
+                "cpo.opensource.cybertec.at", "v1", self.test_namespace, "postgresqls", "acid-test-cluster")
             time.sleep(5)
 
     @timeout_decorator.timeout(TEST_TIMEOUT_SEC)
@@ -1412,7 +1412,7 @@ class EndToEndTestCase(unittest.TestCase):
                 }
             }
             k8s.api.custom_objects_api.patch_namespaced_custom_object(
-                group="acid.zalan.do",
+                group="cpo.opensource.cybertec.at",
                 version="v1",
                 namespace="default",
                 plural="postgresqls",
@@ -1448,7 +1448,7 @@ class EndToEndTestCase(unittest.TestCase):
                 }
             }
             k8s.api.custom_objects_api.patch_namespaced_custom_object(
-                group="acid.zalan.do",
+                group="cpo.opensource.cybertec.at",
                 version="v1",
                 namespace="default",
                 plural="postgresqls",
@@ -1543,7 +1543,7 @@ class EndToEndTestCase(unittest.TestCase):
                              "Initial broken deployment not rolled out")
 
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-        'acid.zalan.do', 'v1', 'default',
+        'cpo.opensource.cybertec.at', 'v1', 'default',
         'postgresqls', 'acid-minimal-cluster',
         {
             'spec': {
@@ -1556,7 +1556,7 @@ class EndToEndTestCase(unittest.TestCase):
                              "Operator did not succeed in overwriting labels")
 
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-        'acid.zalan.do', 'v1', 'default',
+        'cpo.opensource.cybertec.at', 'v1', 'default',
         'postgresqls', 'acid-minimal-cluster',
         {
             'spec': {
@@ -1586,7 +1586,7 @@ class EndToEndTestCase(unittest.TestCase):
             }
         }
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_inplace_rotation_for_owner)
+            "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_inplace_rotation_for_owner)
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
 
         # check if next rotation date was set in secret
@@ -1614,7 +1614,7 @@ class EndToEndTestCase(unittest.TestCase):
             },
         }
         k8s.api.core_v1.patch_namespaced_secret(
-            name="foo-user.acid-minimal-cluster.credentials.postgresql.acid.zalan.do", 
+            name="foo-user.acid-minimal-cluster.credentials.postgresql.cpo.opensource.cybertec.at", 
             namespace="default",
             body=secret_fake_rotation)
 
@@ -1883,7 +1883,7 @@ class EndToEndTestCase(unittest.TestCase):
             }
         }
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_custom_annotations)
+            "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_custom_annotations)
 
         annotations = {
             "annotation.key": "value",
@@ -1928,7 +1928,7 @@ class EndToEndTestCase(unittest.TestCase):
             }
         }
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
-            "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_crd_annotations)
+            "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_crd_annotations)
 
         annotations = {
             "deployment-time": "2020-04-30 12:00:00",
@@ -1949,7 +1949,7 @@ class EndToEndTestCase(unittest.TestCase):
         cluster_label = 'application=spilo,{}={}'.format(cluster_name_label, standby_cluster_name)
         superuser_name = 'postgres'
         replication_user = 'standby'
-        secret_suffix = 'credentials.postgresql.acid.zalan.do'
+        secret_suffix = 'credentials.postgresql.cpo.opensource.cybertec.at'
 
         # copy secrets from remote cluster before operator creates them when bootstrapping the standby cluster
         postgres_secret = k8s.get_secret(superuser_name)
@@ -1971,7 +1971,7 @@ class EndToEndTestCase(unittest.TestCase):
         finally:
             # delete the standby cluster so that the k8s_api.get_operator_state works correctly in subsequent tests
             k8s.api.custom_objects_api.delete_namespaced_custom_object(
-                "acid.zalan.do", "v1", "default", "postgresqls", "acid-standby-cluster")
+                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-standby-cluster")
             time.sleep(5)
 
     @timeout_decorator.timeout(TEST_TIMEOUT_SEC)
@@ -2049,7 +2049,7 @@ class EndToEndTestCase(unittest.TestCase):
         try:
             # this delete attempt should be omitted because of missing annotations
             k8s.api.custom_objects_api.delete_namespaced_custom_object(
-                "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster")
+                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster")
             time.sleep(15)
             self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
 
@@ -2075,7 +2075,7 @@ class EndToEndTestCase(unittest.TestCase):
                 }
             }
             k8s.api.custom_objects_api.patch_namespaced_custom_object(
-                "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_delete_annotations)
+                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_delete_annotations)
             self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
 
             # wait a little before proceeding
@@ -2085,10 +2085,10 @@ class EndToEndTestCase(unittest.TestCase):
 
             # now delete process should be triggered
             k8s.api.custom_objects_api.delete_namespaced_custom_object(
-                "acid.zalan.do", "v1", "default", "postgresqls", "acid-minimal-cluster")
+                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster")
 
             self.eventuallyEqual(lambda: len(k8s.api.custom_objects_api.list_namespaced_custom_object(
-                "acid.zalan.do", "v1", "default", "postgresqls", label_selector="cluster-name=acid-minimal-cluster")["items"]), 0, "Manifest not deleted")
+                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", label_selector="cluster-name=acid-minimal-cluster")["items"]), 0, "Manifest not deleted")
 
             self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
 

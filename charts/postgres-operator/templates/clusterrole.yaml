@@ -11,7 +11,7 @@ metadata:
 rules:
 # all verbs allowed for custom operator resources
 - apiGroups:
-  - acid.zalan.do
+  - cpo.opensource.cybertec.at
   resources:
   - postgresqls
   - postgresqls/status
@@ -27,7 +27,7 @@ rules:
   - watch
 # operator only reads PostgresTeams
 - apiGroups:
-  - acid.zalan.do
+  - cpo.opensource.cybertec.at
   resources:
   - postgresteams
   verbs:

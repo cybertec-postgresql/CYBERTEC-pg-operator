@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	"github.com/zalando/postgres-operator/pkg/spec"
+	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/spec"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -34,7 +34,7 @@ func TestControllerOwnershipOnPostgresql(t *testing.T) {
 			"Postgres cluster with defined ownership of mocked controller",
 			&acidv1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
-					Annotations: map[string]string{"acid.zalan.do/controller": "postgresql-test"},
+					Annotations: map[string]string{"cpo.opensource.cybertec.at/controller": "postgresql-test"},
 				},
 			},
 			True,
@@ -44,7 +44,7 @@ func TestControllerOwnershipOnPostgresql(t *testing.T) {
 			"Postgres cluster with defined ownership of another controller",
 			&acidv1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
-					Annotations: map[string]string{"acid.zalan.do/controller": "stups-test"},
+					Annotations: map[string]string{"cpo.opensource.cybertec.at/controller": "stups-test"},
 				},
 			},
 			False,

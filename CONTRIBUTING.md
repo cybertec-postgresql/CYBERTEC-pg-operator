@@ -8,7 +8,7 @@ Before filing an issue, if you have a question about Postgres Operator or have
 a problem using it, please read the [concepts](docs/index.md) page or use the
 different guides that we provide for [users](docs/user.md),
 [developers](docs/developer.md) or [admins](docs/administrator). Also double
-check with the current issues on our [Issues Tracker](https://github.com/zalando/postgres-operator/issues).
+check with the current issues on our [Issues Tracker](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/issues).
 
 ## Contributing a pull request
 

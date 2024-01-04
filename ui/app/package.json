@@ -17,14 +17,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zalando/postgres-operator.git"
+    "url": "git+https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/zalando/postgres-operator.git/issues"
+    "url": "https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3.git/issues"
   },
-  "homepage": "https://github.com/zalando/postgres-operator.git#readme",
+  "homepage": "https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3.git#readme",
   "dependencies": {
     "@babel/core": "^7.20.12",
     "@babel/polyfill": "^7.12.1",

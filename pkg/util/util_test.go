@@ -8,7 +8,7 @@ import (
 
 	"regexp"
 
-	"github.com/zalando/postgres-operator/pkg/spec"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/spec"
 )
 
 var pgUsers = []struct {

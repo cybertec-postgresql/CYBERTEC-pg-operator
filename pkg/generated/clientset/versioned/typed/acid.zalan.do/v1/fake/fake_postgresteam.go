@@ -27,7 +27,7 @@ package fake
 import (
 	"context"
 
-	acidzalandov1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
+	acidzalandov1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/apis/cpo.opensource.cybertec.at/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -42,9 +42,9 @@ type FakePostgresTeams struct {
 	ns   string
 }
 
-var postgresteamsResource = schema.GroupVersionResource{Group: "acid.zalan.do", Version: "v1", Resource: "postgresteams"}
+var postgresteamsResource = schema.GroupVersionResource{Group: "cpo.opensource.cybertec.at", Version: "v1", Resource: "postgresteams"}
 
-var postgresteamsKind = schema.GroupVersionKind{Group: "acid.zalan.do", Version: "v1", Kind: "PostgresTeam"}
+var postgresteamsKind = schema.GroupVersionKind{Group: "cpo.opensource.cybertec.at", Version: "v1", Kind: "PostgresTeam"}
 
 // Get takes name of the postgresTeam, and returns the corresponding postgresTeam object, and an error if there is any.
 func (c *FakePostgresTeams) Get(ctx context.Context, name string, options v1.GetOptions) (result *acidzalandov1.PostgresTeam, err error) {

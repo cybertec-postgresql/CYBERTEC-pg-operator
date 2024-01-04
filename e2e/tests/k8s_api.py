@@ -93,7 +93,7 @@ class K8s:
 
     def pg_get_status(self, name="acid-minimal-cluster", namespace="default"):
         pg = self.api.custom_objects_api.get_namespaced_custom_object(
-            "acid.zalan.do", "v1", namespace, "postgresqls", name)
+            "cpo.opensource.cybertec.at", "v1", namespace, "postgresqls", name)
         return pg.get("status", {}).get("PostgresClusterStatus", None)
 
     def wait_for_pod_start(self, pod_labels, namespace='default'):
@@ -137,7 +137,7 @@ class K8s:
             }
         }
         self.api.custom_objects_api.patch_namespaced_custom_object(
-            "acid.zalan.do", "v1", namespace, "postgresqls", name, body)
+            "cpo.opensource.cybertec.at", "v1", namespace, "postgresqls", name, body)
 
     def wait_for_running_pods(self, labels, number, namespace=''):
         while self.count_pods_with_label(labels) != number:
@@ -358,7 +358,7 @@ class K8s:
 
     def get_secret(self, username, clustername='acid-minimal-cluster', namespace='default'):
         secret = self.api.core_v1.read_namespaced_secret(
-                "{}.{}.credentials.postgresql.acid.zalan.do".format(username.replace("_","-"), clustername), namespace)
+                "{}.{}.credentials.postgresql.cpo.opensource.cybertec.at".format(username.replace("_","-"), clustername), namespace)
         secret.metadata.resource_version = None
         secret.metadata.uid = None
         return secret
@@ -464,7 +464,7 @@ class K8sBase:
             }
         }
         self.api.custom_objects_api.patch_namespaced_custom_object(
-            "acid.zalan.do", "v1", namespace, "postgresqls", name, body)
+            "cpo.opensource.cybertec.at", "v1", namespace, "postgresqls", name, body)
 
     def wait_for_running_pods(self, labels, number, namespace=''):
         while self.count_pods_with_label(labels) != number:

@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/zalando/postgres-operator/pkg/util/retryutil"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util/retryutil"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 
-	"github.com/zalando/postgres-operator/pkg/cluster"
-	"github.com/zalando/postgres-operator/pkg/util"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/cluster"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util"
 )
 
 func (c *Controller) nodeListFunc(options metav1.ListOptions) (runtime.Object, error) {

@@ -57,7 +57,7 @@ podAnnotations:
 # Extra ENVs are writen in kubenertes format and added "as is" to the pod's env variables
 # https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
 # https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#environment-variables
-# UI specific env variables can be found here: https://github.com/zalando/postgres-operator/blob/master/ui/operator_ui/main.py
+# UI specific env variables can be found here: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/blob/master/ui/operator_ui/main.py
 extraEnvs:
   []
   # Exemple of settings to make snapshot view working in the ui when using AWS

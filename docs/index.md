@@ -8,10 +8,10 @@ manages PostgreSQL clusters on Kubernetes (K8s):
    user submits a new manifest, the operator fetches that manifest and spawns a
    new Postgres cluster along with all necessary entities such as K8s
    StatefulSets and Postgres roles.  See this
-   [Postgres cluster manifest](https://github.com/zalando/postgres-operator/blob/master/manifests/complete-postgres-manifest.yaml)
+   [Postgres cluster manifest](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/blob/master/manifests/complete-postgres-manifest.yaml)
    for settings that a manifest may contain.
 
-2. The operator also watches updates to [its own configuration](https://github.com/zalando/postgres-operator/blob/master/manifests/configmap.yaml)
+2. The operator also watches updates to [its own configuration](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/blob/master/manifests/configmap.yaml)
    and alters running Postgres clusters if necessary.  For instance, if the
    Docker image in a pod is changed, the operator carries out the rolling
    update, which means it re-spawns pods of each managed StatefulSet one-by-one
@@ -99,7 +99,7 @@ Please, report any issues discovered to https://github.com/cybertec-postgresql/C
 
 - "Our experience with Postgres Operator for Kubernetes by Zalando" by Nikolay Bogdanov on [Palark blog](https://blog.palark.com/our-experience-with-postgres-operator-for-kubernetes-by-zalando/), Feb. 2021.
 
-- "How to set up continuous backups and monitoring" by Pål Kristensen on [GitHub](https://github.com/zalando/postgres-operator/issues/858#issuecomment-608136253), Mar. 2020.
+- "How to set up continuous backups and monitoring" by Pål Kristensen on [GitHub](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/issues/858#issuecomment-608136253), Mar. 2020.
 
 - "Postgres on Kubernetes with the Zalando operator" by Vito Botta on [has_many :code](https://vitobotta.com/2020/02/05/postgres-kubernetes-zalando-operator/), Feb. 2020.
 

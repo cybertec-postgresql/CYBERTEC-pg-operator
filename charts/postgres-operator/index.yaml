@@ -7,7 +7,7 @@ entries:
     description: Postgres Operator creates and manages PostgreSQL clusters running
       in Kubernetes
     digest: cc3baa41753da92466223d0b334df27e79c882296577b404a8e9071411fcf19c
-    home: https://github.com/zalando/postgres-operator
+    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     keywords:
     - postgres
     - operator
@@ -19,7 +19,7 @@ entries:
       name: Zalando
     name: postgres-operator
     sources:
-    - https://github.com/zalando/postgres-operator
+    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     urls:
     - postgres-operator-1.10.1.tgz
     version: 1.10.1
@@ -29,7 +29,7 @@ entries:
     description: Postgres Operator creates and manages PostgreSQL clusters running
       in Kubernetes
     digest: 60fc5c8059dfed175d14e1034b40997d9c59d33ec8ea158c0597f7228ab04b51
-    home: https://github.com/zalando/postgres-operator
+    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     keywords:
     - postgres
     - operator
@@ -41,7 +41,7 @@ entries:
       name: Zalando
     name: postgres-operator
     sources:
-    - https://github.com/zalando/postgres-operator
+    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     urls:
     - postgres-operator-1.10.0.tgz
     version: 1.10.0
@@ -51,7 +51,7 @@ entries:
     description: Postgres Operator creates and manages PostgreSQL clusters running
       in Kubernetes
     digest: 64df90c898ca591eb3a330328173ffaadfbf9ddd474d8c42ed143edc9e3f4276
-    home: https://github.com/zalando/postgres-operator
+    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     keywords:
     - postgres
     - operator
@@ -63,7 +63,7 @@ entries:
       name: Zalando
     name: postgres-operator
     sources:
-    - https://github.com/zalando/postgres-operator
+    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     urls:
     - postgres-operator-1.9.0.tgz
     version: 1.9.0
@@ -73,7 +73,7 @@ entries:
     description: Postgres Operator creates and manages PostgreSQL clusters running
       in Kubernetes
     digest: f77ffad2e98b72a621e5527015cf607935d3ed688f10ba4b626435acb9631b5b
-    home: https://github.com/zalando/postgres-operator
+    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     keywords:
     - postgres
     - operator
@@ -85,7 +85,7 @@ entries:
       name: Zalando
     name: postgres-operator
     sources:
-    - https://github.com/zalando/postgres-operator
+    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     urls:
     - postgres-operator-1.8.2.tgz
     version: 1.8.2
@@ -95,7 +95,7 @@ entries:
     description: Postgres Operator creates and manages PostgreSQL clusters running
       in Kubernetes
     digest: ee0c3bb6ba72fa4289ba3b1c6060e5b312dd023faba2a61b4cb7d9e5e2cc57a5
-    home: https://github.com/zalando/postgres-operator
+    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     keywords:
     - postgres
     - operator
@@ -107,7 +107,7 @@ entries:
       name: Zalando
     name: postgres-operator
     sources:
-    - https://github.com/zalando/postgres-operator
+    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     urls:
     - postgres-operator-1.8.1.tgz
     version: 1.8.1
@@ -117,7 +117,7 @@ entries:
     description: Postgres Operator creates and manages PostgreSQL clusters running
       in Kubernetes
     digest: 3ae232cf009e09aa2ad11c171484cd2f1b72e63c59735e58fbe2b6eb842f4c86
-    home: https://github.com/zalando/postgres-operator
+    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     keywords:
     - postgres
     - operator
@@ -129,7 +129,7 @@ entries:
       name: Zalando
     name: postgres-operator
     sources:
-    - https://github.com/zalando/postgres-operator
+    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     urls:
     - postgres-operator-1.8.0.tgz
     version: 1.8.0
@@ -139,7 +139,7 @@ entries:
     description: Postgres Operator creates and manages PostgreSQL clusters running
       in Kubernetes
     digest: 7262563bec0b058e669ae6bcff0226e33fa9ece9c41ac46a53274046afe7700c
-    home: https://github.com/zalando/postgres-operator
+    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     keywords:
     - postgres
     - operator
@@ -151,7 +151,7 @@ entries:
       name: Zalando
     name: postgres-operator
     sources:
-    - https://github.com/zalando/postgres-operator
+    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     urls:
     - postgres-operator-1.7.1.tgz
     version: 1.7.1
@@ -161,7 +161,7 @@ entries:
     description: Postgres Operator creates and manages PostgreSQL clusters running
       in Kubernetes
     digest: c3e99fb94305f81484b8b1af18eefb78681f3b5d057d5ad10565e4afb7c65ffe
-    home: https://github.com/zalando/postgres-operator
+    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     keywords:
     - postgres
     - operator
@@ -173,7 +173,7 @@ entries:
       name: Zalando
     name: postgres-operator
     sources:
-    - https://github.com/zalando/postgres-operator
+    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3
     urls:
     - postgres-operator-1.7.0.tgz
     version: 1.7.0

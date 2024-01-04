@@ -315,7 +315,7 @@ def index():
 
 
 DEFAULT_UI_CONFIG = {
-    'docs_link': 'https://github.com/zalando/postgres-operator',
+    'docs_link': 'https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3',
     'odd_host_visible': True,
     'nat_gateways_visible': True,
     'users_visible': True,
@@ -550,7 +550,7 @@ def get_postgresqls():
 
 
 # Note these are meant to be consistent with the operator backend validations;
-# See https://github.com/zalando/postgres-operator/blob/master/pkg/cluster/cluster.go  # noqa
+# See https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/blob/master/pkg/cluster/cluster.go  # noqa
 VALID_SIZE = compile(r'^[1-9][0-9]{0,3}Gi$')
 VALID_CLUSTER_NAME = compile(r'^[a-z0-9]+[a-z0-9\-]+[a-z0-9]+$')
 VALID_DATABASE_NAME = compile(r'^[a-zA-Z_][a-zA-Z0-9_]*$')

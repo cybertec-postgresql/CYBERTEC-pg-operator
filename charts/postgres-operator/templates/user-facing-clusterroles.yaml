@@ -11,7 +11,7 @@ metadata:
   name: {{ template "postgres-operator.fullname" . }}:users:admin
 rules:
 - apiGroups:
-  - acid.zalan.do
+  - cpo.opensource.cybertec.at
   resources:
   - postgresqls
   - postgresqls/status
@@ -38,7 +38,7 @@ metadata:
   name: {{ template "postgres-operator.fullname" . }}:users:edit
 rules:
 - apiGroups:
-  - acid.zalan.do
+  - cpo.opensource.cybertec.at
   resources:
   - postgresqls
   verbs:
@@ -60,7 +60,7 @@ metadata:
   name: {{ template "postgres-operator.fullname" . }}:users:view
 rules:
 - apiGroups:
-  - acid.zalan.do
+  - cpo.opensource.cybertec.at
   resources:
   - postgresqls
   - postgresqls/status

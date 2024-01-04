@@ -8,13 +8,13 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	zalandov1 "github.com/zalando/postgres-operator/pkg/apis/zalando.org/v1"
-	fakezalandov1 "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/fake"
-	"github.com/zalando/postgres-operator/pkg/util"
-	"github.com/zalando/postgres-operator/pkg/util/config"
-	"github.com/zalando/postgres-operator/pkg/util/constants"
-	"github.com/zalando/postgres-operator/pkg/util/k8sutil"
+	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/apis/cpo.opensource.cybertec.at/v1"
+	zalandov1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/apis/zalando.org/v1"
+	fakezalandov1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/generated/clientset/versioned/fake"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util/config"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util/constants"
+	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/util/k8sutil"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -44,7 +44,7 @@ var (
 	pg = acidv1.Postgresql{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Postgresql",
-			APIVersion: "acid.zalan.do/v1",
+			APIVersion: "cpo.opensource.cybertec.at/v1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      clusterName,
@@ -125,7 +125,7 @@ var (
 						Filter: k8sutil.StringToPointer("[?(@.source.txId > 500 && @.source.lsn > 123456)]"),
 						Connection: zalandov1.Connection{
 							DBAuth: zalandov1.DBAuth{
-								Name:        fmt.Sprintf("fes-user.%s.credentials.postgresql.acid.zalan.do", clusterName),
+								Name:        fmt.Sprintf("fes-user.%s.credentials.postgresql.cpo.opensource.cybertec.at", clusterName),
 								PasswordKey: "password",
 								Type:        constants.EventStreamSourceAuthType,
 								UserKey:     "username",
@@ -162,7 +162,7 @@ var (
 					EventStreamSource: zalandov1.EventStreamSource{
 						Connection: zalandov1.Connection{
 							DBAuth: zalandov1.DBAuth{
-								Name:        fmt.Sprintf("fes-user.%s.credentials.postgresql.acid.zalan.do", clusterName),
+								Name:        fmt.Sprintf("fes-user.%s.credentials.postgresql.cpo.opensource.cybertec.at", clusterName),
 								PasswordKey: "password",
 								Type:        constants.EventStreamSourceAuthType,
 								UserKey:     "username",

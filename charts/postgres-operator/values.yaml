@@ -498,7 +498,7 @@ tolerations: []
 controllerID:
   # Specifies whether a controller ID should be defined for the operator
   # Note, all postgres manifest must then contain the following annotation to be found by this operator
-  # "acid.zalan.do/controller": <controller-ID-of-the-operator>
+  # "cpo.opensource.cybertec.at/controller": <controller-ID-of-the-operator>
   create: false
   # The name of the controller ID to use.
   # If not set and create is true, a name is generated using the fullname template

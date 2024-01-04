@@ -33,7 +33,7 @@ import (
 	"strconv"
 	"strings"
 
-	PostgresqlLister "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/typed/acid.zalan.do/v1"
+	PostgresqlLister "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/generated/clientset/versioned/typed/cpo.opensource.cybertec.at/v1"
 	v1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"

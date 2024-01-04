@@ -25,11 +25,11 @@ SOFTWARE.
 package fake
 
 import (
-	clientset "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned"
-	acidv1 "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/typed/acid.zalan.do/v1"
-	fakeacidv1 "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/typed/acid.zalan.do/v1/fake"
-	zalandov1 "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/typed/zalando.org/v1"
-	fakezalandov1 "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/typed/zalando.org/v1/fake"
+	clientset "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/generated/clientset/versioned"
+	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/generated/clientset/versioned/typed/cpo.opensource.cybertec.at/v1"
+	fakeacidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/generated/clientset/versioned/typed/cpo.opensource.cybertec.at/v1/fake"
+	zalandov1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/generated/clientset/versioned/typed/zalando.org/v1"
+	fakezalandov1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc3/pkg/generated/clientset/versioned/typed/zalando.org/v1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"

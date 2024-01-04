@@ -111,6 +111,8 @@ var OperatorConfigCRDResourceColumns = []apiextv1.CustomResourceColumnDefinition
 var min0 = 0.0
 var min1 = 1.0
 var minDisable = -1.0
+var mapString = "map"
+var min1int64 = int64(1)
 
 // PostgresCRDResourceValidation to check applied manifest parameters
 var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{

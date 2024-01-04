@@ -110,9 +110,9 @@ var OperatorConfigCRDResourceColumns = []apiextv1.CustomResourceColumnDefinition
 
 var min0 = 0.0
 var min1 = 1.0
+var minDisable = -1.0
 var mapString = "map"
 var min1int64 = int64(1)
-var minDisable = -1.0
 
 // PostgresCRDResourceValidation to check applied manifest parameters
 var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
@@ -344,6 +344,38 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							},
 						},
 					},
+					// "topologySpreadConstraints": {
+					// 	Type:     "array",
+					// 	Nullable: true,
+					// 	Items: &apiextv1.JSONSchemaPropsOrArray{
+					// 		Schema: &apiextv1.JSONSchemaProps{
+					// 			Type:                   "object",
+					// 			XPreserveUnknownFields: util.True(),
+					// 			VendorExtensible: spec.VendorExtensible{
+					// 				Extensions: spec.Extensions{
+					// 					"x-kubernetes-list-map-keys": []interface{}{
+					// 					"topologyKey",
+					// 					"whenUnsatisfiable",
+					// 					},
+					// 				},
+					// 				"x-kubernetes-list-type":       "map",
+					// 				"x-kubernetes-patch-merge-key": "topologyKey",
+					// 				"x-kubernetes-patch-strategy":  "merge",
+					// 			},
+					// 		},
+					// 		SchemaProps: spec.SchemaProps{
+					// 			Description: "TopologySpreadConstraints describes how a group of pods ought to spread across topology domains. Scheduler will schedule pods in a way which abides by the constraints. All topologySpreadConstraints are ANDed.",
+					// 			Type:        []string{"array"},
+					// 			Items: &spec.SchemaOrArray{
+					// 				Schema: &spec.Schema{
+					// 					SchemaProps: spec.SchemaProps{
+					// 						Default: map[string]interface{}{},
+					// 						Ref:     ref("k8s.io/api/core/v1.TopologySpreadConstraint"),
+					// 					},
+					// 				},
+					// 			},
+					// 		},
+					// 	},
 					"topologySpreadConstraints": {
 						Type:     "array",
 						Nullable: true,
@@ -351,28 +383,6 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							Schema: &apiextv1.JSONSchemaProps{
 								Type:                   "object",
 								XPreserveUnknownFields: util.True(),
-						VendorExtensible: spec.VendorExtensible{
-							Extensions: spec.Extensions{
-								"x-kubernetes-list-map-keys": []interface{}{
-									"topologyKey",
-									"whenUnsatisfiable",
-								},
-								"x-kubernetes-list-type":       "map",
-								"x-kubernetes-patch-merge-key": "topologyKey",
-								"x-kubernetes-patch-strategy":  "merge",
-							},
-						},
-						SchemaProps: spec.SchemaProps{
-							Description: "TopologySpreadConstraints describes how a group of pods ought to spread across topology domains. Scheduler will schedule pods in a way which abides by the constraints. All topologySpreadConstraints are ANDed.",
-							Type:        []string{"array"},
-							Items: &spec.SchemaOrArray{
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Default: map[string]interface{}{},
-										Ref:     ref("k8s.io/api/core/v1.TopologySpreadConstraint"),
-									},
-								},
-
 							},
 						},
 					},

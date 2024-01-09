@@ -503,7 +503,7 @@ func (c *Cluster) getSwitchoverCandidate(master *v1.Pod) (spec.NamespacedName, e
 	} else {
 		// in asynchronous mode find running replicas
 		for _, member := range members {
-			if PostgresRole(member.Role) != Leader && PostgresRole(member.Role) != StandbyLeader && member.State == "running" {
+			if PostgresRole(member.Role) != Leader && PostgresRole(member.Role) != StandbyLeader && member.State == "streaming" {
 				candidates = append(candidates, member)
 			}
 		}

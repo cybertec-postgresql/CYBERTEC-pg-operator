@@ -13,8 +13,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/sirupsen/logrus"
 
 	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/generated/clientset/versioned/scheme"
 	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/spec"
@@ -119,7 +119,7 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec acidv1.Postgres
 	})
 	passwordEncryption, ok := pgSpec.Spec.PostgresqlParam.Parameters["password_encryption"]
 	if !ok {
-		passwordEncryption = "md5"
+		passwordEncryption = "scram-sha-256"
 	}
 
 	cluster := &Cluster{
@@ -393,7 +393,6 @@ func (c *Cluster) Create() (err error) {
 		}
 		c.logger.Info("a k8s cron job for pgbackrest has been successfully created")
 	}
-
 
 	if err := c.listResources(); err != nil {
 		c.logger.Errorf("could not list resources: %v", err)

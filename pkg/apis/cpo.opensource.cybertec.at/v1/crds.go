@@ -1265,6 +1265,18 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							},
 						},
 					},
+					"monitor": {
+						Type:     "object",
+						Nullable: true,
+						Properties: map[string]apiextv1.JSONSchemaProps{
+							"name": {
+								Type: "string",
+							},
+							"image": {
+								Type: "string",
+							},
+						},
+					},
 				},
 			},
 			"status": {

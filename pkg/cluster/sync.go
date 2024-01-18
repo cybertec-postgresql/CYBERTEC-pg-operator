@@ -1415,3 +1415,31 @@ func (c *Cluster) createTDESecret() error {
 
 	return nil
 }
+
+func (c *Cluster) createMonitoringSecret() error {
+	c.logger.Info("creating Monitoring secret")
+	c.setProcessName("creating Monitoring secret")
+	generatedKey := make([]byte, 16)
+	rand.Read(generatedKey)
+
+	generatedSecret := v1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      c.getMonitoringSecretName(),
+			Namespace: c.Namespace,
+			Labels:    c.labelsSet(true),
+		},
+		Type: v1.SecretTypeOpaque,
+		Data: map[string][]byte{
+			"key": []byte(fmt.Sprintf("%x", generatedKey)),
+		},
+	}
+	secret, err := c.KubeClient.Secrets(generatedSecret.Namespace).Create(context.TODO(), &generatedSecret, metav1.CreateOptions{})
+	if err == nil {
+		c.Secrets[secret.UID] = secret
+		c.logger.Debugf("created new secret %s, namespace: %s, uid: %s", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, secret.UID)
+	} else {
+		return fmt.Errorf("could not create secret for TDE %s: in namespace %s: %v", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, err)
+	}
+
+	return nil
+}

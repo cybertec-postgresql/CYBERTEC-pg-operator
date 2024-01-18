@@ -20,6 +20,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
+	acidzalando "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at"
 	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/spec"
 	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util"
@@ -872,6 +873,13 @@ func (c *Cluster) generatePodTemplate(
 	if additionalVolumes != nil {
 		c.addAdditionalVolumes(&podSpec, additionalVolumes)
 	}
+	if c.Postgresql.Spec.Monitoring != nil {
+		MonitoringLabels := c.labelsSet(false)
+
+		// TODO should be config values
+		MonitoringLabels["cpo_monitoring_stack"] = "true"
+		labels = MonitoringLabels
+	}
 
 	template := v1.PodTemplateSpec{
 		ObjectMeta: metav1.ObjectMeta{
@@ -994,6 +1002,9 @@ func (c *Cluster) generateSpiloPodEnvVars(
 			},
 		},
 		})
+	}
+	if spec.Monitoring != nil {
+		envVars = append(envVars, v1.EnvVar{Name: "cpo_monitoring_stack", Value: "true"})
 	}
 
 	if c.OpConfig.EnablePgVersionEnvVar {
@@ -2619,6 +2630,14 @@ func (c *Cluster) getPgbackrestConfigmapName() (jobName string) {
 
 func (c *Cluster) getTDESecretName() string {
 	return fmt.Sprintf("%s-tde", c.Name)
+}
+
+func (c *Cluster) getMonitoringSecretName() string {
+	return c.OpConfig.SecretNameTemplate.Format(
+		"username", strings.Replace(c.Postgresql.Spec.Monitoring.Name, "_", "-", -1),
+		"cluster", c.clusterName().Name,
+		"tprkind", acidv1.PostgresCRDResourceKind,
+		"tprgroup", acidzalando.GroupName)
 }
 
 func (c *Cluster) getPgbackrestRestoreConfigmapName() (jobName string) {

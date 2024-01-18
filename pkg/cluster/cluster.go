@@ -122,6 +122,21 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec acidv1.Postgres
 		passwordEncryption = "scram-sha-256"
 	}
 
+	if pgSpec.Spec.Monitoring != nil {
+		monitor := pgSpec.Spec.Monitoring
+
+		if monitor.Name == "postgres-exporter" {
+			sidecar := &acidv1.Sidecar{
+				Name:        monitor.Name,
+				DockerImage: monitor.Image,
+			}
+			//add this user to total users in the spec
+			monitorUser := map[string]string{
+				"cpo_exporter": constants.RoleFlagLogin,
+			}
+			pgSpec.Spec.Sidecars = append(pgSpec.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
+		}
+	}
 	cluster := &Cluster{
 		Config:         cfg,
 		Postgresql:     pgSpec,
@@ -341,6 +356,12 @@ func (c *Cluster) Create() (err error) {
 			return fmt.Errorf("could not create the TDE secret: %v", err)
 		}
 		c.logger.Info("a TDE secret was successfully created")
+	}
+	if c.Postgresql.Spec.Monitoring != nil {
+		if err := c.createMonitoringSecret(); err != nil {
+			return fmt.Errorf("could not create the monitoring secret: %v", err)
+		}
+		c.logger.Info("a monitoring secret was successfully created")
 	}
 
 	if c.Statefulset != nil {

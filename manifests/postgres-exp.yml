@@ -1,0 +1,40 @@
+apiVersion: cpo.opensource.cybertec.at/v1
+kind: postgresql
+metadata:
+  name: cluster-exp
+  # labels: 
+  #   cpo_monitoring_stack: 'true'
+spec:
+  tde:
+    enable: true
+  monitor:
+    name: 'postgres-exporter'
+    image: 'docker.io/cybertecpostgresql/cybertec-pg-container:exporter-16.1-1-dev-arm'
+  dockerImage: 'docker.io/cybertecpostgresql/cybertec-pg-container:postgres-16.1-5-dev-arm'
+  numberOfInstances: 1
+  postgresql:
+    version: '15'
+    parameters:
+      shared_preload_libraries: 'pg_stat_statements,pgnodemx'
+      password_encryption: "scram-sha-256"
+  # sidecars:
+  # - name: postgres-exporter
+  #   image: 'docker.io/cybertecpostgresql/cybertec-pg-container:exporter-16.1-1-dev-arm' 
+  #   ports:
+  #   - name: http
+  #     containerPort: 9187
+  #     protocol: TCP
+  #   users: 
+  #     cpo_exporter:
+  #     - login
+  resources:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  teamId: acid
+  volume:
+    size: 5Gi
+    #storageClass: default-provisioner

@@ -38,7 +38,7 @@ import (
 
 // FakePostgresqls implements PostgresqlInterface
 type FakePostgresqls struct {
-	Fake *FakeAcidV1
+	Fake *FakeCpoV1
 	ns   string
 }
 

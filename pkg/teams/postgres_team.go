@@ -1,7 +1,7 @@
 package teams
 
 import (
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1."github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 )
 
@@ -100,7 +100,7 @@ func (ptm *PostgresTeamMap) GetAdditionalSuperuserTeams(team string, transitive 
 }
 
 // Load function to import data from PostgresTeam CRD
-func (ptm *PostgresTeamMap) Load(pgTeams *acidv1.PostgresTeamList) {
+func (ptm *PostgresTeamMap) Load(pgTeams *cpov1.PostgresTeamList) {
 	// reset the team map
 	*ptm = make(PostgresTeamMap, 0)
 

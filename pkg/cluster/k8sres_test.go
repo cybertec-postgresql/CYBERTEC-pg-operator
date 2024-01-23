@@ -11,8 +11,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
-	fakeacidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/fake"
+	cpov1."github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	fakecpov1."github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/fake"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
@@ -34,12 +34,12 @@ import (
 )
 
 func newFakeK8sTestClient() (k8sutil.KubernetesClient, *fake.Clientset) {
-	acidClientSet := fakeacidv1.NewSimpleClientset()
+	acidClientSet := fakecpov1.NewSimpleClientset()
 	clientSet := fake.NewSimpleClientset()
 
 	return k8sutil.KubernetesClient{
 		PodsGetter:         clientSet.CoreV1(),
-		PostgresqlsGetter:  acidClientSet.AcidV1(),
+		PostgresqlsGetter:  acidClientSet.CpoV1(),
 		StatefulSetsGetter: clientSet.AppsV1(),
 	}, clientSet
 }
@@ -62,19 +62,19 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 					ReplicationUsername: replicationUserName,
 				},
 			},
-		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{}, logger, eventRecorder)
+		}, k8sutil.KubernetesClient{}, cpov1.Postgresql{}, logger, eventRecorder)
 
 	tests := []struct {
 		subtest  string
-		pgParam  *acidv1.PostgresqlParam
-		patroni  *acidv1.Patroni
+		pgParam  *cpov1.PostgresqlParam
+		patroni  *cpov1.Patroni
 		opConfig *config.Config
 		result   string
 	}{
 		{
 			subtest: "Patroni default configuration",
-			pgParam: &acidv1.PostgresqlParam{PgVersion: "15"},
-			patroni: &acidv1.Patroni{},
+			pgParam: &cpov1.PostgresqlParam{PgVersion: "15"},
+			patroni: &cpov1.Patroni{},
 			opConfig: &config.Config{
 				Auth: config.Auth{
 					PamRoleName: "zalandos",
@@ -84,8 +84,8 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 		},
 		{
 			subtest: "Patroni configured",
-			pgParam: &acidv1.PostgresqlParam{PgVersion: "15"},
-			patroni: &acidv1.Patroni{
+			pgParam: &cpov1.PostgresqlParam{PgVersion: "15"},
+			patroni: &cpov1.Patroni{
 				InitDB: map[string]string{
 					"encoding":       "UTF8",
 					"locale":         "en_US.UTF-8",
@@ -111,8 +111,8 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 		},
 		{
 			subtest: "Patroni failsafe_mode configured globally",
-			pgParam: &acidv1.PostgresqlParam{PgVersion: "15"},
-			patroni: &acidv1.Patroni{},
+			pgParam: &cpov1.PostgresqlParam{PgVersion: "15"},
+			patroni: &cpov1.Patroni{},
 			opConfig: &config.Config{
 				Auth: config.Auth{
 					PamRoleName: "zalandos",
@@ -123,8 +123,8 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 		},
 		{
 			subtest: "Patroni failsafe_mode configured globally, disabled for cluster",
-			pgParam: &acidv1.PostgresqlParam{PgVersion: "15"},
-			patroni: &acidv1.Patroni{
+			pgParam: &cpov1.PostgresqlParam{PgVersion: "15"},
+			patroni: &cpov1.Patroni{
 				FailsafeMode: util.False(),
 			},
 			opConfig: &config.Config{
@@ -137,8 +137,8 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 		},
 		{
 			subtest: "Patroni failsafe_mode disabled globally, configured for cluster",
-			pgParam: &acidv1.PostgresqlParam{PgVersion: "15"},
-			patroni: &acidv1.Patroni{
+			pgParam: &cpov1.PostgresqlParam{PgVersion: "15"},
+			patroni: &cpov1.Patroni{
 				FailsafeMode: util.True(),
 			},
 			opConfig: &config.Config{
@@ -673,18 +673,18 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 	tests := []struct {
 		subTest            string
 		opConfig           config.Config
-		cloneDescription   *acidv1.CloneDescription
-		standbyDescription *acidv1.StandbyDescription
+		cloneDescription   *cpov1.CloneDescription
+		standbyDescription *cpov1.StandbyDescription
 		expectedValues     []ExpectedValue
-		pgsql              acidv1.Postgresql
+		pgsql              cpov1.Postgresql
 	}{
 		{
 			subTest: "will set ENABLE_WAL_PATH_COMPAT env",
 			opConfig: config.Config{
 				EnableSpiloWalPathCompat: true,
 			},
-			cloneDescription:   &acidv1.CloneDescription{},
-			standbyDescription: &acidv1.StandbyDescription{},
+			cloneDescription:   &cpov1.CloneDescription{},
+			standbyDescription: &cpov1.StandbyDescription{},
 			expectedValues:     expectedSpiloWalPathCompat,
 		},
 		{
@@ -692,8 +692,8 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 			opConfig: config.Config{
 				WALES3Bucket: "global-s3-bucket",
 			},
-			cloneDescription:   &acidv1.CloneDescription{},
-			standbyDescription: &acidv1.StandbyDescription{},
+			cloneDescription:   &cpov1.CloneDescription{},
+			standbyDescription: &cpov1.StandbyDescription{},
 			expectedValues:     expectedValuesS3Bucket,
 		},
 		{
@@ -702,8 +702,8 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 				WALGSBucket:    "global-gs-bucket",
 				GCPCredentials: "some-path-to-credentials",
 			},
-			cloneDescription:   &acidv1.CloneDescription{},
-			standbyDescription: &acidv1.StandbyDescription{},
+			cloneDescription:   &cpov1.CloneDescription{},
+			standbyDescription: &cpov1.StandbyDescription{},
 			expectedValues:     expectedValuesGCPCreds,
 		},
 		{
@@ -716,11 +716,11 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 					},
 				},
 			},
-			cloneDescription:   &acidv1.CloneDescription{},
-			standbyDescription: &acidv1.StandbyDescription{},
+			cloneDescription:   &cpov1.CloneDescription{},
+			standbyDescription: &cpov1.StandbyDescription{},
 			expectedValues:     expectedClusterNameLabel,
-			pgsql: acidv1.Postgresql{
-				Spec: acidv1.PostgresSpec{
+			pgsql: cpov1.Postgresql{
+				Spec: cpov1.PostgresSpec{
 					Env: []v1.EnvVar{
 						{
 							Name:  "KUBERNETES_SCOPE_LABEL",
@@ -740,8 +740,8 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 				},
 				WALES3Bucket: "global-s3-bucket",
 			},
-			cloneDescription:   &acidv1.CloneDescription{},
-			standbyDescription: &acidv1.StandbyDescription{},
+			cloneDescription:   &cpov1.CloneDescription{},
+			standbyDescription: &cpov1.StandbyDescription{},
 			expectedValues:     expectedS3BucketConfigMap,
 		},
 		{
@@ -749,11 +749,11 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 			opConfig: config.Config{
 				WALGSBucket: "global-s3-bucket",
 			},
-			cloneDescription:   &acidv1.CloneDescription{},
-			standbyDescription: &acidv1.StandbyDescription{},
+			cloneDescription:   &cpov1.CloneDescription{},
+			standbyDescription: &cpov1.StandbyDescription{},
 			expectedValues:     expectedCustomS3BucketSpec,
-			pgsql: acidv1.Postgresql{
-				Spec: acidv1.PostgresSpec{
+			pgsql: cpov1.Postgresql{
+				Spec: cpov1.PostgresSpec{
 					Env: []v1.EnvVar{
 						{
 							Name:  "WAL_S3_BUCKET",
@@ -775,8 +775,8 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 					ResourceCheckTimeout:  time.Duration(testResourceCheckTimeout),
 				},
 			},
-			cloneDescription:   &acidv1.CloneDescription{},
-			standbyDescription: &acidv1.StandbyDescription{},
+			cloneDescription:   &cpov1.CloneDescription{},
+			standbyDescription: &cpov1.StandbyDescription{},
 			expectedValues:     expectedCustomVariableSecret,
 		},
 		{
@@ -788,8 +788,8 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 					},
 				},
 			},
-			cloneDescription:   &acidv1.CloneDescription{},
-			standbyDescription: &acidv1.StandbyDescription{},
+			cloneDescription:   &cpov1.CloneDescription{},
+			standbyDescription: &cpov1.StandbyDescription{},
 			expectedValues:     expectedCustomVariableConfigMap,
 		},
 		{
@@ -804,11 +804,11 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 					ResourceCheckTimeout:  time.Duration(testResourceCheckTimeout),
 				},
 			},
-			cloneDescription:   &acidv1.CloneDescription{},
-			standbyDescription: &acidv1.StandbyDescription{},
+			cloneDescription:   &cpov1.CloneDescription{},
+			standbyDescription: &cpov1.StandbyDescription{},
 			expectedValues:     expectedCustomVariableSpec,
-			pgsql: acidv1.Postgresql{
-				Spec: acidv1.PostgresSpec{
+			pgsql: cpov1.Postgresql{
+				Spec: cpov1.PostgresSpec{
 					Env: []v1.EnvVar{
 						{
 							Name:  "CUSTOM_VARIABLE",
@@ -828,14 +828,14 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 				},
 				WALES3Bucket: "global-s3-bucket",
 			},
-			cloneDescription: &acidv1.CloneDescription{
+			cloneDescription: &cpov1.CloneDescription{
 				ClusterName:  "test-cluster",
 				EndTimestamp: "somewhen",
 				UID:          dummyUUID,
 				S3WalPath:    "s3://another-bucket",
 				S3Endpoint:   "s3.eu-central-1.amazonaws.com",
 			},
-			standbyDescription: &acidv1.StandbyDescription{},
+			standbyDescription: &cpov1.StandbyDescription{},
 			expectedValues:     expectedCloneEnvSpec,
 		},
 		{
@@ -848,17 +848,17 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 				},
 				WALES3Bucket: "global-s3-bucket",
 			},
-			cloneDescription: &acidv1.CloneDescription{
+			cloneDescription: &cpov1.CloneDescription{
 				ClusterName:  "test-cluster",
 				EndTimestamp: "somewhen",
 				UID:          dummyUUID,
 				S3WalPath:    "s3://another-bucket",
 				S3Endpoint:   "s3.eu-central-1.amazonaws.com",
 			},
-			standbyDescription: &acidv1.StandbyDescription{},
+			standbyDescription: &cpov1.StandbyDescription{},
 			expectedValues:     expectedCloneEnvSpecEnv,
-			pgsql: acidv1.Postgresql{
-				Spec: acidv1.PostgresSpec{
+			pgsql: cpov1.Postgresql{
+				Spec: cpov1.PostgresSpec{
 					Env: []v1.EnvVar{
 						{
 							Name:  "CLONE_WAL_BUCKET_SCOPE_PREFIX",
@@ -878,12 +878,12 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 				},
 				WALES3Bucket: "global-s3-bucket",
 			},
-			cloneDescription: &acidv1.CloneDescription{
+			cloneDescription: &cpov1.CloneDescription{
 				ClusterName:  "test-cluster",
 				EndTimestamp: "somewhen",
 				UID:          dummyUUID,
 			},
-			standbyDescription: &acidv1.StandbyDescription{},
+			standbyDescription: &cpov1.StandbyDescription{},
 			expectedValues:     expectedCloneEnvConfigMap,
 		},
 		{
@@ -896,12 +896,12 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 				},
 				WALES3Bucket: "global-s3-bucket",
 			},
-			cloneDescription: &acidv1.CloneDescription{
+			cloneDescription: &cpov1.CloneDescription{
 				ClusterName:  "test-cluster",
 				EndTimestamp: "somewhen",
 				UID:          dummyUUID,
 			},
-			standbyDescription: &acidv1.StandbyDescription{},
+			standbyDescription: &cpov1.StandbyDescription{},
 			expectedValues:     expectedCloneEnvSecret,
 		},
 		{
@@ -914,8 +914,8 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 				},
 				WALES3Bucket: "global-s3-bucket",
 			},
-			cloneDescription: &acidv1.CloneDescription{},
-			standbyDescription: &acidv1.StandbyDescription{
+			cloneDescription: &cpov1.CloneDescription{},
+			standbyDescription: &cpov1.StandbyDescription{
 				GSWalPath: "gs://some/path/",
 			},
 			expectedValues: expectedStandbyEnvSecret,
@@ -1069,7 +1069,7 @@ func TestGetNumberOfInstances(t *testing.T) {
 		var cluster = New(
 			Config{
 				OpConfig: tt.config,
-			}, k8sutil.KubernetesClient{}, acidv1.Postgresql{}, logger, eventRecorder)
+			}, k8sutil.KubernetesClient{}, cpov1.Postgresql{}, logger, eventRecorder)
 
 		cluster.Spec.NumberOfInstances = tt.desired
 		if tt.annotationKey != "" {
@@ -1088,13 +1088,13 @@ func TestGetNumberOfInstances(t *testing.T) {
 func TestCloneEnv(t *testing.T) {
 	tests := []struct {
 		subTest   string
-		cloneOpts *acidv1.CloneDescription
+		cloneOpts *cpov1.CloneDescription
 		env       v1.EnvVar
 		envPos    int
 	}{
 		{
 			subTest: "custom s3 path",
-			cloneOpts: &acidv1.CloneDescription{
+			cloneOpts: &cpov1.CloneDescription{
 				ClusterName:  "test-cluster",
 				S3WalPath:    "s3://some/path/",
 				EndTimestamp: "somewhen",
@@ -1107,7 +1107,7 @@ func TestCloneEnv(t *testing.T) {
 		},
 		{
 			subTest: "generated s3 path, bucket",
-			cloneOpts: &acidv1.CloneDescription{
+			cloneOpts: &cpov1.CloneDescription{
 				ClusterName:  "test-cluster",
 				EndTimestamp: "somewhen",
 				UID:          "0000",
@@ -1120,7 +1120,7 @@ func TestCloneEnv(t *testing.T) {
 		},
 		{
 			subTest: "generated s3 path, target time",
-			cloneOpts: &acidv1.CloneDescription{
+			cloneOpts: &cpov1.CloneDescription{
 				ClusterName:  "test-cluster",
 				EndTimestamp: "somewhen",
 				UID:          "0000",
@@ -1143,7 +1143,7 @@ func TestCloneEnv(t *testing.T) {
 					ReplicationUsername: replicationUserName,
 				},
 			},
-		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{}, logger, eventRecorder)
+		}, k8sutil.KubernetesClient{}, cpov1.Postgresql{}, logger, eventRecorder)
 
 	for _, tt := range tests {
 		envs := cluster.generateCloneEnvironment(tt.cloneOpts)
@@ -1237,14 +1237,14 @@ func TestAppendEnvVar(t *testing.T) {
 func TestStandbyEnv(t *testing.T) {
 	tests := []struct {
 		subTest     string
-		standbyOpts *acidv1.StandbyDescription
+		standbyOpts *cpov1.StandbyDescription
 		env         v1.EnvVar
 		envPos      int
 		envLen      int
 	}{
 		{
 			subTest: "from custom s3 path",
-			standbyOpts: &acidv1.StandbyDescription{
+			standbyOpts: &cpov1.StandbyDescription{
 				S3WalPath: "s3://some/path/",
 			},
 			env: v1.EnvVar{
@@ -1256,7 +1256,7 @@ func TestStandbyEnv(t *testing.T) {
 		},
 		{
 			subTest: "ignore gs path if s3 is set",
-			standbyOpts: &acidv1.StandbyDescription{
+			standbyOpts: &cpov1.StandbyDescription{
 				S3WalPath: "s3://some/path/",
 				GSWalPath: "gs://some/path/",
 			},
@@ -1269,7 +1269,7 @@ func TestStandbyEnv(t *testing.T) {
 		},
 		{
 			subTest: "from remote primary",
-			standbyOpts: &acidv1.StandbyDescription{
+			standbyOpts: &cpov1.StandbyDescription{
 				StandbyHost: "remote-primary",
 			},
 			env: v1.EnvVar{
@@ -1281,7 +1281,7 @@ func TestStandbyEnv(t *testing.T) {
 		},
 		{
 			subTest: "from remote primary with port",
-			standbyOpts: &acidv1.StandbyDescription{
+			standbyOpts: &cpov1.StandbyDescription{
 				StandbyHost: "remote-primary",
 				StandbyPort: "9876",
 			},
@@ -1294,7 +1294,7 @@ func TestStandbyEnv(t *testing.T) {
 		},
 		{
 			subTest: "from remote primary - ignore WAL path",
-			standbyOpts: &acidv1.StandbyDescription{
+			standbyOpts: &cpov1.StandbyDescription{
 				GSWalPath:   "gs://some/path/",
 				StandbyHost: "remote-primary",
 			},
@@ -1308,7 +1308,7 @@ func TestStandbyEnv(t *testing.T) {
 	}
 
 	var cluster = New(
-		Config{}, k8sutil.KubernetesClient{}, acidv1.Postgresql{}, logger, eventRecorder)
+		Config{}, k8sutil.KubernetesClient{}, cpov1.Postgresql{}, logger, eventRecorder)
 
 	for _, tt := range tests {
 		envs := cluster.generateStandbyEnvironment(tt.standbyOpts)
@@ -1334,20 +1334,20 @@ func TestStandbyEnv(t *testing.T) {
 
 func TestNodeAffinity(t *testing.T) {
 	var err error
-	var spec acidv1.PostgresSpec
+	var spec cpov1.PostgresSpec
 	var cluster *Cluster
 	var spiloRunAsUser = int64(101)
 	var spiloRunAsGroup = int64(103)
 	var spiloFSGroup = int64(103)
 
-	makeSpec := func(nodeAffinity *v1.NodeAffinity) acidv1.PostgresSpec {
-		return acidv1.PostgresSpec{
+	makeSpec := func(nodeAffinity *v1.NodeAffinity) cpov1.PostgresSpec {
+		return cpov1.PostgresSpec{
 			TeamID: "myapp", NumberOfInstances: 1,
-			Resources: &acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "1", Memory: "10"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "10"},
+			Resources: &cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "1", Memory: "10"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "10"},
 			},
-			Volume: acidv1.Volume{
+			Volume: cpov1.Volume{
 				Size: "1G",
 			},
 			NodeAffinity: nodeAffinity,
@@ -1369,7 +1369,7 @@ func TestNodeAffinity(t *testing.T) {
 					SpiloFSGroup:    &spiloFSGroup,
 				},
 			},
-		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{}, logger, eventRecorder)
+		}, k8sutil.KubernetesClient{}, cpov1.Postgresql{}, logger, eventRecorder)
 
 	nodeAff := &v1.NodeAffinity{
 		RequiredDuringSchedulingIgnoredDuringExecution: &v1.NodeSelector{
@@ -1429,18 +1429,18 @@ func TestPodAffinity(t *testing.T) {
 		},
 	}
 
-	pg := acidv1.Postgresql{
+	pg := cpov1.Postgresql{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      clusterName,
 			Namespace: namespace,
 		},
-		Spec: acidv1.PostgresSpec{
+		Spec: cpov1.PostgresSpec{
 			NumberOfInstances: 1,
-			Resources: &acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "1", Memory: "10"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "10"},
+			Resources: &cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "1", Memory: "10"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "10"},
 			},
-			Volume: acidv1.Volume{
+			Volume: cpov1.Volume{
 				Size: "1G",
 			},
 		},
@@ -1573,24 +1573,24 @@ func TestTLS(t *testing.T) {
 	defaultMode := int32(0640)
 	mountPath := "/tls"
 
-	pg := acidv1.Postgresql{
+	pg := cpov1.Postgresql{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      clusterName,
 			Namespace: namespace,
 		},
-		Spec: acidv1.PostgresSpec{
+		Spec: cpov1.PostgresSpec{
 			TeamID: "myapp", NumberOfInstances: 1,
-			Resources: &acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "1", Memory: "10"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "10"},
+			Resources: &cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "1", Memory: "10"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "10"},
 			},
-			Volume: acidv1.Volume{
+			Volume: cpov1.Volume{
 				Size: "1G",
 			},
-			TLS: &acidv1.TLSDescription{
+			TLS: &cpov1.TLSDescription{
 				SecretName: tlsSecretName, CAFile: "ca.crt"},
-			AdditionalVolumes: []acidv1.AdditionalVolume{
-				acidv1.AdditionalVolume{
+			AdditionalVolumes: []cpov1.AdditionalVolume{
+				cpov1.AdditionalVolume{
 					Name:      tlsSecretName,
 					MountPath: mountPath,
 					VolumeSource: v1.VolumeSource{
@@ -1779,7 +1779,7 @@ func TestAdditionalVolume(t *testing.T) {
 	clusterName := "acid-test-cluster"
 	namespace := "default"
 	sidecarName := "sidecar"
-	additionalVolumes := []acidv1.AdditionalVolume{
+	additionalVolumes := []cpov1.AdditionalVolume{
 		{
 			Name:             "test1",
 			MountPath:        "/test1",
@@ -1814,22 +1814,22 @@ func TestAdditionalVolume(t *testing.T) {
 		},
 	}
 
-	pg := acidv1.Postgresql{
+	pg := cpov1.Postgresql{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      clusterName,
 			Namespace: namespace,
 		},
-		Spec: acidv1.PostgresSpec{
+		Spec: cpov1.PostgresSpec{
 			TeamID: "myapp", NumberOfInstances: 1,
-			Resources: &acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "1", Memory: "10"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "10"},
+			Resources: &cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "1", Memory: "10"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "10"},
 			},
-			Volume: acidv1.Volume{
+			Volume: cpov1.Volume{
 				Size: "1G",
 			},
 			AdditionalVolumes: additionalVolumes,
-			Sidecars: []acidv1.Sidecar{
+			Sidecars: []cpov1.Sidecar{
 				{
 					Name: sidecarName,
 				},
@@ -1893,13 +1893,13 @@ func TestAdditionalVolume(t *testing.T) {
 }
 
 func TestVolumeSelector(t *testing.T) {
-	makeSpec := func(volume acidv1.Volume) acidv1.PostgresSpec {
-		return acidv1.PostgresSpec{
+	makeSpec := func(volume cpov1.Volume) cpov1.PostgresSpec {
+		return cpov1.PostgresSpec{
 			TeamID:            "myapp",
 			NumberOfInstances: 0,
-			Resources: &acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "1", Memory: "10"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "10"},
+			Resources: &cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "1", Memory: "10"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "10"},
 			},
 			Volume: volume,
 		}
@@ -1907,19 +1907,19 @@ func TestVolumeSelector(t *testing.T) {
 
 	tests := []struct {
 		subTest      string
-		volume       acidv1.Volume
+		volume       cpov1.Volume
 		wantSelector *metav1.LabelSelector
 	}{
 		{
 			subTest: "PVC template has no selector",
-			volume: acidv1.Volume{
+			volume: cpov1.Volume{
 				Size: "1G",
 			},
 			wantSelector: nil,
 		},
 		{
 			subTest: "PVC template has simple label selector",
-			volume: acidv1.Volume{
+			volume: cpov1.Volume{
 				Size: "1G",
 				Selector: &metav1.LabelSelector{
 					MatchLabels: map[string]string{"environment": "unittest"},
@@ -1931,7 +1931,7 @@ func TestVolumeSelector(t *testing.T) {
 		},
 		{
 			subTest: "PVC template has full selector",
-			volume: acidv1.Volume{
+			volume: cpov1.Volume{
 				Size: "1G",
 				Selector: &metav1.LabelSelector{
 					MatchLabels: map[string]string{"environment": "unittest"},
@@ -1967,7 +1967,7 @@ func TestVolumeSelector(t *testing.T) {
 					ReplicationUsername: replicationUserName,
 				},
 			},
-		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{}, logger, eventRecorder)
+		}, k8sutil.KubernetesClient{}, cpov1.Postgresql{}, logger, eventRecorder)
 
 	for _, tt := range tests {
 		pgSpec := makeSpec(tt.volume)
@@ -1997,7 +1997,7 @@ func TestVolumeSelector(t *testing.T) {
 // inject sidecars through all available mechanisms and check the resulting container specs
 func TestSidecars(t *testing.T) {
 	var err error
-	var spec acidv1.PostgresSpec
+	var spec cpov1.PostgresSpec
 	var cluster *Cluster
 
 	generateKubernetesResources := func(cpuRequest string, cpuLimit string, memoryRequest string, memoryLimit string) v1.ResourceRequirements {
@@ -2021,33 +2021,33 @@ func TestSidecars(t *testing.T) {
 		}
 	}
 
-	spec = acidv1.PostgresSpec{
-		PostgresqlParam: acidv1.PostgresqlParam{
+	spec = cpov1.PostgresSpec{
+		PostgresqlParam: cpov1.PostgresqlParam{
 			PgVersion: "15",
 			Parameters: map[string]string{
 				"max_connections": "100",
 			},
 		},
 		TeamID: "myapp", NumberOfInstances: 1,
-		Resources: &acidv1.Resources{
-			ResourceRequests: acidv1.ResourceDescription{CPU: "1", Memory: "10"},
-			ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "10"},
+		Resources: &cpov1.Resources{
+			ResourceRequests: cpov1.ResourceDescription{CPU: "1", Memory: "10"},
+			ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "10"},
 		},
-		Volume: acidv1.Volume{
+		Volume: cpov1.Volume{
 			Size: "1G",
 		},
-		Sidecars: []acidv1.Sidecar{
-			acidv1.Sidecar{
+		Sidecars: []cpov1.Sidecar{
+			cpov1.Sidecar{
 				Name: "cluster-specific-sidecar",
 			},
-			acidv1.Sidecar{
+			cpov1.Sidecar{
 				Name: "cluster-specific-sidecar-with-resources",
-				Resources: &acidv1.Resources{
-					ResourceRequests: acidv1.ResourceDescription{CPU: "210m", Memory: "0.8Gi"},
-					ResourceLimits:   acidv1.ResourceDescription{CPU: "510m", Memory: "1.4Gi"},
+				Resources: &cpov1.Resources{
+					ResourceRequests: cpov1.ResourceDescription{CPU: "210m", Memory: "0.8Gi"},
+					ResourceLimits:   cpov1.ResourceDescription{CPU: "510m", Memory: "1.4Gi"},
 				},
 			},
-			acidv1.Sidecar{
+			cpov1.Sidecar{
 				Name:        "replace-sidecar",
 				DockerImage: "override-image",
 			},
@@ -2093,7 +2093,7 @@ func TestSidecars(t *testing.T) {
 					// ise default memory limit
 				},
 			},
-		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{}, logger, eventRecorder)
+		}, k8sutil.KubernetesClient{}, cpov1.Postgresql{}, logger, eventRecorder)
 
 	s, err := cluster.generateStatefulSet(&spec)
 	assert.NoError(t, err)
@@ -2210,9 +2210,9 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 			New(
 				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster-name", PodRoleLabel: "spilo-role"}, PDBNameFormat: "postgres-{cluster}-pdb"}},
 				k8sutil.KubernetesClient{},
-				acidv1.Postgresql{
+				cpov1.Postgresql{
 					ObjectMeta: metav1.ObjectMeta{Name: "myapp-database", Namespace: "myapp"},
-					Spec:       acidv1.PostgresSpec{TeamID: "myapp", NumberOfInstances: 3}},
+					Spec:       cpov1.PostgresSpec{TeamID: "myapp", NumberOfInstances: 3}},
 				logger,
 				eventRecorder),
 			policyv1.PodDisruptionBudget{
@@ -2234,9 +2234,9 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 			New(
 				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster-name", PodRoleLabel: "spilo-role"}, PDBNameFormat: "postgres-{cluster}-pdb"}},
 				k8sutil.KubernetesClient{},
-				acidv1.Postgresql{
+				cpov1.Postgresql{
 					ObjectMeta: metav1.ObjectMeta{Name: "myapp-database", Namespace: "myapp"},
-					Spec:       acidv1.PostgresSpec{TeamID: "myapp", NumberOfInstances: 0}},
+					Spec:       cpov1.PostgresSpec{TeamID: "myapp", NumberOfInstances: 0}},
 				logger,
 				eventRecorder),
 			policyv1.PodDisruptionBudget{
@@ -2258,9 +2258,9 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 			New(
 				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster-name", PodRoleLabel: "spilo-role"}, PDBNameFormat: "postgres-{cluster}-pdb", EnablePodDisruptionBudget: util.False()}},
 				k8sutil.KubernetesClient{},
-				acidv1.Postgresql{
+				cpov1.Postgresql{
 					ObjectMeta: metav1.ObjectMeta{Name: "myapp-database", Namespace: "myapp"},
-					Spec:       acidv1.PostgresSpec{TeamID: "myapp", NumberOfInstances: 3}},
+					Spec:       cpov1.PostgresSpec{TeamID: "myapp", NumberOfInstances: 3}},
 				logger,
 				eventRecorder),
 			policyv1.PodDisruptionBudget{
@@ -2282,9 +2282,9 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 			New(
 				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster-name", PodRoleLabel: "spilo-role"}, PDBNameFormat: "postgres-{cluster}-databass-budget", EnablePodDisruptionBudget: util.True()}},
 				k8sutil.KubernetesClient{},
-				acidv1.Postgresql{
+				cpov1.Postgresql{
 					ObjectMeta: metav1.ObjectMeta{Name: "myapp-database", Namespace: "myapp"},
-					Spec:       acidv1.PostgresSpec{TeamID: "myapp", NumberOfInstances: 3}},
+					Spec:       cpov1.PostgresSpec{TeamID: "myapp", NumberOfInstances: 3}},
 				logger,
 				eventRecorder),
 			policyv1.PodDisruptionBudget{
@@ -2312,30 +2312,30 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 }
 
 func TestGenerateService(t *testing.T) {
-	var spec acidv1.PostgresSpec
+	var spec cpov1.PostgresSpec
 	var cluster *Cluster
 	var enableLB bool = true
-	spec = acidv1.PostgresSpec{
+	spec = cpov1.PostgresSpec{
 		TeamID: "myapp", NumberOfInstances: 1,
-		Resources: &acidv1.Resources{
-			ResourceRequests: acidv1.ResourceDescription{CPU: "1", Memory: "10"},
-			ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "10"},
+		Resources: &cpov1.Resources{
+			ResourceRequests: cpov1.ResourceDescription{CPU: "1", Memory: "10"},
+			ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "10"},
 		},
-		Volume: acidv1.Volume{
+		Volume: cpov1.Volume{
 			Size: "1G",
 		},
-		Sidecars: []acidv1.Sidecar{
-			acidv1.Sidecar{
+		Sidecars: []cpov1.Sidecar{
+			cpov1.Sidecar{
 				Name: "cluster-specific-sidecar",
 			},
-			acidv1.Sidecar{
+			cpov1.Sidecar{
 				Name: "cluster-specific-sidecar-with-resources",
-				Resources: &acidv1.Resources{
-					ResourceRequests: acidv1.ResourceDescription{CPU: "210m", Memory: "0.8Gi"},
-					ResourceLimits:   acidv1.ResourceDescription{CPU: "510m", Memory: "1.4Gi"},
+				Resources: &cpov1.Resources{
+					ResourceRequests: cpov1.ResourceDescription{CPU: "210m", Memory: "0.8Gi"},
+					ResourceLimits:   cpov1.ResourceDescription{CPU: "510m", Memory: "1.4Gi"},
 				},
 			},
-			acidv1.Sidecar{
+			cpov1.Sidecar{
 				Name:        "replace-sidecar",
 				DockerImage: "override-image",
 			},
@@ -2383,7 +2383,7 @@ func TestGenerateService(t *testing.T) {
 				},
 				ExternalTrafficPolicy: "Cluster",
 			},
-		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{}, logger, eventRecorder)
+		}, k8sutil.KubernetesClient{}, cpov1.Postgresql{}, logger, eventRecorder)
 
 	service := cluster.generateService(Master, &spec)
 	assert.Equal(t, v1.ServiceExternalTrafficPolicyTypeCluster, service.Spec.ExternalTrafficPolicy)
@@ -2403,40 +2403,40 @@ func TestCreateLoadBalancerLogic(t *testing.T) {
 					ReplicationUsername: replicationUserName,
 				},
 			},
-		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{}, logger, eventRecorder)
+		}, k8sutil.KubernetesClient{}, cpov1.Postgresql{}, logger, eventRecorder)
 
 	tests := []struct {
 		subtest  string
 		role     PostgresRole
-		spec     *acidv1.PostgresSpec
+		spec     *cpov1.PostgresSpec
 		opConfig config.Config
 		result   bool
 	}{
 		{
 			subtest:  "new format, load balancer is enabled for replica",
 			role:     Replica,
-			spec:     &acidv1.PostgresSpec{EnableReplicaLoadBalancer: util.True()},
+			spec:     &cpov1.PostgresSpec{EnableReplicaLoadBalancer: util.True()},
 			opConfig: config.Config{},
 			result:   true,
 		},
 		{
 			subtest:  "new format, load balancer is disabled for replica",
 			role:     Replica,
-			spec:     &acidv1.PostgresSpec{EnableReplicaLoadBalancer: util.False()},
+			spec:     &cpov1.PostgresSpec{EnableReplicaLoadBalancer: util.False()},
 			opConfig: config.Config{},
 			result:   false,
 		},
 		{
 			subtest:  "new format, load balancer isn't specified for replica",
 			role:     Replica,
-			spec:     &acidv1.PostgresSpec{EnableReplicaLoadBalancer: nil},
+			spec:     &cpov1.PostgresSpec{EnableReplicaLoadBalancer: nil},
 			opConfig: config.Config{EnableReplicaLoadBalancer: true},
 			result:   true,
 		},
 		{
 			subtest:  "new format, load balancer isn't specified for replica",
 			role:     Replica,
-			spec:     &acidv1.PostgresSpec{EnableReplicaLoadBalancer: nil},
+			spec:     &cpov1.PostgresSpec{EnableReplicaLoadBalancer: nil},
 			opConfig: config.Config{EnableReplicaLoadBalancer: false},
 			result:   false,
 		},
@@ -2506,7 +2506,7 @@ func TestEnableLoadBalancers(t *testing.T) {
 	tests := []struct {
 		subTest          string
 		config           config.Config
-		pgSpec           acidv1.Postgresql
+		pgSpec           cpov1.Postgresql
 		expectedServices []v1.ServiceSpec
 	}{
 		{
@@ -2530,12 +2530,12 @@ func TestEnableLoadBalancers(t *testing.T) {
 					PodRoleLabel:     roleLabel,
 				},
 			},
-			pgSpec: acidv1.Postgresql{
+			pgSpec: cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      clusterName,
 					Namespace: namespace,
 				},
-				Spec: acidv1.PostgresSpec{
+				Spec: cpov1.PostgresSpec{
 					AllowedSourceRanges:             sourceRanges,
 					EnableConnectionPooler:          util.True(),
 					EnableReplicaConnectionPooler:   util.True(),
@@ -2544,12 +2544,12 @@ func TestEnableLoadBalancers(t *testing.T) {
 					EnableReplicaLoadBalancer:       util.False(),
 					EnableReplicaPoolerLoadBalancer: util.False(),
 					NumberOfInstances:               1,
-					Resources: &acidv1.Resources{
-						ResourceRequests: acidv1.ResourceDescription{CPU: "1", Memory: "10"},
-						ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "10"},
+					Resources: &cpov1.Resources{
+						ResourceRequests: cpov1.ResourceDescription{CPU: "1", Memory: "10"},
+						ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "10"},
 					},
 					TeamID: "acid",
-					Volume: acidv1.Volume{
+					Volume: cpov1.Volume{
 						Size: "1G",
 					},
 				},
@@ -2577,12 +2577,12 @@ func TestEnableLoadBalancers(t *testing.T) {
 					PodRoleLabel:     roleLabel,
 				},
 			},
-			pgSpec: acidv1.Postgresql{
+			pgSpec: cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      clusterName,
 					Namespace: namespace,
 				},
-				Spec: acidv1.PostgresSpec{
+				Spec: cpov1.PostgresSpec{
 					AllowedSourceRanges:             sourceRanges,
 					EnableConnectionPooler:          util.True(),
 					EnableReplicaConnectionPooler:   util.True(),
@@ -2591,12 +2591,12 @@ func TestEnableLoadBalancers(t *testing.T) {
 					EnableReplicaLoadBalancer:       util.True(),
 					EnableReplicaPoolerLoadBalancer: util.True(),
 					NumberOfInstances:               1,
-					Resources: &acidv1.Resources{
-						ResourceRequests: acidv1.ResourceDescription{CPU: "1", Memory: "10"},
-						ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "10"},
+					Resources: &cpov1.Resources{
+						ResourceRequests: cpov1.ResourceDescription{CPU: "1", Memory: "10"},
+						ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "10"},
 					},
 					TeamID: "acid",
-					Volume: acidv1.Volume{
+					Volume: cpov1.Volume{
 						Size: "1G",
 					},
 				},
@@ -2662,8 +2662,8 @@ func TestGenerateResourceRequirements(t *testing.T) {
 	tests := []struct {
 		subTest           string
 		config            config.Config
-		pgSpec            acidv1.Postgresql
-		expectedResources acidv1.Resources
+		pgSpec            cpov1.Postgresql
+		expectedResources cpov1.Resources
 	}{
 		{
 			subTest: "test generation of default resources when empty in manifest",
@@ -2672,21 +2672,21 @@ func TestGenerateResourceRequirements(t *testing.T) {
 				PodManagementPolicy:     "ordered_ready",
 				SetMemoryRequestToLimit: false,
 			},
-			pgSpec: acidv1.Postgresql{
+			pgSpec: cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      clusterName,
 					Namespace: namespace,
 				},
-				Spec: acidv1.PostgresSpec{
+				Spec: cpov1.PostgresSpec{
 					TeamID: "acid",
-					Volume: acidv1.Volume{
+					Volume: cpov1.Volume{
 						Size: "1G",
 					},
 				},
 			},
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "500Mi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "500Mi"},
 			},
 		},
 		{
@@ -2696,26 +2696,26 @@ func TestGenerateResourceRequirements(t *testing.T) {
 				PodManagementPolicy:     "ordered_ready",
 				SetMemoryRequestToLimit: false,
 			},
-			pgSpec: acidv1.Postgresql{
+			pgSpec: cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      clusterName,
 					Namespace: namespace,
 				},
-				Spec: acidv1.PostgresSpec{
-					Sidecars: []acidv1.Sidecar{
-						acidv1.Sidecar{
+				Spec: cpov1.PostgresSpec{
+					Sidecars: []cpov1.Sidecar{
+						cpov1.Sidecar{
 							Name: sidecarName,
 						},
 					},
 					TeamID: "acid",
-					Volume: acidv1.Volume{
+					Volume: cpov1.Volume{
 						Size: "1G",
 					},
 				},
 			},
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "500Mi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "500Mi"},
 			},
 		},
 		{
@@ -2725,24 +2725,24 @@ func TestGenerateResourceRequirements(t *testing.T) {
 				PodManagementPolicy:     "ordered_ready",
 				SetMemoryRequestToLimit: false,
 			},
-			pgSpec: acidv1.Postgresql{
+			pgSpec: cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      clusterName,
 					Namespace: namespace,
 				},
-				Spec: acidv1.PostgresSpec{
-					Resources: &acidv1.Resources{
-						ResourceRequests: acidv1.ResourceDescription{CPU: "50m", Memory: "50Mi"},
+				Spec: cpov1.PostgresSpec{
+					Resources: &cpov1.Resources{
+						ResourceRequests: cpov1.ResourceDescription{CPU: "50m", Memory: "50Mi"},
 					},
 					TeamID: "acid",
-					Volume: acidv1.Volume{
+					Volume: cpov1.Volume{
 						Size: "1G",
 					},
 				},
 			},
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "50m", Memory: "50Mi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "500Mi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "50m", Memory: "50Mi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "500Mi"},
 			},
 		},
 		{
@@ -2752,25 +2752,25 @@ func TestGenerateResourceRequirements(t *testing.T) {
 				PodManagementPolicy:     "ordered_ready",
 				SetMemoryRequestToLimit: false,
 			},
-			pgSpec: acidv1.Postgresql{
+			pgSpec: cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      clusterName,
 					Namespace: namespace,
 				},
-				Spec: acidv1.PostgresSpec{
-					Resources: &acidv1.Resources{
-						ResourceRequests: acidv1.ResourceDescription{Memory: "100Mi"},
-						ResourceLimits:   acidv1.ResourceDescription{Memory: "1Gi"},
+				Spec: cpov1.PostgresSpec{
+					Resources: &cpov1.Resources{
+						ResourceRequests: cpov1.ResourceDescription{Memory: "100Mi"},
+						ResourceLimits:   cpov1.ResourceDescription{Memory: "1Gi"},
 					},
 					TeamID: "acid",
-					Volume: acidv1.Volume{
+					Volume: cpov1.Volume{
 						Size: "1G",
 					},
 				},
 			},
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "1Gi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "1Gi"},
 			},
 		},
 		{
@@ -2780,25 +2780,25 @@ func TestGenerateResourceRequirements(t *testing.T) {
 				PodManagementPolicy:     "ordered_ready",
 				SetMemoryRequestToLimit: true,
 			},
-			pgSpec: acidv1.Postgresql{
+			pgSpec: cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      clusterName,
 					Namespace: namespace,
 				},
-				Spec: acidv1.PostgresSpec{
-					Resources: &acidv1.Resources{
-						ResourceRequests: acidv1.ResourceDescription{Memory: "200Mi"},
-						ResourceLimits:   acidv1.ResourceDescription{Memory: "300Mi"},
+				Spec: cpov1.PostgresSpec{
+					Resources: &cpov1.Resources{
+						ResourceRequests: cpov1.ResourceDescription{Memory: "200Mi"},
+						ResourceLimits:   cpov1.ResourceDescription{Memory: "300Mi"},
 					},
 					TeamID: "acid",
-					Volume: acidv1.Volume{
+					Volume: cpov1.Volume{
 						Size: "1G",
 					},
 				},
 			},
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "100m", Memory: "300Mi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "300Mi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "100m", Memory: "300Mi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "300Mi"},
 			},
 		},
 		{
@@ -2808,30 +2808,30 @@ func TestGenerateResourceRequirements(t *testing.T) {
 				PodManagementPolicy:     "ordered_ready",
 				SetMemoryRequestToLimit: true,
 			},
-			pgSpec: acidv1.Postgresql{
+			pgSpec: cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      clusterName,
 					Namespace: namespace,
 				},
-				Spec: acidv1.PostgresSpec{
-					Sidecars: []acidv1.Sidecar{
-						acidv1.Sidecar{
+				Spec: cpov1.PostgresSpec{
+					Sidecars: []cpov1.Sidecar{
+						cpov1.Sidecar{
 							Name: sidecarName,
-							Resources: &acidv1.Resources{
-								ResourceRequests: acidv1.ResourceDescription{CPU: "10m", Memory: "10Mi"},
-								ResourceLimits:   acidv1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
+							Resources: &cpov1.Resources{
+								ResourceRequests: cpov1.ResourceDescription{CPU: "10m", Memory: "10Mi"},
+								ResourceLimits:   cpov1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
 							},
 						},
 					},
 					TeamID: "acid",
-					Volume: acidv1.Volume{
+					Volume: cpov1.Volume{
 						Size: "1G",
 					},
 				},
 			},
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "10m", Memory: "100Mi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "10m", Memory: "100Mi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
 			},
 		},
 		{
@@ -2841,25 +2841,25 @@ func TestGenerateResourceRequirements(t *testing.T) {
 				PodManagementPolicy:     "ordered_ready",
 				SetMemoryRequestToLimit: false,
 			},
-			pgSpec: acidv1.Postgresql{
+			pgSpec: cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      clusterName,
 					Namespace: namespace,
 				},
-				Spec: acidv1.PostgresSpec{
-					Resources: &acidv1.Resources{
-						ResourceRequests: acidv1.ResourceDescription{CPU: "10m", Memory: "250Mi"},
-						ResourceLimits:   acidv1.ResourceDescription{CPU: "400m", Memory: "800Mi"},
+				Spec: cpov1.PostgresSpec{
+					Resources: &cpov1.Resources{
+						ResourceRequests: cpov1.ResourceDescription{CPU: "10m", Memory: "250Mi"},
+						ResourceLimits:   cpov1.ResourceDescription{CPU: "400m", Memory: "800Mi"},
 					},
 					TeamID: "acid",
-					Volume: acidv1.Volume{
+					Volume: cpov1.Volume{
 						Size: "1G",
 					},
 				},
 			},
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "10m", Memory: "250Mi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "400m", Memory: "800Mi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "10m", Memory: "250Mi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "400m", Memory: "800Mi"},
 			},
 		},
 		{
@@ -2869,25 +2869,25 @@ func TestGenerateResourceRequirements(t *testing.T) {
 				PodManagementPolicy:     "ordered_ready",
 				SetMemoryRequestToLimit: false,
 			},
-			pgSpec: acidv1.Postgresql{
+			pgSpec: cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      clusterName,
 					Namespace: namespace,
 				},
-				Spec: acidv1.PostgresSpec{
-					Resources: &acidv1.Resources{
-						ResourceRequests: acidv1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
-						ResourceLimits:   acidv1.ResourceDescription{CPU: "200m", Memory: "200Mi"},
+				Spec: cpov1.PostgresSpec{
+					Resources: &cpov1.Resources{
+						ResourceRequests: cpov1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
+						ResourceLimits:   cpov1.ResourceDescription{CPU: "200m", Memory: "200Mi"},
 					},
 					TeamID: "acid",
-					Volume: acidv1.Volume{
+					Volume: cpov1.Volume{
 						Size: "1G",
 					},
 				},
 			},
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "250m", Memory: "250Mi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "250m", Memory: "250Mi"},
 			},
 		},
 		{
@@ -2897,30 +2897,30 @@ func TestGenerateResourceRequirements(t *testing.T) {
 				PodManagementPolicy:     "ordered_ready",
 				SetMemoryRequestToLimit: false,
 			},
-			pgSpec: acidv1.Postgresql{
+			pgSpec: cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      clusterName,
 					Namespace: namespace,
 				},
-				Spec: acidv1.PostgresSpec{
-					Sidecars: []acidv1.Sidecar{
-						acidv1.Sidecar{
+				Spec: cpov1.PostgresSpec{
+					Sidecars: []cpov1.Sidecar{
+						cpov1.Sidecar{
 							Name: sidecarName,
-							Resources: &acidv1.Resources{
-								ResourceRequests: acidv1.ResourceDescription{CPU: "10m", Memory: "10Mi"},
-								ResourceLimits:   acidv1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
+							Resources: &cpov1.Resources{
+								ResourceRequests: cpov1.ResourceDescription{CPU: "10m", Memory: "10Mi"},
+								ResourceLimits:   cpov1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
 							},
 						},
 					},
 					TeamID: "acid",
-					Volume: acidv1.Volume{
+					Volume: cpov1.Volume{
 						Size: "1G",
 					},
 				},
 			},
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "10m", Memory: "10Mi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "10m", Memory: "10Mi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
 			},
 		},
 		{
@@ -2930,25 +2930,25 @@ func TestGenerateResourceRequirements(t *testing.T) {
 				PodManagementPolicy:     "ordered_ready",
 				SetMemoryRequestToLimit: false,
 			},
-			pgSpec: acidv1.Postgresql{
+			pgSpec: cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      clusterName,
 					Namespace: namespace,
 				},
-				Spec: acidv1.PostgresSpec{
-					Resources: &acidv1.Resources{
-						ResourceRequests: acidv1.ResourceDescription{CPU: "1", Memory: "2Gi"},
-						ResourceLimits:   acidv1.ResourceDescription{CPU: "2", Memory: "4Gi"},
+				Spec: cpov1.PostgresSpec{
+					Resources: &cpov1.Resources{
+						ResourceRequests: cpov1.ResourceDescription{CPU: "1", Memory: "2Gi"},
+						ResourceLimits:   cpov1.ResourceDescription{CPU: "2", Memory: "4Gi"},
 					},
 					TeamID: "acid",
-					Volume: acidv1.Volume{
+					Volume: cpov1.Volume{
 						Size: "1G",
 					},
 				},
 			},
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "500m", Memory: "1Gi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "2", Memory: "4Gi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "500m", Memory: "1Gi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "2", Memory: "4Gi"},
 			},
 		},
 		{
@@ -2958,25 +2958,25 @@ func TestGenerateResourceRequirements(t *testing.T) {
 				PodManagementPolicy:     "ordered_ready",
 				SetMemoryRequestToLimit: true,
 			},
-			pgSpec: acidv1.Postgresql{
+			pgSpec: cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      clusterName,
 					Namespace: namespace,
 				},
-				Spec: acidv1.PostgresSpec{
-					Resources: &acidv1.Resources{
-						ResourceRequests: acidv1.ResourceDescription{Memory: "500Mi"},
-						ResourceLimits:   acidv1.ResourceDescription{Memory: "2Gi"},
+				Spec: cpov1.PostgresSpec{
+					Resources: &cpov1.Resources{
+						ResourceRequests: cpov1.ResourceDescription{Memory: "500Mi"},
+						ResourceLimits:   cpov1.ResourceDescription{Memory: "2Gi"},
 					},
 					TeamID: "acid",
-					Volume: acidv1.Volume{
+					Volume: cpov1.Volume{
 						Size: "1G",
 					},
 				},
 			},
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "100m", Memory: "1Gi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "2Gi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "100m", Memory: "1Gi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "2Gi"},
 			},
 		},
 	}
@@ -3022,7 +3022,7 @@ func TestGenerateLogicalBackupJob(t *testing.T) {
 		specSchedule      string
 		expectedSchedule  string
 		expectedJobName   string
-		expectedResources acidv1.Resources
+		expectedResources cpov1.Resources
 	}{
 		{
 			subTest: "test generation of logical backup pod resources when not configured",
@@ -3038,9 +3038,9 @@ func TestGenerateLogicalBackupJob(t *testing.T) {
 			specSchedule:     "",
 			expectedSchedule: "30 00 * * *",
 			expectedJobName:  "logical-backup-acid-test-cluster",
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "500Mi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "100m", Memory: "100Mi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "500Mi"},
 			},
 		},
 		{
@@ -3061,9 +3061,9 @@ func TestGenerateLogicalBackupJob(t *testing.T) {
 			specSchedule:     "30 00 * * 7",
 			expectedSchedule: "30 00 * * 7",
 			expectedJobName:  "lb-acid-test-cluster",
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "10m", Memory: "50Mi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "300m", Memory: "300Mi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "10m", Memory: "50Mi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "300m", Memory: "300Mi"},
 			},
 		},
 		{
@@ -3082,9 +3082,9 @@ func TestGenerateLogicalBackupJob(t *testing.T) {
 			specSchedule:     "",
 			expectedSchedule: "30 00 * * *",
 			expectedJobName:  "acid-test-cluster",
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "50m", Memory: "100Mi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "250m", Memory: "500Mi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "50m", Memory: "100Mi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "250m", Memory: "500Mi"},
 			},
 		},
 		{
@@ -3103,9 +3103,9 @@ func TestGenerateLogicalBackupJob(t *testing.T) {
 			specSchedule:     "",
 			expectedSchedule: "30 00 * * *",
 			expectedJobName:  "test-long-prefix-so-name-must-be-trimmed-acid-test-c",
-			expectedResources: acidv1.Resources{
-				ResourceRequests: acidv1.ResourceDescription{CPU: "100m", Memory: "200Mi"},
-				ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "200Mi"},
+			expectedResources: cpov1.Resources{
+				ResourceRequests: cpov1.ResourceDescription{CPU: "100m", Memory: "200Mi"},
+				ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "200Mi"},
 			},
 		},
 	}
@@ -3114,7 +3114,7 @@ func TestGenerateLogicalBackupJob(t *testing.T) {
 		var cluster = New(
 			Config{
 				OpConfig: tt.config,
-			}, k8sutil.NewMockKubernetesClient(), acidv1.Postgresql{}, logger, eventRecorder)
+			}, k8sutil.NewMockKubernetesClient(), cpov1.Postgresql{}, logger, eventRecorder)
 
 		cluster.ObjectMeta.Name = clusterName
 		cluster.Spec.LogicalBackupSchedule = tt.specSchedule

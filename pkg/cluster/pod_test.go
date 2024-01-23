@@ -10,7 +10,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/mocks"
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1."github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
@@ -30,7 +30,7 @@ func TestGetSwitchoverCandidate(t *testing.T) {
 				PatroniAPICheckInterval: time.Duration(1),
 				PatroniAPICheckTimeout:  time.Duration(5),
 			},
-		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{}, logger, eventRecorder)
+		}, k8sutil.KubernetesClient{}, cpov1.Postgresql{}, logger, eventRecorder)
 
 	// simulate different member scenarios
 	tests := []struct {

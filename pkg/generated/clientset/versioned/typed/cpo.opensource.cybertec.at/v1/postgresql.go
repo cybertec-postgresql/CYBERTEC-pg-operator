@@ -63,7 +63,7 @@ type postgresqls struct {
 }
 
 // newPostgresqls returns a Postgresqls
-func newPostgresqls(c *AcidV1Client, namespace string) *postgresqls {
+func newPostgresqls(c *CpoV1Client, namespace string) *postgresqls {
 	return &postgresqls{
 		client: c.RESTClient(),
 		ns:     namespace,

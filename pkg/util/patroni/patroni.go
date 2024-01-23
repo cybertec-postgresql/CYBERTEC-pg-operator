@@ -15,7 +15,7 @@ import (
 	httpclient "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/httpclient"
 
 	"github.com/sirupsen/logrus"
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1."github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -36,7 +36,7 @@ type Interface interface {
 	SetPostgresParameters(server *v1.Pod, options map[string]string) error
 	GetMemberData(server *v1.Pod) (MemberData, error)
 	Restart(server *v1.Pod) error
-	GetConfig(server *v1.Pod) (acidv1.Patroni, map[string]string, error)
+	GetConfig(server *v1.Pod) (cpov1.Patroni, map[string]string, error)
 	SetConfig(server *v1.Pod, config map[string]interface{}) error
 }
 
@@ -224,9 +224,9 @@ type MemberData struct {
 	Patroni         MemberDataPatroni `json:"patroni"`
 }
 
-func (p *Patroni) GetConfig(server *v1.Pod) (acidv1.Patroni, map[string]string, error) {
+func (p *Patroni) GetConfig(server *v1.Pod) (cpov1.Patroni, map[string]string, error) {
 	var (
-		patroniConfig acidv1.Patroni
+		patroniConfig cpov1.Patroni
 		pgConfig      map[string]interface{}
 	)
 	apiURLString, err := apiURL(server)

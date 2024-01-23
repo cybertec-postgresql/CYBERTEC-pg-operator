@@ -52,7 +52,7 @@ type operatorConfigurations struct {
 }
 
 // newOperatorConfigurations returns a OperatorConfigurations
-func newOperatorConfigurations(c *AcidV1Client, namespace string) *operatorConfigurations {
+func newOperatorConfigurations(c *CpoV1Client, namespace string) *operatorConfigurations {
 	return &operatorConfigurations{
 		client: c.RESTClient(),
 		ns:     namespace,

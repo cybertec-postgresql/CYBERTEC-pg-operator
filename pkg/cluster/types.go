@@ -3,7 +3,7 @@ package cluster
 import (
 	"time"
 
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1."github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	policyv1 "k8s.io/api/policy/v1"
@@ -69,8 +69,8 @@ type ClusterStatus struct {
 
 	CurrentProcess Process
 	Worker         uint32
-	Status         acidv1.PostgresStatus
-	Spec           acidv1.PostgresSpec
+	Status         cpov1.PostgresStatus
+	Spec           cpov1.PostgresSpec
 	Error          error
 }
 

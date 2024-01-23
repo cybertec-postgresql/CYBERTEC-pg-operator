@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1."github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	zalandov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/zalando.org/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
@@ -68,7 +68,7 @@ func (c *Cluster) deleteStreams() error {
 	return nil
 }
 
-func gatherApplicationIds(streams []acidv1.Stream) []string {
+func gatherApplicationIds(streams []cpov1.Stream) []string {
 	appIds := make([]string, 0)
 	for _, stream := range streams {
 		if !util.SliceContains(appIds, stream.ApplicationId) {
@@ -79,7 +79,7 @@ func gatherApplicationIds(streams []acidv1.Stream) []string {
 	return appIds
 }
 
-func (c *Cluster) syncPublication(publication, dbName string, tables map[string]acidv1.StreamTable) error {
+func (c *Cluster) syncPublication(publication, dbName string, tables map[string]cpov1.StreamTable) error {
 	createPublications := make(map[string]string)
 	alterPublications := make(map[string]string)
 
@@ -176,7 +176,7 @@ func (c *Cluster) generateFabricEventStream(appId string) *zalandov1.FabricEvent
 	}
 }
 
-func (c *Cluster) getEventStreamSource(stream acidv1.Stream, tableName string, idColumn *string) zalandov1.EventStreamSource {
+func (c *Cluster) getEventStreamSource(stream cpov1.Stream, tableName string, idColumn *string) zalandov1.EventStreamSource {
 	table, schema := getTableSchema(tableName)
 	streamFilter := stream.Filter[tableName]
 	return zalandov1.EventStreamSource{
@@ -191,14 +191,14 @@ func (c *Cluster) getEventStreamSource(stream acidv1.Stream, tableName string, i
 	}
 }
 
-func getEventStreamFlow(stream acidv1.Stream, payloadColumn *string) zalandov1.EventStreamFlow {
+func getEventStreamFlow(stream cpov1.Stream, payloadColumn *string) zalandov1.EventStreamFlow {
 	return zalandov1.EventStreamFlow{
 		Type:          constants.EventStreamFlowPgGenericType,
 		PayloadColumn: payloadColumn,
 	}
 }
 
-func getEventStreamSink(stream acidv1.Stream, eventType string) zalandov1.EventStreamSink {
+func getEventStreamSink(stream cpov1.Stream, eventType string) zalandov1.EventStreamSink {
 	return zalandov1.EventStreamSink{
 		Type:         constants.EventStreamSinkNakadiType,
 		EventType:    eventType,
@@ -206,7 +206,7 @@ func getEventStreamSink(stream acidv1.Stream, eventType string) zalandov1.EventS
 	}
 }
 
-func getEventStreamRecovery(stream acidv1.Stream, recoveryEventType, eventType string) zalandov1.EventStreamRecovery {
+func getEventStreamRecovery(stream cpov1.Stream, recoveryEventType, eventType string) zalandov1.EventStreamRecovery {
 	if (stream.EnableRecovery != nil && !*stream.EnableRecovery) ||
 		(stream.EnableRecovery == nil && recoveryEventType == "") {
 		return zalandov1.EventStreamRecovery{
@@ -275,7 +275,7 @@ func (c *Cluster) syncStreams() error {
 
 	slots := make(map[string]map[string]string)
 	slotsToSync := make(map[string]map[string]string)
-	publications := make(map[string]map[string]acidv1.StreamTable)
+	publications := make(map[string]map[string]cpov1.StreamTable)
 	requiredPatroniConfig := c.Spec.Patroni
 
 	if len(requiredPatroniConfig.Slots) > 0 {

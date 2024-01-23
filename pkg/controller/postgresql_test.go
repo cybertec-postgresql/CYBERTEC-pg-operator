@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1."github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -26,13 +26,13 @@ var postgresqlTestController = newPostgresqlTestController()
 func TestControllerOwnershipOnPostgresql(t *testing.T) {
 	tests := []struct {
 		name  string
-		pg    *acidv1.Postgresql
+		pg    *cpov1.Postgresql
 		owned bool
 		error string
 	}{
 		{
 			"Postgres cluster with defined ownership of mocked controller",
-			&acidv1.Postgresql{
+			&cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Annotations: map[string]string{"cpo.opensource.cybertec.at/controller": "postgresql-test"},
 				},
@@ -42,7 +42,7 @@ func TestControllerOwnershipOnPostgresql(t *testing.T) {
 		},
 		{
 			"Postgres cluster with defined ownership of another controller",
-			&acidv1.Postgresql{
+			&cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Annotations: map[string]string{"cpo.opensource.cybertec.at/controller": "stups-test"},
 				},
@@ -52,7 +52,7 @@ func TestControllerOwnershipOnPostgresql(t *testing.T) {
 		},
 		{
 			"Test Postgres cluster without defined ownership",
-			&acidv1.Postgresql{},
+			&cpov1.Postgresql{},
 			False,
 			"Postgres cluster should be owned by operator with empty controller ID, but controller says yes",
 		},
@@ -67,21 +67,21 @@ func TestControllerOwnershipOnPostgresql(t *testing.T) {
 func TestMergeDeprecatedPostgreSQLSpecParameters(t *testing.T) {
 	tests := []struct {
 		name  string
-		in    *acidv1.PostgresSpec
-		out   *acidv1.PostgresSpec
+		in    *cpov1.PostgresSpec
+		out   *cpov1.PostgresSpec
 		error string
 	}{
 		{
 			"Check that old parameters propagate values to the new ones",
-			&acidv1.PostgresSpec{UseLoadBalancer: &True, ReplicaLoadBalancer: &True},
-			&acidv1.PostgresSpec{UseLoadBalancer: nil, ReplicaLoadBalancer: nil,
+			&cpov1.PostgresSpec{UseLoadBalancer: &True, ReplicaLoadBalancer: &True},
+			&cpov1.PostgresSpec{UseLoadBalancer: nil, ReplicaLoadBalancer: nil,
 				EnableMasterLoadBalancer: &True, EnableReplicaLoadBalancer: &True},
 			"New parameters should be set from the values of old ones",
 		},
 		{
 			"Check that new parameters are not set when both old and new ones are present",
-			&acidv1.PostgresSpec{UseLoadBalancer: &True, EnableMasterLoadBalancer: &False},
-			&acidv1.PostgresSpec{UseLoadBalancer: nil, EnableMasterLoadBalancer: &False},
+			&cpov1.PostgresSpec{UseLoadBalancer: &True, EnableMasterLoadBalancer: &False},
+			&cpov1.PostgresSpec{UseLoadBalancer: nil, EnableMasterLoadBalancer: &False},
 			"New parameters should remain unchanged when both old and new are present",
 		},
 	}
@@ -104,12 +104,12 @@ func TestMeetsClusterDeleteAnnotations(t *testing.T) {
 
 	tests := []struct {
 		name  string
-		pg    *acidv1.Postgresql
+		pg    *cpov1.Postgresql
 		error string
 	}{
 		{
 			"Postgres cluster with matching delete annotations",
-			&acidv1.Postgresql{
+			&cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: clusterName,
 					Annotations: map[string]string{
@@ -122,7 +122,7 @@ func TestMeetsClusterDeleteAnnotations(t *testing.T) {
 		},
 		{
 			"Postgres cluster with violated delete date annotation",
-			&acidv1.Postgresql{
+			&cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: clusterName,
 					Annotations: map[string]string{
@@ -135,7 +135,7 @@ func TestMeetsClusterDeleteAnnotations(t *testing.T) {
 		},
 		{
 			"Postgres cluster with violated delete cluster name annotation",
-			&acidv1.Postgresql{
+			&cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: clusterName,
 					Annotations: map[string]string{
@@ -148,7 +148,7 @@ func TestMeetsClusterDeleteAnnotations(t *testing.T) {
 		},
 		{
 			"Postgres cluster with missing delete annotations",
-			&acidv1.Postgresql{
+			&cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:        clusterName,
 					Annotations: map[string]string{},
@@ -158,7 +158,7 @@ func TestMeetsClusterDeleteAnnotations(t *testing.T) {
 		},
 		{
 			"Postgres cluster with missing delete cluster name annotation",
-			&acidv1.Postgresql{
+			&cpov1.Postgresql{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: clusterName,
 					Annotations: map[string]string{

@@ -6,7 +6,7 @@ import (
 
 	"time"
 
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1."github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
@@ -14,7 +14,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (c *Controller) readOperatorConfigurationFromCRD(configObjectNamespace, configObjectName string) (*acidv1.OperatorConfiguration, error) {
+func (c *Controller) readOperatorConfigurationFromCRD(configObjectNamespace, configObjectName string) (*cpov1.OperatorConfiguration, error) {
 
 	config, err := c.KubeClient.OperatorConfigurationsGetter.OperatorConfigurations(configObjectNamespace).Get(
 		context.TODO(), configObjectName, metav1.GetOptions{})
@@ -26,7 +26,7 @@ func (c *Controller) readOperatorConfigurationFromCRD(configObjectNamespace, con
 }
 
 // importConfigurationFromCRD is a transitional function that converts CRD configuration to the one based on the configmap
-func (c *Controller) importConfigurationFromCRD(fromCRD *acidv1.OperatorConfigurationData) *config.Config {
+func (c *Controller) importConfigurationFromCRD(fromCRD *cpov1.OperatorConfigurationData) *config.Config {
 	result := &config.Config{}
 
 	// general config

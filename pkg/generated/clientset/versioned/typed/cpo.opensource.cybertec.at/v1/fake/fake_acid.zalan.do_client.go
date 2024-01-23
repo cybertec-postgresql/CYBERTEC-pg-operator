@@ -30,25 +30,25 @@ import (
 	testing "k8s.io/client-go/testing"
 )
 
-type FakeAcidV1 struct {
+type FakeCpoV1 struct {
 	*testing.Fake
 }
 
-func (c *FakeAcidV1) OperatorConfigurations(namespace string) v1.OperatorConfigurationInterface {
+func (c *FakeCpoV1) OperatorConfigurations(namespace string) v1.OperatorConfigurationInterface {
 	return &FakeOperatorConfigurations{c, namespace}
 }
 
-func (c *FakeAcidV1) PostgresTeams(namespace string) v1.PostgresTeamInterface {
+func (c *FakeCpoV1) PostgresTeams(namespace string) v1.PostgresTeamInterface {
 	return &FakePostgresTeams{c, namespace}
 }
 
-func (c *FakeAcidV1) Postgresqls(namespace string) v1.PostgresqlInterface {
+func (c *FakeCpoV1) Postgresqls(namespace string) v1.PostgresqlInterface {
 	return &FakePostgresqls{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *FakeAcidV1) RESTClient() rest.Interface {
+func (c *FakeCpoV1) RESTClient() rest.Interface {
 	var ret *rest.RESTClient
 	return ret
 }

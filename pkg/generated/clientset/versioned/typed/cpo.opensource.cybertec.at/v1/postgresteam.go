@@ -62,7 +62,7 @@ type postgresTeams struct {
 }
 
 // newPostgresTeams returns a PostgresTeams
-func newPostgresTeams(c *AcidV1Client, namespace string) *postgresTeams {
+func newPostgresTeams(c *CpoV1Client, namespace string) *postgresTeams {
 	return &postgresTeams{
 		client: c.RESTClient(),
 		ns:     namespace,

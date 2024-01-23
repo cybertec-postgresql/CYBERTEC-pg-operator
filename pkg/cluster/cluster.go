@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1."github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/sirupsen/logrus"
 
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/scheme"
@@ -69,7 +69,7 @@ type kubeResources struct {
 // Cluster describes postgresql cluster
 type Cluster struct {
 	kubeResources
-	acidv1.Postgresql
+	cpov1.Postgresql
 	Config
 	logger           *logrus.Entry
 	eventRecorder    record.EventRecorder
@@ -106,7 +106,7 @@ type compareStatefulsetResult struct {
 }
 
 // New creates a new cluster. This function should be called from a controller.
-func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec acidv1.Postgresql, logger *logrus.Entry, eventRecorder record.EventRecorder) *Cluster {
+func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec cpov1.Postgresql, logger *logrus.Entry, eventRecorder record.EventRecorder) *Cluster {
 	deletePropagationPolicy := metav1.DeletePropagationOrphan
 
 	podEventsQueue := cache.NewFIFO(func(obj interface{}) (string, error) {
@@ -253,13 +253,13 @@ func (c *Cluster) Create() (err error) {
 
 	defer func() {
 		if err == nil {
-			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusRunning) //TODO: are you sure it's running?
+			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusRunning) //TODO: are you sure it's running?
 		} else {
-			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusAddFailed)
+			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusAddFailed)
 		}
 	}()
 
-	c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusCreating)
+	c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusCreating)
 	c.eventRecorder.Event(c.GetReference(), v1.EventTypeNormal, "Create", "Started creation of new cluster resources")
 
 	for _, role := range []PostgresRole{Master, Replica} {
@@ -809,7 +809,7 @@ func (c *Cluster) compareServices(old, new *v1.Service) (bool, string) {
 // (i.e. service) is treated as an error
 // logical backup cron jobs are an exception: a user-initiated Update can enable a logical backup job
 // for a cluster that had no such job before. In this case a missing job is not an error.
-func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
+func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	updateFailed := false
 	userInitFailed := false
 	syncStatefulSet := false
@@ -817,14 +817,14 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusUpdating)
+	c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusUpdating)
 	c.setSpec(newSpec)
 
 	defer func() {
 		if updateFailed {
-			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusUpdateFailed)
+			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusUpdateFailed)
 		} else {
-			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusRunning)
+			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusRunning)
 		}
 	}()
 
@@ -1167,7 +1167,7 @@ func (c *Cluster) Delete() {
 }
 
 // NeedsRepair returns true if the cluster should be included in the repair scan (based on its in-memory status).
-func (c *Cluster) NeedsRepair() (bool, acidv1.PostgresStatus) {
+func (c *Cluster) NeedsRepair() (bool, cpov1.PostgresStatus) {
 	c.specMu.RLock()
 	defer c.specMu.RUnlock()
 	return !c.Status.Success(), c.Status
@@ -1282,7 +1282,7 @@ func (c *Cluster) initSystemUsers() {
 func (c *Cluster) initPreparedDatabaseRoles() error {
 
 	if c.Spec.PreparedDatabases != nil && len(c.Spec.PreparedDatabases) == 0 { // TODO: add option to disable creating such a default DB
-		c.Spec.PreparedDatabases = map[string]acidv1.PreparedDatabase{strings.Replace(c.Name, "-", "_", -1): {}}
+		c.Spec.PreparedDatabases = map[string]cpov1.PreparedDatabase{strings.Replace(c.Name, "-", "_", -1): {}}
 	}
 
 	// create maps with default roles/users as keys and their membership as values
@@ -1301,7 +1301,7 @@ func (c *Cluster) initPreparedDatabaseRoles() error {
 		// get list of prepared schemas to set in search_path
 		preparedSchemas := preparedDB.PreparedSchemas
 		if len(preparedDB.PreparedSchemas) == 0 {
-			preparedSchemas = map[string]acidv1.PreparedSchema{"data": {DefaultRoles: util.True()}}
+			preparedSchemas = map[string]cpov1.PreparedSchema{"data": {DefaultRoles: util.True()}}
 		}
 
 		var searchPath strings.Builder

@@ -35,7 +35,7 @@ import (
 
 // FakeOperatorConfigurations implements OperatorConfigurationInterface
 type FakeOperatorConfigurations struct {
-	Fake *FakeAcidV1
+	Fake *FakeCpoV1
 	ns   string
 }
 

@@ -38,7 +38,7 @@ import (
 
 // FakePostgresTeams implements PostgresTeamInterface
 type FakePostgresTeams struct {
-	Fake *FakeAcidV1
+	Fake *FakeCpoV1
 	ns   string
 }
 

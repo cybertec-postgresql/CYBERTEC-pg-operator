@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1."github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
@@ -32,7 +32,7 @@ var requirePrimaryRestartWhenDecreased = []string{
 
 // Sync syncs the cluster, making sure the actual Kubernetes objects correspond to what is defined in the manifest.
 // Unlike the update, sync does not error out if some objects do not exist and takes care of creating them.
-func (c *Cluster) Sync(newSpec *acidv1.Postgresql) error {
+func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	var err error
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -43,9 +43,9 @@ func (c *Cluster) Sync(newSpec *acidv1.Postgresql) error {
 	defer func() {
 		if err != nil {
 			c.logger.Warningf("error while syncing cluster state: %v", err)
-			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusSyncFailed)
+			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusSyncFailed)
 		} else if !c.Status.Running() {
-			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusRunning)
+			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusRunning)
 		}
 	}()
 
@@ -465,9 +465,9 @@ func (c *Cluster) syncStatefulSet() error {
 	return nil
 }
 
-func (c *Cluster) syncPatroniConfig(pods []v1.Pod, requiredPatroniConfig acidv1.Patroni, requiredPgParameters map[string]string) (bool, bool, uint32, error) {
+func (c *Cluster) syncPatroniConfig(pods []v1.Pod, requiredPatroniConfig cpov1.Patroni, requiredPgParameters map[string]string) (bool, bool, uint32, error) {
 	var (
-		effectivePatroniConfig acidv1.Patroni
+		effectivePatroniConfig cpov1.Patroni
 		effectivePgParameters  map[string]string
 		loopWait               uint32
 		configPatched          bool
@@ -488,7 +488,7 @@ func (c *Cluster) syncPatroniConfig(pods []v1.Pod, requiredPatroniConfig acidv1.
 		loopWait = effectivePatroniConfig.LoopWait
 
 		// empty config probably means cluster is not fully initialized yet, e.g. restoring from backup
-		if reflect.DeepEqual(effectivePatroniConfig, acidv1.Patroni{}) || len(effectivePgParameters) == 0 {
+		if reflect.DeepEqual(effectivePatroniConfig, cpov1.Patroni{}) || len(effectivePgParameters) == 0 {
 			errors = append(errors, fmt.Sprintf("empty Patroni config on pod %s - skipping config patch", podName))
 		} else {
 			configPatched, restartPrimaryFirst, err = c.checkAndSetGlobalPostgreSQLConfiguration(&pod, effectivePatroniConfig, requiredPatroniConfig, effectivePgParameters, requiredPgParameters)
@@ -606,7 +606,7 @@ func (c *Cluster) AnnotationsToPropagate(annotations map[string]string) map[stri
 
 // checkAndSetGlobalPostgreSQLConfiguration checks whether cluster-wide API parameters
 // (like max_connections) have changed and if necessary sets it via the Patroni API
-func (c *Cluster) checkAndSetGlobalPostgreSQLConfiguration(pod *v1.Pod, effectivePatroniConfig, desiredPatroniConfig acidv1.Patroni, effectivePgParameters, desiredPgParameters map[string]string) (bool, bool, error) {
+func (c *Cluster) checkAndSetGlobalPostgreSQLConfiguration(pod *v1.Pod, effectivePatroniConfig, desiredPatroniConfig cpov1.Patroni, effectivePgParameters, desiredPgParameters map[string]string) (bool, bool, error) {
 	configToSet := make(map[string]interface{})
 	parametersToSet := make(map[string]string)
 	restartPrimary := make([]bool, 0)
@@ -1094,7 +1094,7 @@ func (c *Cluster) syncDatabases() error {
 
 	// if no prepared databases are specified create a database named like the cluster
 	if c.Spec.PreparedDatabases != nil && len(c.Spec.PreparedDatabases) == 0 { // TODO: add option to disable creating such a default DB
-		c.Spec.PreparedDatabases = map[string]acidv1.PreparedDatabase{strings.Replace(c.Name, "-", "_", -1): {}}
+		c.Spec.PreparedDatabases = map[string]cpov1.PreparedDatabase{strings.Replace(c.Name, "-", "_", -1): {}}
 	}
 	for preparedDatabaseName := range c.Spec.PreparedDatabases {
 		_, exists := currentDatabases[preparedDatabaseName]
@@ -1172,7 +1172,7 @@ func (c *Cluster) syncPreparedDatabases() error {
 		// now, prepare defined schemas
 		preparedSchemas := preparedDB.PreparedSchemas
 		if len(preparedDB.PreparedSchemas) == 0 {
-			preparedSchemas = map[string]acidv1.PreparedSchema{"data": {DefaultRoles: util.True()}}
+			preparedSchemas = map[string]cpov1.PreparedSchema{"data": {DefaultRoles: util.True()}}
 		}
 		if err := c.syncPreparedSchemas(preparedDbName, preparedSchemas); err != nil {
 			errors = append(errors, err.Error())
@@ -1196,7 +1196,7 @@ func (c *Cluster) syncPreparedDatabases() error {
 	return nil
 }
 
-func (c *Cluster) syncPreparedSchemas(databaseName string, preparedSchemas map[string]acidv1.PreparedSchema) error {
+func (c *Cluster) syncPreparedSchemas(databaseName string, preparedSchemas map[string]cpov1.PreparedSchema) error {
 	c.setProcessName("syncing prepared schemas")
 	errors := make([]string, 0)
 

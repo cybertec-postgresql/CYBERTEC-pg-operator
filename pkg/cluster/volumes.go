@@ -11,7 +11,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/aws/aws-sdk-go/aws"
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1."github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
@@ -261,7 +261,7 @@ func (c *Cluster) deletePersistentVolumeClaims() error {
 	return nil
 }
 
-func (c *Cluster) resizeVolumeClaims(newVolume acidv1.Volume) error {
+func (c *Cluster) resizeVolumeClaims(newVolume cpov1.Volume) error {
 	c.logger.Debugln("resizing PVCs")
 	pvcs, err := c.listPersistentVolumeClaims()
 	if err != nil {
@@ -406,7 +406,7 @@ func (c *Cluster) resizeVolumes() error {
 	return nil
 }
 
-func (c *Cluster) volumeClaimsNeedResizing(newVolume acidv1.Volume) (bool, error) {
+func (c *Cluster) volumeClaimsNeedResizing(newVolume cpov1.Volume) (bool, error) {
 	newSize, err := resource.ParseQuantity(newVolume.Size)
 	manifestSize := quantityToGigabyte(newSize)
 	if err != nil {

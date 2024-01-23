@@ -1,5 +1,5 @@
 /*
-Copyright 2024 Compose, Zalando SE
+Copyright 2023 Compose, Zalando SE
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,34 +32,34 @@ import (
 	rest "k8s.io/client-go/rest"
 )
 
-type AcidV1Interface interface {
+type CpoV1Interface interface {
 	RESTClient() rest.Interface
 	OperatorConfigurationsGetter
 	PostgresTeamsGetter
 	PostgresqlsGetter
 }
 
-// AcidV1Client is used to interact with features provided by the cpo.opensource.cybertec.at group.
-type AcidV1Client struct {
+// CpoV1Client is used to interact with features provided by the cpo.opensource.cybertec.at group.
+type CpoV1Client struct {
 	restClient rest.Interface
 }
 
-func (c *AcidV1Client) OperatorConfigurations(namespace string) OperatorConfigurationInterface {
+func (c *CpoV1Client) OperatorConfigurations(namespace string) OperatorConfigurationInterface {
 	return newOperatorConfigurations(c, namespace)
 }
 
-func (c *AcidV1Client) PostgresTeams(namespace string) PostgresTeamInterface {
+func (c *CpoV1Client) PostgresTeams(namespace string) PostgresTeamInterface {
 	return newPostgresTeams(c, namespace)
 }
 
-func (c *AcidV1Client) Postgresqls(namespace string) PostgresqlInterface {
+func (c *CpoV1Client) Postgresqls(namespace string) PostgresqlInterface {
 	return newPostgresqls(c, namespace)
 }
 
-// NewForConfig creates a new AcidV1Client for the given config.
+// NewForConfig creates a new CpoV1Client for the given config.
 // NewForConfig is equivalent to NewForConfigAndClient(c, httpClient),
 // where httpClient was generated with rest.HTTPClientFor(c).
-func NewForConfig(c *rest.Config) (*AcidV1Client, error) {
+func NewForConfig(c *rest.Config) (*CpoV1Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
@@ -71,9 +71,9 @@ func NewForConfig(c *rest.Config) (*AcidV1Client, error) {
 	return NewForConfigAndClient(&config, httpClient)
 }
 
-// NewForConfigAndClient creates a new AcidV1Client for the given config and http client.
+// NewForConfigAndClient creates a new CpoV1Client for the given config and http client.
 // Note the http client provided takes precedence over the configured transport values.
-func NewForConfigAndClient(c *rest.Config, h *http.Client) (*AcidV1Client, error) {
+func NewForConfigAndClient(c *rest.Config, h *http.Client) (*CpoV1Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
@@ -82,12 +82,12 @@ func NewForConfigAndClient(c *rest.Config, h *http.Client) (*AcidV1Client, error
 	if err != nil {
 		return nil, err
 	}
-	return &AcidV1Client{client}, nil
+	return &CpoV1Client{client}, nil
 }
 
-// NewForConfigOrDie creates a new AcidV1Client for the given config and
+// NewForConfigOrDie creates a new CpoV1Client for the given config and
 // panics if there is an error in the config.
-func NewForConfigOrDie(c *rest.Config) *AcidV1Client {
+func NewForConfigOrDie(c *rest.Config) *CpoV1Client {
 	client, err := NewForConfig(c)
 	if err != nil {
 		panic(err)
@@ -95,9 +95,9 @@ func NewForConfigOrDie(c *rest.Config) *AcidV1Client {
 	return client
 }
 
-// New creates a new AcidV1Client for the given RESTClient.
-func New(c rest.Interface) *AcidV1Client {
-	return &AcidV1Client{c}
+// New creates a new CpoV1Client for the given RESTClient.
+func New(c rest.Interface) *CpoV1Client {
+	return &CpoV1Client{c}
 }
 
 func setConfigDefaults(config *rest.Config) error {
@@ -115,7 +115,7 @@ func setConfigDefaults(config *rest.Config) error {
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *AcidV1Client) RESTClient() rest.Interface {
+func (c *CpoV1Client) RESTClient() rest.Interface {
 	if c == nil {
 		return nil
 	}

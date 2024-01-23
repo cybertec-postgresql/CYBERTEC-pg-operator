@@ -2634,7 +2634,7 @@ func (c *Cluster) getTDESecretName() string {
 
 func (c *Cluster) getMonitoringSecretName() string {
 	return c.OpConfig.SecretNameTemplate.Format(
-		"username", strings.Replace(c.Postgresql.Spec.Monitoring.Name, "_", "-", -1),
+		"username", strings.Replace("postgres-exporter", "_", "-", -1),
 		"cluster", c.clusterName().Name,
 		"tprkind", acidv1.PostgresCRDResourceKind,
 		"tprgroup", acidzalando.GroupName)

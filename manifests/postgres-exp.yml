@@ -1,14 +1,9 @@
 apiVersion: cpo.opensource.cybertec.at/v1
 kind: postgresql
 metadata:
-  name: cluster-exp
-  # labels: 
-  #   cpo_monitoring_stack: 'true'
+  name: cluster-monitor
 spec:
-  tde:
-    enable: true
   monitor:
-    name: 'postgres-exporter'
     image: 'docker.io/cybertecpostgresql/cybertec-pg-container:exporter-16.1-1-dev-arm'
   dockerImage: 'docker.io/cybertecpostgresql/cybertec-pg-container:postgres-16.1-5-dev-arm'
   numberOfInstances: 1
@@ -29,11 +24,11 @@ spec:
   #     - login
   resources:
     limits:
-      cpu: 500m
-      memory: 500Mi
+      cpu: 1500m
+      memory: 1500Mi
     requests:
-      cpu: 100m
-      memory: 100Mi
+      cpu: 1000m
+      memory: 1000Mi
   teamId: acid
   volume:
     size: 5Gi

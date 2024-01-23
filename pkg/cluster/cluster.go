@@ -124,18 +124,21 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec acidv1.Postgres
 
 	if pgSpec.Spec.Monitoring != nil {
 		monitor := pgSpec.Spec.Monitoring
-
-		if monitor.Name == "postgres-exporter" {
-			sidecar := &acidv1.Sidecar{
-				Name:        monitor.Name,
-				DockerImage: monitor.Image,
-			}
-			//add this user to total users in the spec
-			monitorUser := map[string]string{
-				"cpo_exporter": constants.RoleFlagLogin,
-			}
-			pgSpec.Spec.Sidecars = append(pgSpec.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
+		sidecar := &acidv1.Sidecar{
+			Name:        "postgres-exporter",
+			DockerImage: monitor.Image,
 		}
+		pgSpec.Spec.Sidecars = append(pgSpec.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
+
+		flg := acidv1.UserFlags{constants.RoleFlagLogin}
+		if pgSpec.Spec.Users != nil {
+			pgSpec.Spec.Users["cpo_exporter"] = flg //TODO: do better than hardcoding this user
+		} else {
+			users := make(map[string]acidv1.UserFlags)
+			pgSpec.Spec.Users = users
+			pgSpec.Spec.Users["cpo_exporter"] = flg //TODO: do better than hardcoding this user
+		}
+		fmt.Println("############## Users already there are", pgSpec.Spec.Users)
 	}
 	cluster := &Cluster{
 		Config:         cfg,

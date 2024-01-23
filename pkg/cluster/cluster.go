@@ -138,7 +138,6 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec acidv1.Postgres
 			pgSpec.Spec.Users = users
 			pgSpec.Spec.Users["cpo_exporter"] = flg //TODO: do better than hardcoding this user
 		}
-		fmt.Println("############## Users already there are", pgSpec.Spec.Users)
 	}
 	cluster := &Cluster{
 		Config:         cfg,

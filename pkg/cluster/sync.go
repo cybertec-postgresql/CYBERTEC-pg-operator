@@ -309,7 +309,21 @@ func (c *Cluster) syncStatefulSet() error {
 	if err != nil {
 		c.logger.Warnf("could not list pods of the statefulset: %v", err)
 	}
-
+	if c.Spec.Monitoring != nil {
+		monitor := c.Spec.Monitoring
+		sidecar := &acidv1.Sidecar{
+			Name:        "postgres-exporter",
+			DockerImage: monitor.Image,
+			Ports: []v1.ContainerPort{
+				{
+					ContainerPort: monitorPort,
+					Protocol:      v1.ProtocolTCP,
+				},
+			},
+			Env: c.generateMonitoringEnvVars(),
+		}
+		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
+	}
 	// NB: Be careful to consider the codepath that acts on podsRollingUpdateRequired before returning early.
 	sset, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.statefulSetName(), metav1.GetOptions{})
 	if err != nil {
@@ -997,6 +1011,17 @@ func (c *Cluster) syncRoles() (err error) {
 	deletedUsers := map[string]string{}
 	newUsers = make(map[string]spec.PgUser)
 
+	if c.Spec.Monitoring != nil {
+		flg := acidv1.UserFlags{constants.RoleFlagLogin}
+		if c.Spec.Users != nil {
+			c.Spec.Users[monitorUsername] = flg
+		} else {
+			users := make(map[string]acidv1.UserFlags)
+			c.Spec.Users = users
+			c.Spec.Users[monitorUsername] = flg
+		}
+	}
+
 	// create list of database roles to query
 	for _, u := range c.pgUsers {
 		pgRole := u.Name
@@ -1438,7 +1463,9 @@ func (c *Cluster) createMonitoringSecret() error {
 		c.Secrets[secret.UID] = secret
 		c.logger.Debugf("created new secret %s, namespace: %s, uid: %s", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, secret.UID)
 	} else {
-		return fmt.Errorf("could not create secret for TDE %s: in namespace %s: %v", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, err)
+		if !k8sutil.ResourceAlreadyExists(err) {
+			return fmt.Errorf("could not create secret for Monitoring %s: in namespace %s: %v", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, err)
+		}
 	}
 
 	return nil

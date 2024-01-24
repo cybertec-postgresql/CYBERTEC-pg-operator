@@ -121,24 +121,17 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec acidv1.Postgres
 	if !ok {
 		passwordEncryption = "scram-sha-256"
 	}
-
 	if pgSpec.Spec.Monitoring != nil {
-		monitor := pgSpec.Spec.Monitoring
-		sidecar := &acidv1.Sidecar{
-			Name:        "postgres-exporter",
-			DockerImage: monitor.Image,
-		}
-		pgSpec.Spec.Sidecars = append(pgSpec.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
-
 		flg := acidv1.UserFlags{constants.RoleFlagLogin}
 		if pgSpec.Spec.Users != nil {
-			pgSpec.Spec.Users["cpo_exporter"] = flg //TODO: do better than hardcoding this user
+			pgSpec.Spec.Users[monitorUsername] = flg
 		} else {
 			users := make(map[string]acidv1.UserFlags)
 			pgSpec.Spec.Users = users
-			pgSpec.Spec.Users["cpo_exporter"] = flg //TODO: do better than hardcoding this user
+			pgSpec.Spec.Users[monitorUsername] = flg
 		}
 	}
+
 	cluster := &Cluster{
 		Config:         cfg,
 		Postgresql:     pgSpec,

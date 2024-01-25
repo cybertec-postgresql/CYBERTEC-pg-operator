@@ -89,6 +89,22 @@ const (
 			TO {{.pooler_user}};
 		GRANT USAGE ON SCHEMA {{.pooler_schema}} TO {{.pooler_user}};
 	`
+	CPOmonitoring = `
+		GRANT pg_monitor TO cpo_exporter;
+		GRANT SELECT ON TABLE pg_authid TO cpo_exporter;
+
+		CREATE SCHEMA IF NOT EXISTS exporter;
+		ALTER SCHEMA exporter OWNER TO cpo_exporter;
+		CREATE EXTENSION IF NOT EXISTS pgnodemx with SCHEMA exporter;
+		alter extension pgnodemx UPDATE;
+		CREATE TABLE  IF NOT EXISTS exporter.pgbackrestbackupinfo (
+			name text NOT NULL,
+			data jsonb NOT NULL,
+			data_time timestamp with time zone DEFAULT now() NOT NULL
+		)
+		WITH (autovacuum_analyze_scale_factor='0', autovacuum_vacuum_scale_factor='0', autovacuum_vacuum_threshold='2', autovacuum_analyze_threshold='2');
+		ALTER TABLE exporter.pgbackrestbackupinfo OWNER TO cpo_exporter;
+	`
 )
 
 func (c *Cluster) pgConnectionString(dbname string) string {

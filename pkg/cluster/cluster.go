@@ -131,7 +131,6 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec acidv1.Postgres
 			pgSpec.Spec.Users[monitorUsername] = flg
 		}
 	}
-
 	cluster := &Cluster{
 		Config:         cfg,
 		Postgresql:     pgSpec,
@@ -421,6 +420,29 @@ func (c *Cluster) Create() (err error) {
 	// Do not consider connection pooler as a strict requirement, and if
 	// something fails, report warning
 	c.createConnectionPooler(c.installLookupFunction)
+
+	//Setup cpo monitoring related sql statements
+	if c.Spec.Monitoring != nil {
+		c.logger.Info("setting up CPO monitoring")
+
+		// Open a new connection to the postgres db tp setup monitoring struc and permissions
+		if err := c.initDbConnWithName("postgres"); err != nil {
+			return fmt.Errorf("could not init database connection")
+		}
+		defer func() {
+			if c.connectionIsClosed() {
+				return
+			}
+
+			if err := c.closeDbConn(); err != nil {
+				c.logger.Errorf("could not close database connection: %v", err)
+			}
+		}()
+		_, err := c.pgDb.Exec(CPOmonitoring)
+		if err != nil {
+			return fmt.Errorf("CPO monitoring could not be setup: %v", err)
+		}
+	}
 
 	// remember slots to detect deletion from manifest
 	for slotName, desiredSlot := range c.Spec.Patroni.Slots {

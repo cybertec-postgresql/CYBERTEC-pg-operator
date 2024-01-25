@@ -5,8 +5,8 @@ FROM ubuntu:20.04 as builder
 
 ARG VERSION
 
-COPY  . /go/src/github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
-WORKDIR /go/src/github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+COPY  . /go/src/github.com/cybertec-postgresql/cybertec-pg-operator
+WORKDIR /go/src/github.com/cybertec-postgresql/cybertec-pg-operator
 
 ENV OPERATOR_LDFLAGS="-X=main.version=${VERSION}"
 RUN bash docker/build_operator.sh
@@ -18,7 +18,7 @@ LABEL maintainer="Team ACID @ Zalando <team-acid@zalando.de>"
 RUN apk --no-cache add curl
 RUN apk --no-cache add ca-certificates
 
-COPY --from=builder /go/src/github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/build/* /
+COPY --from=builder /go/src/github.com/cybertec-postgresql/cybertec-pg-operator/build/* /
 
 RUN addgroup -g 1000 pgo
 RUN adduser -D -u 1000 -G pgo -g 'Postgres Operator' pgo

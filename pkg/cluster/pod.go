@@ -12,11 +12,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at/v1"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/spec"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/patroni"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/retryutil"
+	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/patroni"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/retryutil"
 )
 
 func (c *Cluster) listPods() ([]v1.Pod, error) {

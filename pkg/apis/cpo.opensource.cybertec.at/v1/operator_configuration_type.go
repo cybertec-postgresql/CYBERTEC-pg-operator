@@ -3,11 +3,11 @@ package v1
 // Operator configuration CRD definition, please use snake_case for field names.
 
 import (
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/config"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
 
 	"time"
 
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )

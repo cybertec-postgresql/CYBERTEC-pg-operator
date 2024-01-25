@@ -15,14 +15,14 @@ would create a directory for the GOPATH (i.e. ~/go) and place the source code
 under the ~/go/src sub directories.
 
 Given the schema above, the Postgres Operator source code located at
-`github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5` should be put at
--`~/go/src/github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5`.
+`github.com/cybertec-postgresql/cybertec-pg-operator` should be put at
+-`~/go/src/github.com/cybertec-postgresql/cybertec-pg-operator`.
 
 ```bash
 export GOPATH=~/go
 mkdir -p ${GOPATH}/src/github.com/zalando/
 cd ${GOPATH}/src/github.com/zalando/
-git clone https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5.git
+git clone https://github.com/cybertec-postgresql/cybertec-pg-operator.git
 ```
 
 ## Building the operator
@@ -112,7 +112,7 @@ The `/pkg/generated/` contains the resultant code. To make these scripts work,
 you may need to `export GOPATH=$(go env GOPATH)`
 
 References for code generation are:
-* [Relevant pull request](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pull/369)
+* [Relevant pull request](https://github.com/cybertec-postgresql/cybertec-pg-operator/pull/369)
 See comments there for minor issues that can sometimes broke the generation process.
 * [Code generator source code](https://github.com/kubernetes/code-generator)
 * [Code Generation for CustomResources](https://blog.openshift.com/kubernetes-deep-dive-code-generation-customresources/) - intro post on the topic
@@ -257,7 +257,7 @@ kubectl logs acid-minimal-cluster-0
 Whenever possible you should rely on leveraging proper mocks and K8s fake client that allows full fledged testing of K8s objects in your unit tests.
 
 To enable mocks, a code annotation is needed:
-[Mock code gen annotation](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/pkg/util/volumes/volumes.go#L3)
+[Mock code gen annotation](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/pkg/util/volumes/volumes.go#L3)
 
 To generate mocks run:
 ```bash
@@ -265,10 +265,10 @@ make mocks
 ```
 
 Examples for mocks can be found in:
-[Example mock usage](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/pkg/cluster/volumes_test.go#L248)
+[Example mock usage](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/pkg/cluster/volumes_test.go#L248)
 
 Examples for fake K8s objects can be found in:
-[Example fake K8s client usage](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/pkg/cluster/volumes_test.go#L166)
+[Example fake K8s client usage](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/pkg/cluster/volumes_test.go#L166)
 
 ## End-to-end tests
 
@@ -284,7 +284,7 @@ the standard Docker `bridge` network. The kind cluster is deleted if tests
 finish successfully or on each new run in case it still exists.
 
 End-to-end tests are executed automatically during builds (for more details,
-see the [README](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/e2e/README.md) in the `e2e` folder):
+see the [README](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/e2e/README.md) in the `e2e` folder):
 
 ```bash
 make e2e
@@ -308,35 +308,35 @@ parameters (with exceptions for certain Patroni/Postgres options) and
 variables if you feel a per-cluster configuration is necessary.
 
 Note: If one option is defined in the operator configuration and in the cluster
-[manifest](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/manifests/complete-postgres-manifest.yaml), the latter takes
+[manifest](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/complete-postgres-manifest.yaml), the latter takes
 precedence.
 
 ### Go code
 
 Update the following Go files that obtain the configuration parameter from the
 manifest files:
-* [operator_configuration_type.go](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/pkg/apis/cpo.opensource.cybertec.at/v1/operator_configuration_type.go)
-* [operator_config.go](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/pkg/controller/operator_config.go)
-* [config.go](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/pkg/util/config/config.go)
+* [operator_configuration_type.go](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/pkg/apis/cpo.opensource.cybertec.at/v1/operator_configuration_type.go)
+* [operator_config.go](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/pkg/controller/operator_config.go)
+* [config.go](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/pkg/util/config/config.go)
 
-Postgres manifest parameters are defined in the [api package](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/pkg/apis/cpo.opensource.cybertec.at/v1/postgresql_type.go).
-The operator behavior has to be implemented at least in [k8sres.go](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/pkg/cluster/k8sres.go).
-Validation of CRD parameters is controlled in [crds.go](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/pkg/apis/cpo.opensource.cybertec.at/v1/crds.go).
+Postgres manifest parameters are defined in the [api package](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/pkg/apis/cpo.opensource.cybertec.at/v1/postgresql_type.go).
+The operator behavior has to be implemented at least in [k8sres.go](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/pkg/cluster/k8sres.go).
+Validation of CRD parameters is controlled in [crds.go](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/pkg/apis/cpo.opensource.cybertec.at/v1/crds.go).
 Please, reflect your changes in tests, for example in:
-* [config_test.go](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/pkg/util/config/config_test.go)
-* [k8sres_test.go](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/pkg/cluster/k8sres_test.go)
-* [util_test.go](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/pkg/apis/cpo.opensource.cybertec.at/v1/util_test.go)
+* [config_test.go](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/pkg/util/config/config_test.go)
+* [k8sres_test.go](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/pkg/cluster/k8sres_test.go)
+* [util_test.go](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/pkg/apis/cpo.opensource.cybertec.at/v1/util_test.go)
 
 ### Updating manifest files
 
 For the CRD-based configuration, please update the following files:
-* the default [OperatorConfiguration](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/manifests/postgresql-operator-default-configuration.yaml)
-* the CRD's [validation](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/manifests/operatorconfiguration.crd.yaml)
-* the CRD's validation in the [Helm chart](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/charts/postgres-operator/crds/operatorconfigurations.yaml)
+* the default [OperatorConfiguration](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/postgresql-operator-default-configuration.yaml)
+* the CRD's [validation](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/operatorconfiguration.crd.yaml)
+* the CRD's validation in the [Helm chart](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/charts/postgres-operator/crds/operatorconfigurations.yaml)
 
-Add new options also to the Helm chart's [values file](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/charts/postgres-operator/values.yaml) file.
+Add new options also to the Helm chart's [values file](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/charts/postgres-operator/values.yaml) file.
 It follows the OperatorConfiguration CRD layout. Nested values will be flattened for the ConfigMap.
-Last but no least, update the [ConfigMap](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/blob/master/manifests/configmap.yaml) manifest example as well.
+Last but no least, update the [ConfigMap](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/configmap.yaml) manifest example as well.
 
 ### Updating documentation
 

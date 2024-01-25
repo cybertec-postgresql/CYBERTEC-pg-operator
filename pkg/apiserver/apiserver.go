@@ -12,10 +12,10 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/cluster"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/spec"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/config"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/cluster"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
 )
 
 const (

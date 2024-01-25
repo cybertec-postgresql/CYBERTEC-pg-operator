@@ -12,12 +12,12 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/wait"
 
-	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at/v1"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/cluster"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/spec"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/config"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/k8sutil"
+	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/cluster"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 	"gopkg.in/yaml.v2"
 )
 

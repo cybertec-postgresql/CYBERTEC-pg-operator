@@ -20,15 +20,15 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
-	acidzalando "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at"
-	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at/v1"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/spec"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/config"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/constants"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/k8sutil"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/patroni"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/retryutil"
+	acidzalando "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at"
+	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/patroni"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/retryutil"
 	"golang.org/x/exp/maps"
 	batchv1 "k8s.io/api/batch/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -2133,7 +2133,7 @@ func (c *Cluster) generateService(role PostgresRole, spec *acidv1.PostgresSpec) 
 		Type:  v1.ServiceTypeClusterIP,
 	}
 
-	// no selector for master, see https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/issues/340
+	// no selector for master, see https://github.com/cybertec-postgresql/cybertec-pg-operator/issues/340
 	// if kubernetes_use_configmaps is set master service needs a selector
 	if role == Replica || c.patroniKubernetesUseConfigMaps() {
 		serviceSpec.Selector = c.roleLabelsSet(false, role)

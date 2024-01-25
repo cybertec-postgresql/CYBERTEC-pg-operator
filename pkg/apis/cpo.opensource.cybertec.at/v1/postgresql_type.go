@@ -94,6 +94,7 @@ type PostgresSpec struct {
 	PodPriorityClassNameOld string         `json:"pod_priority_class_name,omitempty"`
 	Backup                  *Backup        `json:"backup,omitempty"`
 	TDE                     *TDE           `json:"tde,omitempty"`
+	Monitoring              *Monitoring    `json:"monitor,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -301,4 +302,9 @@ type Configuration struct {
 
 type TDE struct {
 	Enable bool `json:"enable"`
+}
+
+// Monitoring Sidecar defines a container to be run in the same pod as the Postgres container.
+type Monitoring struct {
+	Image string `json:"image,omitempty"`
 }

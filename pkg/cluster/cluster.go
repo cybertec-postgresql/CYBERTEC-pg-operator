@@ -121,6 +121,16 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec acidv1.Postgres
 	if !ok {
 		passwordEncryption = "scram-sha-256"
 	}
+	if pgSpec.Spec.Monitoring != nil {
+		flg := acidv1.UserFlags{constants.RoleFlagLogin}
+		if pgSpec.Spec.Users != nil {
+			pgSpec.Spec.Users[monitorUsername] = flg
+		} else {
+			users := make(map[string]acidv1.UserFlags)
+			pgSpec.Spec.Users = users
+			pgSpec.Spec.Users[monitorUsername] = flg
+		}
+	}
 
 	cluster := &Cluster{
 		Config:         cfg,
@@ -341,6 +351,12 @@ func (c *Cluster) Create() (err error) {
 			return fmt.Errorf("could not create the TDE secret: %v", err)
 		}
 		c.logger.Info("a TDE secret was successfully created")
+	}
+	if c.Postgresql.Spec.Monitoring != nil {
+		if err := c.createMonitoringSecret(); err != nil {
+			return fmt.Errorf("could not create the monitoring secret: %v", err)
+		}
+		c.logger.Info("a monitoring secret was successfully created")
 	}
 
 	if c.Statefulset != nil {

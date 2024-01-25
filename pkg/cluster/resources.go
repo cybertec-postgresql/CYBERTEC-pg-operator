@@ -13,6 +13,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
+	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util"
 	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/k8sutil"
 	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/retryutil"
@@ -79,6 +80,21 @@ func (c *Cluster) createStatefulSet() (*appsv1.StatefulSet, error) {
 		return nil, fmt.Errorf("sidecar containers specified but disabled in configuration")
 	}
 
+	if c.Spec.Monitoring != nil {
+		monitor := c.Spec.Monitoring
+		sidecar := &acidv1.Sidecar{
+			Name:        "postgres-exporter",
+			DockerImage: monitor.Image,
+			Ports: []v1.ContainerPort{
+				{
+					ContainerPort: monitorPort,
+					Protocol:      v1.ProtocolTCP,
+				},
+			},
+			Env: c.generateMonitoringEnvVars(),
+		}
+		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
+	}
 	statefulSetSpec, err := c.generateStatefulSet(&c.Spec)
 	if err != nil {
 		return nil, fmt.Errorf("could not generate statefulset: %v", err)

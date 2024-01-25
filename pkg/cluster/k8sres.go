@@ -20,6 +20,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
+	acidzalando "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at"
 	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/spec"
 	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util"
@@ -44,6 +45,8 @@ const (
 	connectionPoolerContainer      = "connection-pooler"
 	pgPort                         = 5432
 	operatorPort                   = 8080
+	monitorPort                    = 9187
+	monitorUsername                = "cpo_exporter"
 )
 
 type pgUser struct {
@@ -872,6 +875,13 @@ func (c *Cluster) generatePodTemplate(
 	if additionalVolumes != nil {
 		c.addAdditionalVolumes(&podSpec, additionalVolumes)
 	}
+	if c.Postgresql.Spec.Monitoring != nil {
+		MonitoringLabels := c.labelsSet(false)
+
+		// TODO should be config values
+		MonitoringLabels["cpo_monitoring_stack"] = "true"
+		labels = MonitoringLabels
+	}
 
 	template := v1.PodTemplateSpec{
 		ObjectMeta: metav1.ObjectMeta{
@@ -994,6 +1004,9 @@ func (c *Cluster) generateSpiloPodEnvVars(
 			},
 		},
 		})
+	}
+	if spec.Monitoring != nil {
+		envVars = append(envVars, v1.EnvVar{Name: "cpo_monitoring_stack", Value: "true"})
 	}
 
 	if c.OpConfig.EnablePgVersionEnvVar {
@@ -2619,6 +2632,39 @@ func (c *Cluster) getPgbackrestConfigmapName() (jobName string) {
 
 func (c *Cluster) getTDESecretName() string {
 	return fmt.Sprintf("%s-tde", c.Name)
+}
+
+func (c *Cluster) getMonitoringSecretName() string {
+	return c.OpConfig.SecretNameTemplate.Format(
+		"username", "cpo-exporter",
+		"cluster", c.clusterName().Name,
+		"tprkind", acidv1.PostgresCRDResourceKind,
+		"tprgroup", acidzalando.GroupName)
+}
+
+func (c *Cluster) generateMonitoringEnvVars() []v1.EnvVar {
+	env := []v1.EnvVar{
+		{
+			Name:  "DATA_SOURCE_URI",
+			Value: "localhost:5432/postgres?sslmode=disable",
+		},
+		{
+			Name:  "DATA_SOURCE_USER",
+			Value: monitorUsername,
+		},
+		{
+			Name: "DATA_SOURCE_PASS",
+			ValueFrom: &v1.EnvVarSource{
+				SecretKeyRef: &v1.SecretKeySelector{
+					LocalObjectReference: v1.LocalObjectReference{
+						Name: c.getMonitoringSecretName(),
+					},
+					Key: "password",
+				},
+			},
+		},
+	}
+	return env
 }
 
 func (c *Cluster) getPgbackrestRestoreConfigmapName() (jobName string) {

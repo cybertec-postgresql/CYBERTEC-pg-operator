@@ -2368,6 +2368,11 @@ func (c *Cluster) generatePodDisruptionBudget() *policyv1.PodDisruptionBudget {
 		minAvailable = intstr.FromInt(0)
 	}
 
+	// if PodDisruptionBudget is enabled and number of instances is 1 then set minAvailable to 0
+	if (pdbEnabled != nil && (*pdbEnabled)) && c.Spec.NumberOfInstances == 1 {
+		minAvailable = intstr.FromInt(0)
+	}
+
 	return &policyv1.PodDisruptionBudget{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        c.podDisruptionBudgetName(),

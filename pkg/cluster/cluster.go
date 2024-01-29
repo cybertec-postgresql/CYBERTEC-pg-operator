@@ -316,11 +316,16 @@ func (c *Cluster) Create() (err error) {
 	if c.PodDisruptionBudget != nil {
 		return fmt.Errorf("pod disruption budget already exists in the cluster")
 	}
-	pdb, err := c.createPodDisruptionBudget()
-	if err != nil {
-		return fmt.Errorf("could not create pod disruption budget: %v", err)
+	// create the pod disruption budget only when number of instances > 1
+	if c.Spec.NumberOfInstances == 1 {
+		c.logger.Info("skipping the creation of pod disruption budget because number of instance is 1")
+	} else {
+		pdb, err := c.createPodDisruptionBudget()
+		if err != nil {
+			return fmt.Errorf("could not create pod disruption budget: %v", err)
+		}
+		c.logger.Infof("pod disruption budget %q has been successfully created", util.NameFromMeta(pdb.ObjectMeta))
 	}
-	c.logger.Infof("pod disruption budget %q has been successfully created", util.NameFromMeta(pdb.ObjectMeta))
 
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 		if err = c.syncPgbackrestConfig(); err != nil {

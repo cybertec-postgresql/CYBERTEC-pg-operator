@@ -318,7 +318,7 @@ func (c *Cluster) Create() (err error) {
 	}
 	// create the pod disruption budget only when number of instances > 1
 	if c.Spec.NumberOfInstances == 1 {
-		c.logger.Info("skipping the creation of pod disruption budget because number of instance is 1")
+		c.logger.Warning("skipping the creation of pod disruption budget because number of instance is 1")
 	} else {
 		pdb, err := c.createPodDisruptionBudget()
 		if err != nil {

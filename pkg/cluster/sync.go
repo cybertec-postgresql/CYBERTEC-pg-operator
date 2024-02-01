@@ -280,7 +280,7 @@ func (c *Cluster) syncPodDisruptionBudget(isUpdate bool) error {
 	c.logger.Infof("could not find the cluster's pod disruption budget")
 
 	// When number of instances is 1, we don't need to create a pod disruption budget.
-	if c.Spec.numberOfInstances <= 1 {
+	if c.Spec.NumberOfInstances <= 1 {
 		if c.PodDisruptionBudget != nil {
 			c.logger.Warning("deleting pod disruption budget creation, number of instances is less than 1")
 			if err := c.deletePodDisruptionBudget(); err != nil {

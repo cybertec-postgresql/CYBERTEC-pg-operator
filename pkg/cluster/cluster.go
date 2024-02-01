@@ -933,6 +933,13 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 		syncStatefulSet = true
 	}
 
+	//sync monitoring container
+	if oldSpec.Spec.Monitoring != nil && newSpec.Spec.Monitoring == nil ||
+		oldSpec.Spec.Monitoring == nil && newSpec.Spec.Monitoring != nil ||
+		oldSpec.Spec.Monitoring != nil && newSpec.Spec.Monitoring != nil && oldSpec.Spec.Monitoring.Image != newSpec.Spec.Monitoring.Image {
+		syncStatefulSet = true
+	}
+
 	// Statefulset
 	func() {
 		oldSs, err := c.generateStatefulSet(&oldSpec.Spec)

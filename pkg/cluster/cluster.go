@@ -934,9 +934,7 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 	}
 
 	//sync monitoring container
-	if oldSpec.Spec.Monitoring != nil && newSpec.Spec.Monitoring == nil ||
-		oldSpec.Spec.Monitoring == nil && newSpec.Spec.Monitoring != nil ||
-		oldSpec.Spec.Monitoring != nil && newSpec.Spec.Monitoring != nil && oldSpec.Spec.Monitoring.Image != newSpec.Spec.Monitoring.Image {
+	if !reflect.DeepEqual(oldSpec.Spec.Monitoring, newSpec.Spec.Monitoring) {
 		syncStatefulSet = true
 	}
 

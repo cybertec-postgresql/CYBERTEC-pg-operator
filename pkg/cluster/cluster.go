@@ -938,6 +938,11 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 		syncStatefulSet = true
 	}
 
+	//sync monitoring container
+	if !reflect.DeepEqual(oldSpec.Spec.Monitoring, newSpec.Spec.Monitoring) {
+		syncStatefulSet = true
+	}
+
 	// Statefulset
 	func() {
 		oldSs, err := c.generateStatefulSet(&oldSpec.Spec)

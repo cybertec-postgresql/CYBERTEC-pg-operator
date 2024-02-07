@@ -279,18 +279,29 @@ func (c *Cluster) syncPodDisruptionBudget(isUpdate bool) error {
 	c.PodDisruptionBudget = nil
 	c.logger.Infof("could not find the cluster's pod disruption budget")
 
-	if pdb, err = c.createPodDisruptionBudget(); err != nil {
-		if !k8sutil.ResourceAlreadyExists(err) {
-			return fmt.Errorf("could not create pod disruption budget: %v", err)
+	// When number of instances is 1, we don't need to create a pod disruption budget.
+	if c.Spec.NumberOfInstances <= 1 {
+		if c.PodDisruptionBudget != nil {
+			c.logger.Warning("deleting pod disruption budget creation, number of instances is less than 1")
+			if err := c.deletePodDisruptionBudget(); err != nil {
+				c.logger.Warningf("could not delete pod disruption budget: %v", err)
+			}
 		}
-		c.logger.Infof("pod disruption budget %q already exists", util.NameFromMeta(pdb.ObjectMeta))
-		if pdb, err = c.KubeClient.PodDisruptionBudgets(c.Namespace).Get(context.TODO(), c.podDisruptionBudgetName(), metav1.GetOptions{}); err != nil {
-			return fmt.Errorf("could not fetch existing %q pod disruption budget", util.NameFromMeta(pdb.ObjectMeta))
+		c.logger.Warning("skipping pod disruption budget creation, number of instances is less than 1")
+	} else {
+		if pdb, err = c.createPodDisruptionBudget(); err != nil {
+			if !k8sutil.ResourceAlreadyExists(err) {
+				return fmt.Errorf("could not create pod disruption budget: %v", err)
+			}
+			c.logger.Infof("pod disruption budget %q already exists", util.NameFromMeta(pdb.ObjectMeta))
+			if pdb, err = c.KubeClient.PodDisruptionBudgets(c.Namespace).Get(context.TODO(), c.podDisruptionBudgetName(), metav1.GetOptions{}); err != nil {
+				return fmt.Errorf("could not fetch existing %q pod disruption budget", util.NameFromMeta(pdb.ObjectMeta))
+			}
 		}
-	}
+		c.logger.Infof("created missing pod disruption budget %q", util.NameFromMeta(pdb.ObjectMeta))
+		c.PodDisruptionBudget = pdb
 
-	c.logger.Infof("created missing pod disruption budget %q", util.NameFromMeta(pdb.ObjectMeta))
-	c.PodDisruptionBudget = pdb
+	}
 
 	return nil
 }

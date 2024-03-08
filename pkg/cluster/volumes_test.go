@@ -15,12 +15,12 @@ import (
 	"github.com/golang/mock/gomock"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/mocks"
-	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at/v1"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/config"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/constants"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/k8sutil"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util/volumes"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/mocks"
+	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/volumes"
 	"k8s.io/client-go/kubernetes/fake"
 )
 

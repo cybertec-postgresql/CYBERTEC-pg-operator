@@ -12,9 +12,9 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/sirupsen/logrus"
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/mocks"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/mocks"
 
-	acidv1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/apis/cpo.opensource.cybertec.at/v1"
+	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	v1 "k8s.io/api/core/v1"
 )
 

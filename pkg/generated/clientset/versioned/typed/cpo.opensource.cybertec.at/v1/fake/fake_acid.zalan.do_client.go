@@ -25,7 +25,7 @@ SOFTWARE.
 package fake
 
 import (
-	v1 "github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/generated/clientset/versioned/typed/cpo.opensource.cybertec.at/v1"
+	v1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/typed/cpo.opensource.cybertec.at/v1"
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
 )

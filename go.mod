@@ -1,4 +1,4 @@
-module github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+module github.com/cybertec-postgresql/cybertec-pg-operator
 
 go 1.19
 

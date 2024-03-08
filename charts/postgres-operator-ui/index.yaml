@@ -7,7 +7,7 @@ entries:
     description: Postgres Operator UI provides a graphical interface for a convenient
       database-as-a-service user experience
     digest: 2e5e7a82aebee519ec57c6243eb8735124aa4585a3a19c66ffd69638fbeb11ce
-    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    home: https://github.com/cybertec-postgresql/cybertec-pg-operator
     keywords:
     - postgres
     - operator
@@ -20,7 +20,7 @@ entries:
       name: Zalando
     name: postgres-operator-ui
     sources:
-    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    - https://github.com/cybertec-postgresql/cybertec-pg-operator
     urls:
     - postgres-operator-ui-1.10.1.tgz
     version: 1.10.1
@@ -30,7 +30,7 @@ entries:
     description: Postgres Operator UI provides a graphical interface for a convenient
       database-as-a-service user experience
     digest: 47413650e3188539ae778a601998efa2c4f80b8aa16e3668a2fc7b72e014b605
-    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    home: https://github.com/cybertec-postgresql/cybertec-pg-operator
     keywords:
     - postgres
     - operator
@@ -43,7 +43,7 @@ entries:
       name: Zalando
     name: postgres-operator-ui
     sources:
-    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    - https://github.com/cybertec-postgresql/cybertec-pg-operator
     urls:
     - postgres-operator-ui-1.10.0.tgz
     version: 1.10.0
@@ -53,7 +53,7 @@ entries:
     description: Postgres Operator UI provides a graphical interface for a convenient
       database-as-a-service user experience
     digest: df434af6c8b697fe0631017ecc25e3c79e125361ae6622347cea41a545153bdc
-    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    home: https://github.com/cybertec-postgresql/cybertec-pg-operator
     keywords:
     - postgres
     - operator
@@ -66,7 +66,7 @@ entries:
       name: Zalando
     name: postgres-operator-ui
     sources:
-    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    - https://github.com/cybertec-postgresql/cybertec-pg-operator
     urls:
     - postgres-operator-ui-1.9.0.tgz
     version: 1.9.0
@@ -76,7 +76,7 @@ entries:
     description: Postgres Operator UI provides a graphical interface for a convenient
       database-as-a-service user experience
     digest: fbfc90fa8fd007a08a7c02e0ec9108bb8282cbb42b8c976d88f2193d6edff30c
-    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    home: https://github.com/cybertec-postgresql/cybertec-pg-operator
     keywords:
     - postgres
     - operator
@@ -89,7 +89,7 @@ entries:
       name: Zalando
     name: postgres-operator-ui
     sources:
-    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    - https://github.com/cybertec-postgresql/cybertec-pg-operator
     urls:
     - postgres-operator-ui-1.8.2.tgz
     version: 1.8.2
@@ -99,7 +99,7 @@ entries:
     description: Postgres Operator UI provides a graphical interface for a convenient
       database-as-a-service user experience
     digest: d26342e385ea51a0fbfbe23477999863e9489664ae803ea5c56da8897db84d24
-    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    home: https://github.com/cybertec-postgresql/cybertec-pg-operator
     keywords:
     - postgres
     - operator
@@ -112,7 +112,7 @@ entries:
       name: Zalando
     name: postgres-operator-ui
     sources:
-    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    - https://github.com/cybertec-postgresql/cybertec-pg-operator
     urls:
     - postgres-operator-ui-1.8.1.tgz
     version: 1.8.1
@@ -122,7 +122,7 @@ entries:
     description: Postgres Operator UI provides a graphical interface for a convenient
       database-as-a-service user experience
     digest: d4a7b40c23fd167841cc28342afdbd5ecc809181913a5c31061c83139187f148
-    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    home: https://github.com/cybertec-postgresql/cybertec-pg-operator
     keywords:
     - postgres
     - operator
@@ -135,7 +135,7 @@ entries:
       name: Zalando
     name: postgres-operator-ui
     sources:
-    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    - https://github.com/cybertec-postgresql/cybertec-pg-operator
     urls:
     - postgres-operator-ui-1.8.0.tgz
     version: 1.8.0
@@ -145,7 +145,7 @@ entries:
     description: Postgres Operator UI provides a graphical interface for a convenient
       database-as-a-service user experience
     digest: 97aed1a1d37cd5f8441eea9522f38e56cc829786ad2134c437a5e6a15c995869
-    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    home: https://github.com/cybertec-postgresql/cybertec-pg-operator
     keywords:
     - postgres
     - operator
@@ -158,7 +158,7 @@ entries:
       name: Zalando
     name: postgres-operator-ui
     sources:
-    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    - https://github.com/cybertec-postgresql/cybertec-pg-operator
     urls:
     - postgres-operator-ui-1.7.1.tgz
     version: 1.7.1
@@ -168,7 +168,7 @@ entries:
     description: Postgres Operator UI provides a graphical interface for a convenient
       database-as-a-service user experience
     digest: 37fba1968347daad393dbd1c6ee6e5b6a24d1095f972c0102197531c62dcada8
-    home: https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    home: https://github.com/cybertec-postgresql/cybertec-pg-operator
     keywords:
     - postgres
     - operator
@@ -181,7 +181,7 @@ entries:
       name: Zalando
     name: postgres-operator-ui
     sources:
-    - https://github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5
+    - https://github.com/cybertec-postgresql/cybertec-pg-operator
     urls:
     - postgres-operator-ui-1.7.0.tgz
     version: 1.7.0

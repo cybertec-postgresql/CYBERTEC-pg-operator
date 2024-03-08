@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cybertec-postgresql/CYBERTEC-pg-operator/tree/v0.7.0-rc5/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

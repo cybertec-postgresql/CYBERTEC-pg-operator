@@ -373,7 +373,7 @@ func (c *Controller) initSharedInformers() {
 
 	// Postgresqls
 	c.postgresqlInformer = acidv1informer.NewPostgresqlInformer(
-		c.KubeClient.AcidV1ClientSet,
+		c.KubeClient.CpoV1ClientSet,
 		c.opConfig.WatchedNamespace,
 		constants.QueueResyncPeriodTPR,
 		cache.Indexers{})
@@ -387,7 +387,7 @@ func (c *Controller) initSharedInformers() {
 	// PostgresTeams
 	if c.opConfig.EnablePostgresTeamCRD {
 		c.postgresTeamInformer = acidv1informer.NewPostgresTeamInformer(
-			c.KubeClient.AcidV1ClientSet,
+			c.KubeClient.CpoV1ClientSet,
 			c.opConfig.WatchedNamespace,
 			constants.QueueResyncPeriodTPR*6, // 30 min
 			cache.Indexers{})

@@ -25,22 +25,30 @@ SOFTWARE.
 package fake
 
 import (
-	v1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/typed/zalando.org/v1"
+	v1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/typed/cpo.opensource.cybertec.at/v1"
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
 )
 
-type FakeZalandoV1 struct {
+type FakeCpoV1 struct {
 	*testing.Fake
 }
 
-func (c *FakeZalandoV1) FabricEventStreams(namespace string) v1.FabricEventStreamInterface {
-	return &FakeFabricEventStreams{c, namespace}
+func (c *FakeCpoV1) OperatorConfigurations(namespace string) v1.OperatorConfigurationInterface {
+	return &FakeOperatorConfigurations{c, namespace}
+}
+
+func (c *FakeCpoV1) PostgresTeams(namespace string) v1.PostgresTeamInterface {
+	return &FakePostgresTeams{c, namespace}
+}
+
+func (c *FakeCpoV1) Postgresqls(namespace string) v1.PostgresqlInterface {
+	return &FakePostgresqls{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *FakeZalandoV1) RESTClient() rest.Interface {
+func (c *FakeCpoV1) RESTClient() rest.Interface {
 	var ret *rest.RESTClient
 	return ret
 }

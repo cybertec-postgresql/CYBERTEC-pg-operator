@@ -1,5 +1,5 @@
 /*
-Copyright 2023 Compose, Zalando SE
+Copyright 2024 Compose, Zalando SE
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import (
 	"context"
 	time "time"
 
-	acidzalandov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpoopensourcecybertecatv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	versioned "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned"
 	internalinterfaces "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/informers/externalversions/internalinterfaces"
 	v1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/listers/cpo.opensource.cybertec.at/v1"
@@ -68,16 +68,16 @@ func NewFilteredPostgresTeamInformer(client versioned.Interface, namespace strin
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AcidV1().PostgresTeams(namespace).List(context.TODO(), options)
+				return client.CpoV1().PostgresTeams(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AcidV1().PostgresTeams(namespace).Watch(context.TODO(), options)
+				return client.CpoV1().PostgresTeams(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&acidzalandov1.PostgresTeam{},
+		&cpoopensourcecybertecatv1.PostgresTeam{},
 		resyncPeriod,
 		indexers,
 	)
@@ -88,7 +88,7 @@ func (f *postgresTeamInformer) defaultInformer(client versioned.Interface, resyn
 }
 
 func (f *postgresTeamInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&acidzalandov1.PostgresTeam{}, f.defaultInformer)
+	return f.factory.InformerFor(&cpoopensourcecybertecatv1.PostgresTeam{}, f.defaultInformer)
 }
 
 func (f *postgresTeamInformer) Lister() v1.PostgresTeamLister {

@@ -27,29 +27,39 @@ package v1
 import (
 	"net/http"
 
-	v1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/zalando.org/v1"
+	v1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/scheme"
 	rest "k8s.io/client-go/rest"
 )
 
-type ZalandoV1Interface interface {
+type CpoV1Interface interface {
 	RESTClient() rest.Interface
-	FabricEventStreamsGetter
+	OperatorConfigurationsGetter
+	PostgresTeamsGetter
+	PostgresqlsGetter
 }
 
-// ZalandoV1Client is used to interact with features provided by the zalando.org group.
-type ZalandoV1Client struct {
+// CpoV1Client is used to interact with features provided by the cpo.opensource.cybertec.at group.
+type CpoV1Client struct {
 	restClient rest.Interface
 }
 
-func (c *ZalandoV1Client) FabricEventStreams(namespace string) FabricEventStreamInterface {
-	return newFabricEventStreams(c, namespace)
+func (c *CpoV1Client) OperatorConfigurations(namespace string) OperatorConfigurationInterface {
+	return newOperatorConfigurations(c, namespace)
 }
 
-// NewForConfig creates a new ZalandoV1Client for the given config.
+func (c *CpoV1Client) PostgresTeams(namespace string) PostgresTeamInterface {
+	return newPostgresTeams(c, namespace)
+}
+
+func (c *CpoV1Client) Postgresqls(namespace string) PostgresqlInterface {
+	return newPostgresqls(c, namespace)
+}
+
+// NewForConfig creates a new CpoV1Client for the given config.
 // NewForConfig is equivalent to NewForConfigAndClient(c, httpClient),
 // where httpClient was generated with rest.HTTPClientFor(c).
-func NewForConfig(c *rest.Config) (*ZalandoV1Client, error) {
+func NewForConfig(c *rest.Config) (*CpoV1Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
@@ -61,9 +71,9 @@ func NewForConfig(c *rest.Config) (*ZalandoV1Client, error) {
 	return NewForConfigAndClient(&config, httpClient)
 }
 
-// NewForConfigAndClient creates a new ZalandoV1Client for the given config and http client.
+// NewForConfigAndClient creates a new CpoV1Client for the given config and http client.
 // Note the http client provided takes precedence over the configured transport values.
-func NewForConfigAndClient(c *rest.Config, h *http.Client) (*ZalandoV1Client, error) {
+func NewForConfigAndClient(c *rest.Config, h *http.Client) (*CpoV1Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
@@ -72,12 +82,12 @@ func NewForConfigAndClient(c *rest.Config, h *http.Client) (*ZalandoV1Client, er
 	if err != nil {
 		return nil, err
 	}
-	return &ZalandoV1Client{client}, nil
+	return &CpoV1Client{client}, nil
 }
 
-// NewForConfigOrDie creates a new ZalandoV1Client for the given config and
+// NewForConfigOrDie creates a new CpoV1Client for the given config and
 // panics if there is an error in the config.
-func NewForConfigOrDie(c *rest.Config) *ZalandoV1Client {
+func NewForConfigOrDie(c *rest.Config) *CpoV1Client {
 	client, err := NewForConfig(c)
 	if err != nil {
 		panic(err)
@@ -85,9 +95,9 @@ func NewForConfigOrDie(c *rest.Config) *ZalandoV1Client {
 	return client
 }
 
-// New creates a new ZalandoV1Client for the given RESTClient.
-func New(c rest.Interface) *ZalandoV1Client {
-	return &ZalandoV1Client{c}
+// New creates a new CpoV1Client for the given RESTClient.
+func New(c rest.Interface) *CpoV1Client {
+	return &CpoV1Client{c}
 }
 
 func setConfigDefaults(config *rest.Config) error {
@@ -105,7 +115,7 @@ func setConfigDefaults(config *rest.Config) error {
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *ZalandoV1Client) RESTClient() rest.Interface {
+func (c *CpoV1Client) RESTClient() rest.Interface {
 	if c == nil {
 		return nil
 	}

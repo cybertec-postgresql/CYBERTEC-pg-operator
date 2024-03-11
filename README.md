@@ -33,11 +33,11 @@ pipelines with no access to Kubernetes API directly, promoting infrastructure as
 
 ### PostgreSQL features
 
-* Supports PostgreSQL 15, starting from 10+
+* Supports PostgreSQL 16, starting from 13
 * Streaming replication cluster via Patroni
 * Point-In-Time-Recovery with
 [pg_basebackup](https://www.postgresql.org/docs/11/app-pgbasebackup.html) /
-[WAL-E](https://github.com/wal-e/wal-e) via [Spilo](https://github.com/zalando/spilo)
+[pgBackRest](https://pgbackrest.org/) via [CYBERTEC-pg-container](https://github.com/zalando/spilo)
 * Preload libraries: [bg_mon](https://github.com/CyberDem0n/bg_mon),
 [pg_stat_statements](https://www.postgresql.org/docs/15/pgstatstatements.html),
 [pgextwlist](https://github.com/dimitri/pgextwlist),
@@ -59,12 +59,13 @@ production for over five years.
 
 ## Supported Postgres & K8s versions
 
-| Release   | Postgres versions | K8s versions      | Golang  |
-| :-------- | :---------------: | :---------------: | :-----: |
-| v1.10.*   | 10 &rarr; 15      | 1.21+             | 1.19.8  |
-| v1.9.0    | 10 &rarr; 15      | 1.21+             | 1.18.9  |
-| v1.8.*    | 9.5 &rarr; 14     | 1.20 &rarr; 1.24  | 1.17.4  |
-| v1.7.1    | 9.5 &rarr; 14     | 1.20 &rarr; 1.24  | 1.16.9  |
+The Operator is supporting all current Versions of PostgreSQL, starting with PG 13. 
+You can get more Information about this in the [Documentation](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/documentation/release_notes/) 
+Also we support following K8s-Versions: 
+- k8s: 1.21 - 1.28
+- Openshift: 4.8 - 4.13 
+The operator is generally compatible with all k8s distributions, but please contact us for specific distributions.
+
 
 * Integrated backup solution, automatic backups and very easy restore (snapshot & PITR)
 * Rolling update procedure for adjustments to the pods and minor updates

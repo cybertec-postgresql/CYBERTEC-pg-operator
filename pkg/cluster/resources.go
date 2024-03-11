@@ -13,7 +13,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/retryutil"
@@ -82,7 +82,7 @@ func (c *Cluster) createStatefulSet() (*appsv1.StatefulSet, error) {
 
 	if c.Spec.Monitoring != nil {
 		monitor := c.Spec.Monitoring
-		sidecar := &acidv1.Sidecar{
+		sidecar := &cpov1.Sidecar{
 			Name:        "postgres-exporter",
 			DockerImage: monitor.Image,
 			Ports: []v1.ContainerPort{

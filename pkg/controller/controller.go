@@ -11,10 +11,10 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apiserver"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/cluster"
-	acidv1informer "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/informers/externalversions/cpo.opensource.cybertec.at/v1"
+	cpov1informer "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/informers/externalversions/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/teams"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
@@ -96,7 +96,7 @@ func NewController(controllerConfig *spec.ControllerConfig, controllerId string)
 	// the operator currently duplicates a lot of log entries with this setup
 	// eventBroadcaster.StartLogging(logger.Infof)
 	scheme := scheme.Scheme
-	acidv1.AddToScheme(scheme)
+	cpov1.AddToScheme(scheme)
 	recorder := eventBroadcaster.NewRecorder(scheme, v1.EventSource{Component: myComponentName})
 
 	c := &Controller{
@@ -372,7 +372,7 @@ func (c *Controller) initController() {
 func (c *Controller) initSharedInformers() {
 
 	// Postgresqls
-	c.postgresqlInformer = acidv1informer.NewPostgresqlInformer(
+	c.postgresqlInformer = cpov1informer.NewPostgresqlInformer(
 		c.KubeClient.CpoV1ClientSet,
 		c.opConfig.WatchedNamespace,
 		constants.QueueResyncPeriodTPR,
@@ -386,7 +386,7 @@ func (c *Controller) initSharedInformers() {
 
 	// PostgresTeams
 	if c.opConfig.EnablePostgresTeamCRD {
-		c.postgresTeamInformer = acidv1informer.NewPostgresTeamInformer(
+		c.postgresTeamInformer = cpov1informer.NewPostgresTeamInformer(
 			c.KubeClient.CpoV1ClientSet,
 			c.opConfig.WatchedNamespace,
 			constants.QueueResyncPeriodTPR*6, // 30 min
@@ -517,7 +517,7 @@ func (c *Controller) getEffectiveNamespace(namespaceFromEnvironment, namespaceFr
 
 // GetReference of Postgres CR object
 // i.e. required to emit events to this resource
-func (c *Controller) GetReference(postgresql *acidv1.Postgresql) *v1.ObjectReference {
+func (c *Controller) GetReference(postgresql *cpov1.Postgresql) *v1.ObjectReference {
 	ref, err := reference.GetReference(scheme.Scheme, postgresql)
 	if err != nil {
 		c.logger.Errorf("could not get reference for Postgresql CR %v/%v: %v", postgresql.Namespace, postgresql.Name, err)
@@ -525,7 +525,7 @@ func (c *Controller) GetReference(postgresql *acidv1.Postgresql) *v1.ObjectRefer
 	return ref
 }
 
-func (c *Controller) meetsClusterDeleteAnnotations(postgresql *acidv1.Postgresql) error {
+func (c *Controller) meetsClusterDeleteAnnotations(postgresql *cpov1.Postgresql) error {
 
 	deleteAnnotationDateKey := c.opConfig.DeleteAnnotationDateKey
 	currentTime := time.Now()
@@ -560,7 +560,7 @@ func (c *Controller) meetsClusterDeleteAnnotations(postgresql *acidv1.Postgresql
 // Whether it's owner is determined by the value of 'cpo.opensource.cybertec.at/controller'
 // annotation. If the value matches the controllerID then it owns it, or if the
 // controllerID is "" and there's no annotation set.
-func (c *Controller) hasOwnership(postgresql *acidv1.Postgresql) bool {
+func (c *Controller) hasOwnership(postgresql *cpov1.Postgresql) bool {
 	if postgresql.Annotations != nil {
 		if owner, ok := postgresql.Annotations[constants.PostgresqlControllerAnnotationKey]; ok {
 			return owner == c.controllerID

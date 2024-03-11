@@ -9,7 +9,7 @@ import (
 	"github.com/r3labs/diff"
 	"github.com/sirupsen/logrus"
 	acidzalando "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at"
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -55,30 +55,30 @@ func (c *Cluster) connectionPoolerName(role PostgresRole) string {
 }
 
 // isConnectionPoolerEnabled
-func needConnectionPooler(spec *acidv1.PostgresSpec) bool {
+func needConnectionPooler(spec *cpov1.PostgresSpec) bool {
 	return needMasterConnectionPoolerWorker(spec) ||
 		needReplicaConnectionPoolerWorker(spec)
 }
 
-func needMasterConnectionPooler(spec *acidv1.PostgresSpec) bool {
+func needMasterConnectionPooler(spec *cpov1.PostgresSpec) bool {
 	return needMasterConnectionPoolerWorker(spec)
 }
 
-func needMasterConnectionPoolerWorker(spec *acidv1.PostgresSpec) bool {
+func needMasterConnectionPoolerWorker(spec *cpov1.PostgresSpec) bool {
 	return (spec.EnableConnectionPooler != nil && *spec.EnableConnectionPooler) ||
 		(spec.ConnectionPooler != nil && spec.EnableConnectionPooler == nil)
 }
 
-func needReplicaConnectionPooler(spec *acidv1.PostgresSpec) bool {
+func needReplicaConnectionPooler(spec *cpov1.PostgresSpec) bool {
 	return needReplicaConnectionPoolerWorker(spec)
 }
 
-func needReplicaConnectionPoolerWorker(spec *acidv1.PostgresSpec) bool {
+func needReplicaConnectionPoolerWorker(spec *cpov1.PostgresSpec) bool {
 	return spec.EnableReplicaConnectionPooler != nil &&
 		*spec.EnableReplicaConnectionPooler
 }
 
-func (c *Cluster) needConnectionPoolerUser(oldSpec, newSpec *acidv1.PostgresSpec) bool {
+func (c *Cluster) needConnectionPoolerUser(oldSpec, newSpec *cpov1.PostgresSpec) bool {
 	// return true if pooler is needed AND was not disabled before OR user name differs
 	return (needMasterConnectionPoolerWorker(newSpec) || needReplicaConnectionPoolerWorker(newSpec)) &&
 		((!needMasterConnectionPoolerWorker(oldSpec) &&
@@ -86,10 +86,10 @@ func (c *Cluster) needConnectionPoolerUser(oldSpec, newSpec *acidv1.PostgresSpec
 			c.poolerUser(oldSpec) != c.poolerUser(newSpec))
 }
 
-func (c *Cluster) poolerUser(spec *acidv1.PostgresSpec) string {
+func (c *Cluster) poolerUser(spec *cpov1.PostgresSpec) string {
 	connectionPoolerSpec := spec.ConnectionPooler
 	if connectionPoolerSpec == nil {
-		connectionPoolerSpec = &acidv1.ConnectionPooler{}
+		connectionPoolerSpec = &cpov1.ConnectionPooler{}
 	}
 	// Using superuser as pooler user is not a good idea. First of all it's
 	// not going to be synced correctly with the current implementation,
@@ -159,7 +159,7 @@ func (c *Cluster) createConnectionPooler(LookupFunction InstallFunction) (SyncRe
 	c.setProcessName("creating connection pooler")
 
 	//this is essentially sync with nil as oldSpec
-	if reason, err := c.syncConnectionPooler(&acidv1.Postgresql{}, &c.Postgresql, LookupFunction); err != nil {
+	if reason, err := c.syncConnectionPooler(&cpov1.Postgresql{}, &c.Postgresql, LookupFunction); err != nil {
 		return reason, err
 	}
 	return reason, nil
@@ -190,7 +190,7 @@ func (c *Cluster) getConnectionPoolerEnvVars() []v1.EnvVar {
 	spec := &c.Spec
 	connectionPoolerSpec := spec.ConnectionPooler
 	if connectionPoolerSpec == nil {
-		connectionPoolerSpec = &acidv1.ConnectionPooler{}
+		connectionPoolerSpec = &cpov1.ConnectionPooler{}
 	}
 	effectiveMode := util.Coalesce(
 		connectionPoolerSpec.Mode,
@@ -255,7 +255,7 @@ func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (
 	spec := &c.Spec
 	connectionPoolerSpec := spec.ConnectionPooler
 	if connectionPoolerSpec == nil {
-		connectionPoolerSpec = &acidv1.ConnectionPooler{}
+		connectionPoolerSpec = &cpov1.ConnectionPooler{}
 	}
 	gracePeriod := int64(c.OpConfig.PodTerminateGracePeriod.Seconds())
 	resources, err := c.generateResourceRequirements(
@@ -443,7 +443,7 @@ func (c *Cluster) generateConnectionPoolerDeployment(connectionPooler *Connectio
 	// create code, so init here.
 	connectionPoolerSpec := spec.ConnectionPooler
 	if connectionPoolerSpec == nil {
-		connectionPoolerSpec = &acidv1.ConnectionPooler{}
+		connectionPoolerSpec = &cpov1.ConnectionPooler{}
 	}
 	podTemplate, err := c.generateConnectionPoolerPodTemplate(connectionPooler.Role)
 
@@ -530,7 +530,7 @@ func (c *Cluster) generateConnectionPoolerService(connectionPooler *ConnectionPo
 	return service
 }
 
-func (c *Cluster) generatePoolerServiceAnnotations(role PostgresRole, spec *acidv1.PostgresSpec) map[string]string {
+func (c *Cluster) generatePoolerServiceAnnotations(role PostgresRole, spec *cpov1.PostgresSpec) map[string]string {
 	var dnsString string
 	annotations := c.getCustomServiceAnnotations(role, spec)
 
@@ -556,7 +556,7 @@ func (c *Cluster) generatePoolerServiceAnnotations(role PostgresRole, spec *acid
 	return annotations
 }
 
-func (c *Cluster) shouldCreateLoadBalancerForPoolerService(role PostgresRole, spec *acidv1.PostgresSpec) bool {
+func (c *Cluster) shouldCreateLoadBalancerForPoolerService(role PostgresRole, spec *cpov1.PostgresSpec) bool {
 
 	switch role {
 
@@ -718,7 +718,7 @@ func updateConnectionPoolerAnnotations(KubeClient k8sutil.KubernetesClient, depl
 // Test if two connection pooler configuration needs to be synced. For simplicity
 // compare not the actual K8S objects, but the configuration itself and request
 // sync if there is any difference.
-func needSyncConnectionPoolerSpecs(oldSpec, newSpec *acidv1.ConnectionPooler, logger *logrus.Entry) (sync bool, reasons []string) {
+func needSyncConnectionPoolerSpecs(oldSpec, newSpec *cpov1.ConnectionPooler, logger *logrus.Entry) (sync bool, reasons []string) {
 	reasons = []string{}
 	sync = false
 
@@ -743,7 +743,7 @@ func needSyncConnectionPoolerSpecs(oldSpec, newSpec *acidv1.ConnectionPooler, lo
 
 // Check if we need to synchronize connection pooler deployment due to new
 // defaults, that are different from what we see in the DeploymentSpec
-func (c *Cluster) needSyncConnectionPoolerDefaults(Config *Config, spec *acidv1.ConnectionPooler, deployment *appsv1.Deployment) (sync bool, reasons []string) {
+func (c *Cluster) needSyncConnectionPoolerDefaults(Config *Config, spec *cpov1.ConnectionPooler, deployment *appsv1.Deployment) (sync bool, reasons []string) {
 
 	reasons = []string{}
 	sync = false
@@ -753,7 +753,7 @@ func (c *Cluster) needSyncConnectionPoolerDefaults(Config *Config, spec *acidv1.
 	poolerContainer := podTemplate.Spec.Containers[constants.ConnectionPoolerContainer]
 
 	if spec == nil {
-		spec = &acidv1.ConnectionPooler{}
+		spec = &cpov1.ConnectionPooler{}
 	}
 	if spec.NumberOfInstances == nil &&
 		*deployment.Spec.Replicas != *config.NumberOfInstances {
@@ -798,7 +798,7 @@ func (c *Cluster) needSyncConnectionPoolerDefaults(Config *Config, spec *acidv1.
 			secretName := Config.OpConfig.SecretNameTemplate.Format(
 				"username", strings.Replace(config.User, "_", "-", -1),
 				"cluster", c.Name,
-				"tprkind", acidv1.PostgresCRDResourceKind,
+				"tprkind", cpov1.PostgresCRDResourceKind,
 				"tprgroup", acidzalando.GroupName)
 
 			if ref.Name != secretName {
@@ -822,24 +822,24 @@ func (c *Cluster) needSyncConnectionPoolerDefaults(Config *Config, spec *acidv1.
 
 // Generate default resource section for connection pooler deployment, to be
 // used if nothing custom is specified in the manifest
-func makeDefaultConnectionPoolerResources(config *config.Config) acidv1.Resources {
+func makeDefaultConnectionPoolerResources(config *config.Config) cpov1.Resources {
 
-	defaultRequests := acidv1.ResourceDescription{
+	defaultRequests := cpov1.ResourceDescription{
 		CPU:    config.ConnectionPooler.ConnectionPoolerDefaultCPURequest,
 		Memory: config.ConnectionPooler.ConnectionPoolerDefaultMemoryRequest,
 	}
-	defaultLimits := acidv1.ResourceDescription{
+	defaultLimits := cpov1.ResourceDescription{
 		CPU:    config.ConnectionPooler.ConnectionPoolerDefaultCPULimit,
 		Memory: config.ConnectionPooler.ConnectionPoolerDefaultMemoryLimit,
 	}
 
-	return acidv1.Resources{
+	return cpov1.Resources{
 		ResourceRequests: defaultRequests,
 		ResourceLimits:   defaultLimits,
 	}
 }
 
-func logPoolerEssentials(log *logrus.Entry, oldSpec, newSpec *acidv1.Postgresql) {
+func logPoolerEssentials(log *logrus.Entry, oldSpec, newSpec *cpov1.Postgresql) {
 	var v []string
 	var input []*bool
 
@@ -862,7 +862,7 @@ func logPoolerEssentials(log *logrus.Entry, oldSpec, newSpec *acidv1.Postgresql)
 	log.Debugf("syncing connection pooler (master, replica) from (%v, %v) to (%v, %v)", v[0], v[1], v[2], v[3])
 }
 
-func (c *Cluster) syncConnectionPooler(oldSpec, newSpec *acidv1.Postgresql, LookupFunction InstallFunction) (SyncReason, error) {
+func (c *Cluster) syncConnectionPooler(oldSpec, newSpec *cpov1.Postgresql, LookupFunction InstallFunction) (SyncReason, error) {
 
 	var reason SyncReason
 	var err error
@@ -959,7 +959,7 @@ func (c *Cluster) syncConnectionPooler(oldSpec, newSpec *acidv1.Postgresql, Look
 // synchronizing the corresponding deployment, but in case of deployment or
 // service is missing, create it. After checking, also remember an object for
 // the future references.
-func (c *Cluster) syncConnectionPoolerWorker(oldSpec, newSpec *acidv1.Postgresql, role PostgresRole) (
+func (c *Cluster) syncConnectionPoolerWorker(oldSpec, newSpec *cpov1.Postgresql, role PostgresRole) (
 	SyncReason, error) {
 
 	var (
@@ -998,7 +998,7 @@ func (c *Cluster) syncConnectionPoolerWorker(oldSpec, newSpec *acidv1.Postgresql
 		c.ConnectionPooler[role].Deployment = deployment
 		// actual synchronization
 
-		var oldConnectionPooler *acidv1.ConnectionPooler
+		var oldConnectionPooler *cpov1.ConnectionPooler
 
 		if oldSpec != nil {
 			oldConnectionPooler = oldSpec.Spec.ConnectionPooler
@@ -1011,11 +1011,11 @@ func (c *Cluster) syncConnectionPoolerWorker(oldSpec, newSpec *acidv1.Postgresql
 		// struct (that was initialized somewhere before) replace any nil with
 		// an empty spec.
 		if oldConnectionPooler == nil {
-			oldConnectionPooler = &acidv1.ConnectionPooler{}
+			oldConnectionPooler = &cpov1.ConnectionPooler{}
 		}
 
 		if newConnectionPooler == nil {
-			newConnectionPooler = &acidv1.ConnectionPooler{}
+			newConnectionPooler = &cpov1.ConnectionPooler{}
 		}
 
 		var specSync bool

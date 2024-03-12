@@ -1,5 +1,5 @@
 /*
-Copyright 2023 Compose, Zalando SE
+Copyright 2024 Compose, Zalando SE
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package v1
 import (
 	"context"
 
-	acidzalandov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpoopensourcecybertecatv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	scheme "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	rest "k8s.io/client-go/rest"
@@ -41,7 +41,7 @@ type OperatorConfigurationsGetter interface {
 
 // OperatorConfigurationInterface has methods to work with OperatorConfiguration resources.
 type OperatorConfigurationInterface interface {
-	Get(ctx context.Context, name string, opts v1.GetOptions) (*acidzalandov1.OperatorConfiguration, error)
+	Get(ctx context.Context, name string, opts v1.GetOptions) (*cpoopensourcecybertecatv1.OperatorConfiguration, error)
 	OperatorConfigurationExpansion
 }
 
@@ -52,7 +52,7 @@ type operatorConfigurations struct {
 }
 
 // newOperatorConfigurations returns a OperatorConfigurations
-func newOperatorConfigurations(c *AcidV1Client, namespace string) *operatorConfigurations {
+func newOperatorConfigurations(c *CpoV1Client, namespace string) *operatorConfigurations {
 	return &operatorConfigurations{
 		client: c.RESTClient(),
 		ns:     namespace,
@@ -60,8 +60,8 @@ func newOperatorConfigurations(c *AcidV1Client, namespace string) *operatorConfi
 }
 
 // Get takes name of the operatorConfiguration, and returns the corresponding operatorConfiguration object, and an error if there is any.
-func (c *operatorConfigurations) Get(ctx context.Context, name string, options v1.GetOptions) (result *acidzalandov1.OperatorConfiguration, err error) {
-	result = &acidzalandov1.OperatorConfiguration{}
+func (c *operatorConfigurations) Get(ctx context.Context, name string, options v1.GetOptions) (result *cpoopensourcecybertecatv1.OperatorConfiguration, err error) {
+	result = &cpoopensourcecybertecatv1.OperatorConfiguration{}
 	err = c.client.Get().
 		Namespace(c.ns).
 		Resource("operatorconfigurations").

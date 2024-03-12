@@ -12,7 +12,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/wait"
 
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/cluster"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
@@ -104,11 +104,11 @@ func (c *Controller) createOperatorCRD(desiredCrd *apiextv1.CustomResourceDefini
 }
 
 func (c *Controller) createPostgresCRD() error {
-	return c.createOperatorCRD(acidv1.PostgresCRD(c.opConfig.CRDCategories))
+	return c.createOperatorCRD(cpov1.PostgresCRD(c.opConfig.CRDCategories))
 }
 
 func (c *Controller) createConfigurationCRD() error {
-	return c.createOperatorCRD(acidv1.ConfigurationCRD(c.opConfig.CRDCategories))
+	return c.createOperatorCRD(cpov1.ConfigurationCRD(c.opConfig.CRDCategories))
 }
 
 func readDecodedRole(s string) (*spec.PgUser, error) {
@@ -412,7 +412,7 @@ func (c *Controller) loadPostgresTeams() {
 }
 
 func (c *Controller) postgresTeamAdd(obj interface{}) {
-	pgTeam, ok := obj.(*acidv1.PostgresTeam)
+	pgTeam, ok := obj.(*cpov1.PostgresTeam)
 	if !ok {
 		c.logger.Errorf("could not cast to PostgresTeam spec")
 		return
@@ -422,7 +422,7 @@ func (c *Controller) postgresTeamAdd(obj interface{}) {
 }
 
 func (c *Controller) postgresTeamUpdate(prev, obj interface{}) {
-	pgTeam, ok := obj.(*acidv1.PostgresTeam)
+	pgTeam, ok := obj.(*cpov1.PostgresTeam)
 	if !ok {
 		c.logger.Errorf("could not cast to PostgresTeam spec")
 		return

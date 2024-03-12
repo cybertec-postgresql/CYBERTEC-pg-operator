@@ -14,7 +14,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/mocks"
 
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -188,7 +188,7 @@ func TestGetConfig(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	expectedPatroniConfig := acidv1.Patroni{
+	expectedPatroniConfig := cpov1.Patroni{
 		TTL:                  30,
 		LoopWait:             10,
 		RetryTimeout:         10,

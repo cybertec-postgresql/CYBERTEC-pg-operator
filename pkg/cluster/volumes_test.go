@@ -16,7 +16,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/mocks"
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
@@ -68,7 +68,7 @@ func TestResizeVolumeClaim(t *testing.T) {
 				},
 				StorageResizeMode: "pvc",
 			},
-		}, client, acidv1.Postgresql{}, logger, eventRecorder)
+		}, client, cpov1.Postgresql{}, logger, eventRecorder)
 
 	// set metadata, so that labels will get correct values
 	cluster.Name = clusterName
@@ -85,7 +85,7 @@ func TestResizeVolumeClaim(t *testing.T) {
 	}
 
 	// test resizing
-	cluster.resizeVolumeClaims(acidv1.Volume{Size: newVolumeSize})
+	cluster.resizeVolumeClaims(cpov1.Volume{Size: newVolumeSize})
 
 	pvcs, err := cluster.listPersistentVolumeClaims()
 	assert.NoError(t, err)
@@ -195,7 +195,7 @@ func TestMigrateEBS(t *testing.T) {
 				EnableEBSGp3Migration:        true,
 				EnableEBSGp3MigrationMaxSize: 1000,
 			},
-		}, client, acidv1.Postgresql{}, logger, eventRecorder)
+		}, client, cpov1.Postgresql{}, logger, eventRecorder)
 	cluster.Spec.Volume.Size = "1Gi"
 
 	// set metadata, so that labels will get correct values
@@ -297,7 +297,7 @@ func TestMigrateGp3Support(t *testing.T) {
 				EnableEBSGp3Migration:        false,
 				EnableEBSGp3MigrationMaxSize: 1000,
 			},
-		}, client, acidv1.Postgresql{}, logger, eventRecorder)
+		}, client, cpov1.Postgresql{}, logger, eventRecorder)
 
 	cluster.Spec.Volume.Size = "150Gi"
 	cluster.Spec.Volume.Iops = aws.Int64(6000)
@@ -353,7 +353,7 @@ func TestManualGp2Gp3Support(t *testing.T) {
 				EnableEBSGp3Migration:        false,
 				EnableEBSGp3MigrationMaxSize: 1000,
 			},
-		}, client, acidv1.Postgresql{}, logger, eventRecorder)
+		}, client, cpov1.Postgresql{}, logger, eventRecorder)
 
 	cluster.Spec.Volume.Size = "150Gi"
 	cluster.Spec.Volume.Iops = aws.Int64(6000)
@@ -407,7 +407,7 @@ func TestDontTouchType(t *testing.T) {
 				EnableEBSGp3Migration:        false,
 				EnableEBSGp3MigrationMaxSize: 1000,
 			},
-		}, client, acidv1.Postgresql{}, logger, eventRecorder)
+		}, client, cpov1.Postgresql{}, logger, eventRecorder)
 
 	cluster.Spec.Volume.Size = "177Gi"
 

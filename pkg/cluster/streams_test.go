@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	zalandov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/zalando.org/v1"
 	fakezalandov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/fake"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
@@ -27,7 +27,7 @@ func newFakeK8sStreamClient() (k8sutil.KubernetesClient, *fake.Clientset) {
 
 	return k8sutil.KubernetesClient{
 		FabricEventStreamsGetter: zalandoClientSet.ZalandoV1(),
-		PostgresqlsGetter:        zalandoClientSet.AcidV1(),
+		PostgresqlsGetter:        zalandoClientSet.CpoV1(),
 		PodsGetter:               clientSet.CoreV1(),
 		StatefulSetsGetter:       clientSet.AppsV1(),
 	}, clientSet
@@ -41,7 +41,7 @@ var (
 	fesUser     string = fmt.Sprintf("%s%s", constants.EventStreamSourceSlotPrefix, constants.UserRoleNameSuffix)
 	slotName    string = fmt.Sprintf("%s_%s_%s", constants.EventStreamSourceSlotPrefix, dbName, strings.Replace(appId, "-", "_", -1))
 
-	pg = acidv1.Postgresql{
+	pg = cpov1.Postgresql{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Postgresql",
 			APIVersion: "cpo.opensource.cybertec.at/v1",
@@ -50,21 +50,21 @@ var (
 			Name:      clusterName,
 			Namespace: namespace,
 		},
-		Spec: acidv1.PostgresSpec{
+		Spec: cpov1.PostgresSpec{
 			Databases: map[string]string{
 				dbName: fmt.Sprintf("%s%s", dbName, constants.UserRoleNameSuffix),
 			},
-			Streams: []acidv1.Stream{
+			Streams: []cpov1.Stream{
 				{
 					ApplicationId: appId,
 					Database:      "foo",
-					Tables: map[string]acidv1.StreamTable{
-						"data.bar": acidv1.StreamTable{
+					Tables: map[string]cpov1.StreamTable{
+						"data.bar": cpov1.StreamTable{
 							EventType:     "stream-type-a",
 							IdColumn:      k8sutil.StringToPointer("b_id"),
 							PayloadColumn: k8sutil.StringToPointer("b_payload"),
 						},
-						"data.foobar": acidv1.StreamTable{
+						"data.foobar": cpov1.StreamTable{
 							EventType:         "stream-type-b",
 							RecoveryEventType: "stream-type-b-dlq",
 						},
@@ -77,7 +77,7 @@ var (
 				},
 			},
 			TeamID: "acid",
-			Volume: acidv1.Volume{
+			Volume: cpov1.Volume{
 				Size: "1Gi",
 			},
 		},

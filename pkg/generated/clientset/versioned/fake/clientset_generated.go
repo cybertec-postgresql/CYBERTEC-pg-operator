@@ -1,5 +1,5 @@
 /*
-Copyright 2023 Compose, Zalando SE
+Copyright 2024 Compose, Zalando SE
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,8 @@ package fake
 
 import (
 	clientset "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned"
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/typed/cpo.opensource.cybertec.at/v1"
-	fakeacidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/typed/cpo.opensource.cybertec.at/v1/fake"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/typed/cpo.opensource.cybertec.at/v1"
+	fakecpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/typed/cpo.opensource.cybertec.at/v1/fake"
 	zalandov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/typed/zalando.org/v1"
 	fakezalandov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/typed/zalando.org/v1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -87,9 +87,9 @@ var (
 	_ testing.FakeClient  = &Clientset{}
 )
 
-// AcidV1 retrieves the AcidV1Client
-func (c *Clientset) AcidV1() acidv1.AcidV1Interface {
-	return &fakeacidv1.FakeAcidV1{Fake: &c.Fake}
+// CpoV1 retrieves the CpoV1Client
+func (c *Clientset) CpoV1() cpov1.CpoV1Interface {
+	return &fakecpov1.FakeCpoV1{Fake: &c.Fake}
 }
 
 // ZalandoV1 retrieves the ZalandoV1Client

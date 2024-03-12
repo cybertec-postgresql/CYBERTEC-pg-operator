@@ -20,7 +20,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	acidzalando "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at"
-	acidv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
@@ -528,7 +528,7 @@ func (c *Cluster) dnsName(role PostgresRole) string {
 	}
 
 	// if cluster name starts with teamID we might need to provide backwards compatibility
-	clusterNameWithoutTeamPrefix, _ := acidv1.ExtractClusterName(c.Name, c.Spec.TeamID)
+	clusterNameWithoutTeamPrefix, _ := cpov1.ExtractClusterName(c.Name, c.Spec.TeamID)
 	if clusterNameWithoutTeamPrefix != "" {
 		if role == Master {
 			oldDnsString = c.oldMasterDNSName(clusterNameWithoutTeamPrefix)
@@ -582,14 +582,14 @@ func (c *Cluster) credentialSecretNameForCluster(username string, clusterName st
 	return c.OpConfig.SecretNameTemplate.Format(
 		"username", strings.Replace(username, "_", "-", -1),
 		"cluster", clusterName,
-		"tprkind", acidv1.PostgresCRDResourceKind,
+		"tprkind", cpov1.PostgresCRDResourceKind,
 		"tprgroup", acidzalando.GroupName)
 }
 
-func cloneSpec(from *acidv1.Postgresql) (*acidv1.Postgresql, error) {
+func cloneSpec(from *cpov1.Postgresql) (*cpov1.Postgresql, error) {
 	var (
 		buf    bytes.Buffer
-		result *acidv1.Postgresql
+		result *cpov1.Postgresql
 		err    error
 	)
 	enc := gob.NewEncoder(&buf)
@@ -603,14 +603,14 @@ func cloneSpec(from *acidv1.Postgresql) (*acidv1.Postgresql, error) {
 	return result, nil
 }
 
-func (c *Cluster) setSpec(newSpec *acidv1.Postgresql) {
+func (c *Cluster) setSpec(newSpec *cpov1.Postgresql) {
 	c.specMu.Lock()
 	c.Postgresql = *newSpec
 	c.specMu.Unlock()
 }
 
 // GetSpec returns a copy of the operator-side spec of a Postgres cluster in a thread-safe manner
-func (c *Cluster) GetSpec() (*acidv1.Postgresql, error) {
+func (c *Cluster) GetSpec() (*cpov1.Postgresql, error) {
 	c.specMu.RLock()
 	defer c.specMu.RUnlock()
 	return cloneSpec(&c.Postgresql)
@@ -657,14 +657,14 @@ func trimCronjobName(name string) string {
 	return name
 }
 
-func parseResourceRequirements(resourcesRequirement v1.ResourceRequirements) (acidv1.Resources, error) {
-	var resources acidv1.Resources
+func parseResourceRequirements(resourcesRequirement v1.ResourceRequirements) (cpov1.Resources, error) {
+	var resources cpov1.Resources
 	resourcesJSON, err := json.Marshal(resourcesRequirement)
 	if err != nil {
-		return acidv1.Resources{}, fmt.Errorf("could not marshal K8s resources requirements")
+		return cpov1.Resources{}, fmt.Errorf("could not marshal K8s resources requirements")
 	}
 	if err = json.Unmarshal(resourcesJSON, &resources); err != nil {
-		return acidv1.Resources{}, fmt.Errorf("could not unmarshal K8s resources requirements into acidv1.Resources struct")
+		return cpov1.Resources{}, fmt.Errorf("could not unmarshal K8s resources requirements into cpov1.Resources struct")
 	}
 	return resources, nil
 }

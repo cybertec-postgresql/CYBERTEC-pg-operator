@@ -8,8 +8,8 @@ set -ex
 
 # Install dependencies
 
-apt-get update
-apt-get install -y wget
+# apt-get update
+# apt-get install -y wget
 
 (
     cd /tmp

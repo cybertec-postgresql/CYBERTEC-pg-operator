@@ -22,6 +22,15 @@ VERSION ?= $(shell git describe --tags --always --dirty)
 DIRS := cmd pkg
 PKG := `go list ./... | grep -v /vendor/`
 
+BASE_IMAGE ?= rockylinux:9
+PACKAGER ?= microdnf
+BUILD ?= 1
+ROOTPATH = $(GOPATH)/src/github.com/cybertec/cybertec-pg-operator
+ifndef ROOTPATH
+	export ROOTPATH=$(GOPATH)/src/github.com/cybertec/cybertec-pg-operator
+endif
+
+
 ifeq ($(DEBUG),1)
 	DOCKERFILE = DebugDockerfile
 	DEBUG_POSTFIX := -debug-$(shell date hhmmss)
@@ -60,14 +69,16 @@ linux: ${SOURCES}
 macos: ${SOURCES}
 	GOOS=darwin GOARCH=amd64 CGO_ENABLED=${CGO_ENABLED} go build -o build/macos/${BINARY} ${BUILD_FLAGS} -ldflags "$(LDFLAGS)" $^
 
-docker: ${DOCKERDIR}/${DOCKERFILE}
+docker: ${DOCKERDIR}/${DOCKERFILE}				
 
-	echo `(env)`
-	echo "Tag ${TAG}"
-	echo "Version ${VERSION}"
-	echo "CDP tag ${CDP_TAG}"
-	echo "git describe $(shell git describe --tags --always --dirty)"
-	docker build --rm -t "$(IMAGE):$(TAG)$(CDP_TAG)$(DEBUG_FRESH)$(DEBUG_POSTFIX)" -f "${DOCKERDIR}/${DOCKERFILE}" --build-arg VERSION="${VERSION}" .
+	docker build --rm -t "$(IMAGE):$(TAG)$(CDP_TAG)$(DEBUG_FRESH)$(DEBUG_POSTFIX)" -f "${DOCKERDIR}/${DOCKERFILE}" --build-arg VERSION="${VERSION}" --build-arg BASE_IMAGE="${BASE_IMAGE}" --build-arg PACKAGER="${PACKAGER}" .
+
+# 	docker build --rm   --build-arg VERSION="${VERSION}" .
+
+# 	docker build --rm -t "$(IMAGE):$(TAG)$(CDP_TAG)$(DEBUG_FRESH)$(DEBUG_POSTFIX)" -f "${DOCKERDIR}/${DOCKERFILE}" --build-arg VERSION="${VERSION}" .
+
+# ${VERSION}
+
 
 indocker-race:
 	docker run --rm -v "${GOPATH}":"${GOPATH}" -e GOPATH="${GOPATH}" -e RACE=1 -w ${PWD} golang:1.19.8 bash -c "make linux"

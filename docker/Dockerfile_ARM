@@ -15,7 +15,7 @@ RUN ${PACKAGER} -y install --nodocs  https://dl.fedoraproject.org/pub/epel/epel-
 
 RUN bash docker/build_operator.sh
 
-FROM ${BASE_IMAGE}
+FROM arm64v8/${BASE_IMAGE}
 ARG PACKAGER
 LABEL maintainer="Opensource @ CYBERTEC <cpo-community@googlegroups.com>"
 

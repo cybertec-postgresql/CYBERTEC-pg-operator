@@ -52,7 +52,7 @@ production for over five years.
 
 ## Supported Postgres & K8s versions
 
-| Release   | Postgres versions | | pgBackRest versions | Patroni versions | K8s versions      | Golang  |
+| Release   | Postgres versions | pgBackRest versions   | Patroni versions | K8s versions      | Golang  |
 | :-------- | :---------------: | :-------------------: | :--------------: | :----------------:| :-----: |
 | latest    | 13 &rarr; 16      | 2.51                  | 3.2.2            | 1.21+             | 1.19.8  |
 | next rc   | 13 &rarr; 16      | 2.51                  | 3.2.2            | 1.21+             | 1.22.1  |

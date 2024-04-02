@@ -23,7 +23,7 @@ DIRS := cmd pkg
 PKG := `go list ./... | grep -v /vendor/`
 
 BASE_IMAGE ?= rockylinux:9
-PACKAGER ?= microdnf
+PACKAGER ?= dnf
 BUILD ?= 1
 ROOTPATH = $(GOPATH)/src/github.com/cybertec/cybertec-pg-operator
 ifndef ROOTPATH

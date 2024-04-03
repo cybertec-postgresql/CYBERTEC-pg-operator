@@ -287,7 +287,7 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	}
 
 	// sync monitoring
-	if err = c.syncMonitoring(&oldSpec, newSpec); err != nil {
+	if err = c.syncMonitoringSecret(&oldSpec, newSpec); err != nil {
 		return fmt.Errorf("could not sync monitoring: %v", err)
 	}
 

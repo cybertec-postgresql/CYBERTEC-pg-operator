@@ -965,6 +965,17 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 			updateFailed = true
 		}
 	}
+	//Add monitoring user if required
+	if newSpec.Spec.Monitoring != nil {
+		flg := cpov1.UserFlags{constants.RoleFlagLogin}
+		if newSpec.Spec.Users != nil {
+			newSpec.Spec.Users[monitorUsername] = flg
+		} else {
+			users := make(map[string]cpov1.UserFlags)
+			newSpec.Spec.Users = users
+			newSpec.Spec.Users[monitorUsername] = flg
+		}
+	}
 
 	// Users
 	func() {
@@ -973,7 +984,6 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 			reflect.DeepEqual(oldSpec.Spec.PreparedDatabases, newSpec.Spec.PreparedDatabases)
 		sameRotatedUsers := reflect.DeepEqual(oldSpec.Spec.UsersWithSecretRotation, newSpec.Spec.UsersWithSecretRotation) &&
 			reflect.DeepEqual(oldSpec.Spec.UsersWithInPlaceSecretRotation, newSpec.Spec.UsersWithInPlaceSecretRotation)
-
 		// connection pooler needs one system user created who is initialized in initUsers
 		// only when disabled in oldSpec and enabled in newSpec
 		needPoolerUser := c.needConnectionPoolerUser(&oldSpec.Spec, &newSpec.Spec)
@@ -1015,6 +1025,7 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	//sync monitoring container
 	if !reflect.DeepEqual(oldSpec.Spec.Monitoring, newSpec.Spec.Monitoring) {
 		syncStatefulSet = true
+		c.syncMonitoringSecret(oldSpec, newSpec)
 	}
 
 	//sync pgbackrest statefulset

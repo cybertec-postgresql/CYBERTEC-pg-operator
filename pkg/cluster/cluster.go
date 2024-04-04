@@ -163,6 +163,11 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec cpov1.Postgresq
 		cluster.VolumeResizer = &volumes.EBSVolumeResizer{AWSRegion: cfg.OpConfig.AWSRegion}
 	}
 
+	//Check if monitoring user is added in manifest
+	if _, ok := pgSpec.Spec.Users["cpo-exporter"]; ok {
+
+		cluster.logger.Error("creating user of name cpo-exporter is not allowed as it is reserved for monitoring")
+	}
 	return cluster
 }
 
@@ -357,6 +362,7 @@ func (c *Cluster) Create() (err error) {
 		c.logger.Info("a TDE secret was successfully created")
 	}
 	if c.Postgresql.Spec.Monitoring != nil {
+		c.logger.Infof("Spec.Users are %s", c.Spec.Users)
 		if err := c.createMonitoringSecret(); err != nil {
 			return fmt.Errorf("could not create the monitoring secret: %v", err)
 		}

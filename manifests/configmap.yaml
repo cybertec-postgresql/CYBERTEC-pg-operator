@@ -12,7 +12,7 @@ data:
   cluster_domain: cluster.local
   cluster_history_entries: "1000"
   cluster_labels: application:spilo
-  cluster_name_label: cluster-name
+  cluster_name_label: cluster.cpo.opensource.cybertec.at/name
   # connection_pooler_default_cpu_limit: "1"
   # connection_pooler_default_cpu_request: "500m"
   # connection_pooler_default_memory_limit: 100Mi
@@ -126,9 +126,9 @@ data:
   pod_label_wait_timeout: 10m
   pod_management_policy: "ordered_ready"
   # pod_priority_class_name: "postgres-pod-priority"
-  pod_role_label: spilo-role
+  pod_role_label: member.cpo.opensource.cybertec.at/role
   # pod_service_account_definition: ""
-  pod_service_account_name: "postgres-pod"
+  pod_service_account_name: "cpo-pod"
   # pod_service_account_role_binding_definition: ""
   pod_terminate_grace_period: 5m
   # postgres_superuser_teams: "postgres_superusers"
@@ -138,7 +138,7 @@ data:
   repair_period: 5m
   replica_dns_name_format: "{cluster}-repl.{namespace}.{hostedzone}"
   # replica_legacy_dns_name_format: "{cluster}-repl.{team}.{hostedzone}"
-  replication_username: standby
+  replication_username: cpo_replication
   resource_check_interval: 3s
   resource_check_timeout: 10m
   resync_period: 30m

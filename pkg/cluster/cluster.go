@@ -152,7 +152,7 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec cpov1.Postgresq
 		currentMajorVersion: 0,
 		replicationSlots:    make(map[string]interface{}),
 	}
-	cluster.logger = logger.WithField("pkg", "cluster").WithField("cluster-name", cluster.clusterName())
+	cluster.logger = logger.WithField("pkg", "cluster").WithField("cluster.cpo.opensource.cybertec.at/name", cluster.clusterName())
 	cluster.teamsAPIClient = teams.NewTeamsAPI(cfg.OpConfig.TeamsAPIUrl, logger)
 	cluster.oauthTokenGetter = newSecretOauthTokenGetter(&kubeClient, cfg.OpConfig.OAuthTokenSecretName)
 	cluster.patroni = patroni.New(cluster.logger, nil)

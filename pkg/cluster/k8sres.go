@@ -1518,7 +1518,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			},
 			v1.EnvVar{
 				Name:  "SELECTOR",
-				Value: fmt.Sprintf("cluster-name=%s,spilo-role=master", c.Name),
+				Value: fmt.Sprintf("cluster.cpo.opensource.cybertec.at/name=%s,member.cpo.opensource.cybertec.at/role=master", c.Name),
 			},
 			v1.EnvVar{
 				Name:  "MODE",

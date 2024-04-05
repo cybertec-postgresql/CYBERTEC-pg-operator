@@ -104,7 +104,7 @@ configKubernetes:
   cluster_labels:
     application: spilo
   # label assigned to Kubernetes objects created by the operator
-  cluster_name_label: cluster-name
+  cluster_name_label: cluster.cpo.opensource.cybertec.at/name
   # additional annotations to add to every database pod
   # custom_pod_annotations:
   #   keya: valuea
@@ -181,7 +181,7 @@ configKubernetes:
   # specify the pod management policy of stateful sets of Postgres clusters
   pod_management_policy: "ordered_ready"
   # label assigned to the Postgres pods (and services/endpoints)
-  pod_role_label: spilo-role
+  pod_role_label: member.cpo.opensource.cybertec.at/role
   # service account definition as JSON/YAML string to be used by postgres cluster pods
   # pod_service_account_definition: ""
 

@@ -86,7 +86,7 @@ class EndToEndTestCase(unittest.TestCase):
 
         # set a single K8s wrapper for all tests
         k8s = cls.k8s = K8s()
-        cluster_label = 'application=spilo,cluster-name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
 
         # remove existing local storage class and create hostpath class
         try:
@@ -152,8 +152,8 @@ class EndToEndTestCase(unittest.TestCase):
         result = k8s.create_with_kubectl("manifests/minimal-postgres-manifest.yaml")
         print('stdout: {}, stderr: {}'.format(result.stdout, result.stderr))
         try:
-            k8s.wait_for_pod_start('spilo-role=master,' + cluster_label)
-            k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=master,' + cluster_label)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
         except timeout_decorator.TimeoutError:
             print('Operator log: {}'.format(k8s.get_operator_log()))
             raise
@@ -205,7 +205,7 @@ class EndToEndTestCase(unittest.TestCase):
            Extend postgres container capabilities
         '''
         k8s = self.k8s
-        cluster_label = 'application=spilo,cluster-name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
         capabilities = ["SYS_NICE","CHOWN"]
         patch_capabilities = {
             "data": {
@@ -220,8 +220,8 @@ class EndToEndTestCase(unittest.TestCase):
             k8s.update_config(patch_capabilities)
 
             # changed security context of postgres container should trigger a rolling update
-            k8s.wait_for_pod_failover(replica_nodes, 'spilo-role=master,' + cluster_label)
-            k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+            k8s.wait_for_pod_failover(replica_nodes, 'member.cpo.opensource.cybertec.at/role=master,' + cluster_label)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
 
             self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
             self.eventuallyEqual(lambda: k8s.count_pods_with_container_capabilities(capabilities, cluster_label),
@@ -619,7 +619,7 @@ class EndToEndTestCase(unittest.TestCase):
 
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"},
                              "Operator does not get in sync")
-        self.eventuallyEqual(lambda: k8s.count_secrets_with_label("cluster-name=acid-minimal-cluster,application=spilo", self.test_namespace),
+        self.eventuallyEqual(lambda: k8s.count_secrets_with_label("cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,application=cpo", self.test_namespace),
                              1, "Secret not created for user in namespace")
 
     @timeout_decorator.timeout(TEST_TIMEOUT_SEC)
@@ -629,7 +629,7 @@ class EndToEndTestCase(unittest.TestCase):
         '''
 
         k8s = self.k8s
-        cluster_label = 'application=spilo,cluster-name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
         tls_secret = "pg-tls"
 
         # get nodes of master and replica(s) (expected target of new master)
@@ -654,8 +654,8 @@ class EndToEndTestCase(unittest.TestCase):
                 "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster", pg_patch_tls)
 
             # wait for switched over
-            k8s.wait_for_pod_failover(replica_nodes, 'spilo-role=master,' + cluster_label)
-            k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+            k8s.wait_for_pod_failover(replica_nodes, 'member.cpo.opensource.cybertec.at/role=master,' + cluster_label)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
 
             self.eventuallyEqual(lambda: k8s.count_pods_with_env_variable("SSL_CERTIFICATE_FILE", cluster_label), 2, "TLS env variable SSL_CERTIFICATE_FILE missing in Spilo pods")
             self.eventuallyEqual(lambda: k8s.count_pods_with_env_variable("SSL_PRIVATE_KEY_FILE", cluster_label), 2, "TLS env variable SSL_PRIVATE_KEY_FILE missing in Spilo pods")
@@ -674,7 +674,7 @@ class EndToEndTestCase(unittest.TestCase):
         the end turn connection pooler off to not interfere with other tests.
         '''
         k8s = self.k8s
-        pooler_label = 'application=db-connection-pooler,cluster-name=acid-minimal-cluster'
+        pooler_label = 'application=db-connection-pooler,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
         master_pooler_label = 'connection-pooler=acid-minimal-cluster-pooler'
         replica_pooler_label = master_pooler_label + '-repl'
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
@@ -817,7 +817,7 @@ class EndToEndTestCase(unittest.TestCase):
                              0, "Pooler pods not scaled down")
         self.eventuallyEqual(lambda: k8s.count_services_with_label(pooler_label),
                              0, "Pooler service not removed")
-        self.eventuallyEqual(lambda: k8s.count_secrets_with_label('application=spilo,cluster-name=acid-minimal-cluster'),
+        self.eventuallyEqual(lambda: k8s.count_secrets_with_label('application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'),
                              4, "Secrets not deleted")
 
         # Verify that all the databases have pooler schema installed.
@@ -855,7 +855,7 @@ class EndToEndTestCase(unittest.TestCase):
         '''
 
         k8s = self.k8s
-        cluster_label = 'application=spilo,cluster-name=acid-minimal-cluster,spilo-role={}'
+        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,member.cpo.opensource.cybertec.at/role={}'
 
         self.eventuallyEqual(lambda: k8s.get_service_type(cluster_label.format("master")),
                              'ClusterIP',
@@ -1178,7 +1178,7 @@ class EndToEndTestCase(unittest.TestCase):
     def test_major_version_upgrade(self):
         k8s = self.k8s
         result = k8s.create_with_kubectl("manifests/minimal-postgres-manifest-12.yaml")
-        self.eventuallyEqual(lambda: k8s.count_running_pods(labels="application=spilo,cluster-name=acid-upgrade-test"), 2, "No 2 pods running")
+        self.eventuallyEqual(lambda: k8s.count_running_pods(labels="application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-upgrade-test"), 2, "No 2 pods running")
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
 
         pg_patch_version = {
@@ -1206,7 +1206,7 @@ class EndToEndTestCase(unittest.TestCase):
             Test the retention policy for persistent volume claim
         '''
         k8s = self.k8s
-        cluster_label = 'application=spilo,cluster-name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
 
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
         self.eventuallyEqual(lambda: k8s.count_pvcs_with_label(cluster_label), 2, "PVCs is not equal to number of instance")
@@ -1260,7 +1260,7 @@ class EndToEndTestCase(unittest.TestCase):
         k8s.api.custom_objects_api.patch_namespaced_custom_object(
             'cpo.opensource.cybertec.at', 'v1', 'default', 'postgresqls', 'acid-minimal-cluster', pg_patch_scale_up_instances)
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"},"Operator does not get in sync")
-        k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+        k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
         self.eventuallyEqual(lambda: k8s.count_pvcs_with_label(cluster_label), 2, "PVCs is not equal to number of instances")
 
     @timeout_decorator.timeout(TEST_TIMEOUT_SEC)
@@ -1270,7 +1270,7 @@ class EndToEndTestCase(unittest.TestCase):
         It will try to raise requests to limits which is capped with max_memory_request.
         '''
         k8s = self.k8s
-        cluster_label = 'application=spilo,cluster-name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
 
         # get nodes of master and replica(s) (expected target of new master)
         _, replica_nodes = k8s.get_pg_nodes(cluster_label)
@@ -1312,11 +1312,11 @@ class EndToEndTestCase(unittest.TestCase):
                              "Operator does not get in sync")
 
         # wait for switched over
-        k8s.wait_for_pod_failover(replica_nodes, 'spilo-role=master,' + cluster_label)
-        k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+        k8s.wait_for_pod_failover(replica_nodes, 'member.cpo.opensource.cybertec.at/role=master,' + cluster_label)
+        k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
 
         def verify_pod_resources():
-            pods = k8s.api.core_v1.list_namespaced_pod('default', label_selector="cluster-name=acid-minimal-cluster,application=spilo").items
+            pods = k8s.api.core_v1.list_namespaced_pod('default', label_selector="cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,application=cpo").items
             if len(pods) < 2:
                 return False
 
@@ -1344,8 +1344,8 @@ class EndToEndTestCase(unittest.TestCase):
 
         try:
             k8s.create_with_kubectl("manifests/complete-postgres-manifest.yaml")
-            k8s.wait_for_pod_start("spilo-role=master", self.test_namespace)
-            k8s.wait_for_pod_start("spilo-role=replica", self.test_namespace)
+            k8s.wait_for_pod_start("member.cpo.opensource.cybertec.at/role=master", self.test_namespace)
+            k8s.wait_for_pod_start("member.cpo.opensource.cybertec.at/role=replica", self.test_namespace)
             self.assert_master_is_unique(self.test_namespace, "acid-test-cluster")
 
         except timeout_decorator.TimeoutError:
@@ -1366,7 +1366,7 @@ class EndToEndTestCase(unittest.TestCase):
            Add label to a node and update postgres cluster spec to deploy only on a node with that label
         '''
         k8s = self.k8s
-        cluster_label = 'application=spilo,cluster-name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
 
         # verify we are in good state from potential previous tests
         self.eventuallyEqual(lambda: k8s.count_running_pods(), 2, "No 2 pods running")
@@ -1422,15 +1422,15 @@ class EndToEndTestCase(unittest.TestCase):
                                  "Operator does not get in sync")
 
             # node affinity change should cause replica to relocate from replica node to master node due to node affinity requirement
-            k8s.wait_for_pod_failover(master_nodes, 'spilo-role=replica,' + cluster_label)
-            k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+            k8s.wait_for_pod_failover(master_nodes, 'member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
             # next master will be switched over and pod needs to be replaced as well to finish the rolling update
-            k8s.wait_for_pod_failover(master_nodes, 'spilo-role=master,' + cluster_label)
-            k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+            k8s.wait_for_pod_failover(master_nodes, 'member.cpo.opensource.cybertec.at/role=master,' + cluster_label)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
 
             podsList = k8s.api.core_v1.list_namespaced_pod('default', label_selector=cluster_label)
             for pod in podsList.items:
-                if pod.metadata.labels.get('spilo-role') == 'replica':
+                if pod.metadata.labels.get('member.cpo.opensource.cybertec.at/role') == 'replica':
                     self.assertEqual(master_nodes[0], pod.spec.node_name,
                          "Sanity check: expected replica to relocate to master node {}, but found on {}".format(master_nodes[0], pod.spec.node_name))
 
@@ -1457,9 +1457,9 @@ class EndToEndTestCase(unittest.TestCase):
             self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
 
             # node affinity change should cause another rolling update and relocation of replica
-            k8s.wait_for_pod_failover(master_nodes, 'spilo-role=replica,' + cluster_label)
-            k8s.wait_for_pod_start('spilo-role=master,' + cluster_label)
-            k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+            k8s.wait_for_pod_failover(master_nodes, 'member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=master,' + cluster_label)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
 
         except timeout_decorator.TimeoutError:
             print('Operator log: {}'.format(k8s.get_operator_log()))
@@ -1475,7 +1475,7 @@ class EndToEndTestCase(unittest.TestCase):
            Remove node readiness label from master node. This must cause a failover.
         '''
         k8s = self.k8s
-        cluster_label = 'application=spilo,cluster-name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
         readiness_label = 'lifecycle-status'
         readiness_value = 'ready'
 
@@ -1516,11 +1516,11 @@ class EndToEndTestCase(unittest.TestCase):
             if replica.status.phase == 'Pending':
                 k8s.api.core_v1.delete_namespaced_persistent_volume_claim('pgdata-' + replica.metadata.name, 'default')
                 k8s.api.core_v1.delete_namespaced_pod(replica.metadata.name, 'default')
-                k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+                k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
 
             # next master will be switched over and pod needs to be replaced as well to finish the rolling update
-            k8s.wait_for_pod_failover(replica_nodes, 'spilo-role=master,' + cluster_label)
-            k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+            k8s.wait_for_pod_failover(replica_nodes, 'member.cpo.opensource.cybertec.at/role=master,' + cluster_label)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
 
             # patch also node where master ran before
             k8s.api.core_v1.patch_node(master_nodes[0], patch_readiness_label)
@@ -1712,7 +1712,7 @@ class EndToEndTestCase(unittest.TestCase):
             Add rolling update flag to only the master and see it failing over
         '''
         k8s = self.k8s
-        cluster_label = 'application=spilo,cluster-name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
 
         # verify we are in good state from potential previous tests
         self.eventuallyEqual(lambda: k8s.count_running_pods(), 2, "No 2 pods running")
@@ -1733,7 +1733,7 @@ class EndToEndTestCase(unittest.TestCase):
             podsList = k8s.api.core_v1.list_namespaced_pod('default', label_selector=cluster_label)
             for pod in podsList.items:
                 # add flag only to the master to make it appear to the operator as a leftover from a rolling update
-                if pod.metadata.labels.get('spilo-role') == 'master':
+                if pod.metadata.labels.get('member.cpo.opensource.cybertec.at/role') == 'master':
                     old_creation_timestamp = pod.metadata.creation_timestamp
                     k8s.patch_pod(flag, pod.metadata.name, pod.metadata.namespace)
                 else:
@@ -1744,15 +1744,15 @@ class EndToEndTestCase(unittest.TestCase):
             k8s.delete_operator_pod()
 
             # operator should now recreate the master pod and do a switchover before
-            k8s.wait_for_pod_failover(replica_nodes, 'spilo-role=master,' + cluster_label)
-            k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+            k8s.wait_for_pod_failover(replica_nodes, 'member.cpo.opensource.cybertec.at/role=master,' + cluster_label)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
 
             # check if the former replica is now the new master
             leader = k8s.get_cluster_leader_pod()
             self.eventuallyEqual(lambda: leader.metadata.name, switchover_target, "Rolling update flag did not trigger switchover")
 
             # check that the old master has been recreated
-            k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
             replica = k8s.get_cluster_replica_pod()
             self.assertTrue(replica.metadata.creation_timestamp > old_creation_timestamp, "Old master pod was not recreated")
 
@@ -1768,7 +1768,7 @@ class EndToEndTestCase(unittest.TestCase):
             Simulate case when replica does not receive label in time and rolling update does not finish
         '''
         k8s = self.k8s
-        cluster_label = 'application=spilo,cluster-name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
         flag = "zalando-postgres-operator-rolling-update-required"
 
         # verify we are in good state from potential previous tests
@@ -1802,29 +1802,29 @@ class EndToEndTestCase(unittest.TestCase):
             podList = k8s.api.core_v1.list_namespaced_pod('default', label_selector=cluster_label)
             for pod in podList.items:
                 k8s.patch_pod(rolling_update_patch, pod.metadata.name, pod.metadata.namespace)
-                if pod.metadata.labels.get('spilo-role') == 'replica':
+                if pod.metadata.labels.get('member.cpo.opensource.cybertec.at/role') == 'replica':
                     switchover_target = pod.metadata.name
 
             # update config and restart operator
             k8s.update_config(patch_resync_config, "update resync interval and pod_label_wait_timeout")
 
             # operator should now recreate the replica pod first and do a switchover after
-            k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
 
             # pod_label_wait_timeout should have been exceeded hence the rolling update is continued on next sync
             # check if the cluster state is "SyncFailed"
             self.eventuallyEqual(lambda: k8s.pg_get_status(), "SyncFailed", "Expected SYNC event to fail")
 
             # wait for next sync, replica should be running normally by now and be ready for switchover
-            k8s.wait_for_pod_failover(replica_nodes, 'spilo-role=master,' + cluster_label)
-            k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+            k8s.wait_for_pod_failover(replica_nodes, 'member.cpo.opensource.cybertec.at/role=master,' + cluster_label)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
 
             # check if the former replica is now the new master
             leader = k8s.get_cluster_leader_pod()
             self.eventuallyEqual(lambda: leader.metadata.name, switchover_target, "Rolling update flag did not trigger switchover")
 
             # wait for the old master to get restarted
-            k8s.wait_for_pod_start('spilo-role=replica,' + cluster_label)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
 
             # status should again be "SyncFailed" but turn into "Running" on the next sync
             time.sleep(30)
@@ -1891,8 +1891,8 @@ class EndToEndTestCase(unittest.TestCase):
             "alice": "bob"
         }
 
-        self.eventuallyTrue(lambda: k8s.check_service_annotations("cluster-name=acid-minimal-cluster,spilo-role=master", annotations), "Wrong annotations")
-        self.eventuallyTrue(lambda: k8s.check_service_annotations("cluster-name=acid-minimal-cluster,spilo-role=replica", annotations), "Wrong annotations")
+        self.eventuallyTrue(lambda: k8s.check_service_annotations("cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,member.cpo.opensource.cybertec.at/role=master", annotations), "Wrong annotations")
+        self.eventuallyTrue(lambda: k8s.check_service_annotations("cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,member.cpo.opensource.cybertec.at/role=replica", annotations), "Wrong annotations")
 
         # clean up
         unpatch_custom_service_annotations = {
@@ -1908,7 +1908,7 @@ class EndToEndTestCase(unittest.TestCase):
            Inject annotation to Postgresql CRD and check it's propagation to stateful set
         '''
         k8s = self.k8s
-        cluster_label = 'application=spilo,cluster-name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
 
         patch_sset_propagate_annotations = {
             "data": {
@@ -1945,8 +1945,8 @@ class EndToEndTestCase(unittest.TestCase):
         '''
         k8s = self.k8s
         standby_cluster_name = 'acid-standby-cluster'
-        cluster_name_label = 'cluster-name'
-        cluster_label = 'application=spilo,{}={}'.format(cluster_name_label, standby_cluster_name)
+        cluster_name_label = 'cluster.cpo.opensource.cybertec.at/name'
+        cluster_label = 'application=cpo,{}={}'.format(cluster_name_label, standby_cluster_name)
         superuser_name = 'postgres'
         replication_user = 'standby'
         secret_suffix = 'credentials.postgresql.cpo.opensource.cybertec.at'
@@ -1963,7 +1963,7 @@ class EndToEndTestCase(unittest.TestCase):
 
         try:
             k8s.create_with_kubectl("manifests/standby-manifest.yaml")
-            k8s.wait_for_pod_start("spilo-role=master," + cluster_label)
+            k8s.wait_for_pod_start("member.cpo.opensource.cybertec.at/role=master," + cluster_label)
 
         except timeout_decorator.TimeoutError:
             print('Operator log: {}'.format(k8s.get_operator_log()))
@@ -1980,7 +1980,7 @@ class EndToEndTestCase(unittest.TestCase):
            Add taint "postgres=:NoExecute" to node with master. This must cause a failover.
         '''
         k8s = self.k8s
-        cluster_label = 'application=spilo,cluster-name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
 
         # verify we are in good state from potential previous tests
         self.eventuallyEqual(lambda: k8s.count_running_pods(), 2, "No 2 pods running")
@@ -2033,7 +2033,7 @@ class EndToEndTestCase(unittest.TestCase):
            Test deletion with configured protection
         '''
         k8s = self.k8s
-        cluster_label = 'application=spilo,cluster-name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
 
         # configure delete protection
         patch_delete_annotations = {
@@ -2088,7 +2088,7 @@ class EndToEndTestCase(unittest.TestCase):
                 "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", "acid-minimal-cluster")
 
             self.eventuallyEqual(lambda: len(k8s.api.custom_objects_api.list_namespaced_custom_object(
-                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", label_selector="cluster-name=acid-minimal-cluster")["items"]), 0, "Manifest not deleted")
+                "cpo.opensource.cybertec.at", "v1", "default", "postgresqls", label_selector="cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster")["items"]), 0, "Manifest not deleted")
 
             self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
 
@@ -2116,23 +2116,23 @@ class EndToEndTestCase(unittest.TestCase):
 
     def assert_master_is_unique(self, namespace='default', clusterName="acid-minimal-cluster"):
         '''
-           Check that there is a single pod in the k8s cluster with the label "spilo-role=master"
+           Check that there is a single pod in the k8s cluster with the label "member.cpo.opensource.cybertec.at/role=master"
            To be called manually after operations that affect pods
         '''
         k8s = self.k8s
-        labels = 'spilo-role=master,cluster-name=' + clusterName
+        labels = 'member.cpo.opensource.cybertec.at/role=master,cluster.cpo.opensource.cybertec.at/name=' + clusterName
 
         num_of_master_pods = k8s.count_pods_with_label(labels, namespace)
         self.assertEqual(num_of_master_pods, 1, "Expected 1 master pod, found {}".format(num_of_master_pods))
 
     @timeout_decorator.timeout(TEST_TIMEOUT_SEC)
-    def assert_distributed_pods(self, target_nodes, cluster_labels='cluster-name=acid-minimal-cluster'):
+    def assert_distributed_pods(self, target_nodes, cluster_labels='cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'):
         '''
            Other tests can lead to the situation that master and replica are on the same node.
            Toggle pod anti affinty to distribute pods accross nodes (replica in particular).
         '''
         k8s = self.k8s
-        cluster_labels = 'application=spilo,cluster-name=acid-minimal-cluster'
+        cluster_labels = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
 
         # get nodes of master and replica(s)
         master_nodes, replica_nodes = k8s.get_cluster_nodes()
@@ -2154,7 +2154,7 @@ class EndToEndTestCase(unittest.TestCase):
             k8s.update_config(patch_enable_antiaffinity, "enable antiaffinity")
             self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
 
-            k8s.wait_for_pod_start('spilo-role=replica,' + cluster_labels)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_labels)
             k8s.wait_for_running_pods(cluster_labels, 2)
 
             # now disable pod anti affintiy again which will cause yet another failover
@@ -2166,7 +2166,7 @@ class EndToEndTestCase(unittest.TestCase):
             k8s.update_config(patch_disable_antiaffinity, "disable antiaffinity")
             self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
             
-            k8s.wait_for_pod_start('spilo-role=replica,' + cluster_labels)
+            k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_labels)
             k8s.wait_for_running_pods(cluster_labels, 2)
 
             master_nodes, replica_nodes = k8s.get_cluster_nodes()

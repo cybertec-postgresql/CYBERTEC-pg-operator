@@ -106,13 +106,13 @@ func (c *Controller) importConfigurationFromCRD(fromCRD *cpov1.OperatorConfigura
 		}
 	}
 
-	result.PodRoleLabel = util.Coalesce(fromCRD.Kubernetes.PodRoleLabel, "spilo-role")
-	result.ClusterLabels = util.CoalesceStrMap(fromCRD.Kubernetes.ClusterLabels, map[string]string{"application": "spilo"})
+	result.PodRoleLabel = util.Coalesce(fromCRD.Kubernetes.PodRoleLabel, "member.cpo.opensource.cybertec.at/role")
+	result.ClusterLabels = util.CoalesceStrMap(fromCRD.Kubernetes.ClusterLabels, map[string]string{"application": "cpo"})
 	result.InheritedLabels = fromCRD.Kubernetes.InheritedLabels
 	result.InheritedAnnotations = fromCRD.Kubernetes.InheritedAnnotations
 	result.DownscalerAnnotations = fromCRD.Kubernetes.DownscalerAnnotations
 	result.IgnoredAnnotations = fromCRD.Kubernetes.IgnoredAnnotations
-	result.ClusterNameLabel = util.Coalesce(fromCRD.Kubernetes.ClusterNameLabel, "cluster-name")
+	result.ClusterNameLabel = util.Coalesce(fromCRD.Kubernetes.ClusterNameLabel, "cluster.cpo.opensource.cybertec.at/name")
 	result.DeleteAnnotationDateKey = fromCRD.Kubernetes.DeleteAnnotationDateKey
 	result.DeleteAnnotationNameKey = fromCRD.Kubernetes.DeleteAnnotationNameKey
 	result.NodeReadinessLabel = fromCRD.Kubernetes.NodeReadinessLabel

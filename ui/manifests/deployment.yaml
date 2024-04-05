@@ -41,7 +41,7 @@ spec:
             - name: "OPERATOR_API_URL"
               value: "http://postgres-operator:8080"
             - name: "OPERATOR_CLUSTER_NAME_LABEL"
-              value: "cluster-name"
+              value: "cluster.cpo.opensource.cybertec.at/name"
             - name: "RESOURCES_VISIBLE"
               value: "False"
             - name: "TARGET_NAMESPACE"

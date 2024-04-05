@@ -78,7 +78,7 @@ ACCESS_TOKEN_URL = getenv('ACCESS_TOKEN_URL')
 TOKENINFO_URL = getenv('OAUTH2_TOKEN_INFO_URL')
 
 OPERATOR_API_URL = getenv('OPERATOR_API_URL', 'http://postgres-operator')
-OPERATOR_CLUSTER_NAME_LABEL = getenv('OPERATOR_CLUSTER_NAME_LABEL', 'cluster-name')
+OPERATOR_CLUSTER_NAME_LABEL = getenv('OPERATOR_CLUSTER_NAME_LABEL', 'cluster.cpo.opensource.cybertec.at/name')
 OPERATOR_UI_CONFIG = loads(getenv('OPERATOR_UI_CONFIG', '{}'))
 OPERATOR_UI_MAINTENANCE_CHECK = getenv('OPERATOR_UI_MAINTENANCE_CHECK', '{}')
 READ_ONLY_MODE = getenv('READ_ONLY_MODE', False) in [True, 'true']

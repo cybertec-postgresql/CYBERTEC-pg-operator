@@ -43,7 +43,7 @@ envs:
   # UI and operator API. Insert the service name of the operator API here!
   appUrl: "http://localhost:8081"
   operatorApiUrl: "http://postgres-operator:8080"
-  operatorClusterNameLabel: "cluster-name"
+  operatorClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name"
   resourcesVisible: "False"
   targetNamespace: "default"
   teams:

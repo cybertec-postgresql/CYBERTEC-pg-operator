@@ -193,7 +193,7 @@ func (c *Controller) processEvent(event ClusterEvent) {
 	} else {
 		clusterName = util.NameFromMeta(event.OldSpec.ObjectMeta)
 	}
-	lg = lg.WithField("cluster-name", clusterName)
+	lg = lg.WithField("cluster.cpo.opensource.cybertec.at/name", clusterName)
 
 	c.clustersMu.RLock()
 	cl, clusterFound := c.clusters[clusterName]
@@ -443,21 +443,21 @@ func (c *Controller) queueClusterEvent(informerOldSpec, informerNewSpec *cpov1.P
 	// only allow deletion if delete annotations are set and conditions are met
 	if eventType == EventDelete {
 		if err := c.meetsClusterDeleteAnnotations(informerOldSpec); err != nil {
-			c.logger.WithField("cluster-name", clusterName).Warnf(
+			c.logger.WithField("cluster.cpo.opensource.cybertec.at/name", clusterName).Warnf(
 				"ignoring %q event for cluster %q - manifest does not fulfill delete requirements: %s", eventType, clusterName, err)
-			c.logger.WithField("cluster-name", clusterName).Warnf(
+			c.logger.WithField("cluster.cpo.opensource.cybertec.at/name", clusterName).Warnf(
 				"please, recreate Postgresql resource %q and set annotations to delete properly", clusterName)
 			if currentManifest, marshalErr := json.Marshal(informerOldSpec); marshalErr != nil {
-				c.logger.WithField("cluster-name", clusterName).Warnf("could not marshal current manifest:\n%+v", informerOldSpec)
+				c.logger.WithField("cluster.cpo.opensource.cybertec.at/name", clusterName).Warnf("could not marshal current manifest:\n%+v", informerOldSpec)
 			} else {
-				c.logger.WithField("cluster-name", clusterName).Warnf("%s\n", string(currentManifest))
+				c.logger.WithField("cluster.cpo.opensource.cybertec.at/name", clusterName).Warnf("%s\n", string(currentManifest))
 			}
 			return
 		}
 	}
 
 	if clusterError != "" && eventType != EventDelete {
-		c.logger.WithField("cluster-name", clusterName).Debugf("skipping %q event for the invalid cluster: %s", eventType, clusterError)
+		c.logger.WithField("cluster.cpo.opensource.cybertec.at/name", clusterName).Debugf("skipping %q event for the invalid cluster: %s", eventType, clusterError)
 
 		switch eventType {
 		case EventAdd:
@@ -488,7 +488,7 @@ func (c *Controller) queueClusterEvent(informerOldSpec, informerNewSpec *cpov1.P
 		WorkerID:  workerID,
 	}
 
-	lg := c.logger.WithField("worker", workerID).WithField("cluster-name", clusterName)
+	lg := c.logger.WithField("worker", workerID).WithField("cluster.cpo.opensource.cybertec.at/name", clusterName)
 	if err := c.clusterEventQueues[workerID].Add(clusterEvent); err != nil {
 		lg.Errorf("error while queueing cluster event: %v", clusterEvent)
 	}

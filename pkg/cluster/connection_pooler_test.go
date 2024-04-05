@@ -310,7 +310,7 @@ func TestConnectionPoolerCreateDeletion(t *testing.T) {
 				},
 				PodManagementPolicy: "ordered_ready",
 				Resources: config.Resources{
-					ClusterLabels:        map[string]string{"application": "spilo"},
+					ClusterLabels:        map[string]string{"application": "cpo"},
 					ClusterNameLabel:     "cluster.cpo.opensource.cybertec.at/name",
 					DefaultCPURequest:    "300m",
 					DefaultCPULimit:      "300m",
@@ -418,7 +418,7 @@ func TestConnectionPoolerSync(t *testing.T) {
 				},
 				PodManagementPolicy: "ordered_ready",
 				Resources: config.Resources{
-					ClusterLabels:        map[string]string{"application": "spilo"},
+					ClusterLabels:        map[string]string{"application": "cpo"},
 					ClusterNameLabel:     "cluster.cpo.opensource.cybertec.at/name",
 					DefaultCPURequest:    "300m",
 					DefaultCPULimit:      "300m",
@@ -1006,7 +1006,7 @@ func TestPoolerTLS(t *testing.T) {
 					ReplicationUsername: replicationUserName,
 				},
 				Resources: config.Resources{
-					ClusterLabels:        map[string]string{"application": "spilo"},
+					ClusterLabels:        map[string]string{"application": "cpo"},
 					ClusterNameLabel:     "cluster.cpo.opensource.cybertec.at/name",
 					DefaultCPURequest:    "300m",
 					DefaultCPULimit:      "300m",

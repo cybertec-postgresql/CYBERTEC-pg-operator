@@ -184,7 +184,7 @@ spec:
                     additionalProperties:
                       type: string
                     default:
-                      application: spilo
+                      application: cpo
                   cluster_name_label:
                     type: string
                     default: "cluster.cpo.opensource.cybertec.at/name"

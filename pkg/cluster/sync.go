@@ -143,6 +143,11 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		return fmt.Errorf("could not sync connection pooler: %v", err)
 	}
 
+	// sync monitoring
+	if err = c.syncMonitoringSecret(&oldSpec, newSpec); err != nil {
+		return fmt.Errorf("could not sync monitoring: %v", err)
+	}
+
 	if len(c.Spec.Streams) > 0 {
 		c.logger.Debug("syncing streams")
 		if err = c.syncStreams(); err != nil {
@@ -1018,20 +1023,14 @@ func (c *Cluster) syncRoles() (err error) {
 		}
 	}()
 
+	//Check if monitoring user is added in manifest
+	if _, ok := c.Spec.Users["cpo-exporter"]; ok {
+		c.logger.Error("creating user of name cpo-exporter is not allowed as it is reserved for monitoring")
+	}
+
 	// mapping between original role name and with deletion suffix
 	deletedUsers := map[string]string{}
 	newUsers = make(map[string]spec.PgUser)
-
-	if c.Spec.Monitoring != nil {
-		flg := cpov1.UserFlags{constants.RoleFlagLogin}
-		if c.Spec.Users != nil {
-			c.Spec.Users[monitorUsername] = flg
-		} else {
-			users := make(map[string]cpov1.UserFlags)
-			c.Spec.Users = users
-			c.Spec.Users[monitorUsername] = flg
-		}
-	}
 
 	// create list of database roles to query
 	for _, u := range c.pgUsers {
@@ -1466,7 +1465,8 @@ func (c *Cluster) createMonitoringSecret() error {
 		},
 		Type: v1.SecretTypeOpaque,
 		Data: map[string][]byte{
-			"key": []byte(fmt.Sprintf("%x", generatedKey)),
+			"username": []byte(c.getMonitoringSecretName()),
+			"password": []byte(fmt.Sprintf("%x", generatedKey)),
 		},
 	}
 	secret, err := c.KubeClient.Secrets(generatedSecret.Namespace).Create(context.TODO(), &generatedSecret, metav1.CreateOptions{})
@@ -1479,5 +1479,51 @@ func (c *Cluster) createMonitoringSecret() error {
 		}
 	}
 
+	return nil
+}
+
+// delete monitoring secret
+func (c *Cluster) deleteMonitoringSecret() (err error) {
+	// Repeat the same for the secret object
+	secretName := c.getMonitoringSecretName()
+
+	secret, err := c.KubeClient.
+		Secrets(c.Namespace).
+		Get(context.TODO(), secretName, metav1.GetOptions{})
+
+	if err != nil {
+		c.logger.Debugf("could not get monitoring secret %s: %v", secretName, err)
+	} else {
+		if err = c.deleteSecret(secret.UID, *secret); err != nil {
+			return fmt.Errorf("could not delete monitoring secret: %v", err)
+		}
+	}
+	return nil
+}
+
+// Sync monitoring
+// In case of monitoring is added/deleted, we need to
+// 1. Update sts to in/exclude the exporter contianer
+// 2. Add/Delete the respective user
+// 3. Add/Delete the respective secret
+// Point 1 and 2 are taken care in Update func, so we only need to take care
+// Point 3 here.
+func (c *Cluster) syncMonitoringSecret(oldSpec, newSpec *cpov1.Postgresql) error {
+	c.logger.Info("syncing Monitoring secret")
+	c.setProcessName("syncing Monitoring secret")
+
+	if newSpec.Spec.Monitoring != nil && oldSpec.Spec.Monitoring == nil {
+		// Create monitoring secret
+		if err := c.createMonitoringSecret(); err != nil {
+			return fmt.Errorf("could not create the monitoring secret: %v", err)
+		}
+		c.logger.Info("monitoring secret was successfully created")
+	} else if newSpec.Spec.Monitoring == nil && oldSpec.Spec.Monitoring != nil {
+		// Delete the monitoring secret
+		if err := c.deleteMonitoringSecret(); err != nil {
+			return fmt.Errorf("could not delete the monitoring secret: %v", err)
+		}
+		c.logger.Info("monitoring secret was successfully deleted")
+	}
 	return nil
 }

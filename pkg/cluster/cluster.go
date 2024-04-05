@@ -163,6 +163,10 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec cpov1.Postgresq
 		cluster.VolumeResizer = &volumes.EBSVolumeResizer{AWSRegion: cfg.OpConfig.AWSRegion}
 	}
 
+	//Check if monitoring user is added in manifest
+	if _, ok := pgSpec.Spec.Users["cpo-exporter"]; ok {
+		cluster.logger.Error("creating user of name cpo-exporter is not allowed as it is reserved for monitoring")
+	}
 	return cluster
 }
 
@@ -357,6 +361,7 @@ func (c *Cluster) Create() (err error) {
 		c.logger.Info("a TDE secret was successfully created")
 	}
 	if c.Postgresql.Spec.Monitoring != nil {
+		c.logger.Infof("Spec.Users are %s", c.Spec.Users)
 		if err := c.createMonitoringSecret(); err != nil {
 			return fmt.Errorf("could not create the monitoring secret: %v", err)
 		}
@@ -891,6 +896,21 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 			updateFailed = true
 		}
 	}
+	//Add monitoring user if required
+	if newSpec.Spec.Monitoring != nil {
+		flg := cpov1.UserFlags{constants.RoleFlagLogin}
+		if newSpec.Spec.Users != nil {
+			newSpec.Spec.Users[monitorUsername] = flg
+		} else {
+			users := make(map[string]cpov1.UserFlags)
+			newSpec.Spec.Users = users
+			newSpec.Spec.Users[monitorUsername] = flg
+		}
+	}
+	//Check if monitoring user is added in manifest
+	if _, ok := newSpec.Spec.Users["cpo-exporter"]; ok {
+		c.logger.Error("creating user of name cpo-exporter is not allowed as it is reserved for monitoring")
+	}
 
 	// Users
 	func() {
@@ -899,7 +919,6 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 			reflect.DeepEqual(oldSpec.Spec.PreparedDatabases, newSpec.Spec.PreparedDatabases)
 		sameRotatedUsers := reflect.DeepEqual(oldSpec.Spec.UsersWithSecretRotation, newSpec.Spec.UsersWithSecretRotation) &&
 			reflect.DeepEqual(oldSpec.Spec.UsersWithInPlaceSecretRotation, newSpec.Spec.UsersWithInPlaceSecretRotation)
-
 		// connection pooler needs one system user created who is initialized in initUsers
 		// only when disabled in oldSpec and enabled in newSpec
 		needPoolerUser := c.needConnectionPoolerUser(&oldSpec.Spec, &newSpec.Spec)
@@ -941,6 +960,7 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	//sync monitoring container
 	if !reflect.DeepEqual(oldSpec.Spec.Monitoring, newSpec.Spec.Monitoring) {
 		syncStatefulSet = true
+		c.syncMonitoringSecret(oldSpec, newSpec)
 	}
 
 	// Statefulset

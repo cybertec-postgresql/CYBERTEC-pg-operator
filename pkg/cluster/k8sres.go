@@ -3467,7 +3467,7 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(name string) []v1.EnvVar {
 		},
 		{
 			Name:  "SELECTOR",
-			Value: fmt.Sprintf("cluster-name=%s,member.cpo.opensource.cybertec.at/role=master", c.Name),
+			Value: fmt.Sprintf("cluster.cpo.opensource.cybertec.at/name=%s,member.cpo.opensource.cybertec.at/role=master", c.Name),
 		},
 	}
 

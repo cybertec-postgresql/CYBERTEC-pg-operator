@@ -63,7 +63,7 @@ func TestResizeVolumeClaim(t *testing.T) {
 		Config{
 			OpConfig: config.Config{
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
+					ClusterLabels:    map[string]string{"application": "cpo"},
 					ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name",
 				},
 				StorageResizeMode: "pvc",
@@ -188,7 +188,7 @@ func TestMigrateEBS(t *testing.T) {
 		Config{
 			OpConfig: config.Config{
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
+					ClusterLabels:    map[string]string{"application": "cpo"},
 					ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name",
 				},
 				StorageResizeMode:            "pvc",
@@ -290,7 +290,7 @@ func TestMigrateGp3Support(t *testing.T) {
 		Config{
 			OpConfig: config.Config{
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
+					ClusterLabels:    map[string]string{"application": "cpo"},
 					ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name",
 				},
 				StorageResizeMode:            "mixed",
@@ -346,7 +346,7 @@ func TestManualGp2Gp3Support(t *testing.T) {
 		Config{
 			OpConfig: config.Config{
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
+					ClusterLabels:    map[string]string{"application": "cpo"},
 					ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name",
 				},
 				StorageResizeMode:            "mixed",
@@ -400,7 +400,7 @@ func TestDontTouchType(t *testing.T) {
 		Config{
 			OpConfig: config.Config{
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
+					ClusterLabels:    map[string]string{"application": "cpo"},
 					ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name",
 				},
 				StorageResizeMode:            "mixed",

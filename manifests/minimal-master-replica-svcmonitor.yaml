@@ -62,7 +62,7 @@ spec:
       port: 9187
       targetPort: exporter
   selector:
-    application: spilo
+    application: cpo
     cluster.cpo.opensource.cybertec.at/name: acid-minimal-cluster
     member.cpo.opensource.cybertec.at/role: master
 ---
@@ -84,7 +84,7 @@ spec:
       port: 9187
       targetPort: exporter
   selector:
-    application: spilo
+    application: cpo
     cluster.cpo.opensource.cybertec.at/name: acid-minimal-cluster
     member.cpo.opensource.cybertec.at/role: replica
 ---

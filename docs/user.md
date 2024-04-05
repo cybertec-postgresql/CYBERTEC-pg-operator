@@ -54,12 +54,12 @@ cluster name length is 53 characters.
 
 ## Watch pods being created
 
-Check if the database pods are coming up. Use the label `application=spilo` to
+Check if the database pods are coming up. Use the label `application=cpo` to
 filter and list the label `member.cpo.opensource.cybertec.at/role` to see when the master is promoted and
 replicas get their labels.
 
 ```bash
-kubectl get pods -l application=spilo -L member.cpo.opensource.cybertec.at/role -w
+kubectl get pods -l application=cpo -L member.cpo.opensource.cybertec.at/role -w
 ```
 
 The operator also emits K8s events to the Postgresql CRD which can be inspected
@@ -77,7 +77,7 @@ the master pod of our test cluster.
 
 ```bash
 # get name of master pod of acid-minimal-cluster
-export PGMASTER=$(kubectl get pods -o jsonpath={.items..metadata.name} -l application=spilo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,member.cpo.opensource.cybertec.at/role=master -n default)
+export PGMASTER=$(kubectl get pods -o jsonpath={.items..metadata.name} -l application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,member.cpo.opensource.cybertec.at/role=master -n default)
 
 # set up port forward
 kubectl port-forward $PGMASTER 6432:5432 -n default

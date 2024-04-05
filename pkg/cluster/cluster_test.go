@@ -1632,7 +1632,7 @@ func TestCrossNamespacedSecrets(t *testing.T) {
 				},
 				PodManagementPolicy: "ordered_ready",
 				Resources: config.Resources{
-					ClusterLabels:        map[string]string{"application": "spilo"},
+					ClusterLabels:        map[string]string{"application": "cpo"},
 					ClusterNameLabel:     "cluster.cpo.opensource.cybertec.at/name",
 					DefaultCPURequest:    "300m",
 					DefaultCPULimit:      "300m",

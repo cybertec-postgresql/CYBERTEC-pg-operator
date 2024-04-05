@@ -1455,7 +1455,7 @@ func TestPodAffinity(t *testing.T) {
 					ProtectedRoles:                           []string{"admin"},
 					PodAntiAffinityPreferredDuringScheduling: tt.preferred,
 					Resources: config.Resources{
-						ClusterLabels:        map[string]string{"application": "spilo"},
+						ClusterLabels:        map[string]string{"application": "cpo"},
 						ClusterNameLabel:     "cluster.cpo.opensource.cybertec.at/name",
 						DefaultCPURequest:    "300m",
 						DefaultCPULimit:      "300m",
@@ -1842,7 +1842,7 @@ func TestAdditionalVolume(t *testing.T) {
 			OpConfig: config.Config{
 				PodManagementPolicy: "ordered_ready",
 				Resources: config.Resources{
-					ClusterLabels:        map[string]string{"application": "spilo"},
+					ClusterLabels:        map[string]string{"application": "cpo"},
 					ClusterNameLabel:     "cluster.cpo.opensource.cybertec.at/name",
 					DefaultCPURequest:    "300m",
 					DefaultCPULimit:      "300m",
@@ -2480,7 +2480,7 @@ func getServices(serviceType v1.ServiceType, sourceRanges []string, extTrafficPo
 			ExternalTrafficPolicy:    v1.ServiceExternalTrafficPolicyType(extTrafficPolicy),
 			LoadBalancerSourceRanges: sourceRanges,
 			Ports:                    []v1.ServicePort{{Name: "postgresql", Port: 5432, TargetPort: intstr.IntOrString{IntVal: 5432}}},
-			Selector:                 map[string]string{"member.cpo.opensource.cybertec.at/role": "replica", "application": "spilo", "cluster.cpo.opensource.cybertec.at/name": clusterName},
+			Selector:                 map[string]string{"member.cpo.opensource.cybertec.at/role": "replica", "application": "cpo", "cluster.cpo.opensource.cybertec.at/name": clusterName},
 			Type:                     serviceType,
 		},
 		v1.ServiceSpec{
@@ -2525,7 +2525,7 @@ func TestEnableLoadBalancers(t *testing.T) {
 				EnableReplicaPoolerLoadBalancer: true,
 				ExternalTrafficPolicy:           extTrafficPolicy,
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
+					ClusterLabels:    map[string]string{"application": "cpo"},
 					ClusterNameLabel: clusterNameLabel,
 					PodRoleLabel:     roleLabel,
 				},
@@ -2572,7 +2572,7 @@ func TestEnableLoadBalancers(t *testing.T) {
 				EnableReplicaPoolerLoadBalancer: false,
 				ExternalTrafficPolicy:           extTrafficPolicy,
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
+					ClusterLabels:    map[string]string{"application": "cpo"},
 					ClusterNameLabel: clusterNameLabel,
 					PodRoleLabel:     roleLabel,
 				},
@@ -2646,7 +2646,7 @@ func TestGenerateResourceRequirements(t *testing.T) {
 	newEventRecorder := record.NewFakeRecorder(10)
 
 	configResources := config.Resources{
-		ClusterLabels:        map[string]string{"application": "spilo"},
+		ClusterLabels:        map[string]string{"application": "cpo"},
 		ClusterNameLabel:     clusterNameLabel,
 		DefaultCPURequest:    "100m",
 		DefaultCPULimit:      "1",

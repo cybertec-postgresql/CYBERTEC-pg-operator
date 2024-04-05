@@ -391,7 +391,7 @@ configuration they are grouped under the `kubernetes` key.
 
 * **cluster_labels**
   list of `name:value` pairs for additional labels assigned to the cluster
-  objects. The default is `application:spilo`.
+  objects. The default is `application:cpo`.
 
 * **inherited_labels**
   list of label keys that can be inherited from the cluster manifest, and

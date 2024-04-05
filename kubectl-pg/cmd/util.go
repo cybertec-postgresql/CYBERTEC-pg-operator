@@ -125,7 +125,7 @@ func getPodName(clusterName string, master bool, replicaNumber string) string {
 			log.Fatal(err)
 		}
 
-		podRole = pod.Labels["spilo-role"]
+		podRole = pod.Labels["member.cpo.opensource.cybertec.at/role"]
 		if podRole == "master" && master {
 			podName = pod.Name
 			fmt.Printf("connected to %s with pod name as %s\n", podRole, podName)

@@ -22,7 +22,7 @@ const (
 
 func newUtilTestController() *Controller {
 	controller := NewController(&spec.ControllerConfig{}, "util-test")
-	controller.opConfig.ClusterNameLabel = "cluster-name"
+	controller.opConfig.ClusterNameLabel = "cluster.cpo.opensource.cybertec.at/name"
 	controller.opConfig.InfrastructureRolesSecretName =
 		spec.NamespacedName{
 			Namespace: v1.NamespaceDefault,

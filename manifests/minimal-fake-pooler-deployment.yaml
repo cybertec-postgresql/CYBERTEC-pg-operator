@@ -12,13 +12,13 @@ spec:
     matchLabels:
       application: db-connection-pooler
       connection-pooler: acid-minimal-cluster-pooler
-      cluster-name: acid-minimal-cluster
+      cluster.cpo.opensource.cybertec.at/name: acid-minimal-cluster
   template:
     metadata:
       labels:
         application: db-connection-pooler
         connection-pooler: acid-minimal-cluster-pooler
-        cluster-name: acid-minimal-cluster
+        cluster.cpo.opensource.cybertec.at/name: acid-minimal-cluster
     spec:
       serviceAccountName: postgres-operator
       containers:

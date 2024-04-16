@@ -649,6 +649,24 @@ func (c *Cluster) createPgbackrestRestoreConfig() (err error) {
 	return nil
 }
 
+func (c *Cluster) createPgbackrestRepohostConfig() (err error) {
+
+	c.setProcessName("creating a configmap for pgbackrest repo-host")
+
+	pgbackrestRestoreConfigmapSpec, err := c.generatePgbackrestRepoHostConfigmap()
+	if err != nil {
+		return fmt.Errorf("could not generate pgbackrest repo-host configmap spec: %v", err)
+	}
+	c.logger.Debugf("Generated pgbackrest restore configmapSpec: %v", pgbackrestRestoreConfigmapSpec)
+
+	_, err = c.KubeClient.ConfigMaps(c.Namespace).Create(context.TODO(), pgbackrestRestoreConfigmapSpec, metav1.CreateOptions{})
+	if err != nil {
+		return fmt.Errorf("could not create pgbackrest restore config: %v", err)
+	}
+
+	return nil
+}
+
 func (c *Cluster) deletePgbackrestRestoreConfig() error {
 	c.setProcessName("deleting pgbackrest restore configmap")
 	c.logger.Debugln("deleting pgbackrest restore configmap")

@@ -866,6 +866,7 @@ func (c *Cluster) generatePodTemplate(
 		}
 		addPgbackrestConfigVolume(&podSpec, configmapName, secretName)
 		c.logger.Debugf("Configmap added to this pod template is %s", configmapName)
+		c.logger.Debugf("Configmap added to this pod template is %s", configmapName)
 	}
 
 	if podAntiAffinity {
@@ -1699,8 +1700,8 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			VolumeMounts: volumeMounts,
 			Resources:    resources,
 		})
-
 	}
+
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
@@ -1789,7 +1790,6 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 
 	return statefulSet, nil
 }
-
 func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.StatefulSet, error) {
 
 	var (
@@ -2037,7 +2037,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	return statefulSet, nil
 }
 
-func (c *Cluster) generateTlsMounts(spec *cpov1.PostgresSpec, tlsEnv func(key string) string) ([]v1.EnvVar, []cpov1.AdditionalVolume) {
+func generateTlsMounts(spec *cpov1.PostgresSpec, tlsEnv func(key string) string) ([]v1.EnvVar, []cpov1.AdditionalVolume) {
 	// this is combined with the FSGroup in the section above
 	// to give read access to the postgres user
 	defaultMode := int32(0640)

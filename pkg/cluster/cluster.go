@@ -332,7 +332,6 @@ func (c *Cluster) Create() (err error) {
 			err = fmt.Errorf("could not sync pgbackrest config: %v", err)
 			return err
 		}
-		c.logger.Info("a pgbackrest config has been successfully synced")
 		if c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID != c.Status.PgbackrestRestoreID {
 			if err = c.syncPgbackrestRestoreConfig(); err != nil {
 				err = fmt.Errorf("could not sync pgbackrest restore config: %v", err)
@@ -340,13 +339,65 @@ func (c *Cluster) Create() (err error) {
 			}
 			c.KubeClient.SetPgbackrestRestoreCRDStatus(c.clusterName(), c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID)
 			c.Status.PgbackrestRestoreID = c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID
-			c.logger.Info("a pgbackrest restore config has been successfully synced")
 		} else {
 			if err = c.createPgbackrestRestoreConfig(); err != nil {
 				err = fmt.Errorf("could not create a pgbackrest restore config: %v", err)
 				return err
 			}
-			c.logger.Info("a pgbackrest restore config has been successfully created")
+		}
+		// if found then create a sts for pgbackrest repo
+		// add the config info to this repo
+		// add the config info to the pg pods about this repo
+		for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
+			if repo.Storage == "pvc" {
+				if len(repo.PvcSize) == 0 {
+					err = fmt.Errorf("could not create pgbackrest statefulset for pvc without size: %v", err)
+					return err
+				}
+				pvcName := c.getPgbackrestRepoHostName()
+				// if secret name is provided in the manifest, then use it otherwise
+				// create our own.
+				backupSecretName := c.Spec.Backup.Pgbackrest.Configuration.Secret
+				if backupSecretName == "" {
+					c.logger.Error("secret name needed for pgbackrest")
+				}
+				if err = c.createPgbackrestRepohostConfig(); err != nil {
+					err = fmt.Errorf("could not create a pgbackrest restore config: %v", err)
+					return err
+				}
+				// if statefulset for pvc is already created then only mount an additional volume in it for this repo
+				err := c.createPVCSecret(backupSecretName)
+				if !k8sutil.ResourceAlreadyExists(err) {
+					//defaultMode := int32(0640)
+					//mountPath := "/etc/pgbackrest/backup/"
+					pvcStatefulSetSpec := cpov1.PostgresSpec{
+						NumberOfInstances: 1,
+						Volume: cpov1.Volume{
+							Size: repo.PvcSize,
+						},
+						TLS: &cpov1.TLSDescription{
+							SecretName: backupSecretName},
+						RepoHost: true,
+					}
+					pvcSpec, err := c.generateRepoHostStatefulSet(&pvcStatefulSetSpec)
+					if err != nil {
+						c.logger.Errorf("could not generate statefulset: %v", err)
+					}
+
+					pvcSpec.Name = pvcName
+					pvcSpec.Namespace = c.clusterName().Namespace
+					pvcSpec.Labels["pvc-repo"] = "true"
+
+					_, err = c.KubeClient.StatefulSets(c.Namespace).Create(
+						context.TODO(),
+						pvcSpec,
+						metav1.CreateOptions{})
+					if err != nil {
+						err = fmt.Errorf("could not create pgbackrest statefulset: %v", err)
+						return err
+					}
+				}
+			}
 		}
 
 	}
@@ -466,6 +517,10 @@ func (c *Cluster) Create() (err error) {
 	}
 
 	return nil
+}
+
+func (c *Cluster) getPgbackrestRepoHostName() string {
+	return c.clusterName().Name + "-pgbackrest-repo-host"
 }
 
 func (c *Cluster) compareStatefulSetWith(statefulSet *appsv1.StatefulSet) *compareStatefulsetResult {

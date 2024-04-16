@@ -95,6 +95,7 @@ type PostgresSpec struct {
 	Backup                  *Backup        `json:"backup,omitempty"`
 	TDE                     *TDE           `json:"tde,omitempty"`
 	Monitoring              *Monitoring    `json:"monitor,omitempty"`
+	RepoHost                bool           `json:"Repohost,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -288,6 +289,7 @@ type Repo struct {
 	Endpoint string            `json:"endpoint"`
 	Region   string            `json:"region"`
 	Schedule map[string]string `json:"schedule"`
+	PvcSize  string            `json:"pvcsize"`
 }
 
 type Restore struct {

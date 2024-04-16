@@ -800,6 +800,7 @@ spec:
                                 - "s3"
                                 - "gcs"
                                 - "azure"
+                                - "pvc"
                             resource:
                               type: string
                             endpoint:
@@ -815,6 +816,8 @@ spec:
                                   type: string
                                 diff:
                                   type: string
+                            Pvcsize:
+                              type: string
                           required:
                           - name
                           - storage

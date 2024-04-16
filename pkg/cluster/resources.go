@@ -630,7 +630,25 @@ func (c *Cluster) createPgbackrestRestoreConfig() (err error) {
 	if err != nil {
 		return fmt.Errorf("could not generate pgbackrest restore configmap spec: %v", err)
 	}
-	c.logger.Debugf("Generated pgbackrest configmapSpec: %v", pgbackrestRestoreConfigmapSpec)
+	c.logger.Debugf("Generated pgbackrest restore configmapSpec: %v", pgbackrestRestoreConfigmapSpec)
+
+	_, err = c.KubeClient.ConfigMaps(c.Namespace).Create(context.TODO(), pgbackrestRestoreConfigmapSpec, metav1.CreateOptions{})
+	if err != nil {
+		return fmt.Errorf("could not create pgbackrest restore config: %v", err)
+	}
+
+	return nil
+}
+
+func (c *Cluster) createPgbackrestRepohostConfig() (err error) {
+
+	c.setProcessName("creating a configmap for pgbackrest repo-host")
+
+	pgbackrestRestoreConfigmapSpec, err := c.generatePgbackrestRepoHostConfigmap()
+	if err != nil {
+		return fmt.Errorf("could not generate pgbackrest repo-host configmap spec: %v", err)
+	}
+	c.logger.Debugf("Generated pgbackrest restore configmapSpec: %v", pgbackrestRestoreConfigmapSpec)
 
 	_, err = c.KubeClient.ConfigMaps(c.Namespace).Create(context.TODO(), pgbackrestRestoreConfigmapSpec, metav1.CreateOptions{})
 	if err != nil {

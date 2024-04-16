@@ -842,10 +842,16 @@ func (c *Cluster) generatePodTemplate(
 		addShmVolume(&podSpec)
 	}
 
-	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
+	if c.Postgresql.Spec.RepoHost {
+		configmapName := c.getPgbackrestRepoHostConfigmapName()
+		secretName := c.Postgresql.Spec.Backup.Pgbackrest.Configuration.Secret
+		addPgbackrestConfigVolume(&podSpec, configmapName, secretName)
+		c.logger.Debugf("Configmap added to this pod template is %s", configmapName)
+	} else if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 		configmapName := c.getPgbackrestConfigmapName()
 		secretName := c.Postgresql.Spec.Backup.Pgbackrest.Configuration.Secret
 		addPgbackrestConfigVolume(&podSpec, configmapName, secretName)
+		c.logger.Debugf("Configmap added to this pod template is %s", configmapName)
 	}
 
 	if podAntiAffinity {
@@ -1310,7 +1316,6 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	if spec.TDE != nil && spec.TDE.Enable {
 		enableTDE = true
 	}
-
 	spiloConfiguration, err := generateSpiloJSONConfiguration(&spec.PostgresqlParam, &spec.Patroni, &c.OpConfig, enableTDE, c.logger)
 	if err != nil {
 		return nil, fmt.Errorf("could not generate Spilo JSON configuration: %v", err)
@@ -1405,6 +1410,413 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	if c.OpConfig.EnableReadinessProbe {
 		spiloContainer.ReadinessProbe = generateSpiloReadinessProbe()
 	}
+
+	// generate container specs for sidecars specified in the cluster manifest
+	clusterSpecificSidecars := []v1.Container{}
+	if spec.Sidecars != nil && len(spec.Sidecars) > 0 {
+		// warn if sidecars are defined, but globally disabled (does not apply to globally defined sidecars)
+		if c.OpConfig.EnableSidecars != nil && !(*c.OpConfig.EnableSidecars) {
+			c.logger.Warningf("sidecars specified but disabled in configuration - next statefulset creation would fail")
+		}
+
+		if clusterSpecificSidecars, err = c.generateSidecarContainers(spec.Sidecars, defaultResources, 0); err != nil {
+			return nil, fmt.Errorf("could not generate sidecar containers: %v", err)
+		}
+	}
+
+	// decrapted way of providing global sidecars
+	var globalSidecarContainersByDockerImage []v1.Container
+	var globalSidecarsByDockerImage []cpov1.Sidecar
+	for name, dockerImage := range c.OpConfig.SidecarImages {
+		globalSidecarsByDockerImage = append(globalSidecarsByDockerImage, cpov1.Sidecar{Name: name, DockerImage: dockerImage})
+	}
+	if globalSidecarContainersByDockerImage, err = c.generateSidecarContainers(globalSidecarsByDockerImage, defaultResources, len(clusterSpecificSidecars)); err != nil {
+		return nil, fmt.Errorf("could not generate sidecar containers: %v", err)
+	}
+	// make the resulting list reproducible
+	// c.OpConfig.SidecarImages is unsorted by Golang definition
+	// .Name is unique
+	sort.Slice(globalSidecarContainersByDockerImage, func(i, j int) bool {
+		return globalSidecarContainersByDockerImage[i].Name < globalSidecarContainersByDockerImage[j].Name
+	})
+
+	// generate scalyr sidecar container
+	var scalyrSidecars []v1.Container
+	if scalyrSidecar, err :=
+		c.generateScalyrSidecarSpec(c.Name,
+			c.OpConfig.ScalyrAPIKey,
+			c.OpConfig.ScalyrServerURL,
+			c.OpConfig.ScalyrImage,
+			c.OpConfig.ScalyrCPURequest,
+			c.OpConfig.ScalyrMemoryRequest,
+			c.OpConfig.ScalyrCPULimit,
+			c.OpConfig.ScalyrMemoryLimit,
+			defaultResources); err != nil {
+		return nil, fmt.Errorf("could not generate Scalyr sidecar: %v", err)
+	} else {
+		if scalyrSidecar != nil {
+			scalyrSidecars = append(scalyrSidecars, *scalyrSidecar)
+		}
+	}
+
+	sidecarContainers, conflicts := mergeContainers(clusterSpecificSidecars, c.Config.OpConfig.SidecarContainers, globalSidecarContainersByDockerImage, scalyrSidecars)
+	for containerName := range conflicts {
+		c.logger.Warningf("a sidecar is specified twice. Ignoring sidecar %q in favor of %q with high a precedence",
+			containerName, containerName)
+	}
+
+	sidecarContainers = patchSidecarContainers(sidecarContainers, volumeMounts, c.OpConfig.SuperUsername, c.credentialSecretName(c.OpConfig.SuperUsername), c.logger)
+
+	tolerationSpec := tolerations(&spec.Tolerations, c.OpConfig.PodToleration)
+	topologySpreadConstraintsSpec := topologySpreadConstraints(&spec.TopologySpreadConstraints)
+	effectivePodPriorityClassName := util.Coalesce(spec.PodPriorityClassName, c.OpConfig.PodPriorityClassName)
+
+	podAnnotations := c.generatePodAnnotations(spec)
+
+	if spec.Backup != nil && spec.Backup.Pgbackrest != nil {
+
+		pgbackrestRestoreEnvVars := appendEnvVars(
+			spiloEnvVars,
+			v1.EnvVar{
+				Name: "RESTORE_ENABLE",
+				ValueFrom: &v1.EnvVarSource{
+					ConfigMapKeyRef: &v1.ConfigMapKeySelector{
+						LocalObjectReference: v1.LocalObjectReference{
+							Name: c.getPgbackrestRestoreConfigmapName(),
+						},
+						Key: "restore_enable",
+					},
+				},
+			},
+			v1.EnvVar{
+				Name: "RESTORE_BASEBACKUP",
+				ValueFrom: &v1.EnvVarSource{
+					ConfigMapKeyRef: &v1.ConfigMapKeySelector{
+						LocalObjectReference: v1.LocalObjectReference{
+							Name: c.getPgbackrestRestoreConfigmapName(),
+						},
+						Key: "restore_basebackup",
+					},
+				},
+			},
+			v1.EnvVar{
+				Name: "RESTORE_METHOD",
+				ValueFrom: &v1.EnvVarSource{
+					ConfigMapKeyRef: &v1.ConfigMapKeySelector{
+						LocalObjectReference: v1.LocalObjectReference{
+							Name: c.getPgbackrestRestoreConfigmapName(),
+						},
+						Key: "restore_method",
+					},
+				},
+			},
+			v1.EnvVar{
+				Name: "RESTORE_COMMAND",
+				ValueFrom: &v1.EnvVarSource{
+					ConfigMapKeyRef: &v1.ConfigMapKeySelector{
+						LocalObjectReference: v1.LocalObjectReference{
+							Name: c.getPgbackrestRestoreConfigmapName(),
+						},
+						Key: "restore_command",
+					},
+				},
+			},
+			v1.EnvVar{
+				Name:  "SELECTOR",
+				Value: fmt.Sprintf("cluster-name=%s,spilo-role=master", c.Name),
+			},
+			v1.EnvVar{
+				Name:  "MODE",
+				Value: "pgbackrest",
+			},
+		)
+		var cpuLimit, memLimit, cpuReq, memReq string
+		var resources v1.ResourceRequirements
+		if spec.Backup.Pgbackrest.Resources != nil {
+			cpuLimit = spec.Backup.Pgbackrest.Resources.ResourceLimits.CPU
+			memLimit = spec.Backup.Pgbackrest.Resources.ResourceLimits.Memory
+			cpuReq = spec.Backup.Pgbackrest.Resources.ResourceRequests.CPU
+			memReq = spec.Backup.Pgbackrest.Resources.ResourceRequests.Memory
+			resources = v1.ResourceRequirements{
+				Limits: v1.ResourceList{
+					"cpu":    resource.MustParse(cpuLimit),
+					"memory": resource.MustParse(memLimit),
+				},
+				Requests: v1.ResourceList{
+					"cpu":    resource.MustParse(cpuReq),
+					"memory": resource.MustParse(memReq),
+				},
+			}
+		} else {
+			defaultResources := makeDefaultResources(&c.OpConfig)
+			resourceRequirements, err := c.generateResourceRequirements(
+				spec.Resources, defaultResources, constants.PostgresContainerName)
+			if err != nil {
+				return nil, fmt.Errorf("could not generate resource requirements: %v", err)
+			}
+			resources = *resourceRequirements
+		}
+
+		initContainers = append(initContainers, v1.Container{
+			Name:         "pgbackrest-restore",
+			Image:        spec.Backup.Pgbackrest.Image,
+			Env:          pgbackrestRestoreEnvVars,
+			VolumeMounts: volumeMounts,
+			Resources:    resources,
+		})
+		c.logger.Debugf("Appending the BACKREST container here ########### %v", &initContainers[len(initContainers)-1])
+	}
+
+	// generate pod template for the statefulset, based on the spilo container and sidecars
+	podTemplate, err = c.generatePodTemplate(
+		c.Namespace,
+		c.labelsSet(true),
+		c.annotationsSet(podAnnotations),
+		spiloContainer,
+		initContainers,
+		sidecarContainers,
+		c.OpConfig.SharePgSocketWithSidecars,
+		&tolerationSpec,
+		&topologySpreadConstraintsSpec,
+		effectiveRunAsUser,
+		effectiveRunAsGroup,
+		effectiveFSGroup,
+		c.nodeAffinity(c.OpConfig.NodeReadinessLabel, spec.NodeAffinity),
+		spec.SchedulerName,
+		int64(c.OpConfig.PodTerminateGracePeriod.Seconds()),
+		c.OpConfig.PodServiceAccountName,
+		c.OpConfig.KubeIAMRole,
+		effectivePodPriorityClassName,
+		mountShmVolumeNeeded(c.OpConfig, spec),
+		c.OpConfig.EnablePodAntiAffinity,
+		c.OpConfig.PodAntiAffinityTopologyKey,
+		c.OpConfig.PodAntiAffinityPreferredDuringScheduling,
+		c.OpConfig.AdditionalSecretMount,
+		c.OpConfig.AdditionalSecretMountPath,
+		additionalVolumes)
+
+	if err != nil {
+		return nil, fmt.Errorf("could not generate pod template: %v", err)
+	}
+
+	if volumeClaimTemplate, err = c.generatePersistentVolumeClaimTemplate(spec.Volume.Size,
+		spec.Volume.StorageClass, spec.Volume.Selector); err != nil {
+		return nil, fmt.Errorf("could not generate volume claim template: %v", err)
+	}
+
+	// global minInstances and maxInstances settings can overwrite manifest
+	numberOfInstances := c.getNumberOfInstances(spec)
+
+	// the operator has domain-specific logic on how to do rolling updates of PG clusters
+	// so we do not use default rolling updates implemented by stateful sets
+	// that leaves the legacy "OnDelete" update strategy as the only option
+	updateStrategy := appsv1.StatefulSetUpdateStrategy{Type: appsv1.OnDeleteStatefulSetStrategyType}
+
+	var podManagementPolicy appsv1.PodManagementPolicyType
+	if c.OpConfig.PodManagementPolicy == "ordered_ready" {
+		podManagementPolicy = appsv1.OrderedReadyPodManagement
+	} else if c.OpConfig.PodManagementPolicy == "parallel" {
+		podManagementPolicy = appsv1.ParallelPodManagement
+	} else {
+		return nil, fmt.Errorf("could not set the pod management policy to the unknown value: %v", c.OpConfig.PodManagementPolicy)
+	}
+
+	var persistentVolumeClaimRetentionPolicy appsv1.StatefulSetPersistentVolumeClaimRetentionPolicy
+	if c.OpConfig.PersistentVolumeClaimRetentionPolicy["when_deleted"] == "delete" {
+		persistentVolumeClaimRetentionPolicy.WhenDeleted = appsv1.DeletePersistentVolumeClaimRetentionPolicyType
+	} else {
+		persistentVolumeClaimRetentionPolicy.WhenDeleted = appsv1.RetainPersistentVolumeClaimRetentionPolicyType
+	}
+
+	if c.OpConfig.PersistentVolumeClaimRetentionPolicy["when_scaled"] == "delete" {
+		persistentVolumeClaimRetentionPolicy.WhenScaled = appsv1.DeletePersistentVolumeClaimRetentionPolicyType
+	} else {
+		persistentVolumeClaimRetentionPolicy.WhenScaled = appsv1.RetainPersistentVolumeClaimRetentionPolicyType
+	}
+
+	statefulSet := &appsv1.StatefulSet{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:        c.statefulSetName(),
+			Namespace:   c.Namespace,
+			Labels:      c.labelsSet(true),
+			Annotations: c.AnnotationsToPropagate(c.annotationsSet(nil)),
+		},
+		Spec: appsv1.StatefulSetSpec{
+			Replicas:                             &numberOfInstances,
+			Selector:                             c.labelsSelector(),
+			ServiceName:                          c.serviceName(Master),
+			Template:                             *podTemplate,
+			VolumeClaimTemplates:                 []v1.PersistentVolumeClaim{*volumeClaimTemplate},
+			UpdateStrategy:                       updateStrategy,
+			PodManagementPolicy:                  podManagementPolicy,
+			PersistentVolumeClaimRetentionPolicy: &persistentVolumeClaimRetentionPolicy,
+		},
+	}
+
+	return statefulSet, nil
+}
+
+func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.StatefulSet, error) {
+
+	var (
+		err                 error
+		initContainers      []v1.Container
+		sidecarContainers   []v1.Container
+		podTemplate         *v1.PodTemplateSpec
+		volumeClaimTemplate *v1.PersistentVolumeClaim
+		additionalVolumes   = spec.AdditionalVolumes
+	)
+
+	defaultResources := makeDefaultResources(&c.OpConfig)
+	resourceRequirements, err := c.generateResourceRequirements(
+		spec.Resources, defaultResources, constants.PostgresContainerName)
+	if err != nil {
+		return nil, fmt.Errorf("could not generate resource requirements: %v", err)
+	}
+
+	if spec.InitContainers != nil && len(spec.InitContainers) > 0 {
+		if c.OpConfig.EnableInitContainers != nil && !(*c.OpConfig.EnableInitContainers) {
+			c.logger.Warningf("initContainers specified but disabled in configuration - next statefulset creation would fail")
+		}
+		initContainers = spec.InitContainers
+	}
+
+	// backward compatible check for InitContainers
+	if spec.InitContainersOld != nil {
+		msg := "manifest parameter init_containers is deprecated."
+		if spec.InitContainers == nil {
+			c.logger.Warningf("%s Consider using initContainers instead.", msg)
+			spec.InitContainers = spec.InitContainersOld
+		} else {
+			c.logger.Warningf("%s Only value from initContainers is used", msg)
+		}
+	}
+
+	// backward compatible check for PodPriorityClassName
+	if spec.PodPriorityClassNameOld != "" {
+		msg := "manifest parameter pod_priority_class_name is deprecated."
+		if spec.PodPriorityClassName == "" {
+			c.logger.Warningf("%s Consider using podPriorityClassName instead.", msg)
+			spec.PodPriorityClassName = spec.PodPriorityClassNameOld
+		} else {
+			c.logger.Warningf("%s Only value from podPriorityClassName is used", msg)
+		}
+	}
+
+	enableTDE := false
+	if spec.TDE != nil && spec.TDE.Enable {
+		enableTDE = true
+	}
+	spiloConfiguration, err := generateSpiloJSONConfiguration(&spec.PostgresqlParam, &spec.Patroni, &c.OpConfig, enableTDE, c.logger)
+	if err != nil {
+		return nil, fmt.Errorf("could not generate Spilo JSON configuration: %v", err)
+	}
+
+	// generate environment variables for the spilo container
+	spiloEnvVars, err := c.generateSpiloPodEnvVars(spec, c.Postgresql.GetUID(), spiloConfiguration)
+	if err != nil {
+		return nil, fmt.Errorf("could not generate Spilo env vars: %v", err)
+	}
+
+	// // pickup the docker image for the spilo container
+	// effectiveDockerImage := util.Coalesce(spec.DockerImage, c.OpConfig.DockerImage)
+
+	// determine the User, Group and FSGroup for the spilo pod
+	effectiveRunAsUser := c.OpConfig.Resources.SpiloRunAsUser
+	if spec.SpiloRunAsUser != nil {
+		effectiveRunAsUser = spec.SpiloRunAsUser
+	}
+
+	effectiveRunAsGroup := c.OpConfig.Resources.SpiloRunAsGroup
+	if spec.SpiloRunAsGroup != nil {
+		effectiveRunAsGroup = spec.SpiloRunAsGroup
+	}
+
+	effectiveFSGroup := c.OpConfig.Resources.SpiloFSGroup
+	if spec.SpiloFSGroup != nil {
+		effectiveFSGroup = spec.SpiloFSGroup
+	}
+
+	effectiveDockerImage := c.Spec.Backup.Pgbackrest.Image
+
+	volumeMounts := generateVolumeMounts(spec.Volume)
+
+	// configure TLS with a custom secret volume
+	if spec.TLS != nil && spec.TLS.SecretName != "" {
+		getSpiloTLSEnv := func(k string) string {
+			keyName := ""
+			switch k {
+			case "tls.crt":
+				keyName = "SSL_CERTIFICATE_FILE"
+			case "tls.key":
+				keyName = "SSL_PRIVATE_KEY_FILE"
+			case "tls.ca":
+				keyName = "SSL_CA_FILE"
+			default:
+				panic(fmt.Sprintf("TLS env key unknown %s", k))
+			}
+			// this is combined with the FSGroup in the section above
+			// to give read access to the postgres user
+			defaultMode := int32(0644)
+			mountPath := "/tls"
+			additionalVolumes = append(additionalVolumes, cpov1.AdditionalVolume{
+				Name:      spec.TLS.SecretName,
+				MountPath: mountPath,
+				VolumeSource: v1.VolumeSource{
+					Secret: &v1.SecretVolumeSource{
+						SecretName:  spec.TLS.SecretName,
+						DefaultMode: &defaultMode,
+					},
+				},
+			})
+
+			// use the same filenames as Secret resources by default
+			certFile := ensurePath(spec.TLS.CertificateFile, mountPath, "tls.crt")
+			privateKeyFile := ensurePath(spec.TLS.PrivateKeyFile, mountPath, "tls.key")
+			spiloEnvVars = appendEnvVars(
+				spiloEnvVars,
+				v1.EnvVar{Name: "SSL_CERTIFICATE_FILE", Value: certFile},
+				v1.EnvVar{Name: "SSL_PRIVATE_KEY_FILE", Value: privateKeyFile},
+			)
+			return keyName
+		}
+
+		tlsEnv, tlsVolumes := generateTlsMounts(spec, getSpiloTLSEnv)
+		for _, env := range tlsEnv {
+			spiloEnvVars = appendEnvVars(spiloEnvVars, env)
+		}
+		additionalVolumes = append(additionalVolumes, tlsVolumes...)
+	}
+	if spec.RepoHost {
+		defaultMode := int32(0644)
+		//mountpath := "/pgbackrest/" + string(c.Spec.Backup.Pgbackrest.Repos[len(c.Spec.Backup.Pgbackrest.Repos)-1])
+		additionalVolumes = append(additionalVolumes, cpov1.AdditionalVolume{
+			Name:      c.getPgbackrestRepoHostName(),
+			MountPath: c.Spec.Backup.Pgbackrest.Global["repo1-path"],
+			VolumeSource: v1.VolumeSource{
+				Secret: &v1.SecretVolumeSource{
+					SecretName:  spec.TLS.SecretName,
+					DefaultMode: &defaultMode,
+				},
+			},
+		})
+	}
+
+	// generate the spilo container
+	spiloContainer := generateContainer(constants.PostgresContainerName,
+		&effectiveDockerImage,
+		resourceRequirements,
+		spiloEnvVars,
+		volumeMounts,
+		c.OpConfig.Resources.SpiloPrivileged,
+		c.OpConfig.Resources.SpiloAllowPrivilegeEscalation,
+		generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
+	)
+
+	// Patroni responds 200 to probe only if it either owns the leader lock or postgres is running and DCS is accessible
+	// if c.OpConfig.EnableReadinessProbe {
+	// 	spiloContainer.ReadinessProbe = generateSpiloReadinessProbe()
+	// }
 
 	// generate container specs for sidecars specified in the cluster manifest
 	clusterSpecificSidecars := []v1.Container{}
@@ -2630,6 +3042,10 @@ func (c *Cluster) getPgbackrestConfigmapName() (jobName string) {
 	return fmt.Sprintf("%s-pgbackrest-config", c.Name)
 }
 
+func (c *Cluster) getPgbackrestRepoHostConfigmapName() (jobName string) {
+	return fmt.Sprintf("%s-pgbackrest-repohost-config", c.Name)
+}
+
 func (c *Cluster) getTDESecretName() string {
 	return fmt.Sprintf("%s-tde", c.Name)
 }
@@ -2717,11 +3133,22 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 		}
 		repos := c.Postgresql.Spec.Backup.Pgbackrest.Repos
 		if len(repos) >= 1 {
-			for _, repo := range repos {
-				config += fmt.Sprintf("\n%s-%s-bucket = %s", repo.Name, repo.Storage, repo.Resource)
-				config += fmt.Sprintf("\n%s-%s-endpoint = %s", repo.Name, repo.Storage, repo.Endpoint)
-				config += fmt.Sprintf("\n%s-%s-region = %s", repo.Name, repo.Storage, repo.Region)
-				config += fmt.Sprintf("\n%s-type = %s", repo.Name, repo.Storage)
+			for i, repo := range repos {
+				if repo.Storage == "pvc" {
+					role := Master
+					config += "\n[global]\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.Endpoints[role].ObjectMeta.Name
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /tls/tls.ca"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /tls/tls.cert"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-key-file = /tls/tls.key"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-type = tls"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-user = postgres"
+					//config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-path = /pgbackrest/repo1/"
+				} else {
+					config += fmt.Sprintf("\n%s-%s-bucket = %s", repo.Name, repo.Storage, repo.Resource)
+					config += fmt.Sprintf("\n%s-%s-endpoint = %s", repo.Name, repo.Storage, repo.Endpoint)
+					config += fmt.Sprintf("\n%s-%s-region = %s", repo.Name, repo.Storage, repo.Region)
+					config += fmt.Sprintf("\n%s-type = %s", repo.Name, repo.Storage)
+				}
 			}
 		}
 	}
@@ -2731,6 +3158,43 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: c.Namespace,
 			Name:      c.getPgbackrestConfigmapName(),
+		},
+		Data: data,
+	}
+	return configmap, nil
+}
+
+func (c *Cluster) generatePgbackrestRepoHostConfigmap() (*v1.ConfigMap, error) {
+	config := "[db]\npg1-path = /home/postgres/pgdata/pgroot/data\npg1-port = 5432\npg1-socket-path = /var/run/postgresql/\n"
+	config += "\n[global]\nlog-path = /home/postgres/pgdata/pgbackrest/log\nspool-path = /home/postgres/pgdata/pgbackrest/spool-path"
+	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
+		if global := c.Postgresql.Spec.Backup.Pgbackrest.Global; global != nil {
+			for k, v := range global {
+				config += fmt.Sprintf("\n%s = %s", k, v)
+			}
+		}
+		repos := c.Postgresql.Spec.Backup.Pgbackrest.Repos
+		if len(repos) >= 1 {
+			for i, repo := range repos {
+				if repo.Storage == "pvc" {
+					role := Master
+					config += "\n[global]\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.Endpoints[role].ObjectMeta.Name
+					config += "\n[db]\npg" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /tls/tls.ca"
+					config += "\npg" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /tls/tls.cert"
+					config += "\npg" + fmt.Sprintf("%d", i+1) + "-host-key-file = /tls/tls.key"
+					config += "\npg" + fmt.Sprintf("%d", i+1) + "-host-type = tls"
+					config += "\npg" + fmt.Sprintf("%d", i+1) + "-host-user = postgres"
+					//config += "\n[global]\nrepo" + fmt.Sprintf("%d", i+1) + "-path = /pgbackrest/repo1/"
+				}
+			}
+		}
+	}
+
+	data := map[string]string{"pgbackrest_instance.conf": config}
+	configmap := &v1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: c.Namespace,
+			Name:      c.getPgbackrestRepoHostConfigmapName(),
 		},
 		Data: data,
 	}

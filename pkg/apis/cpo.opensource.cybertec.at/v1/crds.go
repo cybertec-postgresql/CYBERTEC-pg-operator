@@ -1151,7 +1151,7 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 										Items: &apiextv1.JSONSchemaPropsOrArray{
 											Schema: &apiextv1.JSONSchemaProps{
 												Type:     "object",
-												Required: []string{"name", "storage", "resource"},
+												Required: []string{"name", "storage"},
 												Properties: map[string]apiextv1.JSONSchemaProps{
 													"name": {
 														Type:    "string",
@@ -1168,6 +1168,9 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 															},
 															{
 																Raw: []byte(`"azure"`),
+															},
+															{
+																Raw: []byte(`"pvc"`),
 															},
 														},
 													},
@@ -1193,6 +1196,9 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 																Type: "string",
 															},
 														},
+													},
+													"pvcsize": {
+														Type: "string",
 													},
 												},
 											},

@@ -1481,3 +1481,32 @@ func (c *Cluster) createMonitoringSecret() error {
 
 	return nil
 }
+
+func (c *Cluster) createPVCSecret(secretname string) error {
+	c.logger.Info("creating PVC secret")
+	c.setProcessName("creating PVC secret")
+	generatedKey := make([]byte, 16)
+	rand.Read(generatedKey)
+
+	generatedSecret := v1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      secretname,
+			Namespace: c.Namespace,
+		},
+		Type: v1.SecretTypeOpaque,
+		Data: map[string][]byte{
+			"key": []byte(fmt.Sprintf("%x", generatedKey)),
+		},
+	}
+	secret, err := c.KubeClient.Secrets(generatedSecret.Namespace).Create(context.TODO(), &generatedSecret, metav1.CreateOptions{})
+	if err == nil {
+		c.Secrets[secret.UID] = secret
+		c.logger.Debugf("created new secret %s, namespace: %s, uid: %s", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, secret.UID)
+	} else {
+		if !k8sutil.ResourceAlreadyExists(err) {
+			return fmt.Errorf("could not create secret for PVC %s: in namespace %s: %v", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, err)
+		}
+	}
+
+	return nil
+}

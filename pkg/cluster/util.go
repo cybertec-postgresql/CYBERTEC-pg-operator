@@ -514,7 +514,10 @@ func (c *Cluster) labelsSelector() *metav1.LabelSelector {
 
 func (c *Cluster) roleLabelsSet(shouldAddExtraLabels bool, role PostgresRole) labels.Set {
 	lbls := c.labelsSet(shouldAddExtraLabels)
-	lbls[c.OpConfig.PodRoleLabel] = string(role)
+	// Ignore PodRoleLabel for Role ClusterPods 
+	if role != ClusterPods {
+		lbls[c.OpConfig.PodRoleLabel] = string(role)
+	}
 	return lbls
 }
 

@@ -84,6 +84,7 @@ type PostgresSpec struct {
 	MasterServiceAnnotations map[string]string `json:"masterServiceAnnotations,omitempty"`
 	// ReplicaServiceAnnotations takes precedence over ServiceAnnotations for replica role if not empty
 	ReplicaServiceAnnotations map[string]string  `json:"replicaServiceAnnotations,omitempty"`
+	ClusterPodsServiceAnnotations map[string]string  `json:"clusterPodsServiceAnnotations,omitempty"`
 	TLS                       *TLSDescription    `json:"tls,omitempty"`
 	AdditionalVolumes         []AdditionalVolume `json:"additionalVolumes,omitempty"`
 	Streams                   []Stream           `json:"streams,omitempty"`

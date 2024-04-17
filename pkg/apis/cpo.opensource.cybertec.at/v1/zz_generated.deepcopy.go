@@ -910,6 +910,13 @@ func (in *PostgresSpec) DeepCopyInto(out *PostgresSpec) {
 			(*out)[key] = val
 		}
 	}
+	if in.ClusterPodsServiceAnnotations != nil {
+		in, out := &in.ClusterPodsServiceAnnotations, &out.ClusterPodsServiceAnnotations
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
+	}
 	if in.TLS != nil {
 		in, out := &in.TLS, &out.TLS
 		*out = new(TLSDescription)

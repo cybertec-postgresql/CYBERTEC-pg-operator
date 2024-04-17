@@ -271,8 +271,7 @@ func (c *Cluster) Create() (err error) {
 	c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusCreating)
 	c.eventRecorder.Event(c.GetReference(), v1.EventTypeNormal, "Create", "Started creation of new cluster resources")
 
-	for _, role := range []PostgresRole{Master, Replica} {
-
+	for _, role := range []PostgresRole{Master, Replica, ClusterPods} {
 		// if kubernetes_use_configmaps is set Patroni will create configmaps
 		// otherwise it will use endpoints
 		if !c.patroniKubernetesUseConfigMaps() {
@@ -940,7 +939,8 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 
 	// Service
 	if !reflect.DeepEqual(c.generateService(Master, &oldSpec.Spec), c.generateService(Master, &newSpec.Spec)) ||
-		!reflect.DeepEqual(c.generateService(Replica, &oldSpec.Spec), c.generateService(Replica, &newSpec.Spec)) {
+		!reflect.DeepEqual(c.generateService(Replica, &oldSpec.Spec), c.generateService(Replica, &newSpec.Spec)) ||
+		!reflect.DeepEqual(c.generateService(ClusterPods, &oldSpec.Spec), c.generateService(ClusterPods, &newSpec.Spec)) {
 		if err := c.syncServices(); err != nil {
 			c.logger.Errorf("could not sync services: %v", err)
 			updateFailed = true
@@ -1241,7 +1241,7 @@ func (c *Cluster) Delete() {
 		c.logger.Warningf("could not delete pod disruption budget: %v", err)
 	}
 
-	for _, role := range []PostgresRole{Master, Replica} {
+	for _, role := range []PostgresRole{Master, Replica, ClusterPods} {
 
 		if !c.patroniKubernetesUseConfigMaps() {
 			if err := c.deleteEndpoint(role); err != nil {

@@ -96,6 +96,9 @@ func (c *Cluster) serviceName(role PostgresRole) string {
 	if role == Replica {
 		name = fmt.Sprintf("%s-%s", name, "repl")
 	}
+	if role == ClusterPods {
+		name = fmt.Sprintf("%s-%s", name, "clusterpods")
+	}
 
 	return name
 }
@@ -2533,6 +2536,10 @@ func (c *Cluster) shouldCreateLoadBalancerForService(role PostgresRole, spec *cp
 
 		return c.OpConfig.EnableMasterLoadBalancer
 
+	case ClusterPods:
+		// Ignoring values, service is used internaly only
+		return false
+
 	default:
 		panic(fmt.Sprintf("Unknown role %v", role))
 	}
@@ -2543,6 +2550,14 @@ func (c *Cluster) generateService(role PostgresRole, spec *cpov1.PostgresSpec) *
 	serviceSpec := v1.ServiceSpec{
 		Ports: []v1.ServicePort{{Name: "postgresql", Port: pgPort, TargetPort: intstr.IntOrString{IntVal: pgPort}}},
 		Type:  v1.ServiceTypeClusterIP,
+	}
+	
+	if role == ClusterPods {
+		serviceSpec = v1.ServiceSpec{
+			ClusterIP: "None",
+			PublishNotReadyAddresses: true,
+			Type:  v1.ServiceTypeClusterIP,
+		}
 	}
 
 	// no selector for master, see https://github.com/cybertec-postgresql/cybertec-pg-operator/issues/340
@@ -2617,6 +2632,8 @@ func (c *Cluster) getCustomServiceAnnotations(role PostgresRole, spec *cpov1.Pos
 			maps.Copy(annotations, spec.MasterServiceAnnotations)
 		case Replica:
 			maps.Copy(annotations, spec.ReplicaServiceAnnotations)
+		case ClusterPods:
+			maps.Copy(annotations, spec.ClusterPodsServiceAnnotations)
 		}
 	}
 
@@ -3136,6 +3153,7 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 			for i, repo := range repos {
 				if repo.Storage == "pvc" {
 					role := Master
+					c.logger.Debugf("DEBUG_OUTPUT",c.Endpoints[role].ObjectMeta.Name)
 					config += "\n[global]\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.Endpoints[role].ObjectMeta.Name
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /tls/tls.ca"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /tls/tls.cert"

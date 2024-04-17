@@ -160,7 +160,7 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 }
 
 func (c *Cluster) syncServices() error {
-	for _, role := range []PostgresRole{Master, Replica} {
+	for _, role := range []PostgresRole{Master, Replica, ClusterPods} {
 		c.logger.Debugf("syncing %s service", role)
 
 		if !c.patroniKubernetesUseConfigMaps() {
@@ -1167,7 +1167,7 @@ func (c *Cluster) syncDatabases() error {
 	if len(createDatabases) > 0 {
 		// trigger creation of pooler objects in new database in syncConnectionPooler
 		if c.ConnectionPooler != nil {
-			for _, role := range [2]PostgresRole{Master, Replica} {
+			for _, role := range [3]PostgresRole{Master, Replica, ClusterPods} {
 				c.ConnectionPooler[role].LookupFunction = false
 			}
 		}

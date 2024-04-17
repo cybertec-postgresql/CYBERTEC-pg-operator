@@ -3152,9 +3152,9 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 		if len(repos) >= 1 {
 			for i, repo := range repos {
 				if repo.Storage == "pvc" {
-					role := Master
-					c.logger.Debugf("DEBUG_OUTPUT",c.Endpoints[role].ObjectMeta.Name)
-					config += "\n[global]\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.Endpoints[role].ObjectMeta.Name
+					// role := Master
+					c.logger.Debugf("DEBUG_OUTPUT %s %s",c.clusterName().Name, c.Namespace)
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.clusterName().Name + "-pgbackrest-repo-host-0." + c.clusterName().Name + "." + c.Namespace + ".svc.cluster.local" //c.Endpoints[role].ObjectMeta.Name
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /tls/tls.ca"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /tls/tls.cert"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-key-file = /tls/tls.key"

@@ -1567,7 +1567,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			VolumeMounts: volumeMounts,
 			Resources:    resources,
 		})
-		c.logger.Debugf("Appending the BACKREST container here ########### %v", &initContainers[len(initContainers)-1])
+		//c.logger.Debugf("Appending the BACKREST container here ########### %v", &initContainers[len(initContainers)-1])
 	}
 
 	// generate pod template for the statefulset, based on the spilo container and sidecars
@@ -2551,12 +2551,12 @@ func (c *Cluster) generateService(role PostgresRole, spec *cpov1.PostgresSpec) *
 		Ports: []v1.ServicePort{{Name: "postgresql", Port: pgPort, TargetPort: intstr.IntOrString{IntVal: pgPort}}},
 		Type:  v1.ServiceTypeClusterIP,
 	}
-	
+
 	if role == ClusterPods {
 		serviceSpec = v1.ServiceSpec{
-			ClusterIP: "None",
+			ClusterIP:                "None",
 			PublishNotReadyAddresses: true,
-			Type:  v1.ServiceTypeClusterIP,
+			Type:                     v1.ServiceTypeClusterIP,
 		}
 	}
 
@@ -3153,7 +3153,7 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 			for i, repo := range repos {
 				if repo.Storage == "pvc" {
 					// role := Master
-					c.logger.Debugf("DEBUG_OUTPUT %s %s",c.clusterName().Name, c.Namespace)
+					c.logger.Debugf("DEBUG_OUTPUT %s %s", c.clusterName().Name, c.Namespace)
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.clusterName().Name + "-pgbackrest-repo-host-0." + c.clusterName().Name + "." + c.Namespace + ".svc.cluster.local" //c.Endpoints[role].ObjectMeta.Name
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /tls/tls.ca"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /tls/tls.cert"
@@ -3183,27 +3183,32 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 }
 
 func (c *Cluster) generatePgbackrestRepoHostConfigmap() (*v1.ConfigMap, error) {
-	config := "[db]\npg1-path = /home/postgres/pgdata/pgroot/data\npg1-port = 5432\npg1-socket-path = /var/run/postgresql/\n"
-	config += "\n[global]\nlog-path = /home/postgres/pgdata/pgbackrest/log\nspool-path = /home/postgres/pgdata/pgbackrest/spool-path"
-	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
-		if global := c.Postgresql.Spec.Backup.Pgbackrest.Global; global != nil {
-			for k, v := range global {
-				config += fmt.Sprintf("\n%s = %s", k, v)
+	// choose repo1 for log, because this will for sure exist, repo2 or an other not
+	config := "[global]\nlog-path = /data/pgbackrest/repo1/log"
+	repos := c.Postgresql.Spec.Backup.Pgbackrest.Repos
+	if len(repos) >= 1 {
+		for i, repo := range repos {
+			if repo.Storage == "pvc" {
+				config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-path = /data/pgbackrest/repo" + fmt.Sprintf("%d", i+1)
 			}
 		}
-		repos := c.Postgresql.Spec.Backup.Pgbackrest.Repos
-		if len(repos) >= 1 {
-			for i, repo := range repos {
-				if repo.Storage == "pvc" {
-					role := Master
-					config += "\n[global]\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.Endpoints[role].ObjectMeta.Name
-					config += "\n[db]\npg" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /tls/tls.ca"
-					config += "\npg" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /tls/tls.cert"
-					config += "\npg" + fmt.Sprintf("%d", i+1) + "-host-key-file = /tls/tls.key"
-					config += "\npg" + fmt.Sprintf("%d", i+1) + "-host-type = tls"
-					config += "\npg" + fmt.Sprintf("%d", i+1) + "-host-user = postgres"
-					//config += "\n[global]\nrepo" + fmt.Sprintf("%d", i+1) + "-path = /pgbackrest/repo1/"
+		config += "\n[db]"
+		if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
+			if global := c.Postgresql.Spec.Backup.Pgbackrest.Global; global != nil {
+				for k, v := range global {
+					config += fmt.Sprintf("\n%s = %s", k, v)
 				}
+			}
+			n := c.Postgresql.Spec.NumberOfInstances
+			for j := int32(0); j < n; j++ {
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host = " + c.clusterName().Name + "-" + fmt.Sprintf("%d", j) + "." + c.clusterName().Name + "." + c.Namespace + ".svc.cluster.local" //c.Endpoints[role].ObjectMeta.Name
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-ca-file = /tls/tls.ca"
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-cert-file = /tls/tls.cert"
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-key-file = /tls/tls.key"
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-type = tls"
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-socket-path = /tmp/postgresql"
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-port = 5432"
+				//config += "\n[global]\nrepo" + fmt.Sprintf("%d", i+1) + "-path = /pgbackrest/repo1/"
 			}
 		}
 	}

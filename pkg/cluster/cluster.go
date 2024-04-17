@@ -331,6 +331,19 @@ func (c *Cluster) Create() (err error) {
 			err = fmt.Errorf("could not sync pgbackrest config: %v", err)
 			return err
 		}
+		// if found then sync pgbackrest repo-host config
+		c.logger.Infof("HIERBINICH1")
+		for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
+			c.logger.Infof("HIERBINICH2")
+			if repo.Storage == "pvc" {
+				c.logger.Infof("HIERBINICH3")
+				if err = c.syncPgbackrestRepoHostConfig(); err != nil {
+					err = fmt.Errorf("could not sync pgbackrest repo-host config: %v", err)
+					return err
+				}
+				break
+			}
+		}
 		if c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID != c.Status.PgbackrestRestoreID {
 			if err = c.syncPgbackrestRestoreConfig(); err != nil {
 				err = fmt.Errorf("could not sync pgbackrest restore config: %v", err)
@@ -360,8 +373,8 @@ func (c *Cluster) Create() (err error) {
 				if backupSecretName == "" {
 					c.logger.Error("secret name needed for pgbackrest")
 				}
-				if err = c.createPgbackrestRepohostConfig(); err != nil {
-					err = fmt.Errorf("could not create a pgbackrest restore config: %v", err)
+				if err = c.createPgbackrestRepoHostConfig(); err != nil {
+					err = fmt.Errorf("could not create a pgbackrest repo-host config: %v", err)
 					return err
 				}
 				// if statefulset for pvc is already created then only mount an additional volume in it for this repo
@@ -1089,6 +1102,9 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 			if err := c.deletePgbackrestConfig(); err != nil {
 				c.logger.Warningf("could not delete pgbackrest config: %v", err)
 			}
+			if err := c.deletePgbackrestRepoHostConfig(); err != nil {
+				c.logger.Warningf("could not delete pgbackrest repo-host config: %v", err)
+			}
 		}
 
 	}()
@@ -1223,6 +1239,10 @@ func (c *Cluster) Delete() {
 
 	if err := c.deletePgbackrestConfig(); err != nil {
 		c.logger.Warningf("could not delete pgbackrest config: %v", err)
+	}
+
+	if err := c.deletePgbackrestRepoHostConfig(); err != nil {
+		c.logger.Warningf("could not delete pgbackrest repo-host config: %v", err)
 	}
 
 	if err := c.deletePgbackrestRestoreConfig(); err != nil {

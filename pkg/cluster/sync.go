@@ -66,6 +66,11 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	}
 
 	if err = c.syncPgbackrestConfig(); err != nil {
+		err = fmt.Errorf("could not sync pgbackrest repo-host config: %v", err)
+		return err
+	}
+
+	if err = c.syncPgbackrestRepoHostConfig(); err != nil {
 		err = fmt.Errorf("could not sync pgbackrest config: %v", err)
 		return err
 	}
@@ -1370,6 +1375,27 @@ func (c *Cluster) syncPgbackrestConfig() error {
 			return fmt.Errorf("could not create a pgbackrest config: %v", err)
 		}
 		c.logger.Info("a pgbackrest config has been successfully created")
+	}
+	return nil
+}
+
+func (c *Cluster) syncPgbackrestRepoHostConfig() error {
+	c.logger.Info("check if a sync for repo host configmap is needed ")
+	for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
+		if repo.Storage == "pvc" {
+			if cm, err := c.KubeClient.ConfigMaps(c.Namespace).Get(context.TODO(), c.getPgbackrestRepoHostConfigmapName(), metav1.GetOptions{}); err == nil {
+				if err := c.updatePgbackrestRepoHostConfig(cm); err != nil {
+					return fmt.Errorf("could not update a pgbackrest repo-host config: %v", err)
+				}
+				c.logger.Info("a pgbackrest restore repo-host has been successfully updated")
+			} else {
+				if err := c.createPgbackrestRepoHostConfig(); err != nil {
+					return fmt.Errorf("could not create a pgbackrest repo-host config: %v", err)
+				}
+				c.logger.Info("a pgbackrest repo-host config has been successfully created")
+			}
+			break
+		}
 	}
 	return nil
 }

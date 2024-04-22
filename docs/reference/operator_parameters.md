@@ -387,11 +387,11 @@ configuration they are grouped under the `kubernetes` key.
 
 * **pod_role_label**
   name of the label assigned to the Postgres pods (and services/endpoints) by
-  the operator. The default is `spilo-role`.
+  the operator. The default is `member.cpo.opensource.cybertec.at/role`.
 
 * **cluster_labels**
   list of `name:value` pairs for additional labels assigned to the cluster
-  objects. The default is `application:spilo`.
+  objects. The default is `application:cpo`.
 
 * **inherited_labels**
   list of label keys that can be inherited from the cluster manifest, and
@@ -404,7 +404,7 @@ configuration they are grouped under the `kubernetes` key.
 * **cluster_name_label**
   name of the label assigned to Kubernetes objects created by the operator
   that indicates which cluster a given object belongs to. The default is
-  `cluster-name`.
+  `cluster.cpo.opensource.cybertec.at/name`.
 
 * **node_readiness_label**
   a set of labels that a running and active node should possess to be

@@ -184,18 +184,18 @@ are named like the cluster. The database pods can be identified by their number
 suffix, starting from `-0`. They run the [Spilo](https://github.com/zalando/spilo)
 container image by Zalando. As for the services and endpoints, there will be one
 for the master pod and another one for all the replicas (`-repl` suffix). Check
-if all components are coming up. Use the label `application=spilo` to filter and
-list the label `spilo-role` to see who is currently the master.
+if all components are coming up. Use the label `application=cpo` to filter and
+list the label `member.cpo.opensource.cybertec.at/role` to see who is currently the master.
 
 ```bash
 # check the deployed cluster
 kubectl get postgresql
 
 # check created database pods
-kubectl get pods -l application=spilo -L spilo-role
+kubectl get pods -l application=cpo -L member.cpo.opensource.cybertec.at/role
 
 # check created service resources
-kubectl get svc -l application=spilo -L spilo-role
+kubectl get svc -l application=cpo -L member.cpo.opensource.cybertec.at/role
 ```
 
 ## Connect to the Postgres cluster via psql

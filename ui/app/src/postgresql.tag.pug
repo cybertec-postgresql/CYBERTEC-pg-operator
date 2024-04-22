@@ -149,7 +149,7 @@ postgresql
                 this.progress.containerFirst = true
             }
 
-            masters = data.filter((x) => { return x.labels['spilo-role'] === 'master'} )
+            masters = data.filter((x) => { return x.labels['member.cpo.opensource.cybertec.at/role'] === 'master'} )
             if (masters.length === 1) {
                 this.progress.masterLabel = true
             }

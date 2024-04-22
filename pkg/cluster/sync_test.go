@@ -79,14 +79,14 @@ func TestSyncStatefulSetsAnnotations(t *testing.T) {
 			OpConfig: config.Config{
 				PodManagementPolicy: "ordered_ready",
 				Resources: config.Resources{
-					ClusterLabels:         map[string]string{"application": "spilo"},
-					ClusterNameLabel:      "cluster-name",
+					ClusterLabels:         map[string]string{"application": "cpo"},
+					ClusterNameLabel:      "cluster.cpo.opensource.cybertec.at/name",
 					DefaultCPURequest:     "300m",
 					DefaultCPULimit:       "300m",
 					DefaultMemoryRequest:  "300Mi",
 					DefaultMemoryLimit:    "300Mi",
 					InheritedAnnotations:  []string{inheritedAnnotation},
-					PodRoleLabel:          "spilo-role",
+					PodRoleLabel:          "member.cpo.opensource.cybertec.at/role",
 					ResourceCheckInterval: time.Duration(3),
 					ResourceCheckTimeout:  time.Duration(10),
 				},
@@ -185,13 +185,13 @@ func TestCheckAndSetGlobalPostgreSQLConfiguration(t *testing.T) {
 			OpConfig: config.Config{
 				PodManagementPolicy: "ordered_ready",
 				Resources: config.Resources{
-					ClusterLabels:         map[string]string{"application": "spilo"},
-					ClusterNameLabel:      "cluster-name",
+					ClusterLabels:         map[string]string{"application": "cpo"},
+					ClusterNameLabel:      "cluster.cpo.opensource.cybertec.at/name",
 					DefaultCPURequest:     "300m",
 					DefaultCPULimit:       "300m",
 					DefaultMemoryRequest:  "300Mi",
 					DefaultMemoryLimit:    "300Mi",
-					PodRoleLabel:          "spilo-role",
+					PodRoleLabel:          "member.cpo.opensource.cybertec.at/role",
 					ResourceCheckInterval: time.Duration(3),
 					ResourceCheckTimeout:  time.Duration(10),
 				},
@@ -531,8 +531,8 @@ func TestUpdateSecret(t *testing.T) {
 					PasswordRotationUserRetention: 3,
 				},
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
-					ClusterNameLabel: "cluster-name",
+					ClusterLabels:    map[string]string{"application": "cpo"},
+					ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name",
 				},
 			},
 		}, client, pg, logger, eventRecorder)

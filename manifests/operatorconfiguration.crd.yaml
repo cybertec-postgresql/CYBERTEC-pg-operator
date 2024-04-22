@@ -184,10 +184,10 @@ spec:
                     additionalProperties:
                       type: string
                     default:
-                      application: spilo
+                      application: cpo
                   cluster_name_label:
                     type: string
-                    default: "cluster-name"
+                    default: "cluster.cpo.opensource.cybertec.at/name"
                   custom_pod_annotations:
                     type: object
                     additionalProperties:
@@ -309,13 +309,13 @@ spec:
                     type: string
                   pod_role_label:
                     type: string
-                    default: "spilo-role"
+                    default: "member.cpo.opensource.cybertec.at/role"
                   pod_service_account_definition:
                     type: string
                     default: ""
                   pod_service_account_name:
                     type: string
-                    default: "postgres-pod"
+                    default: "cpo-pod"
                   pod_service_account_role_binding_definition:
                     type: string
                     default: ""

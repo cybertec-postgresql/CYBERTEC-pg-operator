@@ -494,7 +494,7 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 		{
 			envIndex:       5,
 			envVarConstant: "KUBERNETES_SCOPE_LABEL",
-			envVarValue:    "cluster-name",
+			envVarValue:    "cluster.cpo.opensource.cybertec.at/name",
 		},
 	}
 	expectedSpiloWalPathCompat := []ExpectedValue{
@@ -710,7 +710,7 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 			subTest: "will not override global config KUBERNETES_SCOPE_LABEL parameter",
 			opConfig: config.Config{
 				Resources: config.Resources{
-					ClusterNameLabel: "cluster-name",
+					ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name",
 					PodEnvironmentConfigMap: spec.NamespacedName{
 						Name: testPodEnvironmentConfigMapName, // contains kubernetes_scope_label, too
 					},
@@ -1455,13 +1455,13 @@ func TestPodAffinity(t *testing.T) {
 					ProtectedRoles:                           []string{"admin"},
 					PodAntiAffinityPreferredDuringScheduling: tt.preferred,
 					Resources: config.Resources{
-						ClusterLabels:        map[string]string{"application": "spilo"},
-						ClusterNameLabel:     "cluster-name",
+						ClusterLabels:        map[string]string{"application": "cpo"},
+						ClusterNameLabel:     "cluster.cpo.opensource.cybertec.at/name",
 						DefaultCPURequest:    "300m",
 						DefaultCPULimit:      "300m",
 						DefaultMemoryRequest: "300Mi",
 						DefaultMemoryLimit:   "300Mi",
-						PodRoleLabel:         "spilo-role",
+						PodRoleLabel:         "member.cpo.opensource.cybertec.at/role",
 					},
 				},
 			}, k8sutil.KubernetesClient{}, pg, logger, eventRecorder)
@@ -1842,13 +1842,13 @@ func TestAdditionalVolume(t *testing.T) {
 			OpConfig: config.Config{
 				PodManagementPolicy: "ordered_ready",
 				Resources: config.Resources{
-					ClusterLabels:        map[string]string{"application": "spilo"},
-					ClusterNameLabel:     "cluster-name",
+					ClusterLabels:        map[string]string{"application": "cpo"},
+					ClusterNameLabel:     "cluster.cpo.opensource.cybertec.at/name",
 					DefaultCPURequest:    "300m",
 					DefaultCPULimit:      "300m",
 					DefaultMemoryRequest: "300Mi",
 					DefaultMemoryLimit:   "300Mi",
-					PodRoleLabel:         "spilo-role",
+					PodRoleLabel:         "member.cpo.opensource.cybertec.at/role",
 				},
 			},
 		}, client, pg, logger, eventRecorder)
@@ -2208,7 +2208,7 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 		// With multiple instances.
 		{
 			New(
-				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster-name", PodRoleLabel: "spilo-role"}, PDBNameFormat: "postgres-{cluster}-pdb"}},
+				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name", PodRoleLabel: "member.cpo.opensource.cybertec.at/role"}, PDBNameFormat: "postgres-{cluster}-pdb"}},
 				k8sutil.KubernetesClient{},
 				cpov1.Postgresql{
 					ObjectMeta: metav1.ObjectMeta{Name: "myapp-database", Namespace: "myapp"},
@@ -2219,12 +2219,12 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "postgres-myapp-database-pdb",
 					Namespace: "myapp",
-					Labels:    map[string]string{"team": "myapp", "cluster-name": "myapp-database"},
+					Labels:    map[string]string{"team": "myapp", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
 				},
 				Spec: policyv1.PodDisruptionBudgetSpec{
 					MinAvailable: util.ToIntStr(1),
 					Selector: &metav1.LabelSelector{
-						MatchLabels: map[string]string{"spilo-role": "master", "cluster-name": "myapp-database"},
+						MatchLabels: map[string]string{"member.cpo.opensource.cybertec.at/role": "master", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
 					},
 				},
 			},
@@ -2232,7 +2232,7 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 		// With zero instances.
 		{
 			New(
-				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster-name", PodRoleLabel: "spilo-role"}, PDBNameFormat: "postgres-{cluster}-pdb"}},
+				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name", PodRoleLabel: "member.cpo.opensource.cybertec.at/role"}, PDBNameFormat: "postgres-{cluster}-pdb"}},
 				k8sutil.KubernetesClient{},
 				cpov1.Postgresql{
 					ObjectMeta: metav1.ObjectMeta{Name: "myapp-database", Namespace: "myapp"},
@@ -2243,12 +2243,12 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "postgres-myapp-database-pdb",
 					Namespace: "myapp",
-					Labels:    map[string]string{"team": "myapp", "cluster-name": "myapp-database"},
+					Labels:    map[string]string{"team": "myapp", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
 				},
 				Spec: policyv1.PodDisruptionBudgetSpec{
 					MinAvailable: util.ToIntStr(0),
 					Selector: &metav1.LabelSelector{
-						MatchLabels: map[string]string{"spilo-role": "master", "cluster-name": "myapp-database"},
+						MatchLabels: map[string]string{"member.cpo.opensource.cybertec.at/role": "master", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
 					},
 				},
 			},
@@ -2256,7 +2256,7 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 		// With PodDisruptionBudget disabled.
 		{
 			New(
-				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster-name", PodRoleLabel: "spilo-role"}, PDBNameFormat: "postgres-{cluster}-pdb", EnablePodDisruptionBudget: util.False()}},
+				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name", PodRoleLabel: "member.cpo.opensource.cybertec.at/role"}, PDBNameFormat: "postgres-{cluster}-pdb", EnablePodDisruptionBudget: util.False()}},
 				k8sutil.KubernetesClient{},
 				cpov1.Postgresql{
 					ObjectMeta: metav1.ObjectMeta{Name: "myapp-database", Namespace: "myapp"},
@@ -2267,12 +2267,12 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "postgres-myapp-database-pdb",
 					Namespace: "myapp",
-					Labels:    map[string]string{"team": "myapp", "cluster-name": "myapp-database"},
+					Labels:    map[string]string{"team": "myapp", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
 				},
 				Spec: policyv1.PodDisruptionBudgetSpec{
 					MinAvailable: util.ToIntStr(0),
 					Selector: &metav1.LabelSelector{
-						MatchLabels: map[string]string{"spilo-role": "master", "cluster-name": "myapp-database"},
+						MatchLabels: map[string]string{"member.cpo.opensource.cybertec.at/role": "master", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
 					},
 				},
 			},
@@ -2280,7 +2280,7 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 		// With non-default PDBNameFormat and PodDisruptionBudget explicitly enabled.
 		{
 			New(
-				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster-name", PodRoleLabel: "spilo-role"}, PDBNameFormat: "postgres-{cluster}-databass-budget", EnablePodDisruptionBudget: util.True()}},
+				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name", PodRoleLabel: "member.cpo.opensource.cybertec.at/role"}, PDBNameFormat: "postgres-{cluster}-databass-budget", EnablePodDisruptionBudget: util.True()}},
 				k8sutil.KubernetesClient{},
 				cpov1.Postgresql{
 					ObjectMeta: metav1.ObjectMeta{Name: "myapp-database", Namespace: "myapp"},
@@ -2291,12 +2291,12 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "postgres-myapp-database-databass-budget",
 					Namespace: "myapp",
-					Labels:    map[string]string{"team": "myapp", "cluster-name": "myapp-database"},
+					Labels:    map[string]string{"team": "myapp", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
 				},
 				Spec: policyv1.PodDisruptionBudgetSpec{
 					MinAvailable: util.ToIntStr(1),
 					Selector: &metav1.LabelSelector{
-						MatchLabels: map[string]string{"spilo-role": "master", "cluster-name": "myapp-database"},
+						MatchLabels: map[string]string{"member.cpo.opensource.cybertec.at/role": "master", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
 					},
 				},
 			},
@@ -2480,7 +2480,7 @@ func getServices(serviceType v1.ServiceType, sourceRanges []string, extTrafficPo
 			ExternalTrafficPolicy:    v1.ServiceExternalTrafficPolicyType(extTrafficPolicy),
 			LoadBalancerSourceRanges: sourceRanges,
 			Ports:                    []v1.ServicePort{{Name: "postgresql", Port: 5432, TargetPort: intstr.IntOrString{IntVal: 5432}}},
-			Selector:                 map[string]string{"spilo-role": "replica", "application": "spilo", "cluster-name": clusterName},
+			Selector:                 map[string]string{"member.cpo.opensource.cybertec.at/role": "replica", "application": "cpo", "cluster.cpo.opensource.cybertec.at/name": clusterName},
 			Type:                     serviceType,
 		},
 		v1.ServiceSpec{
@@ -2497,8 +2497,8 @@ func TestEnableLoadBalancers(t *testing.T) {
 	client, _ := newLBFakeClient()
 	clusterName := "acid-test-cluster"
 	namespace := "default"
-	clusterNameLabel := "cluster-name"
-	roleLabel := "spilo-role"
+	clusterNameLabel := "cluster.cpo.opensource.cybertec.at/name"
+	roleLabel := "member.cpo.opensource.cybertec.at/role"
 	roles := []PostgresRole{Master, Replica}
 	sourceRanges := []string{"192.186.1.2/22"}
 	extTrafficPolicy := "Cluster"
@@ -2525,7 +2525,7 @@ func TestEnableLoadBalancers(t *testing.T) {
 				EnableReplicaPoolerLoadBalancer: true,
 				ExternalTrafficPolicy:           extTrafficPolicy,
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
+					ClusterLabels:    map[string]string{"application": "cpo"},
 					ClusterNameLabel: clusterNameLabel,
 					PodRoleLabel:     roleLabel,
 				},
@@ -2572,7 +2572,7 @@ func TestEnableLoadBalancers(t *testing.T) {
 				EnableReplicaPoolerLoadBalancer: false,
 				ExternalTrafficPolicy:           extTrafficPolicy,
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
+					ClusterLabels:    map[string]string{"application": "cpo"},
 					ClusterNameLabel: clusterNameLabel,
 					PodRoleLabel:     roleLabel,
 				},
@@ -2637,7 +2637,7 @@ func TestGenerateResourceRequirements(t *testing.T) {
 	client, _ := newFakeK8sTestClient()
 	clusterName := "acid-test-cluster"
 	namespace := "default"
-	clusterNameLabel := "cluster-name"
+	clusterNameLabel := "cluster.cpo.opensource.cybertec.at/name"
 	sidecarName := "postgres-exporter"
 
 	// enforceMinResourceLimits will be called 2 twice emitting 4 events (2x cpu, 2x memory raise)
@@ -2646,7 +2646,7 @@ func TestGenerateResourceRequirements(t *testing.T) {
 	newEventRecorder := record.NewFakeRecorder(10)
 
 	configResources := config.Resources{
-		ClusterLabels:        map[string]string{"application": "spilo"},
+		ClusterLabels:        map[string]string{"application": "cpo"},
 		ClusterNameLabel:     clusterNameLabel,
 		DefaultCPURequest:    "100m",
 		DefaultCPULimit:      "1",
@@ -2656,7 +2656,7 @@ func TestGenerateResourceRequirements(t *testing.T) {
 		DefaultMemoryLimit:   "500Mi",
 		MaxMemoryRequest:     "1Gi",
 		MinMemoryLimit:       "250Mi",
-		PodRoleLabel:         "spilo-role",
+		PodRoleLabel:         "member.cpo.opensource.cybertec.at/role",
 	}
 
 	tests := []struct {

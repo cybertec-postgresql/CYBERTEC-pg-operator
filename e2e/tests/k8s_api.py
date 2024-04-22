@@ -46,21 +46,21 @@ class K8s:
         replica_pod_nodes = []
         podsList = self.api.core_v1.list_namespaced_pod(namespace, label_selector=pg_cluster_name)
         for pod in podsList.items:
-            if pod.metadata.labels.get('spilo-role') == 'master':
+            if pod.metadata.labels.get('member.cpo.opensource.cybertec.at/role') == 'master':
                 master_pod_node = pod.spec.node_name
-            elif pod.metadata.labels.get('spilo-role') == 'replica':
+            elif pod.metadata.labels.get('member.cpo.opensource.cybertec.at/role') == 'replica':
                 replica_pod_nodes.append(pod.spec.node_name)
 
         return master_pod_node, replica_pod_nodes
 
-    def get_cluster_nodes(self, cluster_labels='application=spilo,cluster-name=acid-minimal-cluster', namespace='default'):
+    def get_cluster_nodes(self, cluster_labels='application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster', namespace='default'):
         m = []
         r = []
         podsList = self.api.core_v1.list_namespaced_pod(namespace, label_selector=cluster_labels)
         for pod in podsList.items:
-            if pod.metadata.labels.get('spilo-role') == 'master' and pod.status.phase == 'Running':
+            if pod.metadata.labels.get('member.cpo.opensource.cybertec.at/role') == 'master' and pod.status.phase == 'Running':
                 m.append(pod.spec.node_name)
-            elif pod.metadata.labels.get('spilo-role') == 'replica' and pod.status.phase == 'Running':
+            elif pod.metadata.labels.get('member.cpo.opensource.cybertec.at/role') == 'replica' and pod.status.phase == 'Running':
                 r.append(pod.spec.node_name)
 
         return m, r
@@ -205,7 +205,7 @@ class K8s:
     def count_pvcs_with_label(self, labels, namespace='default'):
         return len(self.api.core_v1.list_namespaced_persistent_volume_claim(namespace, label_selector=labels).items)
 
-    def count_running_pods(self, labels='application=spilo,cluster-name=acid-minimal-cluster', namespace='default'):
+    def count_running_pods(self, labels='application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster', namespace='default'):
         pods = self.api.core_v1.list_namespaced_pod(namespace, label_selector=labels).items
         return len(list(filter(lambda x: x.status.phase == 'Running', pods)))
 
@@ -240,7 +240,7 @@ class K8s:
             time.sleep(self.RETRY_TIMEOUT_SEC)
 
     def get_logical_backup_job(self, namespace='default'):
-        return self.api.batch_v1.list_namespaced_cron_job(namespace, label_selector="application=spilo")
+        return self.api.batch_v1.list_namespaced_cron_job(namespace, label_selector="application=cpo")
 
     def wait_for_logical_backup_job(self, expected_num_of_jobs):
         while (len(self.get_logical_backup_job().items) != expected_num_of_jobs):
@@ -323,7 +323,7 @@ class K8s:
         except ApiException:
             return None
 
-    def get_statefulset_image(self, label_selector="application=spilo,cluster-name=acid-minimal-cluster", namespace='default'):
+    def get_statefulset_image(self, label_selector="application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster", namespace='default'):
         ssets = self.api.apps_v1.list_namespaced_stateful_set(namespace, label_selector=label_selector, limit=1)
         if len(ssets.items) == 0:
             return None
@@ -341,8 +341,8 @@ class K8s:
             return None
         return pod.items[0].spec.containers[0].image
 
-    def get_cluster_pod(self, role, labels='application=spilo,cluster-name=acid-minimal-cluster', namespace='default'):
-        labels = labels + ',spilo-role=' + role
+    def get_cluster_pod(self, role, labels='application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster', namespace='default'):
+        labels = labels + ',member.cpo.opensource.cybertec.at/role=' + role
 
         pods = self.api.core_v1.list_namespaced_pod(
                 namespace, label_selector=labels).items
@@ -350,10 +350,10 @@ class K8s:
         if pods:
             return pods[0]
 
-    def get_cluster_leader_pod(self, labels='application=spilo,cluster-name=acid-minimal-cluster', namespace='default'):
+    def get_cluster_leader_pod(self, labels='application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster', namespace='default'):
         return self.get_cluster_pod('master', labels, namespace)
 
-    def get_cluster_replica_pod(self, labels='application=spilo,cluster-name=acid-minimal-cluster', namespace='default'):
+    def get_cluster_replica_pod(self, labels='application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster', namespace='default'):
         return self.get_cluster_pod('replica', labels, namespace)
 
     def get_secret(self, username, clustername='acid-minimal-cluster', namespace='default'):
@@ -378,26 +378,26 @@ class K8sBase:
         self.labels = labels
         self.namespace = namespace
 
-    def get_pg_nodes(self, pg_cluster_labels='cluster-name=acid-minimal-cluster', namespace='default'):
+    def get_pg_nodes(self, pg_cluster_labels='cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster', namespace='default'):
         master_pod_node = ''
         replica_pod_nodes = []
         podsList = self.api.core_v1.list_namespaced_pod(namespace, label_selector=pg_cluster_labels)
         for pod in podsList.items:
-            if pod.metadata.labels.get('spilo-role') == 'master':
+            if pod.metadata.labels.get('member.cpo.opensource.cybertec.at/role') == 'master':
                 master_pod_node = pod.spec.node_name
-            elif pod.metadata.labels.get('spilo-role') == 'replica':
+            elif pod.metadata.labels.get('member.cpo.opensource.cybertec.at/role') == 'replica':
                 replica_pod_nodes.append(pod.spec.node_name)
 
         return master_pod_node, replica_pod_nodes
 
-    def get_cluster_nodes(self, cluster_labels='cluster-name=acid-minimal-cluster', namespace='default'):
+    def get_cluster_nodes(self, cluster_labels='cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster', namespace='default'):
         m = []
         r = []
         podsList = self.api.core_v1.list_namespaced_pod(namespace, label_selector=cluster_labels)
         for pod in podsList.items:
-            if pod.metadata.labels.get('spilo-role') == 'master' and pod.status.phase == 'Running':
+            if pod.metadata.labels.get('member.cpo.opensource.cybertec.at/role') == 'master' and pod.status.phase == 'Running':
                 m.append(pod.spec.node_name)
-            elif pod.metadata.labels.get('spilo-role') == 'replica' and pod.status.phase == 'Running':
+            elif pod.metadata.labels.get('member.cpo.opensource.cybertec.at/role') == 'replica' and pod.status.phase == 'Running':
                 r.append(pod.spec.node_name)
 
         return m, r
@@ -512,7 +512,7 @@ class K8sBase:
     def count_pvcs_with_label(self, labels, namespace='default'):
         return len(self.api.core_v1.list_namespaced_persistent_volume_claim(namespace, label_selector=labels).items)
 
-    def count_running_pods(self, labels='application=spilo,cluster-name=acid-minimal-cluster', namespace='default'):
+    def count_running_pods(self, labels='application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster', namespace='default'):
         pods = self.api.core_v1.list_namespaced_pod(namespace, label_selector=labels).items
         return len(list(filter(lambda x: x.status.phase == 'Running', pods)))
 
@@ -537,7 +537,7 @@ class K8sBase:
             time.sleep(self.RETRY_TIMEOUT_SEC)
 
     def get_logical_backup_job(self, namespace='default'):
-        return self.api.batch_v1.list_namespaced_cron_job(namespace, label_selector="application=spilo")
+        return self.api.batch_v1.list_namespaced_cron_job(namespace, label_selector="application=cpo")
 
     def wait_for_logical_backup_job(self, expected_num_of_jobs):
         while (len(self.get_logical_backup_job().items) != expected_num_of_jobs):
@@ -585,7 +585,7 @@ class K8sBase:
         result = self.get_patroni_state(pod)
         return list(filter(lambda x: x["State"] == "running", result))
 
-    def get_statefulset_image(self, label_selector="application=spilo,cluster-name=acid-minimal-cluster", namespace='default'):
+    def get_statefulset_image(self, label_selector="application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster", namespace='default'):
         ssets = self.api.apps_v1.list_namespaced_stateful_set(namespace, label_selector=label_selector, limit=1)
         if len(ssets.items) == 0:
             return None
@@ -615,7 +615,7 @@ class K8sOperator(K8sBase):
 
 
 class K8sPostgres(K8sBase):
-    def __init__(self, labels="cluster-name=acid-minimal-cluster", namespace="default"):
+    def __init__(self, labels="cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster", namespace="default"):
         super().__init__(labels, namespace)
 
     def get_pg_nodes(self):
@@ -623,9 +623,9 @@ class K8sPostgres(K8sBase):
         replica_pod_nodes = []
         podsList = self.api.core_v1.list_namespaced_pod(self.namespace, label_selector=self.labels)
         for pod in podsList.items:
-            if pod.metadata.labels.get('spilo-role') == 'master':
+            if pod.metadata.labels.get('member.cpo.opensource.cybertec.at/role') == 'master':
                 master_pod_node = pod.spec.node_name
-            elif pod.metadata.labels.get('spilo-role') == 'replica':
+            elif pod.metadata.labels.get('member.cpo.opensource.cybertec.at/role') == 'replica':
                 replica_pod_nodes.append(pod.spec.node_name)
 
         return master_pod_node, replica_pod_nodes

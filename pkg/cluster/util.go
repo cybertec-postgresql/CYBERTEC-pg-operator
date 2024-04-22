@@ -18,7 +18,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 
-	"github.com/sirupsen/logrus"
 	acidzalando "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at"
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
@@ -27,6 +26,7 @@ import (
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/nicediff"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/retryutil"
+	"github.com/sirupsen/logrus"
 )
 
 // OAuthTokenGetter provides the method for fetching OAuth tokens
@@ -512,9 +512,18 @@ func (c *Cluster) labelsSelector() *metav1.LabelSelector {
 	}
 }
 
+func (c *Cluster) labelsSelectorRepoHost() *metav1.LabelSelector {
+	labels := c.labelsSet(false)
+	labels["member.cpo.opensource.cybertec.at/role"] = "repo-host"
+	return &metav1.LabelSelector{
+		MatchLabels:      labels,
+		MatchExpressions: nil,
+	}
+}
+
 func (c *Cluster) roleLabelsSet(shouldAddExtraLabels bool, role PostgresRole) labels.Set {
 	lbls := c.labelsSet(shouldAddExtraLabels)
-	// Ignore PodRoleLabel for Role ClusterPods 
+	// Ignore PodRoleLabel for Role ClusterPods
 	if role != ClusterPods {
 		lbls[c.OpConfig.PodRoleLabel] = string(role)
 	}

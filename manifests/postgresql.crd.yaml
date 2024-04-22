@@ -816,8 +816,13 @@ spec:
                                   type: string
                                 diff:
                                   type: string
-                            Pvcsize:
-                              type: string
+                            volume:
+                              type: object
+                              properties:
+                                size:
+                                  type: string
+                                storageClass:
+                                  type: string
                           required:
                           - name
                           - storage

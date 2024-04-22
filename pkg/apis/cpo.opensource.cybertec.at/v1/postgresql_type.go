@@ -290,7 +290,7 @@ type Repo struct {
 	Endpoint string            `json:"endpoint"`
 	Region   string            `json:"region"`
 	Schedule map[string]string `json:"schedule"`
-	Volume   []Volume          `json:"volume,omitempty"`
+	Volume   `json:"volume,omitempty"`
 }
 
 type Restore struct {

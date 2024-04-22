@@ -1281,13 +1281,7 @@ func (in *Repo) DeepCopyInto(out *Repo) {
 			(*out)[key] = val
 		}
 	}
-	if in.Volume != nil {
-		in, out := &in.Volume, &out.Volume
-		*out = make([]Volume, len(*in))
-		for i := range *in {
-			(*in)[i].DeepCopyInto(&(*out)[i])
-		}
-	}
+	in.Volume.DeepCopyInto(&out.Volume)
 	return
 }
 

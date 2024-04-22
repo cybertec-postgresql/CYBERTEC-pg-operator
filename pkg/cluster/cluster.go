@@ -349,7 +349,7 @@ func (c *Cluster) Create() (err error) {
 		// add the config info to the pg pods about this repo
 		for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
 			if repo.Storage == "pvc" {
-				if len(repo.PvcSize) == 0 {
+				if len(repo.Volume.Size) == 0 {
 					err = fmt.Errorf("could not create pgbackrest statefulset for pvc without size: %v", err)
 					return err
 				}
@@ -372,7 +372,7 @@ func (c *Cluster) Create() (err error) {
 					pvcStatefulSetSpec := cpov1.PostgresSpec{
 						NumberOfInstances: 1,
 						Volume: cpov1.Volume{
-							Size: repo.PvcSize,
+							Size: repo.Volume.Size,
 						},
 						TLS: &cpov1.TLSDescription{
 							SecretName: backupSecretName},

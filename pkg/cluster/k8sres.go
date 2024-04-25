@@ -2143,7 +2143,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	}
 
 	repoHostLabels := c.labelsSet(true)
-	repoHostLabels["member.cpo.opensource.cybertec.at/role"] = "repo-host"
+	repoHostLabels["member.cpo.opensource.cybertec.at/type"] = "repo-host"
 	c.Spec.RepoHost = true
 
 	// repoHostLabelSelectors := c.labelsSelector()

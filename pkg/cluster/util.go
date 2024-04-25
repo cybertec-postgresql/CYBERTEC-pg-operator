@@ -514,7 +514,7 @@ func (c *Cluster) labelsSelector() *metav1.LabelSelector {
 
 func (c *Cluster) labelsSelectorRepoHost() *metav1.LabelSelector {
 	labels := c.labelsSet(false)
-	labels["member.cpo.opensource.cybertec.at/role"] = "repo-host"
+	labels["member.cpo.opensource.cybertec.at/type"] = "repo-host"
 	return &metav1.LabelSelector{
 		MatchLabels:      labels,
 		MatchExpressions: nil,

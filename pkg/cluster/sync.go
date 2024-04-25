@@ -1799,32 +1799,7 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 
 	// Save the CA and generate a TLS client certificate for the entire cluster.
 
-	generatedSecret := v1.Secret{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      secretname,
-			Namespace: c.Namespace,
-		},
-		Type: v1.SecretTypeOpaque,
-		Data: map[string][]byte{
-			"key":                         []byte(fmt.Sprintf("%x", generatedKey)),
-			certAuthoritySecretKey:        []byte(fmt.Sprintf("%x", "")),
-			certClientPrivateKeySecretKey: []byte(fmt.Sprintf("%x", "")),
-			certClientSecretKey:           []byte(fmt.Sprintf("%x", "")),
-			certRepoPrivateKeySecretKey:   []byte(fmt.Sprintf("%x", "")),
-			certRepoSecretKey:             []byte(fmt.Sprintf("%x", "")),
-		},
-	}
-	secret, err := c.KubeClient.Secrets(generatedSecret.Namespace).Create(context.TODO(), &generatedSecret, metav1.CreateOptions{})
-	if err == nil {
-		c.Secrets[secret.UID] = secret
-		c.logger.Debugf("created new secret %s, namespace: %s, uid: %s", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, secret.UID)
-	} else {
-		if !k8sutil.ResourceAlreadyExists(err) {
-			return fmt.Errorf("could not create secret for PVC %s: in namespace %s: %v", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, err)
-		}
-	}
-
-	ByteMap(&generatedSecret.Data)
+	//ByteMap(&generatedSecret.Data)
 
 	// The server verifies its "tls-server-auth" option contains the common
 	// name (CN) of the certificate presented by a client. The entire
@@ -1836,7 +1811,7 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 	dnsNames := []string{commonName}
 
 	inRoot := &RootCertificateAuthority{}
-	inRoot, err = NewRootCertificateAuthority()
+	inRoot, err := NewRootCertificateAuthority()
 	if err != nil {
 		c.logger.Errorf("Error in certificate creation %v", err)
 	}
@@ -1854,15 +1829,17 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 	if err != nil {
 		c.logger.Errorf("could not generate root certificate %s", err)
 	}
+	var tsl_certAuthoritySecretKey, tsl_certClientPrivateKeySecretKey, tsl_certClientSecretKey, tsl_certRepoPrivateKeySecretKey, tsl_certRepoSecretKey []byte
 
 	if err == nil {
-		generatedSecret.Data[certAuthoritySecretKey], err = certFile(inRoot.Certificate)
+		//generatedSecret.Data[certAuthoritySecretKey], err = certFile(inRoot.Certificate)
+		tsl_certAuthoritySecretKey, err = certFile(inRoot.Certificate)
 	}
 	if err == nil {
-		generatedSecret.Data[certClientPrivateKeySecretKey], err = certFile(leaf.PrivateKey)
+		tsl_certClientPrivateKeySecretKey, err = certFile(leaf.PrivateKey)
 	}
 	if err == nil {
-		generatedSecret.Data[certClientSecretKey], err = certFile(leaf.Certificate)
+		tsl_certClientSecretKey, err = certFile(leaf.Certificate)
 	}
 
 	// Generate a TLS server certificate for each repository host.
@@ -1885,18 +1862,43 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 	// }
 
 	if err == nil {
-		generatedSecret.Data[certRepoPrivateKeySecretKey], err = certFile(leaf.PrivateKey)
+		tsl_certRepoPrivateKeySecretKey, err = certFile(leaf.PrivateKey)
 	}
 	if err == nil {
-		generatedSecret.Data[certRepoSecretKey], err = certFile(leaf.Certificate)
+		tsl_certRepoSecretKey, err = certFile(leaf.Certificate)
 	}
 	if err != nil {
 		c.logger.Errorf("Error in certificate creation %v", err)
 	}
 	c.logger.Debugf("generated LEAF is %v", leaf)
 	c.logger.Debugf("generated ROOT is %v", inRoot)
-	c.logger.Debugf("generated SECRET is %v", generatedSecret.Data[certRepoSecretKey])
-	c.logger.Debugf("generated SECRET is %v", generatedSecret.Data[certRepoPrivateKeySecretKey])
+	//c.logger.Debugf("generated SECRET is %v", generatedSecret.Data[certRepoSecretKey])
+	//c.logger.Debugf("generated SECRET is %v", generatedSecret.Data[certRepoPrivateKeySecretKey])
+
+	generatedSecret := v1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      secretname,
+			Namespace: c.Namespace,
+		},
+		Type: v1.SecretTypeOpaque,
+		Data: map[string][]byte{
+			"key":                         []byte(fmt.Sprintf("%x", generatedKey)),
+			certAuthoritySecretKey:        tsl_certAuthoritySecretKey,
+			certClientPrivateKeySecretKey: tsl_certClientPrivateKeySecretKey,
+			certClientSecretKey:           tsl_certClientSecretKey,
+			certRepoPrivateKeySecretKey:   tsl_certRepoPrivateKeySecretKey,
+			certRepoSecretKey:             tsl_certRepoSecretKey,
+		},
+	}
+	secret, err := c.KubeClient.Secrets(generatedSecret.Namespace).Create(context.TODO(), &generatedSecret, metav1.CreateOptions{})
+	if err == nil {
+		c.Secrets[secret.UID] = secret
+		c.logger.Debugf("created new secret %s, namespace: %s, uid: %s", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, secret.UID)
+	} else {
+		if !k8sutil.ResourceAlreadyExists(err) {
+			return fmt.Errorf("could not create secret for PVC %s: in namespace %s: %v", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, err)
+		}
+	}
 
 	return nil
 }

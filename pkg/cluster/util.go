@@ -483,6 +483,7 @@ func (c *Cluster) labelsSet(shouldAddExtraLabels bool) labels.Set {
 		lbls[k] = v
 	}
 	lbls[c.OpConfig.ClusterNameLabel] = c.Name
+	lbls["member.cpo.opensource.cybertec.at/type"] = "postgres"
 
 	if shouldAddExtraLabels {
 		// enables filtering resources owned by a team

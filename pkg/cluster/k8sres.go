@@ -1103,117 +1103,117 @@ func (c *Cluster) generateSpiloPodEnvVars(
 }
 
 // Create the Pod Templater for the RepoHost
-// func (c *Cluster) generateRepoHostPodTemplate(
-// 	namespace string,
-// 	labels labels.Set,
-// 	annotations map[string]string,
-// 	pgbackrestContainer *v1.Container,
-// 	sidecarContainers []v1.Container,
-// 	sharePgSocketWithSidecars *bool,
-// 	tolerationsSpec *[]v1.Toleration,
-// 	topologySpreadConstraintsSpec *[]v1.TopologySpreadConstraint,
-// 	spiloRunAsUser *int64,
-// 	spiloRunAsGroup *int64,
-// 	spiloFSGroup *int64,
-// 	nodeAffinity *v1.Affinity,
-// 	schedulerName *string,
-// 	terminateGracePeriod int64,
-// 	podServiceAccountName string,
-// 	kubeIAMRole string,
-// 	priorityClassName string,
-// 	shmVolume *bool,
-// 	podAntiAffinity bool,
-// 	podAntiAffinityTopologyKey string,
-// 	podAntiAffinityPreferredDuringScheduling bool,
-// 	additionalSecretMount string,
-// 	additionalSecretMountPath string,
-// 	additionalVolumes []cpov1.AdditionalVolume,
-// ) (*v1.PodTemplateSpec, error) {
+func (c *Cluster) generateRepoHostPodTemplate(
+	namespace string,
+	labels labels.Set,
+	annotations map[string]string,
+	pgbackrestContainer *v1.Container,
+	sidecarContainers []v1.Container,
+	sharePgSocketWithSidecars *bool,
+	tolerationsSpec *[]v1.Toleration,
+	topologySpreadConstraintsSpec *[]v1.TopologySpreadConstraint,
+	spiloRunAsUser *int64,
+	spiloRunAsGroup *int64,
+	spiloFSGroup *int64,
+	nodeAffinity *v1.Affinity,
+	schedulerName *string,
+	terminateGracePeriod int64,
+	podServiceAccountName string,
+	kubeIAMRole string,
+	priorityClassName string,
+	shmVolume *bool,
+	podAntiAffinity bool,
+	podAntiAffinityTopologyKey string,
+	podAntiAffinityPreferredDuringScheduling bool,
+	additionalSecretMount string,
+	additionalSecretMountPath string,
+	additionalVolumes []cpov1.AdditionalVolume,
+) (*v1.PodTemplateSpec, error) {
 
-// 	terminateGracePeriodSeconds := terminateGracePeriod
-// 	containers := []v1.Container{*pgbackrestContainer}
-// 	containers = append(containers, sidecarContainers...)
-// 	securityContext := v1.PodSecurityContext{}
+	terminateGracePeriodSeconds := terminateGracePeriod
+	containers := []v1.Container{*pgbackrestContainer}
+	containers = append(containers, sidecarContainers...)
+	securityContext := v1.PodSecurityContext{}
 
-// 	if spiloRunAsUser != nil {
-// 		securityContext.RunAsUser = spiloRunAsUser
-// 	}
+	if spiloRunAsUser != nil {
+		securityContext.RunAsUser = spiloRunAsUser
+	}
 
-// 	if spiloRunAsGroup != nil {
-// 		securityContext.RunAsGroup = spiloRunAsGroup
-// 	}
+	if spiloRunAsGroup != nil {
+		securityContext.RunAsGroup = spiloRunAsGroup
+	}
 
-// 	if spiloFSGroup != nil {
-// 		securityContext.FSGroup = spiloFSGroup
-// 	}
+	if spiloFSGroup != nil {
+		securityContext.FSGroup = spiloFSGroup
+	}
 
-// 	podSpec := v1.PodSpec{
-// 		ServiceAccountName:            podServiceAccountName,
-// 		TerminationGracePeriodSeconds: &terminateGracePeriodSeconds,
-// 		Containers:                    containers,
-// 		Tolerations:                   *tolerationsSpec,
-// 		TopologySpreadConstraints:     *topologySpreadConstraintsSpec,
-// 		SecurityContext:               &securityContext,
-// 	}
+	podSpec := v1.PodSpec{
+		ServiceAccountName:            podServiceAccountName,
+		TerminationGracePeriodSeconds: &terminateGracePeriodSeconds,
+		Containers:                    containers,
+		Tolerations:                   *tolerationsSpec,
+		TopologySpreadConstraints:     *topologySpreadConstraintsSpec,
+		SecurityContext:               &securityContext,
+	}
 
-// 	if schedulerName != nil {
-// 		podSpec.SchedulerName = *schedulerName
-// 	}
+	if schedulerName != nil {
+		podSpec.SchedulerName = *schedulerName
+	}
 
-// 	if shmVolume != nil && *shmVolume {
-// 		addShmVolume(&podSpec)
-// 	}
+	if shmVolume != nil && *shmVolume {
+		addShmVolume(&podSpec)
+	}
 
-// 	configmapName := c.getPgbackrestRepoHostConfigmapName()
-// 	secretName := c.Postgresql.Spec.Backup.Pgbackrest.Configuration.Secret
-// 	addPgbackrestConfigVolume(&podSpec, configmapName, secretName)
-// 	c.logger.Debugf("Configmap added to this pod template is %s", configmapName)
+	configmapName := c.getPgbackrestRepoHostConfigmapName()
+	secretName := c.Postgresql.Spec.Backup.Pgbackrest.Configuration.Secret
+	addPgbackrestConfigVolume(&podSpec, configmapName, secretName)
+	c.logger.Debugf("Configmap added to this pod template is %s", configmapName)
 
-// 	if podAntiAffinity {
-// 		podSpec.Affinity = podAffinity(
-// 			labels,
-// 			podAntiAffinityTopologyKey,
-// 			nodeAffinity,
-// 			podAntiAffinityPreferredDuringScheduling,
-// 			true,
-// 		)
-// 	} else if nodeAffinity != nil {
-// 		podSpec.Affinity = nodeAffinity
-// 	}
+	if podAntiAffinity {
+		podSpec.Affinity = podAffinity(
+			labels,
+			podAntiAffinityTopologyKey,
+			nodeAffinity,
+			podAntiAffinityPreferredDuringScheduling,
+			true,
+		)
+	} else if nodeAffinity != nil {
+		podSpec.Affinity = nodeAffinity
+	}
 
-// 	if priorityClassName != "" {
-// 		podSpec.PriorityClassName = priorityClassName
-// 	}
+	if priorityClassName != "" {
+		podSpec.PriorityClassName = priorityClassName
+	}
 
-// 	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars {
-// 		addVarRunVolume(&podSpec)
-// 	}
+	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars {
+		addVarRunVolume(&podSpec)
+	}
 
-// 	if additionalSecretMount != "" {
-// 		addSecretVolume(&podSpec, additionalSecretMount, additionalSecretMountPath)
-// 	}
+	if additionalSecretMount != "" {
+		addSecretVolume(&podSpec, additionalSecretMount, additionalSecretMountPath)
+	}
 
-// 	if additionalVolumes != nil {
-// 		c.addAdditionalVolumes(&podSpec, additionalVolumes)
-// 	}
+	if additionalVolumes != nil {
+		c.addAdditionalVolumes(&podSpec, additionalVolumes)
+	}
 
-// 	template := v1.PodTemplateSpec{
-// 		ObjectMeta: metav1.ObjectMeta{
-// 			Labels:      labels,
-// 			Namespace:   namespace,
-// 			Annotations: annotations,
-// 		},
-// 		Spec: podSpec,
-// 	}
-// 	if kubeIAMRole != "" {
-// 		if template.Annotations == nil {
-// 			template.Annotations = make(map[string]string)
-// 		}
-// 		template.Annotations[constants.KubeIAmAnnotation] = kubeIAMRole
-// 	}
+	template := v1.PodTemplateSpec{
+		ObjectMeta: metav1.ObjectMeta{
+			Labels:      labels,
+			Namespace:   namespace,
+			Annotations: annotations,
+		},
+		Spec: podSpec,
+	}
+	if kubeIAMRole != "" {
+		if template.Annotations == nil {
+			template.Annotations = make(map[string]string)
+		}
+		template.Annotations[constants.KubeIAmAnnotation] = kubeIAMRole
+	}
 
-// 	return &template, nil
-// }
+	return &template, nil
+}
 
 // generatePodEnvVars generates environment variables for the Spilo Pod
 func (c *Cluster) generatepgBackRestPodEnvVars(
@@ -2143,8 +2143,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	}
 
 	repoHostLabels := c.labelsSet(true)
-	repoHostLabels["member.cpo.opensource.cybertec.at/type"] = "repo-host"
-	c.Spec.RepoHost = true
+	repoHostLabels["member.cpo.opensource.cybertec.at/role"] = "repo-host"
 
 	// repoHostLabelSelectors := c.labelsSelector()
 	// repoHostLabelSelectors["MatchLabels"]["member.cpo.opensource.cybertec.at/type"] = "repo-host"
@@ -3325,8 +3324,9 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 		if len(repos) >= 1 {
 			for i, repo := range repos {
 				if repo.Storage == "pvc" {
+					// role := Master
 					c.logger.Debugf("DEBUG_OUTPUT %s %s", c.clusterName().Name, c.Namespace)
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.clusterName().Name + "-pgbackrest-repo-host-0." + c.clusterName().Name + "." + c.Namespace + ".svc.cluster.local"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.clusterName().Name + "-pgbackrest-repo-host-0." + c.clusterName().Name + "." + c.Namespace + ".svc.cluster.local" //c.Endpoints[role].ObjectMeta.Name
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /tls/tls.ca"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /tls/tls.cert"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-key-file = /tls/tls.key"

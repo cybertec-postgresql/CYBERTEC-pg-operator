@@ -2143,10 +2143,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	}
 
 	repoHostLabels := c.labelsSet(true)
-	repoHostLabels["member.cpo.opensource.cybertec.at/role"] = "repo-host"
-
-	// repoHostLabelSelectors := c.labelsSelector()
-	// repoHostLabelSelectors["MatchLabels"]["member.cpo.opensource.cybertec.at/type"] = "repo-host"
+	repoHostLabels["member.cpo.opensource.cybertec.at/type"] = "repo-host"
 
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(

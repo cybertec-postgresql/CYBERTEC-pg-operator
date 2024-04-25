@@ -1832,6 +1832,9 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 
 	inRoot := &RootCertificateAuthority{}
 	inRoot, err = NewRootCertificateAuthority()
+	if err != nil {
+		c.logger.Errorf("Error in certificate creation %v", err)
+	}
 
 	// if err == nil {
 	// 	// Unmarshal and validate the stored leaf. These first errors can
@@ -1881,6 +1884,9 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 	}
 	if err == nil {
 		generatedSecret.Data[certRepoSecretKey], err = certFile(leaf.Certificate)
+	}
+	if err != nil {
+		c.logger.Errorf("Error in certificate creation %v", err)
 	}
 	//c.logger.Debugf("generated SECRET is %v", generatedSecret.Data)
 

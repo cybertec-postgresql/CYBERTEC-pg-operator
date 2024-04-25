@@ -1806,7 +1806,12 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 		},
 		Type: v1.SecretTypeOpaque,
 		Data: map[string][]byte{
-			"key": []byte(fmt.Sprintf("%x", generatedKey)),
+			"key":                         []byte(fmt.Sprintf("%x", generatedKey)),
+			certAuthoritySecretKey:        []byte(fmt.Sprintf("%x", "")),
+			certClientPrivateKeySecretKey: []byte(fmt.Sprintf("%x", "")),
+			certClientSecretKey:           []byte(fmt.Sprintf("%x", "")),
+			certRepoPrivateKeySecretKey:   []byte(fmt.Sprintf("%x", "")),
+			certRepoSecretKey:             []byte(fmt.Sprintf("%x", "")),
 		},
 	}
 	secret, err := c.KubeClient.Secrets(generatedSecret.Namespace).Create(context.TODO(), &generatedSecret, metav1.CreateOptions{})
@@ -1888,7 +1893,10 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 	if err != nil {
 		c.logger.Errorf("Error in certificate creation %v", err)
 	}
-	//c.logger.Debugf("generated SECRET is %v", generatedSecret.Data)
+	c.logger.Debugf("generated LEAF is %v", leaf)
+	c.logger.Debugf("generated ROOT is %v", inRoot)
+	c.logger.Debugf("generated SECRET is %v", generatedSecret.Data[certRepoSecretKey])
+	c.logger.Debugf("generated SECRET is %v", generatedSecret.Data[certRepoPrivateKeySecretKey])
 
 	return nil
 }

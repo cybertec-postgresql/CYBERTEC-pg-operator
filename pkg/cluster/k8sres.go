@@ -3379,7 +3379,7 @@ func (c *Cluster) generatePgbackrestRepoHostConfigmap() (*v1.ConfigMap, error) {
 			}
 			n := c.Postgresql.Spec.NumberOfInstances
 			for j := int32(0); j < n; j++ {
-				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host = " + c.clusterName().Name + "-" + fmt.Sprintf("%d", j) + "." + c.clusterName().Name + "." + c.Namespace + ".svc.cluster.local" //c.Endpoints[role].ObjectMeta.Name
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host = " + c.clusterName().Name + "-" + fmt.Sprintf("%d", j) + "." + c.clusterName().Name + "." + c.Namespace + ".svc.cluster.local"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-ca-file = /tls/client/tls.ca"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-cert-file = /tls/client/tls.crt"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-key-file = /tls/client/tls.key"

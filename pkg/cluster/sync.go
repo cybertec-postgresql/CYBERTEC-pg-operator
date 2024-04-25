@@ -2,9 +2,16 @@ package cluster
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/x509"
+	"crypto/x509/pkix"
+	"encoding"
 	"encoding/json"
+	"encoding/pem"
 	"fmt"
+	"math/big"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -28,6 +35,107 @@ var requirePrimaryRestartWhenDecreased = []string{
 	"max_locks_per_transaction",
 	"max_worker_processes",
 	"max_wal_senders",
+}
+
+const (
+	certAuthoritySecretKey        = "pgbackrest.ca-roots"      // #nosec G101 this is a name, not a credential
+	certClientPrivateKeySecretKey = "pgbackrest-client.key"    // #nosec G101 this is a name, not a credential
+	certClientSecretKey           = "pgbackrest-client.crt"    // #nosec G101 this is a name, not a credential
+	certRepoSecretKey             = "pgbackrest-repo-host.crt" // #nosec G101 this is a name, not a credential
+	certRepoPrivateKeySecretKey   = "pgbackrest-repo-host.key" // #nosec G101 this is a name, not a credential
+)
+const (
+	// pemLabelCertificate is the textual encoding label for an X.509 certificate
+	// according to RFC 7468. See https://tools.ietf.org/html/rfc7468.
+	pemLabelCertificate = "CERTIFICATE"
+
+	// pemLabelECDSAKey is the textual encoding label for an elliptic curve private key
+	// according to RFC 5915. See https://tools.ietf.org/html/rfc5915.
+	pemLabelECDSAKey = "EC PRIVATE KEY"
+)
+
+type RootCertificateAuthority struct {
+	Certificate Certificate
+	PrivateKey  PrivateKey
+}
+
+// Certificate represents an X.509 certificate that conforms to the Internet
+// PKI Profile, RFC 5280.
+type Certificate struct{ x509 *x509.Certificate }
+
+// PrivateKey represents the private key of a Certificate.
+type PrivateKey struct{ ecdsa *ecdsa.PrivateKey }
+
+var (
+	_ encoding.TextMarshaler   = Certificate{}
+	_ encoding.TextMarshaler   = (*Certificate)(nil)
+	_ encoding.TextUnmarshaler = (*Certificate)(nil)
+)
+
+// MarshalText returns a PEM encoding of c that OpenSSL understands.
+func (c Certificate) MarshalText() ([]byte, error) {
+	if c.x509 == nil || len(c.x509.Raw) == 0 {
+		_, err := x509.ParseCertificate(nil)
+		return nil, err
+	}
+
+	return pem.EncodeToMemory(&pem.Block{
+		Type:  pemLabelCertificate,
+		Bytes: c.x509.Raw,
+	}), nil
+}
+
+// UnmarshalText populates c from its PEM encoding.
+func (c *Certificate) UnmarshalText(data []byte) error {
+	block, _ := pem.Decode(data)
+
+	if block == nil || block.Type != pemLabelCertificate {
+		return fmt.Errorf("not a PEM-encoded certificate")
+	}
+
+	parsed, err := x509.ParseCertificate(block.Bytes)
+	if err == nil {
+		c.x509 = parsed
+	}
+	return err
+}
+
+var (
+	_ encoding.TextMarshaler   = PrivateKey{}
+	_ encoding.TextMarshaler   = (*PrivateKey)(nil)
+	_ encoding.TextUnmarshaler = (*PrivateKey)(nil)
+)
+
+// MarshalText returns a PEM encoding of k that OpenSSL understands.
+func (k PrivateKey) MarshalText() ([]byte, error) {
+	if k.ecdsa == nil {
+		k.ecdsa = new(ecdsa.PrivateKey)
+	}
+
+	der, err := x509.MarshalECPrivateKey(k.ecdsa)
+	if err != nil {
+		return nil, err
+	}
+
+	return pem.EncodeToMemory(&pem.Block{
+		Type:  pemLabelECDSAKey,
+		Bytes: der,
+	}), nil
+}
+
+// UnmarshalText populates k from its PEM encoding.
+func (k *PrivateKey) UnmarshalText(data []byte) error {
+	block, _ := pem.Decode(data)
+
+	if block == nil || block.Type != pemLabelECDSAKey {
+		return fmt.Errorf("not a PEM-encoded private key")
+	}
+
+	key, err := x509.ParseECPrivateKey(block.Bytes)
+	if err == nil {
+		k.ecdsa = key
+	}
+	return err
 }
 
 // Sync syncs the cluster, making sure the actual Kubernetes objects correspond to what is defined in the manifest.
@@ -1508,11 +1616,188 @@ func (c *Cluster) createMonitoringSecret() error {
 	return nil
 }
 
+// LeafCertificate is a certificate and private key pair that can be validated
+// by RootCertificateAuthority.
+type LeafCertificate struct {
+	Certificate Certificate
+	PrivateKey  PrivateKey
+}
+
+// Equal reports whether c and other have the same value.
+func (c Certificate) Equal(other Certificate) bool {
+	return c.x509.Equal(other.x509)
+}
+
+// generateKey returns a random ECDSA key using a P-256 curve. This curve is
+// roughly equivalent to an RSA 3072-bit key but requires less bits to achieve
+// the equivalent cryptographic strength. Additionally, ECDSA is FIPS 140-2
+// compliant.
+func generateKey() (*ecdsa.PrivateKey, error) {
+	return ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+}
+
+// generateSerialNumber returns a random 128-bit integer.
+func generateSerialNumber() (*big.Int, error) {
+	return rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
+}
+
+// certificateSignatureAlgorithm is ECDSA with SHA-384, the recommended
+// signature algorithm with the P-256 curve.
+const certificateSignatureAlgorithm = x509.ECDSAWithSHA384
+
+// currentTime returns the current local time. It is a variable so it can be
+// replaced during testing.
+var currentTime = time.Now
+
+func generateRootCertificate(
+	privateKey *ecdsa.PrivateKey, serialNumber *big.Int,
+) (*x509.Certificate, error) {
+	const rootCommonName = "postgres-operator-ca"
+	const rootExpiration = time.Hour * 24 * 365 * 10
+	const rootStartValid = time.Hour * -1
+
+	now := currentTime()
+	template := &x509.Certificate{
+		BasicConstraintsValid: true,
+		IsCA:                  true,
+		KeyUsage:              x509.KeyUsageCertSign | x509.KeyUsageCRLSign,
+		MaxPathLenZero:        true, // there are no intermediate certificates
+		NotBefore:             now.Add(rootStartValid),
+		NotAfter:              now.Add(rootExpiration),
+		SerialNumber:          serialNumber,
+		SignatureAlgorithm:    certificateSignatureAlgorithm,
+		Subject: pkix.Name{
+			CommonName: rootCommonName,
+		},
+	}
+
+	// A root certificate is self-signed, so pass in the template twice.
+	bytes, err := x509.CreateCertificate(rand.Reader, template, template,
+		privateKey.Public(), privateKey)
+
+	parsed, _ := x509.ParseCertificate(bytes)
+	return parsed, err
+}
+
+func (root *RootCertificateAuthority) generateLeafCertificate(
+	signer *x509.Certificate, signerPrivate *ecdsa.PrivateKey,
+	signeePublic *ecdsa.PublicKey, serialNumber *big.Int,
+	commonName string, dnsNames []string,
+) (*x509.Certificate, error) {
+	const leafExpiration = time.Hour * 24 * 365
+	const leafStartValid = time.Hour * -1
+
+	now := currentTime()
+	template := &x509.Certificate{
+		BasicConstraintsValid: true,
+		DNSNames:              dnsNames,
+		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageKeyEncipherment,
+		NotBefore:             now.Add(leafStartValid),
+		NotAfter:              now.Add(leafExpiration),
+		SerialNumber:          serialNumber,
+		SignatureAlgorithm:    certificateSignatureAlgorithm,
+		Subject: pkix.Name{
+			CommonName: commonName,
+		},
+	}
+
+	bytes, err := x509.CreateCertificate(rand.Reader, template, signer,
+		signeePublic, signerPrivate)
+
+	parsed, _ := x509.ParseCertificate(bytes)
+	return parsed, err
+}
+
+// GenerateLeafCertificate generates a new key and certificate signed by root.
+func (root *RootCertificateAuthority) GenerateLeafCertificate(
+	commonName string, dnsNames []string,
+) (*LeafCertificate, error) {
+	var leaf LeafCertificate
+	var serial *big.Int
+
+	key, err := generateKey()
+	if err == nil {
+		serial, err = generateSerialNumber()
+	}
+	if err == nil {
+		leaf.PrivateKey.ecdsa = key
+		leaf.Certificate.x509, err = root.generateLeafCertificate(
+			root.Certificate.x509, root.PrivateKey.ecdsa, &key.PublicKey, serial,
+			commonName, dnsNames)
+	}
+
+	return &leaf, err
+}
+
+// NewRootCertificateAuthority generates a new key and self-signed certificate
+// for issuing other certificates.
+func NewRootCertificateAuthority() (*RootCertificateAuthority, error) {
+	var root RootCertificateAuthority
+	var serial *big.Int
+
+	key, err := generateKey()
+	if err == nil {
+		serial, err = generateSerialNumber()
+	}
+	if err == nil {
+		root.PrivateKey.ecdsa = key
+		root.Certificate.x509, err = generateRootCertificate(key, serial)
+	}
+
+	return &root, err
+}
+
+// certFile concatenates the results of multiple PEM-encoding marshalers.
+func certFile(texts ...encoding.TextMarshaler) ([]byte, error) {
+	var out []byte
+
+	for i := range texts {
+		if b, err := texts[i].MarshalText(); err == nil {
+			out = append(out, b...)
+		} else {
+			return nil, err
+		}
+	}
+
+	return out, nil
+}
+
+// clientCommonName returns a client certificate common name (CN) for cluster.
+func (c *Cluster) clientCommonName() string {
+	// The common name (ASN.1 OID 2.5.4.3) of a certificate must be
+	// 64 characters or less. ObjectMeta.UID is a UUID in its 36-character
+	// string representation.
+	// - https://tools.ietf.org/html/rfc5280#appendix-A
+	// - https://docs.k8s.io/concepts/overview/working-with-objects/names/#uids
+	// - https://releases.k8s.io/v1.22.0/staging/src/k8s.io/apiserver/pkg/registry/rest/create.go#L111
+	// - https://releases.k8s.io/v1.22.0/staging/src/k8s.io/apiserver/pkg/registry/rest/meta.go#L30
+	return "pgbackrest@" + string(c.GetUID())
+}
+
+// ByteMap initializes m when it points to nil.
+func ByteMap(m *map[string][]byte) {
+	if m != nil && *m == nil {
+		*m = make(map[string][]byte)
+	}
+}
+
+// RegenerateLeafWhenNecessary returns leaf when it is valid according to this
+// package's policies, signed by root, and has commonName and dnsNames in its
+// subject. Otherwise, it returns a new key and certificate signed by root.
+func (root *RootCertificateAuthority) RegenerateLeafWhenNecessary(
+	leaf *LeafCertificate, commonName string, dnsNames []string,
+) (*LeafCertificate, error) {
+
+	return root.GenerateLeafCertificate(commonName, dnsNames)
+}
+
 func (c *Cluster) createPVCSecret(secretname string) error {
 	c.logger.Info("creating PVC secret")
 	c.setProcessName("creating PVC secret")
 	generatedKey := make([]byte, 16)
 	rand.Read(generatedKey)
+
+	// Save the CA and generate a TLS client certificate for the entire cluster.
 
 	generatedSecret := v1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
@@ -1533,6 +1818,71 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 			return fmt.Errorf("could not create secret for PVC %s: in namespace %s: %v", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, err)
 		}
 	}
+
+	ByteMap(&generatedSecret.Data)
+
+	// The server verifies its "tls-server-auth" option contains the common
+	// name (CN) of the certificate presented by a client. The entire
+	// cluster uses a single client certificate so the "tls-server-auth"
+	// option can stay the same when PostgreSQL instances and repository
+	// hosts are added or removed.
+	leaf := &LeafCertificate{}
+	commonName := c.clientCommonName()
+	dnsNames := []string{commonName}
+
+	inRoot := &RootCertificateAuthority{}
+	inRoot, err = NewRootCertificateAuthority()
+
+	// if err == nil {
+	// 	// Unmarshal and validate the stored leaf. These first errors can
+	// 	// be ignored because they result in an invalid leaf which is then
+	// 	// correctly regenerated.
+	// 	_ = leaf.Certificate.UnmarshalText(inSecret.Data[certClientSecretKey])
+	// 	_ = leaf.PrivateKey.UnmarshalText(inSecret.Data[certClientPrivateKeySecretKey])
+
+	leaf, err = inRoot.RegenerateLeafWhenNecessary(leaf, commonName, dnsNames)
+	// 	err = errors.WithStack(err)
+	// }
+	if err != nil {
+		c.logger.Errorf("could not generate root certificate %s", err)
+	}
+
+	if err == nil {
+		generatedSecret.Data[certAuthoritySecretKey], err = certFile(inRoot.Certificate)
+	}
+	if err == nil {
+		generatedSecret.Data[certClientPrivateKeySecretKey], err = certFile(leaf.PrivateKey)
+	}
+	if err == nil {
+		generatedSecret.Data[certClientSecretKey], err = certFile(leaf.Certificate)
+	}
+
+	// Generate a TLS server certificate for each repository host.
+
+	// The client verifies the "pg-host" or "repo-host" option it used is
+	// present in the DNS names of the server certificate.
+	//leaf = &LeafCertificate{}
+	//dnsNames := naming.RepoHostPodDNSNames(ctx, inRepoHost)
+	//commonName := dnsNames[0] // FQDN
+
+	// if err == nil {
+	// 	// Unmarshal and validate the stored leaf. These first errors can
+	// 	// be ignored because they result in an invalid leaf which is then
+	// 	// correctly regenerated.
+	// 	_ = leaf.Certificate.UnmarshalText(inSecret.Data[certRepoSecretKey])
+	// 	_ = leaf.PrivateKey.UnmarshalText(inSecret.Data[certRepoPrivateKeySecretKey])
+
+	// 	leaf, err = inRoot.RegenerateLeafWhenNecessary(leaf, commonName, dnsNames)
+	// 	err = errors.WithStack(err)
+	// }
+
+	if err == nil {
+		generatedSecret.Data[certRepoPrivateKeySecretKey], err = certFile(leaf.PrivateKey)
+	}
+	if err == nil {
+		generatedSecret.Data[certRepoSecretKey], err = certFile(leaf.Certificate)
+	}
+	//c.logger.Debugf("generated SECRET is %v", generatedSecret.Data)
 
 	return nil
 }

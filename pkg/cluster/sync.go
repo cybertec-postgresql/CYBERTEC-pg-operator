@@ -1832,7 +1832,6 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 	var tsl_certAuthoritySecretKey, tsl_certClientPrivateKeySecretKey, tsl_certClientSecretKey, tsl_certRepoPrivateKeySecretKey, tsl_certRepoSecretKey []byte
 
 	if err == nil {
-		//generatedSecret.Data[certAuthoritySecretKey], err = certFile(inRoot.Certificate)
 		tsl_certAuthoritySecretKey, err = certFile(inRoot.Certificate)
 	}
 	if err == nil {
@@ -1870,11 +1869,6 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 	if err != nil {
 		c.logger.Errorf("Error in certificate creation %v", err)
 	}
-	c.logger.Debugf("generated LEAF is %v", leaf)
-	c.logger.Debugf("generated ROOT is %v", inRoot)
-	//c.logger.Debugf("generated SECRET is %v", generatedSecret.Data[certRepoSecretKey])
-	//c.logger.Debugf("generated SECRET is %v", generatedSecret.Data[certRepoPrivateKeySecretKey])
-
 	generatedSecret := v1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      secretname,

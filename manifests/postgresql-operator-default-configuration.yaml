@@ -46,7 +46,7 @@ configuration:
     # - "SYS_NICE"
     cluster_domain: cluster.local
     cluster_labels:
-      application: spilo
+      application: cpo
     cluster_name_label: cluster-name
     # custom_pod_annotations:
     #   keya: valuea

@@ -1246,10 +1246,10 @@ func (c *Cluster) generatepgBackRestPodEnvVars(
 				},
 			},
 		},
-		{
-			Name:  "PGUSER_SUPERUSER",
-			Value: c.OpConfig.SuperUsername,
-		},
+		// {
+		// 	Name:  "PGUSER_SUPERUSER",
+		// 	Value: c.OpConfig.SuperUsername,
+		// },
 		{
 			Name:  "KUBERNETES_SCOPE_LABEL",
 			Value: c.OpConfig.ClusterNameLabel,
@@ -3324,9 +3324,9 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 					// role := Master
 					c.logger.Debugf("DEBUG_OUTPUT %s %s", c.clusterName().Name, c.Namespace)
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.clusterName().Name + "-pgbackrest-repo-host-0." + c.clusterName().Name + "." + c.Namespace + ".svc.cluster.local" //c.Endpoints[role].ObjectMeta.Name
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /tls/tls.ca"
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /tls/tls.cert"
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-key-file = /tls/tls.key"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /etc/pgbackrest/conf.d/pgbackrest.ca-roots"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /etc/pgbackrest/conf.d/pgbackrest-client.crt"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-key-file = /etc/pgbackrest/conf.d/pgbackrest-client.key"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-type = tls"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-user = postgres"
 					//config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-path = /pgbackrest/repo1/"

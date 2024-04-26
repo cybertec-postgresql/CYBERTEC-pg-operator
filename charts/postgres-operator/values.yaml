@@ -103,6 +103,7 @@ configKubernetes:
   # additional labels assigned to the cluster objects
   cluster_labels:
     application: cpo
+
   # label assigned to Kubernetes objects created by the operator
   cluster_name_label: cluster.cpo.opensource.cybertec.at/name
   # additional annotations to add to every database pod

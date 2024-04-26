@@ -1149,6 +1149,10 @@ func (c *Cluster) generatepgBackRestPodEnvVars(
 		// 	Name:  "PGUSER_SUPERUSER",
 		// 	Value: c.OpConfig.SuperUsername,
 		// },
+		// {
+		// 	Name:  "PGUSER_SUPERUSER",
+		// 	Value: c.OpConfig.SuperUsername,
+		// },
 		{
 			Name:  "KUBERNETES_SCOPE_LABEL",
 			Value: c.OpConfig.ClusterNameLabel,

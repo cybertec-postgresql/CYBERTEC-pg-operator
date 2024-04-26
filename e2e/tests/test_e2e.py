@@ -86,7 +86,7 @@ class EndToEndTestCase(unittest.TestCase):
 
         # set a single K8s wrapper for all tests
         k8s = cls.k8s = K8s()
-        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster-name=acid-minimal-cluster'
 
         # remove existing local storage class and create hostpath class
         try:
@@ -207,7 +207,7 @@ class EndToEndTestCase(unittest.TestCase):
            Extend postgres container capabilities
         '''
         k8s = self.k8s
-        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster-name=acid-minimal-cluster'
         capabilities = ["SYS_NICE","CHOWN"]
         patch_capabilities = {
             "data": {
@@ -623,7 +623,7 @@ class EndToEndTestCase(unittest.TestCase):
 
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"},
                              "Operator does not get in sync")
-        self.eventuallyEqual(lambda: k8s.count_secrets_with_label("cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,application=cpo", self.test_namespace),
+        self.eventuallyEqual(lambda: k8s.count_secrets_with_label("cluster-name=acid-minimal-cluster,application=cpo", self.test_namespace),
                              1, "Secret not created for user in namespace")
 
     @timeout_decorator.timeout(TEST_TIMEOUT_SEC)
@@ -633,7 +633,7 @@ class EndToEndTestCase(unittest.TestCase):
         '''
 
         k8s = self.k8s
-        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster-name=acid-minimal-cluster'
         tls_secret = "pg-tls"
 
         # get nodes of master and replica(s) (expected target of new master)
@@ -823,7 +823,7 @@ class EndToEndTestCase(unittest.TestCase):
                              0, "Pooler pods not scaled down")
         self.eventuallyEqual(lambda: k8s.count_services_with_label(pooler_label),
                              0, "Pooler service not removed")
-        self.eventuallyEqual(lambda: k8s.count_secrets_with_label('application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'),
+        self.eventuallyEqual(lambda: k8s.count_secrets_with_label('application=cpo,cluster-name=acid-minimal-cluster'),
                              4, "Secrets not deleted")
 
         # Verify that all the databases have pooler schema installed.
@@ -861,7 +861,7 @@ class EndToEndTestCase(unittest.TestCase):
         '''
 
         k8s = self.k8s
-        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,member.cpo.opensource.cybertec.at/role={}'
+        cluster_label = 'application=cpo,cluster-name=acid-minimal-cluster,member.cpo.opensource.cybertec.at/role={}'
 
         self.eventuallyEqual(lambda: k8s.get_service_type(cluster_label.format("master")),
                              'ClusterIP',
@@ -1184,7 +1184,7 @@ class EndToEndTestCase(unittest.TestCase):
     def test_major_version_upgrade(self):
         k8s = self.k8s
         result = k8s.create_with_kubectl("manifests/minimal-postgres-manifest-12.yaml")
-        self.eventuallyEqual(lambda: k8s.count_running_pods(labels="application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-upgrade-test"), 2, "No 2 pods running")
+        self.eventuallyEqual(lambda: k8s.count_running_pods(labels="application=cpo,cluster-name=acid-upgrade-test"), 2, "No 2 pods running")
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
 
         pg_patch_version = {
@@ -1212,7 +1212,7 @@ class EndToEndTestCase(unittest.TestCase):
             Test the retention policy for persistent volume claim
         '''
         k8s = self.k8s
-        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster-name=acid-minimal-cluster'
 
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
         self.eventuallyEqual(lambda: k8s.count_pvcs_with_label(cluster_label), 2, "PVCs is not equal to number of instance")
@@ -1277,7 +1277,7 @@ class EndToEndTestCase(unittest.TestCase):
         It will try to raise requests to limits which is capped with max_memory_request.
         '''
         k8s = self.k8s
-        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster-name=acid-minimal-cluster'
 
         # get nodes of master and replica(s) (expected target of new master)
         _, replica_nodes = k8s.get_pg_nodes(cluster_label)
@@ -1325,7 +1325,7 @@ class EndToEndTestCase(unittest.TestCase):
         k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
 
         def verify_pod_resources():
-            pods = k8s.api.core_v1.list_namespaced_pod('default', label_selector="cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,application=cpo").items
+            pods = k8s.api.core_v1.list_namespaced_pod('default', label_selector="cluster-name=acid-minimal-cluster,application=cpo").items
             if len(pods) < 2:
                 return False
 
@@ -1377,7 +1377,7 @@ class EndToEndTestCase(unittest.TestCase):
            Add label to a node and update postgres cluster spec to deploy only on a node with that label
         '''
         k8s = self.k8s
-        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster-name=acid-minimal-cluster'
 
         # verify we are in good state from potential previous tests
         self.eventuallyEqual(lambda: k8s.count_running_pods(), 2, "No 2 pods running")
@@ -1493,7 +1493,7 @@ class EndToEndTestCase(unittest.TestCase):
            Remove node readiness label from master node. This must cause a failover.
         '''
         k8s = self.k8s
-        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster-name=acid-minimal-cluster'
         readiness_label = 'lifecycle-status'
         readiness_value = 'ready'
 
@@ -1733,7 +1733,7 @@ class EndToEndTestCase(unittest.TestCase):
             Add rolling update flag to only the master and see it failing over
         '''
         k8s = self.k8s
-        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster-name=acid-minimal-cluster'
 
         # verify we are in good state from potential previous tests
         self.eventuallyEqual(lambda: k8s.count_running_pods(), 2, "No 2 pods running")
@@ -1792,7 +1792,7 @@ class EndToEndTestCase(unittest.TestCase):
             Simulate case when replica does not receive label in time and rolling update does not finish
         '''
         k8s = self.k8s
-        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster-name=acid-minimal-cluster'
         flag = "zalando-postgres-operator-rolling-update-required"
 
         # verify we are in good state from potential previous tests
@@ -1919,8 +1919,8 @@ class EndToEndTestCase(unittest.TestCase):
             "alice": "bob"
         }
 
-        self.eventuallyTrue(lambda: k8s.check_service_annotations("cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,member.cpo.opensource.cybertec.at/role=master", annotations), "Wrong annotations")
-        self.eventuallyTrue(lambda: k8s.check_service_annotations("cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,member.cpo.opensource.cybertec.at/role=replica", annotations), "Wrong annotations")
+        self.eventuallyTrue(lambda: k8s.check_service_annotations("cluster-name=acid-minimal-cluster,member.cpo.opensource.cybertec.at/role=master", annotations), "Wrong annotations")
+        self.eventuallyTrue(lambda: k8s.check_service_annotations("cluster-name=acid-minimal-cluster,member.cpo.opensource.cybertec.at/role=replica", annotations), "Wrong annotations")
 
         # clean up
         unpatch_custom_service_annotations = {
@@ -1936,7 +1936,7 @@ class EndToEndTestCase(unittest.TestCase):
            Inject annotation to Postgresql CRD and check it's propagation to stateful set
         '''
         k8s = self.k8s
-        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster-name=acid-minimal-cluster'
 
         patch_sset_propagate_annotations = {
             "data": {
@@ -1973,7 +1973,7 @@ class EndToEndTestCase(unittest.TestCase):
         '''
         k8s = self.k8s
         standby_cluster_name = 'acid-standby-cluster'
-        cluster_name_label = 'cluster.cpo.opensource.cybertec.at/name'
+        cluster_name_label = 'cluster-name'
         cluster_label = 'application=cpo,{}={}'.format(cluster_name_label, standby_cluster_name)
         superuser_name = 'postgres'
         replication_user = 'standby'
@@ -2009,7 +2009,7 @@ class EndToEndTestCase(unittest.TestCase):
            Add taint "postgres=:NoExecute" to node with master. This must cause a failover.
         '''
         k8s = self.k8s
-        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster-name=acid-minimal-cluster'
 
         # verify we are in good state from potential previous tests
         self.eventuallyEqual(lambda: k8s.count_running_pods(), 2, "No 2 pods running")
@@ -2062,7 +2062,7 @@ class EndToEndTestCase(unittest.TestCase):
            Test deletion with configured protection
         '''
         k8s = self.k8s
-        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
+        cluster_label = 'application=cpo,cluster-name=acid-minimal-cluster'
 
         # configure delete protection
         patch_delete_annotations = {
@@ -2150,7 +2150,7 @@ class EndToEndTestCase(unittest.TestCase):
            To be called manually after operations that affect pods
         '''
         k8s = self.k8s
-        labels = 'member.cpo.opensource.cybertec.at/role=master,cluster.cpo.opensource.cybertec.at/name=' + clusterName
+        labels = 'member.cpo.opensource.cybertec.at/role=master,cluster-name=' + clusterName
 
         num_of_master_pods = k8s.count_pods_with_label(labels, namespace)
         self.assertEqual(num_of_master_pods, 1, "Expected 1 master pod, found {}".format(num_of_master_pods))
@@ -2162,7 +2162,7 @@ class EndToEndTestCase(unittest.TestCase):
            Toggle pod anti affinty to distribute pods accross nodes (replica in particular).
         '''
         k8s = self.k8s
-        cluster_labels = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
+        cluster_labels = 'application=cpo,cluster-name=acid-minimal-cluster'
 
         # get nodes of master and replica(s)
         master_nodes, replica_nodes = k8s.get_cluster_nodes()

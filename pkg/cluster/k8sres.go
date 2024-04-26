@@ -658,10 +658,10 @@ func generateVolumeMounts(volume cpov1.Volume) []v1.VolumeMount {
 	}
 }
 
-func (c *Cluster) generateRepoHostVolumeMounts(volume cpov1.Volume, repoHostMountPath string) []v1.VolumeMount {
+func (c *Cluster) generateRepoHostVolumeMounts(volume cpov1.Volume, repoHostName string, repoHostMountPath string) []v1.VolumeMount {
 	return []v1.VolumeMount{
 		{
-			Name:      c.getPgbackrestRepoHostName(),
+			Name:      repoHostName,
 			MountPath: repoHostMountPath, //TODO: fetch from manifest
 			SubPath:   volume.SubPath,
 		},
@@ -1858,27 +1858,18 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	effectiveDockerImage := c.Spec.Backup.Pgbackrest.Image
 
 	repoHostMountPath := ""
+	repoHostName := ""
 	//defaultMode := int32(384)
 	if c.Spec.Backup.Pgbackrest.Repos != nil {
 		for i, repo := range c.Spec.Backup.Pgbackrest.Repos {
 			if repo.Storage == "pvc" {
 				repoHostMountPath = "/data/pgbackrest/repo" + fmt.Sprintf("%d", i+1)
-				// additionalVolumes = append(additionalVolumes, cpov1.AdditionalVolume{
-				// 	Name:      c.getPgbackrestRepoHostName(),
-				// 	MountPath: repoHostMountPath,
-				// 	VolumeSource: v1.VolumeSource{
-				// 		Secret: &v1.SecretVolumeSource{
-				// 			//SecretName:  c.getPgbackrestSecretName(),
-				// 			DefaultMode: &defaultMode,
-				// 			Optional:    util.True(),
-				// 		},
-				// 	},
-				// })
+				repoHostName = "repo" + fmt.Sprintf("%d", i+1)
 			}
 		}
 	}
 
-	volumeMounts := c.generateRepoHostVolumeMounts(spec.Volume, repoHostMountPath)
+	volumeMounts := c.generateRepoHostVolumeMounts(spec.Volume, repoHostName, repoHostMountPath)
 
 	// configure TLS with a custom secret volume
 	if spec.TLS != nil && spec.TLS.SecretName != "" {
@@ -2085,7 +2076,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 		Spec: appsv1.StatefulSetSpec{
 			Replicas:                             &numberOfInstances,
 			Selector:                             c.labelsSelectorRepoHost(),
-			ServiceName:                          c.serviceName(Master),
+			ServiceName:                          c.serviceName(ClusterPods),
 			Template:                             *podTemplate,
 			VolumeClaimTemplates:                 []v1.PersistentVolumeClaim{*volumeClaimTemplate},
 			UpdateStrategy:                       updateStrategy,

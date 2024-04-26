@@ -658,6 +658,16 @@ func generateVolumeMounts(volume cpov1.Volume) []v1.VolumeMount {
 	}
 }
 
+func (c *Cluster) generateRepoHostVolumeMounts(volume cpov1.Volume, repoHostMountPath string) []v1.VolumeMount {
+	return []v1.VolumeMount{
+		{
+			Name:      c.getPgbackrestRepoHostName(),
+			MountPath: repoHostMountPath, //TODO: fetch from manifest
+			SubPath:   volume.SubPath,
+		},
+	}
+}
+
 func generateContainer(
 	name string,
 	dockerImage *string,
@@ -849,7 +859,7 @@ func (c *Cluster) generatePodTemplate(
 		configmapName := c.getPgbackrestRepoHostConfigmapName()
 		secretName := c.getPgbackrestSecretName()
 		addPgbackrestConfigVolume(&podSpec, configmapName, secretName)
-		c.logger.Debugf("REPOHOST Configmap added to this pod template is %s", configmapName)
+		c.logger.Debugf("Repo-host Configmap added to this pod template is %s", configmapName)
 		c.Postgresql.Spec.RepoHost = false
 	} else if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 		configmapName := c.getPgbackrestConfigmapName()
@@ -1111,119 +1121,6 @@ func (c *Cluster) generateSpiloPodEnvVars(
 
 	return envVars, nil
 }
-
-// // Create the Pod Templater for the RepoHost
-// func (c *Cluster) generateRepoHostPodTemplate(
-// 	namespace string,
-// 	labels labels.Set,
-// 	annotations map[string]string,
-// 	pgbackrestContainer *v1.Container,
-// 	sidecarContainers []v1.Container,
-// 	sharePgSocketWithSidecars *bool,
-// 	tolerationsSpec *[]v1.Toleration,
-// 	topologySpreadConstraintsSpec *[]v1.TopologySpreadConstraint,
-// 	spiloRunAsUser *int64,
-// 	spiloRunAsGroup *int64,
-// 	spiloFSGroup *int64,
-// 	nodeAffinity *v1.Affinity,
-// 	schedulerName *string,
-// 	terminateGracePeriod int64,
-// 	podServiceAccountName string,
-// 	kubeIAMRole string,
-// 	priorityClassName string,
-// 	shmVolume *bool,
-// 	podAntiAffinity bool,
-// 	podAntiAffinityTopologyKey string,
-// 	podAntiAffinityPreferredDuringScheduling bool,
-// 	additionalSecretMount string,
-// 	additionalSecretMountPath string,
-// 	additionalVolumes []cpov1.AdditionalVolume,
-// ) (*v1.PodTemplateSpec, error) {
-
-// 	terminateGracePeriodSeconds := terminateGracePeriod
-// 	containers := []v1.Container{*pgbackrestContainer}
-// 	containers = append(containers, sidecarContainers...)
-// 	securityContext := v1.PodSecurityContext{}
-
-// 	if spiloRunAsUser != nil {
-// 		securityContext.RunAsUser = spiloRunAsUser
-// 	}
-
-// 	if spiloRunAsGroup != nil {
-// 		securityContext.RunAsGroup = spiloRunAsGroup
-// 	}
-
-// 	if spiloFSGroup != nil {
-// 		securityContext.FSGroup = spiloFSGroup
-// 	}
-
-// 	podSpec := v1.PodSpec{
-// 		ServiceAccountName:            podServiceAccountName,
-// 		TerminationGracePeriodSeconds: &terminateGracePeriodSeconds,
-// 		Containers:                    containers,
-// 		Tolerations:                   *tolerationsSpec,
-// 		TopologySpreadConstraints:     *topologySpreadConstraintsSpec,
-// 		SecurityContext:               &securityContext,
-// 	}
-
-// 	if schedulerName != nil {
-// 		podSpec.SchedulerName = *schedulerName
-// 	}
-
-// 	if shmVolume != nil && *shmVolume {
-// 		addShmVolume(&podSpec)
-// 	}
-
-// 	configmapName := c.getPgbackrestRepoHostConfigmapName()
-// 	secretName := c.Postgresql.Spec.Backup.Pgbackrest.Configuration.Secret
-// 	addPgbackrestConfigVolume(&podSpec, configmapName, secretName)
-// 	c.logger.Debugf("Configmap added to this pod template is %s", configmapName)
-
-// 	if podAntiAffinity {
-// 		podSpec.Affinity = podAffinity(
-// 			labels,
-// 			podAntiAffinityTopologyKey,
-// 			nodeAffinity,
-// 			podAntiAffinityPreferredDuringScheduling,
-// 			true,
-// 		)
-// 	} else if nodeAffinity != nil {
-// 		podSpec.Affinity = nodeAffinity
-// 	}
-
-// 	if priorityClassName != "" {
-// 		podSpec.PriorityClassName = priorityClassName
-// 	}
-
-// 	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars {
-// 		addVarRunVolume(&podSpec)
-// 	}
-
-// 	if additionalSecretMount != "" {
-// 		addSecretVolume(&podSpec, additionalSecretMount, additionalSecretMountPath)
-// 	}
-
-// 	if additionalVolumes != nil {
-// 		c.addAdditionalVolumes(&podSpec, additionalVolumes)
-// 	}
-
-// 	template := v1.PodTemplateSpec{
-// 		ObjectMeta: metav1.ObjectMeta{
-// 			Labels:      labels,
-// 			Namespace:   namespace,
-// 			Annotations: annotations,
-// 		},
-// 		Spec: podSpec,
-// 	}
-// 	if kubeIAMRole != "" {
-// 		if template.Annotations == nil {
-// 			template.Annotations = make(map[string]string)
-// 		}
-// 		template.Annotations[constants.KubeIAmAnnotation] = kubeIAMRole
-// 	}
-
-// 	return &template, nil
-// }
 
 // generatePodEnvVars generates environment variables for the Spilo Pod
 func (c *Cluster) generatepgBackRestPodEnvVars(
@@ -1587,7 +1484,8 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			}
 			// this is combined with the FSGroup in the section above
 			// to give read access to the postgres user
-			defaultMode := int32(0644)
+			//defaultMode := int32(0644)
+			defaultMode := int32(384)
 			mountPath := "/tls"
 			additionalVolumes = append(additionalVolumes, cpov1.AdditionalVolume{
 				Name:      spec.TLS.SecretName,
@@ -1823,7 +1721,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	}
 
 	if volumeClaimTemplate, err = c.generatePersistentVolumeClaimTemplate(spec.Volume.Size,
-		spec.Volume.StorageClass, spec.Volume.Selector); err != nil {
+		spec.Volume.StorageClass, spec.Volume.Selector, constants.DataVolumeName); err != nil {
 		return nil, fmt.Errorf("could not generate volume claim template: %v", err)
 	}
 
@@ -1941,9 +1839,6 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 		return nil, fmt.Errorf("could not generate Spilo env vars: %v", err)
 	}
 
-	// // pickup the docker image for the spilo container
-	// effectiveDockerImage := util.Coalesce(spec.DockerImage, c.OpConfig.DockerImage)
-
 	// determine the User, Group and FSGroup for the spilo pod
 	effectiveRunAsUser := c.OpConfig.Resources.SpiloRunAsUser
 	if spec.SpiloRunAsUser != nil {
@@ -1962,7 +1857,28 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 
 	effectiveDockerImage := c.Spec.Backup.Pgbackrest.Image
 
-	volumeMounts := generateVolumeMounts(spec.Volume)
+	repoHostMountPath := ""
+	//defaultMode := int32(384)
+	if c.Spec.Backup.Pgbackrest.Repos != nil {
+		for i, repo := range c.Spec.Backup.Pgbackrest.Repos {
+			if repo.Storage == "pvc" {
+				repoHostMountPath = "/data/pgbackrest/repo" + fmt.Sprintf("%d", i+1)
+				// additionalVolumes = append(additionalVolumes, cpov1.AdditionalVolume{
+				// 	Name:      c.getPgbackrestRepoHostName(),
+				// 	MountPath: repoHostMountPath,
+				// 	VolumeSource: v1.VolumeSource{
+				// 		Secret: &v1.SecretVolumeSource{
+				// 			//SecretName:  c.getPgbackrestSecretName(),
+				// 			DefaultMode: &defaultMode,
+				// 			Optional:    util.True(),
+				// 		},
+				// 	},
+				// })
+			}
+		}
+	}
+
+	volumeMounts := c.generateRepoHostVolumeMounts(spec.Volume, repoHostMountPath)
 
 	// configure TLS with a custom secret volume
 	if spec.TLS != nil && spec.TLS.SecretName != "" {
@@ -1980,7 +1896,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 			}
 			// this is combined with the FSGroup in the section above
 			// to give read access to the postgres user
-			defaultMode := int32(0644)
+			defaultMode := int32(384)
 			mountPath := "/tls"
 			additionalVolumes = append(additionalVolumes, cpov1.AdditionalVolume{
 				Name:      spec.TLS.SecretName,
@@ -2021,62 +1937,6 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 		c.OpConfig.Resources.SpiloAllowPrivilegeEscalation,
 		generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
 	)
-
-	// generate container specs for sidecars specified in the cluster manifest
-	clusterSpecificSidecars := []v1.Container{}
-	if spec.Sidecars != nil && len(spec.Sidecars) > 0 {
-		// warn if sidecars are defined, but globally disabled (does not apply to globally defined sidecars)
-		if c.OpConfig.EnableSidecars != nil && !(*c.OpConfig.EnableSidecars) {
-			c.logger.Warningf("sidecars specified but disabled in configuration - next statefulset creation would fail")
-		}
-
-		if clusterSpecificSidecars, err = c.generateSidecarContainers(spec.Sidecars, defaultResources, 0); err != nil {
-			return nil, fmt.Errorf("could not generate sidecar containers: %v", err)
-		}
-	}
-
-	// decrapted way of providing global sidecars
-	var globalSidecarContainersByDockerImage []v1.Container
-	var globalSidecarsByDockerImage []cpov1.Sidecar
-	for name, dockerImage := range c.OpConfig.SidecarImages {
-		globalSidecarsByDockerImage = append(globalSidecarsByDockerImage, cpov1.Sidecar{Name: name, DockerImage: dockerImage})
-	}
-	if globalSidecarContainersByDockerImage, err = c.generateSidecarContainers(globalSidecarsByDockerImage, defaultResources, len(clusterSpecificSidecars)); err != nil {
-		return nil, fmt.Errorf("could not generate sidecar containers: %v", err)
-	}
-	// make the resulting list reproducible
-	// c.OpConfig.SidecarImages is unsorted by Golang definition
-	// .Name is unique
-	sort.Slice(globalSidecarContainersByDockerImage, func(i, j int) bool {
-		return globalSidecarContainersByDockerImage[i].Name < globalSidecarContainersByDockerImage[j].Name
-	})
-
-	// generate scalyr sidecar container
-	var scalyrSidecars []v1.Container
-	if scalyrSidecar, err :=
-		c.generateScalyrSidecarSpec(c.Name,
-			c.OpConfig.ScalyrAPIKey,
-			c.OpConfig.ScalyrServerURL,
-			c.OpConfig.ScalyrImage,
-			c.OpConfig.ScalyrCPURequest,
-			c.OpConfig.ScalyrMemoryRequest,
-			c.OpConfig.ScalyrCPULimit,
-			c.OpConfig.ScalyrMemoryLimit,
-			defaultResources); err != nil {
-		return nil, fmt.Errorf("could not generate Scalyr sidecar: %v", err)
-	} else {
-		if scalyrSidecar != nil {
-			scalyrSidecars = append(scalyrSidecars, *scalyrSidecar)
-		}
-	}
-
-	sidecarContainers, conflicts := mergeContainers(clusterSpecificSidecars, c.Config.OpConfig.SidecarContainers, globalSidecarContainersByDockerImage, scalyrSidecars)
-	for containerName := range conflicts {
-		c.logger.Warningf("a sidecar is specified twice. Ignoring sidecar %q in favor of %q with high a precedence",
-			containerName, containerName)
-	}
-
-	sidecarContainers = patchSidecarContainers(sidecarContainers, volumeMounts, c.OpConfig.SuperUsername, c.credentialSecretName(c.OpConfig.SuperUsername), c.logger)
 
 	tolerationSpec := tolerations(&spec.Tolerations, c.OpConfig.PodToleration)
 	topologySpreadConstraintsSpec := topologySpreadConstraints(&spec.TopologySpreadConstraints)
@@ -2168,19 +2028,18 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	if err != nil {
 		return nil, fmt.Errorf("could not generate pod template: %v", err)
 	}
+	c.Postgresql.Spec.RepoHost = true
 
-	if volumeClaimTemplate, err = c.generatePersistentVolumeClaimTemplate(spec.Volume.Size,
-		spec.Volume.StorageClass, spec.Volume.Selector); err != nil {
-		return nil, fmt.Errorf("could not generate volume claim template: %v", err)
-	}
-
-	if c.Spec.Backup.Pgbackrest.Repos != nil {
-		for _, repo := range c.Spec.Backup.Pgbackrest.Repos {
-			if repo.Storage == "pvc" {
-				repo.Volume.StorageClass = "pvc"
-				if volumeClaimTemplate, err = c.generatePersistentVolumeClaimTemplate(repo.Volume.Size,
-					spec.Volume.StorageClass, spec.Volume.Selector); err != nil {
-					return nil, fmt.Errorf("could not generate volume claim template for repo-host: %v", err)
+	// create pvc for each backrest repo with pvc storage
+	if c.Postgresql.Spec.RepoHost {
+		if c.Spec.Backup.Pgbackrest.Repos != nil {
+			for i, repo := range c.Spec.Backup.Pgbackrest.Repos {
+				if repo.Storage == "pvc" {
+					repoHostMountPath := "repo" + fmt.Sprintf("%d", i+1) //"/data/pgbackrest/repo" + fmt.Sprintf("%d", i+1)
+					if volumeClaimTemplate, err = c.generatePersistentVolumeClaimTemplate(repo.Volume.Size,
+						repo.Volume.StorageClass, repo.Volume.Selector, repoHostMountPath); err != nil {
+						return nil, fmt.Errorf("could not generate volume claim template: %v", err)
+					}
 				}
 			}
 		}
@@ -2535,7 +2394,8 @@ func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secret
 
 	name := "pgbackrest-config"
 	path := "/etc/pgbackrest/conf.d"
-	defaultMode := int32(0644)
+	//defaultMode := int32(0644)
+	defaultMode := int32(384)
 	postgresContainerIdx := 0
 	postgresInitContainerIdx := -1
 
@@ -2550,6 +2410,21 @@ func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secret
 						Optional:             util.True(),
 					},
 					},
+					// {Secret: &v1.SecretProjection{
+					// 	LocalObjectReference: v1.LocalObjectReference{Name: secretName},
+					// 	Optional:             util.True(),
+					// },
+					// },
+				},
+			},
+		},
+	})
+	volumes = append(volumes, v1.Volume{
+		Name: "pgbackrest-config-secret",
+		VolumeSource: v1.VolumeSource{
+			Projected: &v1.ProjectedVolumeSource{
+				DefaultMode: &defaultMode,
+				Sources: []v1.VolumeProjection{
 					{Secret: &v1.SecretProjection{
 						LocalObjectReference: v1.LocalObjectReference{Name: secretName},
 						Optional:             util.True(),
@@ -2559,6 +2434,22 @@ func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secret
 			},
 		},
 	})
+	//defaultMode = int32(420)
+	// volumes = append(volumes, v1.Volume{
+	// 	Name: "pgbackrest-config-secret",
+	// 	VolumeSource: v1.VolumeSource{
+	// 		Projected: &v1.ProjectedVolumeSource{
+	// 			DefaultMode: &defaultMode,
+	// 			Sources: []v1.VolumeProjection{
+	// 				{Secret: &v1.SecretProjection{
+	// 					LocalObjectReference: v1.LocalObjectReference{Name: secretName},
+	// 					Optional:             util.True(),
+	// 				},
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// })
 
 	for i, container := range podSpec.Containers {
 		if container.Name == constants.PostgresContainerName {
@@ -2589,7 +2480,7 @@ func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secret
 }
 
 func (c *Cluster) generatePersistentVolumeClaimTemplate(volumeSize, volumeStorageClass string,
-	volumeSelector *metav1.LabelSelector) (*v1.PersistentVolumeClaim, error) {
+	volumeSelector *metav1.LabelSelector, name string) (*v1.PersistentVolumeClaim, error) {
 
 	var storageClassName *string
 	if volumeStorageClass != "" {
@@ -2604,7 +2495,7 @@ func (c *Cluster) generatePersistentVolumeClaimTemplate(volumeSize, volumeStorag
 	volumeMode := v1.PersistentVolumeFilesystem
 	volumeClaim := &v1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:        constants.DataVolumeName,
+			Name:        name,
 			Annotations: c.annotationsSet(nil),
 			Labels:      c.labelsSet(true),
 		},

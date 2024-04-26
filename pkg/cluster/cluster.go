@@ -372,7 +372,8 @@ func (c *Cluster) Create() (err error) {
 					}
 					pvcSpec, err := c.generateRepoHostStatefulSet(&pvcStatefulSetSpec)
 					if err != nil {
-						c.logger.Errorf("could not generate statefulset: %v", err)
+						err = fmt.Errorf("could not generate statefulset for the repohost: %v", err)
+						return err
 					}
 
 					pvcSpec.Name = pvcName
@@ -383,7 +384,7 @@ func (c *Cluster) Create() (err error) {
 						pvcSpec,
 						metav1.CreateOptions{})
 					if err != nil {
-						err = fmt.Errorf("could not create pgbackrest statefulset: %v", err)
+						err = fmt.Errorf("could not create pgbackrest statefulset for the repohost: %v", err)
 						return err
 					}
 				}

@@ -856,7 +856,6 @@ func (c *Cluster) generatePodTemplate(
 	}
 
 	if c.Postgresql.Spec.RepoHost {
-		c.logger.Warningf("Foudn the REPOHOST FLAG to be true!! %v", c.Postgresql.Spec)
 		configmapName := c.getPgbackrestRepoHostConfigmapName()
 		secretName := c.getPgbackrestSecretName()
 		addPgbackrestConfigVolumePVC(&podSpec, configmapName, secretName)
@@ -1510,7 +1509,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			return keyName
 		}
 
-		tlsEnv, tlsVolumes := generateTlsMounts(spec, getSpiloTLSEnv)
+		tlsEnv, tlsVolumes := c.generateTlsMounts(spec, getSpiloTLSEnv)
 		for _, env := range tlsEnv {
 			spiloEnvVars = appendEnvVars(spiloEnvVars, env)
 		}
@@ -1911,7 +1910,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 			return keyName
 		}
 
-		tlsEnv, tlsVolumes := generateTlsMounts(spec, getSpiloTLSEnv)
+		tlsEnv, tlsVolumes := c.generateTlsMounts(spec, getSpiloTLSEnv)
 		for _, env := range tlsEnv {
 			spiloEnvVars = appendEnvVars(spiloEnvVars, env)
 		}
@@ -2087,7 +2086,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	return statefulSet, nil
 }
 
-func generateTlsMounts(spec *cpov1.PostgresSpec, tlsEnv func(key string) string) ([]v1.EnvVar, []cpov1.AdditionalVolume) {
+func (c *Cluster) generateTlsMounts(spec *cpov1.PostgresSpec, tlsEnv func(key string) string) ([]v1.EnvVar, []cpov1.AdditionalVolume) {
 	// this is combined with the FSGroup in the section above
 	// to give read access to the postgres user
 	defaultMode := int32(0640)
@@ -2419,22 +2418,6 @@ func addPgbackrestConfigVolumePVC(podSpec *v1.PodSpec, configmapName string, sec
 			},
 		},
 	})
-	//defaultMode = int32(420)
-	// volumes = append(volumes, v1.Volume{
-	// 	Name: "pgbackrest-config-secret",
-	// 	VolumeSource: v1.VolumeSource{
-	// 		Projected: &v1.ProjectedVolumeSource{
-	// 			DefaultMode: &defaultMode,
-	// 			Sources: []v1.VolumeProjection{
-	// 				{Secret: &v1.SecretProjection{
-	// 					LocalObjectReference: v1.LocalObjectReference{Name: secretName},
-	// 					Optional:             util.True(),
-	// 				},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// })
 
 	for i, container := range podSpec.Containers {
 		if container.Name == constants.PostgresContainerName {

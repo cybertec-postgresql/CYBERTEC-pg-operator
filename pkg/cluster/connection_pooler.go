@@ -363,7 +363,7 @@ func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (
 
 			return keyName
 		}
-		tlsEnv, tlsVolumes := generateTlsMounts(spec, getPoolerTLSEnv)
+		tlsEnv, tlsVolumes := c.generateTlsMounts(spec, getPoolerTLSEnv)
 		envVars = append(envVars, tlsEnv...)
 		for _, vol := range tlsVolumes {
 			poolerVolumes = append(poolerVolumes, v1.Volume{

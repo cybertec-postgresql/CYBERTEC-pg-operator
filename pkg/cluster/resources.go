@@ -95,6 +95,15 @@ func (c *Cluster) createStatefulSet() (*appsv1.StatefulSet, error) {
 		}
 		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
 	}
+
+	if c.Spec.Backup.Pgbackrest.Repos != nil {
+		for _, repo := range c.Spec.Backup.Pgbackrest.Repos {
+			if repo.Storage == "pvc" {
+				c.Spec.TLS = &cpov1.TLSDescription{
+					SecretName: c.getPgbackrestSecretName()}
+			}
+		}
+	}
 	statefulSetSpec, err := c.generateStatefulSet(&c.Spec)
 	if err != nil {
 		return nil, fmt.Errorf("could not generate statefulset: %v", err)

@@ -1808,7 +1808,8 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 	// hosts are added or removed.
 	leaf := &LeafCertificate{}
 	commonName := c.clientCommonName()
-	dnsNames := []string{commonName}
+	additionalName := "*." + c.clusterName().Name + "." + c.Namespace + ".svc.cluster.local"
+	dnsNames := []string{commonName, additionalName}
 
 	inRoot := &RootCertificateAuthority{}
 	inRoot, err := NewRootCertificateAuthority()

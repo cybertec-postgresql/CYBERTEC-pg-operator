@@ -856,9 +856,10 @@ func (c *Cluster) generatePodTemplate(
 	}
 
 	if c.Postgresql.Spec.RepoHost {
+		c.logger.Warningf("Foudn the REPOHOST FLAG to be true!! %v", c.Postgresql.Spec)
 		configmapName := c.getPgbackrestRepoHostConfigmapName()
 		secretName := c.getPgbackrestSecretName()
-		addPgbackrestConfigVolume(&podSpec, configmapName, secretName)
+		addPgbackrestConfigVolumePVC(&podSpec, configmapName, secretName)
 		c.logger.Debugf("Repo-host Configmap added to this pod template is %s", configmapName)
 		c.Postgresql.Spec.RepoHost = false
 	} else if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
@@ -1685,9 +1686,8 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			VolumeMounts: volumeMounts,
 			Resources:    resources,
 		})
-		//c.logger.Debugf("Appending the BACKREST container here ########### %v", &initContainers[len(initContainers)-1])
-	}
 
+	}
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
@@ -2019,23 +2019,22 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	if err != nil {
 		return nil, fmt.Errorf("could not generate pod template: %v", err)
 	}
-	c.Postgresql.Spec.RepoHost = true
 
 	// create pvc for each backrest repo with pvc storage
-	if c.Postgresql.Spec.RepoHost {
-		if c.Spec.Backup.Pgbackrest.Repos != nil {
-			for i, repo := range c.Spec.Backup.Pgbackrest.Repos {
-				if repo.Storage == "pvc" {
-					repoHostMountPath := "repo" + fmt.Sprintf("%d", i+1) //"/data/pgbackrest/repo" + fmt.Sprintf("%d", i+1)
-					if volumeClaimTemplate, err = c.generatePersistentVolumeClaimTemplate(repo.Volume.Size,
-						repo.Volume.StorageClass, repo.Volume.Selector, repoHostMountPath); err != nil {
-						return nil, fmt.Errorf("could not generate volume claim template: %v", err)
-					}
+	if c.Spec.Backup.Pgbackrest.Repos != nil {
+		for i, repo := range c.Spec.Backup.Pgbackrest.Repos {
+			if repo.Storage == "pvc" {
+				repoHostMountPath := "repo" + fmt.Sprintf("%d", i+1)
+				if volumeClaimTemplate, err = c.generatePersistentVolumeClaimTemplate(repo.Volume.Size,
+					repo.Volume.StorageClass, repo.Volume.Selector, repoHostMountPath); err != nil {
+					return nil, fmt.Errorf("could not generate volume claim template: %v", err)
 				}
 			}
 		}
 	}
 
+	// Unset the Repohost flag because now it will go to creating the sts for the pg pods from the caller function
+	c.Postgresql.Spec.RepoHost = false
 	// For RepoHost only 1 instance is fixed always
 	numberOfInstances := int32(1)
 
@@ -2381,7 +2380,7 @@ func (c *Cluster) addAdditionalVolumes(podSpec *v1.PodSpec,
 	podSpec.Volumes = volumes
 }
 
-func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secretName string) {
+func addPgbackrestConfigVolumePVC(podSpec *v1.PodSpec, configmapName string, secretName string) {
 
 	name := "pgbackrest-config"
 	path := "/etc/pgbackrest/conf.d"
@@ -2401,11 +2400,6 @@ func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secret
 						Optional:             util.True(),
 					},
 					},
-					// {Secret: &v1.SecretProjection{
-					// 	LocalObjectReference: v1.LocalObjectReference{Name: secretName},
-					// 	Optional:             util.True(),
-					// },
-					// },
 				},
 			},
 		},
@@ -2441,6 +2435,63 @@ func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secret
 	// 		},
 	// 	},
 	// })
+
+	for i, container := range podSpec.Containers {
+		if container.Name == constants.PostgresContainerName {
+			postgresContainerIdx = i
+		}
+	}
+
+	mounts := append(podSpec.Containers[postgresContainerIdx].VolumeMounts,
+		v1.VolumeMount{
+			Name:      name,
+			MountPath: path,
+		})
+
+	podSpec.Containers[postgresContainerIdx].VolumeMounts = mounts
+
+	// Add pgbackrest-Config to init-container
+	for i, container := range podSpec.InitContainers {
+		if container.Name == "pgbackrest-restore" {
+			postgresInitContainerIdx = i
+		}
+	}
+
+	if postgresInitContainerIdx >= 0 {
+		podSpec.InitContainers[postgresInitContainerIdx].VolumeMounts = mounts
+	}
+
+	podSpec.Volumes = volumes
+}
+
+func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secretName string) {
+
+	name := "pgbackrest-config"
+	path := "/etc/pgbackrest/conf.d"
+	defaultMode := int32(0644)
+	postgresContainerIdx := 0
+	postgresInitContainerIdx := -1
+
+	volumes := append(podSpec.Volumes, v1.Volume{
+		Name: name,
+		VolumeSource: v1.VolumeSource{
+			Projected: &v1.ProjectedVolumeSource{
+				DefaultMode: &defaultMode,
+				Sources: []v1.VolumeProjection{
+					{ConfigMap: &v1.ConfigMapProjection{
+						LocalObjectReference: v1.LocalObjectReference{Name: configmapName},
+						Optional:             util.True(),
+					},
+					},
+					{Secret: &v1.SecretProjection{
+						LocalObjectReference: v1.LocalObjectReference{Name: secretName},
+						Optional:             util.True(),
+					},
+					},
+				},
+			},
+		},
+	})
 
 	for i, container := range podSpec.Containers {
 		if container.Name == constants.PostgresContainerName {

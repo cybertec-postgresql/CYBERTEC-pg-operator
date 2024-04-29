@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/r3labs/diff"
-	"github.com/sirupsen/logrus"
 	acidzalando "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at"
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/r3labs/diff"
+	"github.com/sirupsen/logrus"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -589,7 +589,7 @@ func (c *Cluster) listPoolerPods(listOptions metav1.ListOptions) ([]v1.Pod, erro
 
 // delete connection pooler
 func (c *Cluster) deleteConnectionPooler(role PostgresRole) (err error) {
-	c.logger.Infof("deleting connection pooler spilo-role=%s", role)
+	c.logger.Infof("deleting connection pooler member.cpo.opensource.cybertec.at/role=%s", role)
 
 	// Lack of connection pooler objects is not a fatal error, just log it if
 	// it was present before in the manifest

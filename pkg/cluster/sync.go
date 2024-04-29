@@ -70,7 +70,19 @@ var (
 	_ encoding.TextMarshaler   = Certificate{}
 	_ encoding.TextMarshaler   = (*Certificate)(nil)
 	_ encoding.TextUnmarshaler = (*Certificate)(nil)
+
+	_ encoding.TextMarshaler   = PrivateKey{}
+	_ encoding.TextMarshaler   = (*PrivateKey)(nil)
+	_ encoding.TextUnmarshaler = (*PrivateKey)(nil)
 )
+
+// certificateSignatureAlgorithm is ECDSA with SHA-384, the recommended
+// signature algorithm with the P-256 curve.
+const certificateSignatureAlgorithm = x509.ECDSAWithSHA384
+
+// currentTime returns the current local time. It is a variable so it can be
+// replaced during testing.
+var currentTime = time.Now
 
 // MarshalText returns a PEM encoding of c that OpenSSL understands.
 func (c Certificate) MarshalText() ([]byte, error) {
@@ -99,12 +111,6 @@ func (c *Certificate) UnmarshalText(data []byte) error {
 	}
 	return err
 }
-
-var (
-	_ encoding.TextMarshaler   = PrivateKey{}
-	_ encoding.TextMarshaler   = (*PrivateKey)(nil)
-	_ encoding.TextUnmarshaler = (*PrivateKey)(nil)
-)
 
 // MarshalText returns a PEM encoding of k that OpenSSL understands.
 func (k PrivateKey) MarshalText() ([]byte, error) {
@@ -136,6 +142,31 @@ func (k *PrivateKey) UnmarshalText(data []byte) error {
 		k.ecdsa = key
 	}
 	return err
+}
+
+// LeafCertificate is a certificate and private key pair that can be validated
+// by RootCertificateAuthority.
+type LeafCertificate struct {
+	Certificate Certificate
+	PrivateKey  PrivateKey
+}
+
+// Equal reports whether c and other have the same value.
+func (c Certificate) Equal(other Certificate) bool {
+	return c.x509.Equal(other.x509)
+}
+
+// generateKey returns a random ECDSA key using a P-256 curve. This curve is
+// roughly equivalent to an RSA 3072-bit key but requires less bits to achieve
+// the equivalent cryptographic strength. Additionally, ECDSA is FIPS 140-2
+// compliant.
+func generateKey() (*ecdsa.PrivateKey, error) {
+	return ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+}
+
+// generateSerialNumber returns a random 128-bit integer.
+func generateSerialNumber() (*big.Int, error) {
+	return rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
 }
 
 // Sync syncs the cluster, making sure the actual Kubernetes objects correspond to what is defined in the manifest.
@@ -1616,39 +1647,6 @@ func (c *Cluster) createMonitoringSecret() error {
 	return nil
 }
 
-// LeafCertificate is a certificate and private key pair that can be validated
-// by RootCertificateAuthority.
-type LeafCertificate struct {
-	Certificate Certificate
-	PrivateKey  PrivateKey
-}
-
-// Equal reports whether c and other have the same value.
-func (c Certificate) Equal(other Certificate) bool {
-	return c.x509.Equal(other.x509)
-}
-
-// generateKey returns a random ECDSA key using a P-256 curve. This curve is
-// roughly equivalent to an RSA 3072-bit key but requires less bits to achieve
-// the equivalent cryptographic strength. Additionally, ECDSA is FIPS 140-2
-// compliant.
-func generateKey() (*ecdsa.PrivateKey, error) {
-	return ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-}
-
-// generateSerialNumber returns a random 128-bit integer.
-func generateSerialNumber() (*big.Int, error) {
-	return rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
-}
-
-// certificateSignatureAlgorithm is ECDSA with SHA-384, the recommended
-// signature algorithm with the P-256 curve.
-const certificateSignatureAlgorithm = x509.ECDSAWithSHA384
-
-// currentTime returns the current local time. It is a variable so it can be
-// replaced during testing.
-var currentTime = time.Now
-
 func generateRootCertificate(
 	privateKey *ecdsa.PrivateKey, serialNumber *big.Int,
 ) (*x509.Certificate, error) {
@@ -1781,16 +1779,6 @@ func ByteMap(m *map[string][]byte) {
 	}
 }
 
-// RegenerateLeafWhenNecessary returns leaf when it is valid according to this
-// package's policies, signed by root, and has commonName and dnsNames in its
-// subject. Otherwise, it returns a new key and certificate signed by root.
-func (root *RootCertificateAuthority) RegenerateLeafWhenNecessary(
-	leaf *LeafCertificate, commonName string, dnsNames []string,
-) (*LeafCertificate, error) {
-
-	return root.GenerateLeafCertificate(commonName, dnsNames)
-}
-
 func (c *Cluster) createPVCSecret(secretname string) error {
 	c.logger.Info("creating PVC secret")
 	c.setProcessName("creating PVC secret")
@@ -1798,8 +1786,6 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 	rand.Read(generatedKey)
 
 	// Save the CA and generate a TLS client certificate for the entire cluster.
-
-	//ByteMap(&generatedSecret.Data)
 
 	// The server verifies its "tls-server-auth" option contains the common
 	// name (CN) of the certificate presented by a client. The entire
@@ -1817,9 +1803,8 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 		c.logger.Errorf("Error in certificate creation %v", err)
 	}
 
-	leaf, err = inRoot.RegenerateLeafWhenNecessary(leaf, commonName, dnsNames)
-	// 	err = errors.WithStack(err)
-	// }
+	leaf, err = inRoot.GenerateLeafCertificate(commonName, dnsNames)
+
 	if err != nil {
 		c.logger.Errorf("could not generate root certificate %s", err)
 	}
@@ -1832,14 +1817,17 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 		tsl_certClientPrivateKeySecretKey, err = certFile(leaf.PrivateKey)
 	}
 	if err == nil {
-		tsl_certClientSecretKey, err = certFile(leaf.Certificate)
+		tsl_certClientSecretKey, _ = certFile(leaf.Certificate)
 	}
 
+	repo_leaf := &LeafCertificate{}
+	repo_leaf, err = inRoot.GenerateLeafCertificate(commonName, dnsNames)
+
 	if err == nil {
-		tsl_certRepoPrivateKeySecretKey, err = certFile(leaf.PrivateKey)
+		tsl_certRepoPrivateKeySecretKey, err = certFile(repo_leaf.PrivateKey)
 	}
 	if err == nil {
-		tsl_certRepoSecretKey, err = certFile(leaf.Certificate)
+		tsl_certRepoSecretKey, err = certFile(repo_leaf.Certificate)
 	}
 	if err != nil {
 		c.logger.Errorf("Error in certificate creation %v", err)

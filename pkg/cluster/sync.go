@@ -1817,13 +1817,6 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 		c.logger.Errorf("Error in certificate creation %v", err)
 	}
 
-	// if err == nil {
-	// 	// Unmarshal and validate the stored leaf. These first errors can
-	// 	// be ignored because they result in an invalid leaf which is then
-	// 	// correctly regenerated.
-	// 	_ = leaf.Certificate.UnmarshalText(inSecret.Data[certClientSecretKey])
-	// 	_ = leaf.PrivateKey.UnmarshalText(inSecret.Data[certClientPrivateKeySecretKey])
-
 	leaf, err = inRoot.RegenerateLeafWhenNecessary(leaf, commonName, dnsNames)
 	// 	err = errors.WithStack(err)
 	// }
@@ -1841,25 +1834,6 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 	if err == nil {
 		tsl_certClientSecretKey, err = certFile(leaf.Certificate)
 	}
-
-	// Generate a TLS server certificate for each repository host.
-
-	// The client verifies the "pg-host" or "repo-host" option it used is
-	// present in the DNS names of the server certificate.
-	//leaf = &LeafCertificate{}
-	//dnsNames := naming.RepoHostPodDNSNames(ctx, inRepoHost)
-	//commonName := dnsNames[0] // FQDN
-
-	// if err == nil {
-	// 	// Unmarshal and validate the stored leaf. These first errors can
-	// 	// be ignored because they result in an invalid leaf which is then
-	// 	// correctly regenerated.
-	// 	_ = leaf.Certificate.UnmarshalText(inSecret.Data[certRepoSecretKey])
-	// 	_ = leaf.PrivateKey.UnmarshalText(inSecret.Data[certRepoPrivateKeySecretKey])
-
-	// 	leaf, err = inRoot.RegenerateLeafWhenNecessary(leaf, commonName, dnsNames)
-	// 	err = errors.WithStack(err)
-	// }
 
 	if err == nil {
 		tsl_certRepoPrivateKeySecretKey, err = certFile(leaf.PrivateKey)

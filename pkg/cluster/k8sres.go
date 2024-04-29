@@ -2105,34 +2105,43 @@ func (c *Cluster) generateTlsMounts(spec *cpov1.PostgresSpec, tlsEnv func(key st
 		},
 	})
 
-	// use the same filenames as Secret resources by default
-	certFile := ensurePath(spec.TLS.CertificateFile, mountPath, "tls.crt")
-	privateKeyFile := ensurePath(spec.TLS.PrivateKeyFile, mountPath, "tls.key")
-	env = append(env, v1.EnvVar{Name: tlsEnv("tls.crt"), Value: certFile})
-	env = append(env, v1.EnvVar{Name: tlsEnv("tls.key"), Value: privateKeyFile})
+	// Add the env for the TLS only when certificates have been deifned in the manifest
+	// however, in the case of pvc based backup repos they are created by the operator,
+	// hence we donot need them
+	if c.Postgresql.Spec.Backup.Pgbackrest != nil {
+		for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
+			if repo.Storage != "pvc" {
+				// use the same filenames as Secret resources by default
+				certFile := ensurePath(spec.TLS.CertificateFile, mountPath, "tls.crt")
+				privateKeyFile := ensurePath(spec.TLS.PrivateKeyFile, mountPath, "tls.key")
+				env = append(env, v1.EnvVar{Name: tlsEnv("tls.crt"), Value: certFile})
+				env = append(env, v1.EnvVar{Name: tlsEnv("tls.key"), Value: privateKeyFile})
 
-	if spec.TLS.CAFile != "" {
-		// support scenario when the ca.crt resides in a different secret, diff path
-		mountPathCA := mountPath
-		if spec.TLS.CASecretName != "" {
-			mountPathCA = mountPath + "ca"
-		}
+				if spec.TLS.CAFile != "" {
+					// support scenario when the ca.crt resides in a different secret, diff path
+					mountPathCA := mountPath
+					if spec.TLS.CASecretName != "" {
+						mountPathCA = mountPath + "ca"
+					}
 
-		caFile := ensurePath(spec.TLS.CAFile, mountPathCA, "")
-		env = append(env, v1.EnvVar{Name: tlsEnv("tls.ca"), Value: caFile})
+					caFile := ensurePath(spec.TLS.CAFile, mountPathCA, "")
+					env = append(env, v1.EnvVar{Name: tlsEnv("tls.ca"), Value: caFile})
 
-		// the ca file from CASecretName secret takes priority
-		if spec.TLS.CASecretName != "" {
-			volumes = append(volumes, cpov1.AdditionalVolume{
-				Name:      spec.TLS.CASecretName,
-				MountPath: mountPathCA,
-				VolumeSource: v1.VolumeSource{
-					Secret: &v1.SecretVolumeSource{
-						SecretName:  spec.TLS.CASecretName,
-						DefaultMode: &defaultMode,
-					},
-				},
-			})
+					// the ca file from CASecretName secret takes priority
+					if spec.TLS.CASecretName != "" {
+						volumes = append(volumes, cpov1.AdditionalVolume{
+							Name:      spec.TLS.CASecretName,
+							MountPath: mountPathCA,
+							VolumeSource: v1.VolumeSource{
+								Secret: &v1.SecretVolumeSource{
+									SecretName:  spec.TLS.CASecretName,
+									DefaultMode: &defaultMode,
+								},
+							},
+						})
+					}
+				}
+			}
 		}
 	}
 

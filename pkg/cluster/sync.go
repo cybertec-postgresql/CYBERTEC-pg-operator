@@ -1677,19 +1677,26 @@ func generateRootCertificate(
 	return parsed, err
 }
 
-func (root *RootCertificateAuthority) generateLeafCertificate(
+func generateLeafCertificate(
 	signer *x509.Certificate, signerPrivate *ecdsa.PrivateKey,
 	signeePublic *ecdsa.PublicKey, serialNumber *big.Int,
-	commonName string, dnsNames []string,
+	commonName string, dnsNames []string, server bool,
 ) (*x509.Certificate, error) {
 	const leafExpiration = time.Hour * 24 * 365
 	const leafStartValid = time.Hour * -1
+	extKey := []x509.ExtKeyUsage{
+		x509.ExtKeyUsageClientAuth}
+	if server {
+		extKey = []x509.ExtKeyUsage{
+			x509.ExtKeyUsageServerAuth}
+	}
 
 	now := currentTime()
 	template := &x509.Certificate{
 		BasicConstraintsValid: true,
 		DNSNames:              dnsNames,
 		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageKeyEncipherment,
+		ExtKeyUsage:           extKey,
 		NotBefore:             now.Add(leafStartValid),
 		NotAfter:              now.Add(leafExpiration),
 		SerialNumber:          serialNumber,
@@ -1708,7 +1715,7 @@ func (root *RootCertificateAuthority) generateLeafCertificate(
 
 // GenerateLeafCertificate generates a new key and certificate signed by root.
 func (root *RootCertificateAuthority) GenerateLeafCertificate(
-	commonName string, dnsNames []string,
+	commonName string, dnsNames []string, server bool,
 ) (*LeafCertificate, error) {
 	var leaf LeafCertificate
 	var serial *big.Int
@@ -1719,9 +1726,9 @@ func (root *RootCertificateAuthority) GenerateLeafCertificate(
 	}
 	if err == nil {
 		leaf.PrivateKey.ecdsa = key
-		leaf.Certificate.x509, err = root.generateLeafCertificate(
+		leaf.Certificate.x509, err = generateLeafCertificate(
 			root.Certificate.x509, root.PrivateKey.ecdsa, &key.PublicKey, serial,
-			commonName, dnsNames)
+			commonName, dnsNames, server)
 	}
 
 	return &leaf, err
@@ -1803,7 +1810,7 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 		c.logger.Errorf("Error in certificate creation %v", err)
 	}
 
-	leaf, err = inRoot.GenerateLeafCertificate(commonName, dnsNames)
+	leaf, err = inRoot.GenerateLeafCertificate(commonName, dnsNames, false)
 
 	if err != nil {
 		c.logger.Errorf("could not generate root certificate %s", err)
@@ -1821,7 +1828,7 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 	}
 
 	repo_leaf := &LeafCertificate{}
-	repo_leaf, err = inRoot.GenerateLeafCertificate(commonName, dnsNames)
+	repo_leaf, err = inRoot.GenerateLeafCertificate(commonName, dnsNames, true)
 
 	if err == nil {
 		tsl_certRepoPrivateKeySecretKey, err = certFile(repo_leaf.PrivateKey)

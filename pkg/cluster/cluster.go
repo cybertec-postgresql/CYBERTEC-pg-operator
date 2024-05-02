@@ -354,7 +354,8 @@ func (c *Cluster) Create() (err error) {
 					return err
 				}
 				if err := c.createPgbackrestRepoHostStuff(repo); err != nil {
-					fmt.Errorf("could not create pgbackrest repo-hodt related stuff: %v", err)
+					err = fmt.Errorf("could not create pgbackrest repo-hodt related stuff: %v", err)
+					return err
 				}
 			}
 		}
@@ -1007,6 +1008,9 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	//sync pgbackrest statefulset
 	if !reflect.DeepEqual(oldSpec.Spec.Backup.Pgbackrest.Repos, newSpec.Spec.Backup.Pgbackrest.Repos) {
 		c.syncPgbackrestStatefulSet(*oldSpec.Spec.Backup.Pgbackrest, *newSpec.Spec.Backup.Pgbackrest)
+		// We need to sync statefulset for postgres also, because a new pvc might need to be added if a new repo has been added
+		// TODO: we can make it more effecient by checking the exact case if a new pvc needs to be added if an additional repo has been added
+		syncStatefulSet = true
 	}
 
 	// Statefulset

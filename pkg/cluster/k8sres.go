@@ -1802,34 +1802,34 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 		return nil, fmt.Errorf("could not generate resource requirements: %v", err)
 	}
 
-	if spec.InitContainers != nil && len(spec.InitContainers) > 0 {
-		if c.OpConfig.EnableInitContainers != nil && !(*c.OpConfig.EnableInitContainers) {
-			c.logger.Warningf("initContainers specified but disabled in configuration - next statefulset creation would fail")
-		}
-		initContainers = spec.InitContainers
-	}
+	// if spec.InitContainers != nil && len(spec.InitContainers) > 0 {
+	// 	if c.OpConfig.EnableInitContainers != nil && !(*c.OpConfig.EnableInitContainers) {
+	// 		c.logger.Warningf("initContainers specified but disabled in configuration - next statefulset creation would fail")
+	// 	}
+	// 	initContainers = spec.InitContainers
+	// }
 
-	// backward compatible check for InitContainers
-	if spec.InitContainersOld != nil {
-		msg := "manifest parameter init_containers is deprecated."
-		if spec.InitContainers == nil {
-			c.logger.Warningf("%s Consider using initContainers instead.", msg)
-			spec.InitContainers = spec.InitContainersOld
-		} else {
-			c.logger.Warningf("%s Only value from initContainers is used", msg)
-		}
-	}
+	// // backward compatible check for InitContainers
+	// if spec.InitContainersOld != nil {
+	// 	msg := "manifest parameter init_containers is deprecated."
+	// 	if spec.InitContainers == nil {
+	// 		c.logger.Warningf("%s Consider using initContainers instead.", msg)
+	// 		spec.InitContainers = spec.InitContainersOld
+	// 	} else {
+	// 		c.logger.Warningf("%s Only value from initContainers is used", msg)
+	// 	}
+	// }
 
-	// backward compatible check for PodPriorityClassName
-	if spec.PodPriorityClassNameOld != "" {
-		msg := "manifest parameter pod_priority_class_name is deprecated."
-		if spec.PodPriorityClassName == "" {
-			c.logger.Warningf("%s Consider using podPriorityClassName instead.", msg)
-			spec.PodPriorityClassName = spec.PodPriorityClassNameOld
-		} else {
-			c.logger.Warningf("%s Only value from podPriorityClassName is used", msg)
-		}
-	}
+	// // backward compatible check for PodPriorityClassName
+	// if spec.PodPriorityClassNameOld != "" {
+	// 	msg := "manifest parameter pod_priority_class_name is deprecated."
+	// 	if spec.PodPriorityClassName == "" {
+	// 		c.logger.Warningf("%s Consider using podPriorityClassName instead.", msg)
+	// 		spec.PodPriorityClassName = spec.PodPriorityClassNameOld
+	// 	} else {
+	// 		c.logger.Warningf("%s Only value from podPriorityClassName is used", msg)
+	// 	}
+	// }
 
 	enableTDE := false
 	if spec.TDE != nil && spec.TDE.Enable {
@@ -1941,55 +1941,6 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	effectivePodPriorityClassName := util.Coalesce(spec.PodPriorityClassName, c.OpConfig.PodPriorityClassName)
 
 	podAnnotations := c.generatePodAnnotations(spec)
-
-	if spec.Backup != nil && spec.Backup.Pgbackrest != nil {
-
-		pgbackrestRestoreEnvVars := appendEnvVars(
-			spiloEnvVars,
-			v1.EnvVar{
-				Name:  "MODE",
-				Value: "pgbackrest",
-			},
-			v1.EnvVar{
-				Name:  "COMMAND",
-				Value: "restore",
-			},
-		)
-		var cpuLimit, memLimit, cpuReq, memReq string
-		var resources v1.ResourceRequirements
-		if spec.Backup.Pgbackrest.Resources != nil {
-			cpuLimit = spec.Backup.Pgbackrest.Resources.ResourceLimits.CPU
-			memLimit = spec.Backup.Pgbackrest.Resources.ResourceLimits.Memory
-			cpuReq = spec.Backup.Pgbackrest.Resources.ResourceRequests.CPU
-			memReq = spec.Backup.Pgbackrest.Resources.ResourceRequests.Memory
-			resources = v1.ResourceRequirements{
-				Limits: v1.ResourceList{
-					"cpu":    resource.MustParse(cpuLimit),
-					"memory": resource.MustParse(memLimit),
-				},
-				Requests: v1.ResourceList{
-					"cpu":    resource.MustParse(cpuReq),
-					"memory": resource.MustParse(memReq),
-				},
-			}
-		} else {
-			defaultResources := makeDefaultResources(&c.OpConfig)
-			resourceRequirements, err := c.generateResourceRequirements(
-				spec.Resources, defaultResources, constants.PostgresContainerName)
-			if err != nil {
-				return nil, fmt.Errorf("could not generate resource requirements: %v", err)
-			}
-			resources = *resourceRequirements
-		}
-
-		initContainers = append(initContainers, v1.Container{
-			Name:         "pgbackrest-restore",
-			Image:        spec.Backup.Pgbackrest.Image,
-			Env:          pgbackrestRestoreEnvVars,
-			VolumeMounts: volumeMounts,
-			Resources:    resources,
-		})
-	}
 
 	repoHostLabels := c.labelsSet(true)
 	repoHostLabels["member.cpo.opensource.cybertec.at/type"] = "repo-host"

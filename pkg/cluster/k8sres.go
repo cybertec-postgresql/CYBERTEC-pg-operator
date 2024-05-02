@@ -47,6 +47,7 @@ const (
 	operatorPort                   = 8080
 	monitorPort                    = 9187
 	monitorUsername                = "cpo_exporter"
+	RepoHostPostfix                = ".svc.cluster.local"
 )
 
 type pgUser struct {
@@ -857,7 +858,7 @@ func (c *Cluster) generatePodTemplate(
 
 	if c.Postgresql.Spec.RepoHost {
 		configmapName := c.getPgbackrestRepoHostConfigmapName()
-		secretName := c.getPgbackrestSecretName()
+		secretName := c.getPgbackrestCertSecretName()
 		addPgbackrestConfigVolumePVC(&podSpec, configmapName, secretName)
 		c.logger.Debugf("Repo-host Configmap added to this pod template is %s", configmapName)
 		c.Postgresql.Spec.RepoHost = false
@@ -869,7 +870,7 @@ func (c *Cluster) generatePodTemplate(
 		if c.Postgresql.Spec.Backup.Pgbackrest.Repos != nil {
 			for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
 				if repo.Storage == "pvc" {
-					secretName = c.getPgbackrestSecretName()
+					secretName = c.getPgbackrestCertSecretName()
 				}
 			}
 		}
@@ -1115,6 +1116,13 @@ func (c *Cluster) generateSpiloPodEnvVars(
 		opConfigEnvVars = append(opConfigEnvVars, v1.EnvVar{Name: "LOG_S3_BUCKET", Value: c.OpConfig.LogS3Bucket})
 		opConfigEnvVars = append(opConfigEnvVars, v1.EnvVar{Name: "LOG_BUCKET_SCOPE_SUFFIX", Value: getBucketScopeSuffix(string(uid))})
 		opConfigEnvVars = append(opConfigEnvVars, v1.EnvVar{Name: "LOG_BUCKET_SCOPE_PREFIX", Value: ""})
+	}
+	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
+		for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
+			if repo.Storage == "pvc" {
+				envVars = append(envVars, v1.EnvVar{Name: "COMMAND", Value: "repo-host"})
+			}
+		}
 	}
 
 	envVars = appendEnvVars(envVars, opConfigEnvVars...)
@@ -1485,7 +1493,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			// this is combined with the FSGroup in the section above
 			// to give read access to the postgres user
 			//defaultMode := int32(0644)
-			defaultMode := int32(384)
+			defaultMode := int32(0600)
 			mountPath := "/tls"
 			additionalVolumes = append(additionalVolumes, cpov1.AdditionalVolume{
 				Name:      spec.TLS.SecretName,
@@ -1886,7 +1894,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 			}
 			// this is combined with the FSGroup in the section above
 			// to give read access to the postgres user
-			defaultMode := int32(384)
+			defaultMode := int32(0600)
 			mountPath := "/tls"
 			additionalVolumes = append(additionalVolumes, cpov1.AdditionalVolume{
 				Name:      spec.TLS.SecretName,
@@ -1944,7 +1952,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 			},
 			v1.EnvVar{
 				Name:  "COMMAND",
-				Value: "repo-host",
+				Value: "restore",
 			},
 		)
 		var cpuLimit, memLimit, cpuReq, memReq string
@@ -2393,7 +2401,7 @@ func addPgbackrestConfigVolumePVC(podSpec *v1.PodSpec, configmapName string, sec
 	name := "pgbackrest-config"
 	path := "/etc/pgbackrest/conf.d"
 	//defaultMode := int32(0644)
-	defaultMode := int32(384)
+	defaultMode := int32(0600)
 	postgresContainerIdx := 0
 	postgresInitContainerIdx := -1
 
@@ -3257,7 +3265,7 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 			for i, repo := range repos {
 				if repo.Storage == "pvc" {
 					c.logger.Debugf("DEBUG_OUTPUT %s %s", c.clusterName().Name, c.Namespace)
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.clusterName().Name + "-pgbackrest-repo-host-0." + c.clusterName().Name + "." + c.Namespace + ".svc.cluster.local" //c.Endpoints[role].ObjectMeta.Name
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.clusterName().Name + "-pgbackrest-repo-host-0." + c.clusterName().Name + "." + c.Namespace + RepoHostPostfix
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /tls/pgbackrest.ca-roots"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /tls/pgbackrest-client.crt"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-key-file = /tls/pgbackrest-client.key"
@@ -3309,7 +3317,7 @@ func (c *Cluster) generatePgbackrestRepoHostConfigmap() (*v1.ConfigMap, error) {
 			}
 			n := c.Postgresql.Spec.NumberOfInstances
 			for j := int32(0); j < n; j++ {
-				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host = " + c.clusterName().Name + "-" + fmt.Sprintf("%d", j) + "." + c.clusterName().Name + "." + c.Namespace + ".svc.cluster.local"
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host = " + c.clusterName().Name + "-" + fmt.Sprintf("%d", j) + "." + c.clusterName().Name + "." + c.Namespace + RepoHostPostfix
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-ca-file = /tls/pgbackrest.ca-roots"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-cert-file = /tls/pgbackrest-client.crt"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-key-file = /tls/pgbackrest-client.key"

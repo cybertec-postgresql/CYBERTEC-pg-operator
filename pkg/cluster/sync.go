@@ -43,8 +43,7 @@ const (
 	certClientSecretKey           = "pgbackrest-client.crt"    // #nosec G101 this is a name, not a credential
 	certRepoSecretKey             = "pgbackrest-repo-host.crt" // #nosec G101 this is a name, not a credential
 	certRepoPrivateKeySecretKey   = "pgbackrest-repo-host.key" // #nosec G101 this is a name, not a credential
-)
-const (
+
 	// pemLabelCertificate is the textual encoding label for an X.509 certificate
 	// according to RFC 7468. See https://tools.ietf.org/html/rfc7468.
 	pemLabelCertificate = "CERTIFICATE"
@@ -301,6 +300,66 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	}
 
 	return err
+}
+
+func (c *Cluster) syncPgbackrestStatefulSet(oldSpec, newSpec cpov1.Pgbackrest) error {
+	c.setProcessName("Syncing pgbackrest repo-host")
+	c.logger.Info("Syncing pgbackrest repo-host")
+
+	pvc_repo_added := false
+	repo_host_exists := false
+
+	// check if repo-host existed in the oldSpec
+	if oldSpec.Repos != nil {
+		for _, repo := range oldSpec.Repos {
+			if repo.Storage == "pvc" {
+				repo_host_exists = true
+			}
+		}
+	}
+
+	// ensure that a pvc based repo is added in the new spec
+	if newSpec.Repos != nil {
+		for _, repo := range newSpec.Repos {
+			if repo.Storage == "pvc" {
+				pvc_repo_added = true
+				_, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.getPgbackrestRepoHostName(), metav1.GetOptions{})
+				if k8sutil.ResourceAlreadyExists(err) {
+					c.logger.Info("Statefulset already exists for Pgbackrest repo-host, syncing now")
+					// if the repo-host is just updated then just delete the old ones and create new
+					if err := c.deletePgbackrestRepoHostStuff(); err != nil {
+						if err = c.createPgbackrestRepoHostStuff(repo); err != nil {
+							return err
+						}
+					}
+				} else if err = c.createPgbackrestRepoHostStuff(repo); err != nil {
+					return err
+				}
+			}
+		}
+	}
+	// Attempt to delete the repo-host stuff only if they existed before
+	if !pvc_repo_added && repo_host_exists {
+		if err := c.deletePgbackrestRepoHostStuff(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (c *Cluster) deletePgbackrestRepoHostStuff() error {
+	c.setProcessName("Deleting pgbackrest repo-host")
+	c.logger.Info("Deleting pgbackrest repo-host")
+
+	var err error
+	if err = c.KubeClient.StatefulSets(c.Namespace).Delete(context.TODO(), c.getPgbackrestRepoHostName(), metav1.DeleteOptions{}); err != nil {
+		c.logger.Errorf("Could not delete Pgbackrest repo-host statefulset %v", err)
+	}
+	if err = c.KubeClient.Secrets(c.Namespace).Delete(context.TODO(), c.getPgbackrestCertSecretName(), metav1.DeleteOptions{}); err != nil {
+		c.logger.Errorf("Could not delete Pgbackrest repo-host secrets %v", err)
+	}
+
+	return nil
 }
 
 func (c *Cluster) syncServices() error {
@@ -1520,22 +1579,25 @@ func (c *Cluster) syncPgbackrestConfig() error {
 
 func (c *Cluster) syncPgbackrestRepoHostConfig() error {
 	c.logger.Info("check if a sync for repo host configmap is needed ")
-	for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
-		if repo.Storage == "pvc" {
-			if cm, err := c.KubeClient.ConfigMaps(c.Namespace).Get(context.TODO(), c.getPgbackrestRepoHostConfigmapName(), metav1.GetOptions{}); err == nil {
-				if err := c.updatePgbackrestRepoHostConfig(cm); err != nil {
-					return fmt.Errorf("could not update a pgbackrest repo-host config: %v", err)
+	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil && c.Postgresql.Spec.Backup.Pgbackrest.Repos != nil {
+		for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
+			if repo.Storage == "pvc" {
+				if cm, err := c.KubeClient.ConfigMaps(c.Namespace).Get(context.TODO(), c.getPgbackrestRepoHostConfigmapName(), metav1.GetOptions{}); err == nil {
+					if err := c.updatePgbackrestRepoHostConfig(cm); err != nil {
+						return fmt.Errorf("could not update a pgbackrest repo-host config: %v", err)
+					}
+					c.logger.Info("a pgbackrest restore repo-host has been successfully updated")
+				} else {
+					if err := c.createPgbackrestRepoHostConfig(); err != nil {
+						return fmt.Errorf("could not create a pgbackrest repo-host config: %v", err)
+					}
+					c.logger.Info("a pgbackrest repo-host config has been successfully created")
 				}
-				c.logger.Info("a pgbackrest restore repo-host has been successfully updated")
-			} else {
-				if err := c.createPgbackrestRepoHostConfig(); err != nil {
-					return fmt.Errorf("could not create a pgbackrest repo-host config: %v", err)
-				}
-				c.logger.Info("a pgbackrest repo-host config has been successfully created")
+				break
 			}
-			break
 		}
 	}
+
 	return nil
 }
 
@@ -1786,7 +1848,7 @@ func ByteMap(m *map[string][]byte) {
 	}
 }
 
-func (c *Cluster) createPVCSecret(secretname string) error {
+func (c *Cluster) createPgbackrestCertSecret(secretname string) error {
 	c.logger.Info("creating PVC secret")
 	c.setProcessName("creating PVC secret")
 	generatedKey := make([]byte, 16)
@@ -1801,7 +1863,7 @@ func (c *Cluster) createPVCSecret(secretname string) error {
 	// hosts are added or removed.
 	leaf := &LeafCertificate{}
 	commonName := c.clientCommonName()
-	additionalName := "*." + c.clusterName().Name + "." + c.Namespace + ".svc.cluster.local"
+	additionalName := "*." + c.clusterName().Name + "." + c.Namespace + RepoHostPostfix
 	dnsNames := []string{commonName, additionalName}
 
 	inRoot := &RootCertificateAuthority{}

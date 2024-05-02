@@ -100,7 +100,7 @@ func (c *Cluster) createStatefulSet() (*appsv1.StatefulSet, error) {
 		for _, repo := range c.Spec.Backup.Pgbackrest.Repos {
 			if repo.Storage == "pvc" {
 				c.Spec.TLS = &cpov1.TLSDescription{
-					SecretName: c.getPgbackrestSecretName()}
+					SecretName: c.getPgbackrestCertSecretName()}
 			}
 		}
 	}

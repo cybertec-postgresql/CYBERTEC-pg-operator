@@ -48,6 +48,7 @@ const (
 	monitorPort                    = 9187
 	monitorUsername                = "cpo_exporter"
 	RepoHostPostfix                = ".svc.cluster.local"
+	RepoHostPostfix                = ".svc.cluster.local"
 )
 
 type pgUser struct {
@@ -1108,6 +1109,13 @@ func (c *Cluster) generateSpiloPodEnvVars(
 		opConfigEnvVars = append(opConfigEnvVars, v1.EnvVar{Name: "LOG_BUCKET_SCOPE_SUFFIX", Value: getBucketScopeSuffix(string(uid))})
 		opConfigEnvVars = append(opConfigEnvVars, v1.EnvVar{Name: "LOG_BUCKET_SCOPE_PREFIX", Value: ""})
 	}
+	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
+		for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
+			if repo.Storage == "pvc" {
+				envVars = append(envVars, v1.EnvVar{Name: "COMMAND", Value: "repo-host"})
+			}
+		}
+	}
 
 	envVars = appendEnvVars(envVars, opConfigEnvVars...)
 
@@ -1934,6 +1942,55 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	effectivePodPriorityClassName := util.Coalesce(spec.PodPriorityClassName, c.OpConfig.PodPriorityClassName)
 
 	podAnnotations := c.generatePodAnnotations(spec)
+
+	if spec.Backup != nil && spec.Backup.Pgbackrest != nil {
+
+		pgbackrestRestoreEnvVars := appendEnvVars(
+			spiloEnvVars,
+			v1.EnvVar{
+				Name:  "MODE",
+				Value: "pgbackrest",
+			},
+			v1.EnvVar{
+				Name:  "COMMAND",
+				Value: "restore",
+			},
+		)
+		var cpuLimit, memLimit, cpuReq, memReq string
+		var resources v1.ResourceRequirements
+		if spec.Backup.Pgbackrest.Resources != nil {
+			cpuLimit = spec.Backup.Pgbackrest.Resources.ResourceLimits.CPU
+			memLimit = spec.Backup.Pgbackrest.Resources.ResourceLimits.Memory
+			cpuReq = spec.Backup.Pgbackrest.Resources.ResourceRequests.CPU
+			memReq = spec.Backup.Pgbackrest.Resources.ResourceRequests.Memory
+			resources = v1.ResourceRequirements{
+				Limits: v1.ResourceList{
+					"cpu":    resource.MustParse(cpuLimit),
+					"memory": resource.MustParse(memLimit),
+				},
+				Requests: v1.ResourceList{
+					"cpu":    resource.MustParse(cpuReq),
+					"memory": resource.MustParse(memReq),
+				},
+			}
+		} else {
+			defaultResources := makeDefaultResources(&c.OpConfig)
+			resourceRequirements, err := c.generateResourceRequirements(
+				spec.Resources, defaultResources, constants.PostgresContainerName)
+			if err != nil {
+				return nil, fmt.Errorf("could not generate resource requirements: %v", err)
+			}
+			resources = *resourceRequirements
+		}
+
+		initContainers = append(initContainers, v1.Container{
+			Name:         "pgbackrest-restore",
+			Image:        spec.Backup.Pgbackrest.Image,
+			Env:          pgbackrestRestoreEnvVars,
+			VolumeMounts: volumeMounts,
+			Resources:    resources,
+		})
+	}
 
 	repoHostLabels := c.labelsSet(true)
 	repoHostLabels["member.cpo.opensource.cybertec.at/type"] = "repo-host"

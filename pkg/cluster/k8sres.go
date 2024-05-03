@@ -1160,10 +1160,6 @@ func (c *Cluster) generatepgBackRestPodEnvVars(
 			Name:  "MODE",
 			Value: "pgbackrest",
 		},
-		{
-			Name:  "COMMAND",
-			Value: "repo-host",
-		},
 	}
 
 	if spec.Backup != nil && spec.Backup.Pgbackrest != nil {
@@ -1507,11 +1503,17 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		additionalVolumes = append(additionalVolumes, tlsVolumes...)
 	}
 	newSpiloEnvVars := spiloEnvVars
+	repo_host_mode := false
 	// Add this envVar so that it is not added to the pgbackrest initcontainer
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 		for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
 			if repo.Storage == "pvc" {
-				newSpiloEnvVars = append(newSpiloEnvVars, v1.EnvVar{Name: "COMMAND", Value: "repo-host"})
+				repo_host_mode = true
+				newSpiloEnvVars = append(newSpiloEnvVars, v1.EnvVar{
+					Name:  "PGBACKREST_SERVER",
+					Value: "true",
+				})
+				break
 			}
 		}
 	}
@@ -1650,7 +1652,19 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 				Name:  "MODE",
 				Value: "pgbackrest",
 			},
+			v1.EnvVar{
+				Name:  "PGBACKREST_MODE",
+				Value: "restore",
+			},
 		)
+		if repo_host_mode {
+			pgbackrestRestoreEnvVars = appendEnvVars(
+				pgbackrestRestoreEnvVars, v1.EnvVar{
+					Name:  "PGBACKREST_SERVER",
+					Value: "true",
+				},
+			)
+		}
 		var cpuLimit, memLimit, cpuReq, memReq string
 		var resources v1.ResourceRequirements
 		if spec.Backup.Pgbackrest.Resources != nil {
@@ -1808,6 +1822,14 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	if err != nil {
 		return nil, fmt.Errorf("could not generate Spilo env vars: %v", err)
 	}
+	spiloEnvVars = appendEnvVars(spiloEnvVars,
+		v1.EnvVar{
+			Name:  "PGBACKREST_SERVER",
+			Value: "true"},
+		v1.EnvVar{
+			Name:  "USE_PGBACKREST",
+			Value: "true"},
+	)
 
 	// determine the User, Group and FSGroup for the spilo pod
 	effectiveRunAsUser := c.OpConfig.Resources.SpiloRunAsUser
@@ -3408,6 +3430,10 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(name string) []v1.EnvVar {
 	envVars := []v1.EnvVar{
 		{
 			Name:  "COMMAND",
+			Value: "backup",
+		},
+		{
+			Name:  "PGBACKREST_MODE",
 			Value: "backup",
 		},
 		{

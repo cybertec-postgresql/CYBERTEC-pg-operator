@@ -347,16 +347,18 @@ func (c *Cluster) Create() (err error) {
 		// if found then create a sts for pgbackrest repo
 		// add the config info to this repo
 		// add the config info to the pg pods about this repo
+		first_repo := false
 		for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
 			if repo.Storage == "pvc" {
 				if len(repo.Volume.Size) == 0 {
 					err = fmt.Errorf("could not create pgbackrest statefulset for pvc without size: %v", err)
 					return err
 				}
-				if err := c.createPgbackrestRepoHostStuff(repo); err != nil {
-					err = fmt.Errorf("could not create pgbackrest repo-hodt related stuff: %v", err)
+				if err := c.createPgbackrestRepoHostObjects(repo, first_repo); err != nil {
+					err = fmt.Errorf("could not create pgbackrest repo-host related objects: %v", err)
 					return err
 				}
+				first_repo = true
 			}
 		}
 
@@ -479,44 +481,54 @@ func (c *Cluster) Create() (err error) {
 	return nil
 }
 
-func (c *Cluster) createPgbackrestRepoHostStuff(repo cpov1.Repo) error {
-	c.setProcessName("Creating pgbackrest repo-host related stuff")
-	c.logger.Info("Creating pgbackrest repo-host related stuff")
+func (c *Cluster) createPgbackrestRepoHostObjects(repo cpov1.Repo, first_repo bool) error {
+	c.setProcessName("Creating pgbackrest repo-host related objects")
+	c.logger.Info("Creating pgbackrest repo-host related objects")
 
 	pvcName := c.getPgbackrestRepoHostName()
 	backupSecretName := c.getPgbackrestCertSecretName()
-	if err := c.createPgbackrestRepoHostConfig(); err != nil {
-		err = fmt.Errorf("could not create a pgbackrest repo-host config: %v", err)
-		return err
+	if first_repo {
+		if err := c.createPgbackrestRepoHostConfig(); err != nil {
+			err = fmt.Errorf("could not create a pgbackrest repo-host config: %v", err)
+			return err
+		}
 	}
 	// if statefulset for pvc is already created then only mount an additional volume in it for this repo
-	err := c.createPgbackrestCertSecret(backupSecretName)
-	if !k8sutil.ResourceAlreadyExists(err) {
-		pvcStatefulSetSpec := cpov1.PostgresSpec{
-			NumberOfInstances: 1,
-			Volume: cpov1.Volume{
-				Size: repo.Volume.Size,
-			},
-			TLS: &cpov1.TLSDescription{
-				SecretName: backupSecretName},
+	if !first_repo {
+		c.logger.Info("need more pvc based pgbackrest repo-host, hence deleting old sts")
+		if err := c.KubeClient.StatefulSets(c.Namespace).Delete(context.TODO(), c.getPgbackrestRepoHostName(), metav1.DeleteOptions{}); err != nil {
+			c.logger.Errorf("could not delete Pgbackrest repo-host statefulset %v", err)
 		}
-		pvcSpec, err := c.generateRepoHostStatefulSet(&pvcStatefulSetSpec)
-		if err != nil {
-			err = fmt.Errorf("could not generate statefulset for the repohost: %v", err)
-			return err
+	} else {
+		err := c.createPgbackrestCertSecret(backupSecretName)
+		if !k8sutil.ResourceAlreadyExists(err) {
+			pvcStatefulSetSpec := cpov1.PostgresSpec{
+				NumberOfInstances: 1,
+				Volume: cpov1.Volume{
+					Size: repo.Volume.Size,
+				},
+				TLS: &cpov1.TLSDescription{
+					SecretName: backupSecretName},
+			}
+			pvcSpec, err := c.generateRepoHostStatefulSet(&pvcStatefulSetSpec)
+			if err != nil {
+				err = fmt.Errorf("could not generate statefulset for the repohost: %v", err)
+				return err
+			}
+
+			pvcSpec.Name = pvcName
+			pvcSpec.Namespace = c.clusterName().Namespace
+
+			_, err = c.KubeClient.StatefulSets(c.Namespace).Create(
+				context.TODO(),
+				pvcSpec,
+				metav1.CreateOptions{})
+			if err != nil {
+				err = fmt.Errorf("could not create pgbackrest statefulset for the repohost: %v", err)
+				return err
+			}
 		}
 
-		pvcSpec.Name = pvcName
-		pvcSpec.Namespace = c.clusterName().Namespace
-
-		_, err = c.KubeClient.StatefulSets(c.Namespace).Create(
-			context.TODO(),
-			pvcSpec,
-			metav1.CreateOptions{})
-		if err != nil {
-			err = fmt.Errorf("could not create pgbackrest statefulset for the repohost: %v", err)
-			return err
-		}
 	}
 	return nil
 }
@@ -1008,9 +1020,6 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	//sync pgbackrest statefulset
 	if !reflect.DeepEqual(oldSpec.Spec.Backup.Pgbackrest.Repos, newSpec.Spec.Backup.Pgbackrest.Repos) {
 		c.syncPgbackrestStatefulSet(*oldSpec.Spec.Backup.Pgbackrest, *newSpec.Spec.Backup.Pgbackrest)
-		// We need to sync statefulset for postgres also, because a new pvc might need to be added if a new repo has been added
-		// TODO: we can make it more effecient by checking the exact case if a new pvc needs to be added if an additional repo has been added
-		syncStatefulSet = true
 	}
 
 	// Statefulset

@@ -261,6 +261,31 @@ func (c *Cluster) deletePersistentVolumeClaims() error {
 	return nil
 }
 
+func (c *Cluster) deleteRepoHostPersistentVolumeClaims() error {
+	c.logger.Debugln("deleting PVCs fro the repo-host")
+	pvcs, err := c.KubeClient.PersistentVolumeClaims(c.Namespace).List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		c.logger.Errorf("could not list of PersistentVolumeClaims: %v", err)
+	}
+
+	for _, pvc := range pvcs.Items {
+		if strings.Contains(pvc.Name, c.getPgbackrestRepoHostName()) {
+			c.logger.Debugf("deleting PVC %q", util.NameFromMeta(pvc.ObjectMeta))
+			if err := c.KubeClient.PersistentVolumeClaims(pvc.Namespace).Delete(context.TODO(), pvc.Name, c.deleteOptions); err != nil {
+				c.logger.Warningf("could not delete PersistentVolumeClaim: %v", err)
+			}
+		}
+
+	}
+	if len(pvcs.Items) > 0 {
+		c.logger.Debugln("PVCs have been deleted")
+	} else {
+		c.logger.Debugln("no PVCs to delete")
+	}
+
+	return nil
+}
+
 func (c *Cluster) resizeVolumeClaims(newVolume cpov1.Volume) error {
 	c.logger.Debugln("resizing PVCs")
 	pvcs, err := c.listPersistentVolumeClaims()

@@ -754,6 +754,7 @@ func (c *Cluster) updatePgbackrestConfig(cm *v1.ConfigMap) (err error) {
 func (c *Cluster) createPgbackrestRepoHostConfig() (err error) {
 
 	c.setProcessName("creating a configmap for pgbackrest repo-host")
+	c.logger.Info("creating repo-host configmap")
 
 	pgbackrestRepoHostConfigmapSpec, err := c.generatePgbackrestRepoHostConfigmap()
 	if err != nil {

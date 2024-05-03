@@ -321,18 +321,16 @@ func (c *Cluster) syncPgbackrestStatefulSet(oldSpec, newSpec cpov1.Pgbackrest) e
 	// ensure that a pvc based repo is added in the new spec
 	if newSpec.Repos != nil {
 		for _, repo := range newSpec.Repos {
+			first_repo := true
 			if repo.Storage == "pvc" {
 				pvc_repo_added = true
-				_, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.getPgbackrestRepoHostName(), metav1.GetOptions{})
-				if k8sutil.ResourceAlreadyExists(err) {
+				sts, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.getPgbackrestRepoHostName(), metav1.GetOptions{})
+				if k8sutil.ResourceAlreadyExists(err) || sts != nil {
 					c.logger.Info("Statefulset already exists for Pgbackrest repo-host, syncing now")
-					// if the repo-host is just updated then just delete the old ones and create new
-					if err := c.deletePgbackrestRepoHostStuff(); err != nil {
-						if err = c.createPgbackrestRepoHostStuff(repo); err != nil {
-							return err
-						}
-					}
-				} else if err = c.createPgbackrestRepoHostStuff(repo); err != nil {
+					// if the repo-host is just updated then delete the old ones and create new
+					c.deletePgbackrestRepoHostObjects()
+					c.createPgbackrestRepoHostObjects(repo, first_repo)
+				} else if err = c.createPgbackrestRepoHostObjects(repo, first_repo); err != nil {
 					return err
 				}
 			}
@@ -340,23 +338,42 @@ func (c *Cluster) syncPgbackrestStatefulSet(oldSpec, newSpec cpov1.Pgbackrest) e
 	}
 	// Attempt to delete the repo-host stuff only if they existed before
 	if !pvc_repo_added && repo_host_exists {
-		if err := c.deletePgbackrestRepoHostStuff(); err != nil {
+		if err := c.deletePgbackrestRepoHostObjects(); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (c *Cluster) deletePgbackrestRepoHostStuff() error {
+func (c *Cluster) deletePgbackrestRepoHostObjects() error {
 	c.setProcessName("Deleting pgbackrest repo-host")
 	c.logger.Info("Deleting pgbackrest repo-host")
 
 	var err error
 	if err = c.KubeClient.StatefulSets(c.Namespace).Delete(context.TODO(), c.getPgbackrestRepoHostName(), metav1.DeleteOptions{}); err != nil {
 		c.logger.Errorf("Could not delete Pgbackrest repo-host statefulset %v", err)
+	} else {
+		c.logger.Info("Repo-host statefulset is now deleted")
+	}
+	if err = c.KubeClient.Pods(c.Namespace).Delete(context.TODO(), c.getPgbackrestRepoHostName()+"-0", metav1.DeleteOptions{}); err != nil {
+		c.logger.Errorf("Could not delete Pgbackrest repo-host pods %v", err)
+	} else {
+		c.logger.Info("Repo-host pods are now deleted")
+	}
+	if err = c.deleteRepoHostPersistentVolumeClaims(); err != nil {
+		c.logger.Errorf("Could not delete Pgbackrest repo-host pvc %v", err)
+	} else {
+		c.logger.Info("Repo-host pvcs are now deleted")
 	}
 	if err = c.KubeClient.Secrets(c.Namespace).Delete(context.TODO(), c.getPgbackrestCertSecretName(), metav1.DeleteOptions{}); err != nil {
 		c.logger.Errorf("Could not delete Pgbackrest repo-host secrets %v", err)
+	} else {
+		c.logger.Info("Repo-host secret is now deleted")
+	}
+	if err = c.KubeClient.ConfigMaps(c.Namespace).Delete(context.TODO(), c.getPgbackrestRepoHostConfigmapName(), metav1.DeleteOptions{}); err != nil {
+		c.logger.Errorf("Could not delete Pgbackrest repo-host configmap %v", err)
+	} else {
+		c.logger.Info("Repo-host configmap is now deleted")
 	}
 
 	return nil
@@ -1838,7 +1855,7 @@ func (c *Cluster) clientCommonName() string {
 	// - https://docs.k8s.io/concepts/overview/working-with-objects/names/#uids
 	// - https://releases.k8s.io/v1.22.0/staging/src/k8s.io/apiserver/pkg/registry/rest/create.go#L111
 	// - https://releases.k8s.io/v1.22.0/staging/src/k8s.io/apiserver/pkg/registry/rest/meta.go#L30
-	return "pgbackrest@" + string(c.GetUID())
+	return "cpo-cluster@" + c.clusterName().Name + "=*"
 }
 
 // ByteMap initializes m when it points to nil.

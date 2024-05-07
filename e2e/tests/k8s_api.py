@@ -54,6 +54,7 @@ class K8s:
         return master_pod_node, replica_pod_nodes
 
     def get_cluster_nodes(self, cluster_labels='application=cpo,cluster-name=acid-minimal-cluster', namespace='default'):
+
         m = []
         r = []
         podsList = self.api.core_v1.list_namespaced_pod(namespace, label_selector=cluster_labels)
@@ -241,7 +242,6 @@ class K8s:
 
     def get_logical_backup_job(self, namespace='default'):
         return self.api.batch_v1.list_namespaced_cron_job(namespace, label_selector="application=cpo")
-        return self.api.batch_v1.list_namespaced_cron_job(namespace, label_selector="application=cpo")
 
     def wait_for_logical_backup_job(self, expected_num_of_jobs):
         while (len(self.get_logical_backup_job().items) != expected_num_of_jobs):
@@ -343,6 +343,7 @@ class K8s:
         return pod.items[0].spec.containers[0].image
 
     def get_cluster_pod(self, role, labels='application=cpo,cluster-name=acid-minimal-cluster', namespace='default'):
+
         labels = labels + ',member.cpo.opensource.cybertec.at/role=' + role
 
         pods = self.api.core_v1.list_namespaced_pod(
@@ -538,7 +539,6 @@ class K8sBase:
             time.sleep(self.RETRY_TIMEOUT_SEC)
 
     def get_logical_backup_job(self, namespace='default'):
-        return self.api.batch_v1.list_namespaced_cron_job(namespace, label_selector="application=cpo")
         return self.api.batch_v1.list_namespaced_cron_job(namespace, label_selector="application=cpo")
 
     def wait_for_logical_backup_job(self, expected_num_of_jobs):

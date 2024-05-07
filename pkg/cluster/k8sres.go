@@ -48,7 +48,6 @@ const (
 	monitorPort                    = 9187
 	monitorUsername                = "cpo_exporter"
 	RepoHostPostfix                = ".svc.cluster.local"
-	RepoHostPostfix                = ".svc.cluster.local"
 )
 
 type pgUser struct {
@@ -2098,7 +2097,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	return statefulSet, nil
 }
 
-func generateTlsMounts(spec *cpov1.PostgresSpec, tlsEnv func(key string) string) ([]v1.EnvVar, []cpov1.AdditionalVolume) {
+func (c *Cluster) generateTlsMounts(spec *cpov1.PostgresSpec, tlsEnv func(key string) string) ([]v1.EnvVar, []cpov1.AdditionalVolume) {
 	// this is combined with the FSGroup in the section above
 	// to give read access to the postgres user
 	defaultMode := int32(0640)

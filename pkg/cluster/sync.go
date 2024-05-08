@@ -326,17 +326,24 @@ func (c *Cluster) syncPgbackrestStatefulSet(oldSpec, newSpec cpov1.Pgbackrest) e
 	// ensure that a pvc based repo is added in the new spec
 	if newSpec.Repos != nil {
 		for _, repo := range newSpec.Repos {
-			first_repo := true
 			if repo.Storage == "pvc" {
 				pvc_repo_added = true
 				sts, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.getPgbackrestRepoHostName(), metav1.GetOptions{})
 				if k8sutil.ResourceAlreadyExists(err) || sts != nil {
 					c.logger.Info("Statefulset already exists for Pgbackrest repo-host, syncing now")
 					// if the repo-host is just updated then delete the old ones and create new
-					c.deletePgbackrestRepoHostObjects()
-					c.createPgbackrestRepoHostObjects(repo, first_repo)
-				} else if err = c.createPgbackrestRepoHostObjects(repo, first_repo); err != nil {
+					if err = c.deletePgbackrestRepoHostObjects(); err != nil {
+						return err
+					}
+					if err = c.createPgbackrestRepoHostObjects(); err != nil {
+						return err
+					} else {
+						break
+					}
+				} else if err = c.createPgbackrestRepoHostObjects(); err != nil {
 					return err
+				} else {
+					break
 				}
 			}
 		}

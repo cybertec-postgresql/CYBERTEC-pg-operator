@@ -2119,7 +2119,7 @@ func (c *Cluster) generateTlsMounts(spec *cpov1.PostgresSpec, tlsEnv func(key st
 	// Add the env for the TLS only when certificates have been deifned in the manifest
 	// however, in the case of pvc based backup repos they are created by the operator,
 	// hence we donot need them
-	if c.Postgresql.Spec.Backup.Pgbackrest != nil {
+	if c.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 		for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
 			if repo.Storage != "pvc" {
 				// use the same filenames as Secret resources by default

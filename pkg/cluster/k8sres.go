@@ -1221,6 +1221,10 @@ func (c *Cluster) generatepgBackRestPodEnvVars(
 	return envVars, nil
 }
 
+func copyEnvVars(envs []v1.EnvVar) []v1.EnvVar {
+	return append([]v1.EnvVar{}, envs...)
+}
+
 func appendEnvVars(envs []v1.EnvVar, appEnv ...v1.EnvVar) []v1.EnvVar {
 	collectedEnvs := envs
 	for _, env := range appEnv {
@@ -1514,7 +1518,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		}
 		additionalVolumes = append(additionalVolumes, tlsVolumes...)
 	}
-	newSpiloEnvVars := spiloEnvVars
+	newSpiloEnvVars := copyEnvVars(spiloEnvVars)
 	repo_host_mode := false
 	// Add this envVar so that it is not added to the pgbackrest initcontainer
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
@@ -1609,9 +1613,8 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	podAnnotations := c.generatePodAnnotations(spec)
 
 	if spec.Backup != nil && spec.Backup.Pgbackrest != nil {
-
 		pgbackrestRestoreEnvVars := appendEnvVars(
-			spiloEnvVars,
+			copyEnvVars(spiloEnvVars),
 			v1.EnvVar{
 				Name: "RESTORE_ENABLE",
 				ValueFrom: &v1.EnvVarSource{

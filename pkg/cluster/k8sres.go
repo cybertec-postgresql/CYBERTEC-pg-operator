@@ -3305,7 +3305,7 @@ func (c *Cluster) generatePgbackrestRepoHostConfigmap() (*v1.ConfigMap, error) {
 	config += "\ntls-server-ca-file = /tls/pgbackrest.ca-roots"
 	config += "\ntls-server-cert-file = /tls/pgbackrest-repo-host.crt"
 	config += "\ntls-server-key-file = /tls/pgbackrest-repo-host.key"
-	config += "\ntls-server-auth = " + c.clientCommonName()
+	config += "\ntls-server-auth = " + c.clientCommonName() + "=*"
 
 	repos := c.Postgresql.Spec.Backup.Pgbackrest.Repos
 	if len(repos) >= 1 {

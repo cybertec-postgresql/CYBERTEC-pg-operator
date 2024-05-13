@@ -1908,7 +1908,7 @@ func (c *Cluster) clientCommonName() string {
 	// - https://docs.k8s.io/concepts/overview/working-with-objects/names/#uids
 	// - https://releases.k8s.io/v1.22.0/staging/src/k8s.io/apiserver/pkg/registry/rest/create.go#L111
 	// - https://releases.k8s.io/v1.22.0/staging/src/k8s.io/apiserver/pkg/registry/rest/meta.go#L30
-	return "cpo-cluster@" + c.clusterName().Name + "=*"
+	return c.clusterName().Name
 }
 
 // ByteMap initializes m when it points to nil.

@@ -2474,7 +2474,7 @@ func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secret
 
 	name := "pgbackrest-config"
 	path := "/etc/pgbackrest/conf.d"
-	defaultMode := int32(0644)
+	defaultMode := int32(0640)
 	postgresContainerIdx := 0
 	postgresInitContainerIdx := -1
 
@@ -3255,10 +3255,10 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 	config := "[db]\npg1-path = /home/postgres/pgdata/pgroot/data\npg1-port = 5432\npg1-socket-path = /var/run/postgresql/\n"
 	config += "\n[global]\nlog-path = /home/postgres/pgdata/pgbackrest/log\nspool-path = /home/postgres/pgdata/pgbackrest/spool-path"
 	config += "\ntls-server-address=*"
-	config += "\ntls-server-ca-file = /tls/pgbackrest.ca-roots"
-	config += "\ntls-server-cert-file = /tls/pgbackrest-repo-host.crt"
-	config += "\ntls-server-key-file = /tls/pgbackrest-repo-host.key"
-	config += "\ntls-server-auth = " + c.clientCommonName()
+	config += "\ntls-server-ca-file = /etc/pgbackrest/conf.d/pgbackrest.ca-roots"
+	config += "\ntls-server-cert-file = /etc/pgbackrest/conf.d/pgbackrest-client.crt"
+	config += "\ntls-server-key-file = /etc/pgbackrest/conf.d/pgbackrest-client.key"
+	config += "\ntls-server-auth = " + c.clientCommonName() + "=*"
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 		if global := c.Postgresql.Spec.Backup.Pgbackrest.Global; global != nil {
 			for k, v := range global {
@@ -3272,9 +3272,9 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 				if repo.Storage == "pvc" {
 					c.logger.Debugf("DEBUG_OUTPUT %s %s", c.clusterName().Name, c.Namespace)
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.clusterName().Name + "-pgbackrest-repo-host-0." + c.clusterName().Name + "." + c.Namespace + RepoHostPostfix
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /tls/pgbackrest.ca-roots"
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /tls/pgbackrest-client.crt"
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-key-file = /tls/pgbackrest-client.key"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /etc/pgbackrest/conf.d/pgbackrest.ca-roots"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /etc/pgbackrest/conf.d/pgbackrest-client.crt"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-key-file = /etc/pgbackrest/conf.d/pgbackrest-client.key"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-type = tls"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-user = postgres"
 				} else {
@@ -3325,8 +3325,8 @@ func (c *Cluster) generatePgbackrestRepoHostConfigmap() (*v1.ConfigMap, error) {
 			for j := int32(0); j < n; j++ {
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host = " + c.clusterName().Name + "-" + fmt.Sprintf("%d", j) + "." + c.clusterName().Name + "." + c.Namespace + RepoHostPostfix
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-ca-file = /tls/pgbackrest.ca-roots"
-				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-cert-file = /tls/pgbackrest-client.crt"
-				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-key-file = /tls/pgbackrest-client.key"
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-cert-file = /tls/pgbackrest-repo-host.crt"
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-key-file = /tls/pgbackrest-repo-host.key"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-type = tls"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-path = /home/postgres/pgdata/pgroot/data"
 			}

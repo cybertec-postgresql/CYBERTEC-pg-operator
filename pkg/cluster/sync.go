@@ -1799,6 +1799,7 @@ func generateRootCertificate(
 		Subject: pkix.Name{
 			CommonName: rootCommonName,
 		},
+		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
 	}
 
 	// A root certificate is self-signed, so pass in the template twice.

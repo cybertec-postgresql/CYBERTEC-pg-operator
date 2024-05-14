@@ -40,6 +40,16 @@ type SecretOauthTokenGetter struct {
 	OAuthTokenSecretName spec.NamespacedName
 }
 
+type PodType string
+
+const (
+	TYPE_POSTGRESQL     = PodType("postgresql")
+	TYPE_REPOSITORY     = PodType("repo-host")
+	TYPE_BACKUP_JOB     = PodType("backup-job")
+	TYPE_LOGICAL_BACKUP = PodType("logical-backup")
+	TYPE_POOLER         = PodType("pooler")
+)
+
 func newSecretOauthTokenGetter(kubeClient *k8sutil.KubernetesClient,
 	OAuthTokenSecretName spec.NamespacedName) *SecretOauthTokenGetter {
 	return &SecretOauthTokenGetter{kubeClient, OAuthTokenSecretName}
@@ -374,7 +384,7 @@ func (c *Cluster) waitStatefulsetReady() error {
 	return retryutil.Retry(c.OpConfig.ResourceCheckInterval, c.OpConfig.ResourceCheckTimeout,
 		func() (bool, error) {
 			listOptions := metav1.ListOptions{
-				LabelSelector: c.labelsSet(false).String(),
+				LabelSelector: c.labelsSetWithType(false, TYPE_POSTGRESQL).String(),
 			}
 			ss, err := c.KubeClient.StatefulSets(c.Namespace).List(context.TODO(), listOptions)
 			if err != nil {
@@ -478,12 +488,18 @@ func (c *Cluster) waitStatefulsetPodsReady() error {
 // For backward compatibility, shouldAddExtraLabels must be false
 // when listing k8s objects. See operator PR #252
 func (c *Cluster) labelsSet(shouldAddExtraLabels bool) labels.Set {
+	return c.labelsSetWithType(shouldAddExtraLabels, "")
+}
+
+func (c *Cluster) labelsSetWithType(shouldAddExtraLabels bool, typeLabel PodType) labels.Set {
 	lbls := make(map[string]string)
 	for k, v := range c.OpConfig.ClusterLabels {
 		lbls[k] = v
 	}
 	lbls[c.OpConfig.ClusterNameLabel] = c.Name
-	lbls["member.cpo.opensource.cybertec.at/type"] = "postgres"
+	if typeLabel != "" {
+		lbls["member.cpo.opensource.cybertec.at/type"] = string(typeLabel)
+	}
 
 	if shouldAddExtraLabels {
 		// enables filtering resources owned by a team
@@ -506,24 +522,25 @@ func (c *Cluster) labelsSet(shouldAddExtraLabels bool) labels.Set {
 	return labels.Set(lbls)
 }
 
-func (c *Cluster) labelsSelector() *metav1.LabelSelector {
+func (c *Cluster) labelsSelector(typeLabel PodType) *metav1.LabelSelector {
 	return &metav1.LabelSelector{
-		MatchLabels:      c.labelsSet(false),
+		MatchLabels:      c.labelsSetWithType(false, typeLabel),
 		MatchExpressions: nil,
 	}
 }
 
-func (c *Cluster) labelsSelectorRepoHost() *metav1.LabelSelector {
-	labels := c.labelsSet(false)
-	labels["member.cpo.opensource.cybertec.at/type"] = "repo-host"
+func (c *Cluster) roleLabelsSelector(role PostgresRole) *metav1.LabelSelector {
+	lbls := c.labelsSetWithType(false, TYPE_POSTGRESQL)
+	lbls[c.OpConfig.PodRoleLabel] = string(role)
 	return &metav1.LabelSelector{
-		MatchLabels:      labels,
+		MatchLabels:      c.labelsSetWithType(false, TYPE_POSTGRESQL),
 		MatchExpressions: nil,
 	}
 }
 
 func (c *Cluster) roleLabelsSet(shouldAddExtraLabels bool, role PostgresRole) labels.Set {
-	lbls := c.labelsSet(shouldAddExtraLabels)
+	// Role labels set is only matching database pods
+	lbls := c.labelsSetWithType(shouldAddExtraLabels, TYPE_POSTGRESQL)
 	// Ignore PodRoleLabel for Role ClusterPods
 	if role != ClusterPods {
 		lbls[c.OpConfig.PodRoleLabel] = string(role)

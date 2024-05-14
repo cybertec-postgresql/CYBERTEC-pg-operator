@@ -1031,8 +1031,10 @@ func (c *Cluster) generateSpiloPodEnvVars(
 		envVars = append(envVars, v1.EnvVar{Name: "PGVERSION", Value: c.GetDesiredMajorVersion()})
 	}
 	// Spilo expects cluster labels as JSON
-	if clusterLabels, err := json.Marshal(labels.Set(c.OpConfig.ClusterLabels)); err != nil {
-		envVars = append(envVars, v1.EnvVar{Name: "KUBERNETES_LABELS", Value: labels.Set(c.OpConfig.ClusterLabels).String()})
+	typeLabel := labels.Set(map[string]string{"member.cpo.opensource.cybertec.at/type": string(TYPE_POSTGRESQL)})
+	databaseClusterLabels := labels.Merge(labels.Set(c.OpConfig.ClusterLabels), typeLabel)
+	if clusterLabels, err := json.Marshal(databaseClusterLabels); err != nil {
+		envVars = append(envVars, v1.EnvVar{Name: "KUBERNETES_LABELS", Value: databaseClusterLabels.String()})
 	} else {
 		envVars = append(envVars, v1.EnvVar{Name: "KUBERNETES_LABELS", Value: string(clusterLabels)})
 	}
@@ -1719,7 +1721,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
-		c.labelsSet(true),
+		c.labelsSetWithType(true, TYPE_POSTGRESQL),
 		c.annotationsSet(podAnnotations),
 		spiloContainer,
 		initContainers,
@@ -1787,12 +1789,12 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        c.statefulSetName(),
 			Namespace:   c.Namespace,
-			Labels:      c.labelsSet(true),
+			Labels:      c.labelsSetWithType(true, TYPE_POSTGRESQL),
 			Annotations: c.AnnotationsToPropagate(c.annotationsSet(nil)),
 		},
 		Spec: appsv1.StatefulSetSpec{
 			Replicas:                             &numberOfInstances,
-			Selector:                             c.labelsSelector(),
+			Selector:                             c.labelsSelector(TYPE_POSTGRESQL),
 			ServiceName:                          c.serviceName(Master),
 			Template:                             *podTemplate,
 			VolumeClaimTemplates:                 []v1.PersistentVolumeClaim{*volumeClaimTemplate},
@@ -1994,8 +1996,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 		})
 	}
 
-	repoHostLabels := c.labelsSet(true)
-	repoHostLabels["member.cpo.opensource.cybertec.at/type"] = "repo-host"
+	repoHostLabels := c.labelsSetWithType(true, TYPE_REPOSITORY)
 	c.Postgresql.Spec.RepoHost = true
 
 	// generate pod template for the statefulset, based on the spilo container and sidecars
@@ -2087,7 +2088,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 		},
 		Spec: appsv1.StatefulSetSpec{
 			Replicas:                             &numberOfInstances,
-			Selector:                             c.labelsSelectorRepoHost(),
+			Selector:                             c.labelsSelector(TYPE_REPOSITORY),
 			ServiceName:                          c.serviceName(ClusterPods),
 			Template:                             *podTemplate,
 			VolumeClaimTemplates:                 volume,
@@ -2968,14 +2969,9 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 		nil,
 	)
 
-	labels := map[string]string{
-		c.OpConfig.ClusterNameLabel: c.Name,
-		"application":               "spilo-logical-backup",
-	}
-
 	nodeAffinity := c.nodeAffinity(c.OpConfig.NodeReadinessLabel, nil)
 	podAffinity := podAffinity(
-		labels,
+		c.roleLabelsSet(false, Master),
 		"kubernetes.io/hostname",
 		nodeAffinity,
 		true,
@@ -2987,7 +2983,7 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 	// re-use the method that generates DB pod templates
 	if podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
-		labels,
+		c.labelsSetWithType(true, TYPE_LOGICAL_BACKUP),
 		annotations,
 		logicalBackupContainer,
 		[]v1.Container{},
@@ -3039,7 +3035,7 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        c.getLogicalBackupJobName(),
 			Namespace:   c.Namespace,
-			Labels:      c.labelsSet(true),
+			Labels:      c.labelsSetWithType(true, TYPE_LOGICAL_BACKUP),
 			Annotations: c.annotationsSet(nil),
 		},
 		Spec: batchv1.CronJobSpec{
@@ -3400,15 +3396,9 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 		nil,
 	)
 
-	labels := map[string]string{
-		c.OpConfig.ClusterNameLabel: c.Name,
-		"application":               "pgbackrest-backup",
-	}
 	podAffinityTerm := v1.PodAffinityTerm{
-		LabelSelector: &metav1.LabelSelector{
-			MatchLabels: labels,
-		},
-		TopologyKey: "kubernetes.io/hostname",
+		LabelSelector: c.roleLabelsSelector(Master),
+		TopologyKey:   "kubernetes.io/hostname",
 	}
 	podAffinity := v1.Affinity{
 		PodAffinity: &v1.PodAffinity{
@@ -3424,7 +3414,7 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 	// re-use the method that generates DB pod templates
 	if podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
-		labels,
+		c.labelsSetWithType(true, TYPE_BACKUP_JOB),
 		annotations,
 		pgbackrestContainer,
 		[]v1.Container{},
@@ -3475,7 +3465,7 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        c.getPgbackrestJobName(repo, name),
 			Namespace:   c.Namespace,
-			Labels:      c.labelsSet(true),
+			Labels:      c.labelsSetWithType(true, TYPE_BACKUP_JOB),
 			Annotations: c.annotationsSet(nil),
 		},
 		Spec: batchv1.CronJobSpec{

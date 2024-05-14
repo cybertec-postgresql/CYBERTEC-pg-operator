@@ -1817,10 +1817,8 @@ func generateLeafCertificate(
 	const leafExpiration = time.Hour * 24 * 365
 	const leafStartValid = time.Hour * -1
 	extKey := []x509.ExtKeyUsage{
-		x509.ExtKeyUsageClientAuth}
-	if server {
-		extKey = []x509.ExtKeyUsage{
-			x509.ExtKeyUsageServerAuth}
+		x509.ExtKeyUsageClientAuth,
+		x509.ExtKeyUsageServerAuth,
 	}
 
 	now := currentTime()
@@ -1933,8 +1931,9 @@ func (c *Cluster) createPgbackrestCertSecret(secretname string) error {
 	// hosts are added or removed.
 	leaf := &LeafCertificate{}
 	commonName := c.clientCommonName()
-	additionalName := "*." + c.clusterName().Name + "." + c.Namespace + RepoHostPostfix
-	dnsNames := []string{commonName, additionalName}
+	mainServiceName := "*." + c.clusterName().Name + "." + c.Namespace + RepoHostPostfix
+	auxServiceName := "*." + c.serviceName(ClusterPods) + "." + c.Namespace + RepoHostPostfix
+	dnsNames := []string{commonName, mainServiceName, auxServiceName}
 
 	inRoot := &RootCertificateAuthority{}
 	inRoot, err := NewRootCertificateAuthority()

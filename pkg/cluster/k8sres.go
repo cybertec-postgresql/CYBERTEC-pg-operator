@@ -47,7 +47,7 @@ const (
 	operatorPort                   = 8080
 	monitorPort                    = 9187
 	monitorUsername                = "cpo_exporter"
-	RepoHostPostfix                = ".svc.cluster.local"
+	RepoHostPostfix                = ".svc.cluster.local" // TODO, make configurable
 )
 
 type pgUser struct {

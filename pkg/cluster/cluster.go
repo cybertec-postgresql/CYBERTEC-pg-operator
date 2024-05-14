@@ -1252,6 +1252,10 @@ func (c *Cluster) Delete() {
 		c.logger.Warningf("could not remove the logical backup k8s cron job; %v", err)
 	}
 
+	if err := c.deletePgbackrestRepoHostObjects(); err != nil {
+		c.logger.Warningf("could not delete pgbackrest objects: %v", err)
+	}
+
 	if err := c.syncPgbackrestJob(true); err != nil {
 		c.logger.Warningf("could not delete pgbackrest jobs: %v", err)
 	}

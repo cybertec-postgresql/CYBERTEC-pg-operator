@@ -3342,8 +3342,8 @@ func (c *Cluster) generatePgbackrestRepoHostConfigmap() (*v1.ConfigMap, error) {
 
 func (c *Cluster) generatePgbackrestRestoreConfigmap() (*v1.ConfigMap, error) {
 	data := make(map[string]string)
-	data["restore_enable"] = "true"
-	data["restore_basebackup"] = "false"
+	data["restore_enable"] = "false"
+	data["restore_basebackup"] = "true"
 	data["restore_method"] = "pgbackrest"
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 		options := strings.Join(c.Postgresql.Spec.Backup.Pgbackrest.Restore.Options, " ")

@@ -1799,6 +1799,7 @@ func generateRootCertificate(
 		Subject: pkix.Name{
 			CommonName: rootCommonName,
 		},
+		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
 	}
 
 	// A root certificate is self-signed, so pass in the template twice.
@@ -1817,10 +1818,8 @@ func generateLeafCertificate(
 	const leafExpiration = time.Hour * 24 * 365
 	const leafStartValid = time.Hour * -1
 	extKey := []x509.ExtKeyUsage{
-		x509.ExtKeyUsageClientAuth}
-	if server {
-		extKey = []x509.ExtKeyUsage{
-			x509.ExtKeyUsageServerAuth}
+		x509.ExtKeyUsageClientAuth,
+		x509.ExtKeyUsageServerAuth,
 	}
 
 	now := currentTime()
@@ -1908,7 +1907,7 @@ func (c *Cluster) clientCommonName() string {
 	// - https://docs.k8s.io/concepts/overview/working-with-objects/names/#uids
 	// - https://releases.k8s.io/v1.22.0/staging/src/k8s.io/apiserver/pkg/registry/rest/create.go#L111
 	// - https://releases.k8s.io/v1.22.0/staging/src/k8s.io/apiserver/pkg/registry/rest/meta.go#L30
-	return "cpo-cluster@" + c.clusterName().Name + "=*"
+	return c.clusterName().Name
 }
 
 // ByteMap initializes m when it points to nil.
@@ -1933,8 +1932,9 @@ func (c *Cluster) createPgbackrestCertSecret(secretname string) error {
 	// hosts are added or removed.
 	leaf := &LeafCertificate{}
 	commonName := c.clientCommonName()
-	additionalName := "*." + c.clusterName().Name + "." + c.Namespace + RepoHostPostfix
-	dnsNames := []string{commonName, additionalName}
+	mainServiceName := "*." + c.clusterName().Name + "." + c.Namespace + RepoHostPostfix
+	auxServiceName := "*." + c.serviceName(ClusterPods) + "." + c.Namespace + RepoHostPostfix
+	dnsNames := []string{commonName, mainServiceName, auxServiceName}
 
 	inRoot := &RootCertificateAuthority{}
 	inRoot, err := NewRootCertificateAuthority()

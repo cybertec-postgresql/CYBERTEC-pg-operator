@@ -47,7 +47,7 @@ const (
 	operatorPort                   = 8080
 	monitorPort                    = 9187
 	monitorUsername                = "cpo_exporter"
-	RepoHostPostfix                = ".svc.cluster.local"
+	RepoHostPostfix                = ".svc.cluster.local" // TODO, make configurable
 )
 
 type pgUser struct {
@@ -1031,8 +1031,10 @@ func (c *Cluster) generateSpiloPodEnvVars(
 		envVars = append(envVars, v1.EnvVar{Name: "PGVERSION", Value: c.GetDesiredMajorVersion()})
 	}
 	// Spilo expects cluster labels as JSON
-	if clusterLabels, err := json.Marshal(labels.Set(c.OpConfig.ClusterLabels)); err != nil {
-		envVars = append(envVars, v1.EnvVar{Name: "KUBERNETES_LABELS", Value: labels.Set(c.OpConfig.ClusterLabels).String()})
+	typeLabel := labels.Set(map[string]string{"member.cpo.opensource.cybertec.at/type": string(TYPE_POSTGRESQL)})
+	databaseClusterLabels := labels.Merge(labels.Set(c.OpConfig.ClusterLabels), typeLabel)
+	if clusterLabels, err := json.Marshal(databaseClusterLabels); err != nil {
+		envVars = append(envVars, v1.EnvVar{Name: "KUBERNETES_LABELS", Value: databaseClusterLabels.String()})
 	} else {
 		envVars = append(envVars, v1.EnvVar{Name: "KUBERNETES_LABELS", Value: string(clusterLabels)})
 	}
@@ -1219,6 +1221,10 @@ func (c *Cluster) generatepgBackRestPodEnvVars(
 	envVars = appendEnvVars(envVars, configMapEnvVarsList...)
 
 	return envVars, nil
+}
+
+func copyEnvVars(envs []v1.EnvVar) []v1.EnvVar {
+	return append([]v1.EnvVar{}, envs...)
 }
 
 func appendEnvVars(envs []v1.EnvVar, appEnv ...v1.EnvVar) []v1.EnvVar {
@@ -1514,7 +1520,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		}
 		additionalVolumes = append(additionalVolumes, tlsVolumes...)
 	}
-	newSpiloEnvVars := spiloEnvVars
+	newSpiloEnvVars := copyEnvVars(spiloEnvVars)
 	repo_host_mode := false
 	// Add this envVar so that it is not added to the pgbackrest initcontainer
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
@@ -1609,9 +1615,8 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	podAnnotations := c.generatePodAnnotations(spec)
 
 	if spec.Backup != nil && spec.Backup.Pgbackrest != nil {
-
 		pgbackrestRestoreEnvVars := appendEnvVars(
-			spiloEnvVars,
+			copyEnvVars(spiloEnvVars),
 			v1.EnvVar{
 				Name: "RESTORE_ENABLE",
 				ValueFrom: &v1.EnvVarSource{
@@ -1716,7 +1721,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
-		c.labelsSet(true),
+		c.labelsSetWithType(true, TYPE_POSTGRESQL),
 		c.annotationsSet(podAnnotations),
 		spiloContainer,
 		initContainers,
@@ -1784,12 +1789,12 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        c.statefulSetName(),
 			Namespace:   c.Namespace,
-			Labels:      c.labelsSet(true),
+			Labels:      c.labelsSetWithType(true, TYPE_POSTGRESQL),
 			Annotations: c.AnnotationsToPropagate(c.annotationsSet(nil)),
 		},
 		Spec: appsv1.StatefulSetSpec{
 			Replicas:                             &numberOfInstances,
-			Selector:                             c.labelsSelector(),
+			Selector:                             c.labelsSelector(TYPE_POSTGRESQL),
 			ServiceName:                          c.serviceName(Master),
 			Template:                             *podTemplate,
 			VolumeClaimTemplates:                 []v1.PersistentVolumeClaim{*volumeClaimTemplate},
@@ -1991,8 +1996,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 		})
 	}
 
-	repoHostLabels := c.labelsSet(true)
-	repoHostLabels["member.cpo.opensource.cybertec.at/type"] = "repo-host"
+	repoHostLabels := c.labelsSetWithType(true, TYPE_REPOSITORY)
 	c.Postgresql.Spec.RepoHost = true
 
 	// generate pod template for the statefulset, based on the spilo container and sidecars
@@ -2084,7 +2088,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 		},
 		Spec: appsv1.StatefulSetSpec{
 			Replicas:                             &numberOfInstances,
-			Selector:                             c.labelsSelectorRepoHost(),
+			Selector:                             c.labelsSelector(TYPE_REPOSITORY),
 			ServiceName:                          c.serviceName(ClusterPods),
 			Template:                             *podTemplate,
 			VolumeClaimTemplates:                 volume,
@@ -2471,7 +2475,7 @@ func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secret
 
 	name := "pgbackrest-config"
 	path := "/etc/pgbackrest/conf.d"
-	defaultMode := int32(0644)
+	defaultMode := int32(0640)
 	postgresContainerIdx := 0
 	postgresInitContainerIdx := -1
 
@@ -2965,14 +2969,9 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 		nil,
 	)
 
-	labels := map[string]string{
-		c.OpConfig.ClusterNameLabel: c.Name,
-		"application":               "spilo-logical-backup",
-	}
-
 	nodeAffinity := c.nodeAffinity(c.OpConfig.NodeReadinessLabel, nil)
 	podAffinity := podAffinity(
-		labels,
+		c.roleLabelsSet(false, Master),
 		"kubernetes.io/hostname",
 		nodeAffinity,
 		true,
@@ -2984,7 +2983,7 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 	// re-use the method that generates DB pod templates
 	if podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
-		labels,
+		c.labelsSetWithType(true, TYPE_LOGICAL_BACKUP),
 		annotations,
 		logicalBackupContainer,
 		[]v1.Container{},
@@ -3036,7 +3035,7 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        c.getLogicalBackupJobName(),
 			Namespace:   c.Namespace,
-			Labels:      c.labelsSet(true),
+			Labels:      c.labelsSetWithType(true, TYPE_LOGICAL_BACKUP),
 			Annotations: c.annotationsSet(nil),
 		},
 		Spec: batchv1.CronJobSpec{
@@ -3252,10 +3251,10 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 	config := "[db]\npg1-path = /home/postgres/pgdata/pgroot/data\npg1-port = 5432\npg1-socket-path = /var/run/postgresql/\n"
 	config += "\n[global]\nlog-path = /home/postgres/pgdata/pgbackrest/log\nspool-path = /home/postgres/pgdata/pgbackrest/spool-path"
 	config += "\ntls-server-address=*"
-	config += "\ntls-server-ca-file = /tls/pgbackrest.ca-roots"
-	config += "\ntls-server-cert-file = /tls/pgbackrest-repo-host.crt"
-	config += "\ntls-server-key-file = /tls/pgbackrest-repo-host.key"
-	config += "\ntls-server-auth = " + c.clientCommonName()
+	config += "\ntls-server-ca-file = /etc/pgbackrest/conf.d/pgbackrest.ca-roots"
+	config += "\ntls-server-cert-file = /etc/pgbackrest/conf.d/pgbackrest-client.crt"
+	config += "\ntls-server-key-file = /etc/pgbackrest/conf.d/pgbackrest-client.key"
+	config += "\ntls-server-auth = " + c.clientCommonName() + "=*"
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 		if global := c.Postgresql.Spec.Backup.Pgbackrest.Global; global != nil {
 			for k, v := range global {
@@ -3268,10 +3267,10 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 			for i, repo := range repos {
 				if repo.Storage == "pvc" {
 					c.logger.Debugf("DEBUG_OUTPUT %s %s", c.clusterName().Name, c.Namespace)
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.clusterName().Name + "-pgbackrest-repo-host-0." + c.clusterName().Name + "." + c.Namespace + RepoHostPostfix
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /tls/pgbackrest.ca-roots"
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /tls/pgbackrest-client.crt"
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-key-file = /tls/pgbackrest-client.key"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.clusterName().Name + "-pgbackrest-repo-host-0." + c.serviceName(ClusterPods) + "." + c.Namespace + RepoHostPostfix
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /etc/pgbackrest/conf.d/pgbackrest.ca-roots"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /etc/pgbackrest/conf.d/pgbackrest-client.crt"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-key-file = /etc/pgbackrest/conf.d/pgbackrest-client.key"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-type = tls"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-user = postgres"
 				} else {
@@ -3302,7 +3301,7 @@ func (c *Cluster) generatePgbackrestRepoHostConfigmap() (*v1.ConfigMap, error) {
 	config += "\ntls-server-ca-file = /tls/pgbackrest.ca-roots"
 	config += "\ntls-server-cert-file = /tls/pgbackrest-repo-host.crt"
 	config += "\ntls-server-key-file = /tls/pgbackrest-repo-host.key"
-	config += "\ntls-server-auth = " + c.clientCommonName()
+	config += "\ntls-server-auth = " + c.clientCommonName() + "=*"
 
 	repos := c.Postgresql.Spec.Backup.Pgbackrest.Repos
 	if len(repos) >= 1 {
@@ -3322,8 +3321,8 @@ func (c *Cluster) generatePgbackrestRepoHostConfigmap() (*v1.ConfigMap, error) {
 			for j := int32(0); j < n; j++ {
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host = " + c.clusterName().Name + "-" + fmt.Sprintf("%d", j) + "." + c.clusterName().Name + "." + c.Namespace + RepoHostPostfix
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-ca-file = /tls/pgbackrest.ca-roots"
-				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-cert-file = /tls/pgbackrest-client.crt"
-				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-key-file = /tls/pgbackrest-client.key"
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-cert-file = /tls/pgbackrest-repo-host.crt"
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-key-file = /tls/pgbackrest-repo-host.key"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-type = tls"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-path = /home/postgres/pgdata/pgroot/data"
 			}
@@ -3397,15 +3396,9 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 		nil,
 	)
 
-	labels := map[string]string{
-		c.OpConfig.ClusterNameLabel: c.Name,
-		"application":               "pgbackrest-backup",
-	}
 	podAffinityTerm := v1.PodAffinityTerm{
-		LabelSelector: &metav1.LabelSelector{
-			MatchLabels: labels,
-		},
-		TopologyKey: "kubernetes.io/hostname",
+		LabelSelector: c.roleLabelsSelector(Master),
+		TopologyKey:   "kubernetes.io/hostname",
 	}
 	podAffinity := v1.Affinity{
 		PodAffinity: &v1.PodAffinity{
@@ -3421,7 +3414,7 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 	// re-use the method that generates DB pod templates
 	if podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
-		labels,
+		c.labelsSetWithType(true, TYPE_BACKUP_JOB),
 		annotations,
 		pgbackrestContainer,
 		[]v1.Container{},
@@ -3472,7 +3465,7 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        c.getPgbackrestJobName(repo, name),
 			Namespace:   c.Namespace,
-			Labels:      c.labelsSet(true),
+			Labels:      c.labelsSetWithType(true, TYPE_BACKUP_JOB),
 			Annotations: c.annotationsSet(nil),
 		},
 		Spec: batchv1.CronJobSpec{

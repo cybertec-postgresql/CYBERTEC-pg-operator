@@ -1528,7 +1528,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			if repo.Storage == "pvc" {
 				repo_host_mode = true
 				newSpiloEnvVars = append(newSpiloEnvVars, v1.EnvVar{
-					Name:  "REPOHOST",
+					Name:  "REPO_HOST",
 					Value: "true",
 				})
 				break
@@ -1840,7 +1840,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	}
 	spiloEnvVars = appendEnvVars(spiloEnvVars,
 		v1.EnvVar{
-			Name:  "REPOHOST",
+			Name:  "REPO_HOST",
 			Value: "true"},
 		v1.EnvVar{
 			Name:  "USE_PGBACKREST",

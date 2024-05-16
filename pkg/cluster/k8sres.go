@@ -3482,8 +3482,8 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(name string) []v1.EnvVar {
 
 	envVars := []v1.EnvVar{
 		{
-			Name:  "COMMAND",
-			Value: "backup",
+			Name:  "USE_PGBACKREST",
+			Value: "true",
 		},
 		{
 			Name:  "PGBACKREST_MODE",
@@ -3504,10 +3504,6 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(name string) []v1.EnvVar {
 		{
 			Name:  "PGUSER",
 			Value: "postgres",
-		},
-		{
-			Name:  "MODE",
-			Value: "pgbackrest",
 		},
 		{
 			Name: "NAMESPACE",

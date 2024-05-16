@@ -3388,14 +3388,14 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 	if c.Spec.Backup != nil && c.Spec.Backup.Pgbackrest.Repos != nil {
 		for _, rep := range c.Spec.Backup.Pgbackrest.Repos {
 			if rep.Storage == "pvc" {
-				envVars = append(envVars, v1.EnvVar{
-					Name:  "SELECTOR",
-					Value: fmt.Sprintf("cluster.cpo.opensource.cybertec.at/name=%s,member.cpo.opensource.cybertec.at/type=repo-host", c.Name),
-				})
+				for i, env := range envVars {
+					if env.Name == "SELECTOR" {
+						envVars[i].Value = fmt.Sprintf("cluster.cpo.opensource.cybertec.at/name=%s,member.cpo.opensource.cybertec.at/type=repo-host", c.Name)
+					}
+				}
 			}
 		}
 	}
-	c.logger.Infof("PGBACKREST JOB ENVS ARE ###### %v", envVars)
 	pgbackrestContainer := generateContainer(
 		pgbackrestContainerName,
 		&c.Postgresql.Spec.Backup.Pgbackrest.Image,
@@ -3529,6 +3529,18 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(name string) []v1.EnvVar {
 			Name:  "SELECTOR",
 			Value: fmt.Sprintf("cluster.cpo.opensource.cybertec.at/name=%s,member.cpo.opensource.cybertec.at/role=master", c.Name),
 		},
+	}
+	if c.Spec.Backup != nil && c.Spec.Backup.Pgbackrest.Repos != nil {
+		for _, rep := range c.Spec.Backup.Pgbackrest.Repos {
+			if rep.Storage == "pvc" {
+				for _, env := range envVars {
+					if env.Name == "SELECTOR" {
+						c.logger.Warningf("Now updating the env %v", env)
+						env.Value = fmt.Sprintf("cluster.cpo.opensource.cybertec.at/name=%s,member.cpo.opensource.cybertec.at/type=repo-host", c.Name)
+					}
+				}
+			}
+		}
 	}
 
 	c.logger.Debugf("Generated logical backup env vars")

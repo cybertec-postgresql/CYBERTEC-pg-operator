@@ -1663,7 +1663,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			},
 			v1.EnvVar{
 				Name:  "SELECTOR",
-				Value: fmt.Sprintf("cluster-name=%s,member.cpo.opensource.cybertec.at/role=master", c.Name),
+				Value: fmt.Sprintf("cluster.cpo.opensource.cybertec.at/name=%s,member.cpo.opensource.cybertec.at/role=master", c.Name),
 			},
 			v1.EnvVar{
 				Name:  "MODE",
@@ -3385,6 +3385,17 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 	resourceRequirements = &emptyResourceRequirements
 
 	envVars := c.generatePgbbackrestPodEnvVars(name)
+	if c.Spec.Backup != nil && c.Spec.Backup.Pgbackrest.Repos != nil {
+		for _, rep := range c.Spec.Backup.Pgbackrest.Repos {
+			if rep.Storage == "pvc" {
+				envVars = append(envVars, v1.EnvVar{
+					Name:  "SELECTOR",
+					Value: fmt.Sprintf("cluster.cpo.opensource.cybertec.at/name=%s,member.cpo.opensource.cybertec.at/type=repo-host", c.Name),
+				})
+			}
+		}
+	}
+	c.logger.Infof("PGBACKREST JOB ENVS ARE ###### %v", envVars)
 	pgbackrestContainer := generateContainer(
 		pgbackrestContainerName,
 		&c.Postgresql.Spec.Backup.Pgbackrest.Image,
@@ -3516,7 +3527,7 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(name string) []v1.EnvVar {
 		},
 		{
 			Name:  "SELECTOR",
-			Value: fmt.Sprintf("cluster-name=%s,member.cpo.opensource.cybertec.at/role=master", c.Name),
+			Value: fmt.Sprintf("cluster.cpo.opensource.cybertec.at/name=%s,member.cpo.opensource.cybertec.at/role=master", c.Name),
 		},
 	}
 

@@ -801,7 +801,6 @@ spec:
                                 - "gcs"
                                 - "azure"
                                 - "pvc"
-                                - "pvc"
                             resource:
                               type: string
                             endpoint:

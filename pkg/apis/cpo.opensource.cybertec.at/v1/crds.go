@@ -1172,9 +1172,6 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 															{
 																Raw: []byte(`"pvc"`),
 															},
-															{
-																Raw: []byte(`"pvc"`),
-															},
 														},
 													},
 													"resource": {

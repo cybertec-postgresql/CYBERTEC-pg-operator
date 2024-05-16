@@ -1091,7 +1091,7 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 		}
 	}
 
-	// Pgrest backup job
+	// Pgbackrest backup job
 	func() {
 
 		if newSpec.Spec.Backup != nil && newSpec.Spec.Backup.Pgbackrest != nil {
@@ -1099,6 +1099,17 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 				err = fmt.Errorf("could not sync pgbackrest config: %v", err)
 				updateFailed = true
 				return
+			}
+			if newSpec.Spec.Backup.Pgbackrest.Repos != nil {
+				for _, repo := range newSpec.Spec.Backup.Pgbackrest.Repos {
+					if repo.Storage == "pvc" {
+						if err := c.syncPgbackrestRepoHostConfig(); err != nil {
+							err = fmt.Errorf("could not sync pgbackrest repohost config: %v", err)
+							updateFailed = true
+							return
+						}
+					}
+				}
 			}
 			c.logger.Info("a pgbackrest config has been successfully created")
 			if err := c.syncPgbackrestJob(false); err != nil {

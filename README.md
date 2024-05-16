@@ -8,7 +8,7 @@ The operator reduces your efforts and simplifies the administration of your Post
 CPO (CYBERTEC PG Operator) allows you to create and run PostgreSQL clusters on Kubernetes.
 
 The operator reduces your efforts and simplifies the administration of your PostgreSQL clusters so that you can concentrate on other things.
-<img src="docs/diagrams/logo.png" width="200">
+<img src="docs/diagrams/cpo_logo.svg" width="200">
 
 The Postgres Operator delivers an easy to run highly-available [PostgreSQL](https://www.postgresql.org/)
 clusters on Kubernetes (K8s) powered by [Patroni](https://github.com/zalando/patroni).

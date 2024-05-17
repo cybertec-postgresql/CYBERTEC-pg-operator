@@ -403,7 +403,7 @@ func (c *Cluster) _waitPodLabelsReady(anyReplica bool) error {
 	var (
 		podsNumber int
 	)
-	ls := c.labelsSet(false)
+	ls := c.labelsSetWithType(false, TYPE_POSTGRESQL)
 	namespace := c.Namespace
 
 	listOptions := metav1.ListOptions{

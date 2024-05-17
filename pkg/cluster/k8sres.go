@@ -865,7 +865,6 @@ func (c *Cluster) generatePodTemplate(
 		}
 		addPgbackrestConfigVolume(&podSpec, configmapName, secretName)
 		c.logger.Debugf("Configmap added to this pod template is %s", configmapName)
-		c.logger.Debugf("Configmap added to this pod template is %s", configmapName)
 	}
 
 	if podAntiAffinity {
@@ -1716,6 +1715,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			Resources:    resources,
 		})
 	}
+	c.Postgresql.Spec.RepoHost = false
 
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
@@ -2984,6 +2984,7 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 	)
 
 	annotations := c.generatePodAnnotations(&c.Spec)
+	c.Postgresql.Spec.RepoHost = false
 
 	// re-use the method that generates DB pod templates
 	if podTemplate, err = c.generatePodTemplate(
@@ -3426,6 +3427,7 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 		}}
 
 	annotations := c.generatePodAnnotations(&c.Spec)
+	c.Postgresql.Spec.RepoHost = false
 
 	// re-use the method that generates DB pod templates
 	if podTemplate, err = c.generatePodTemplate(

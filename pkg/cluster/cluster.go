@@ -1263,6 +1263,10 @@ func (c *Cluster) Delete() {
 		c.logger.Warningf("could not remove the logical backup k8s cron job; %v", err)
 	}
 
+	if err := c.deleteStatefulSet(); err != nil {
+		c.logger.Warningf("could not delete statefulset: %v", err)
+	}
+
 	if err := c.deletePgbackrestRepoHostObjects(); err != nil {
 		c.logger.Warningf("could not delete pgbackrest objects: %v", err)
 	}
@@ -1281,10 +1285,6 @@ func (c *Cluster) Delete() {
 
 	if err := c.deletePgbackrestRestoreConfig(); err != nil {
 		c.logger.Warningf("could not delete pgbackrest restore config: %v", err)
-	}
-
-	if err := c.deleteStatefulSet(); err != nil {
-		c.logger.Warningf("could not delete statefulset: %v", err)
 	}
 
 	if err := c.deleteSecrets(); err != nil {

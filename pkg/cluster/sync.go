@@ -622,7 +622,7 @@ func (c *Cluster) syncStatefulSet() error {
 			return fmt.Errorf("could not generate statefulset: %v", err)
 		}
 
-		cmp := c.compareStatefulSetWith(desiredSts)
+		cmp := c.compareStatefulSetWith(c.Statefulset, desiredSts)
 		if !cmp.match {
 			if cmp.rollingUpdate {
 				podsToRecreate = make([]v1.Pod, 0)

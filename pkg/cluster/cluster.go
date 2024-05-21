@@ -525,82 +525,82 @@ func (c *Cluster) getPgbackrestCertSecretName() string {
 	return c.clusterName().Name + "-pgbackrest-cert"
 }
 
-func (c *Cluster) compareStatefulSetWith(statefulSet *appsv1.StatefulSet) *compareStatefulsetResult {
+func (c *Cluster) compareStatefulSetWith(oldSts, newSts *appsv1.StatefulSet) *compareStatefulsetResult {
 	reasons := make([]string, 0)
 	var match, needsRollUpdate, needsReplace bool
 
 	match = true
 	//TODO: improve me
-	if *c.Statefulset.Spec.Replicas != *statefulSet.Spec.Replicas {
+	if *oldSts.Spec.Replicas != *newSts.Spec.Replicas {
 		match = false
 		reasons = append(reasons, "new statefulset's number of replicas does not match the current one")
 	}
-	if changed, reason := c.compareAnnotations(c.Statefulset.Annotations, statefulSet.Annotations); changed {
+	if changed, reason := c.compareAnnotations(oldSts.Annotations, newSts.Annotations); changed {
 		match = false
 		needsReplace = true
 		reasons = append(reasons, "new statefulset's annotations do not match: "+reason)
 	}
-	if c.Statefulset.Spec.PodManagementPolicy != statefulSet.Spec.PodManagementPolicy {
+	if oldSts.Spec.PodManagementPolicy != newSts.Spec.PodManagementPolicy {
 		match = false
 		needsReplace = true
 		reasons = append(reasons, "new statefulset's pod management policy do not match")
 	}
 
-	if !reflect.DeepEqual(c.Statefulset.Spec.PersistentVolumeClaimRetentionPolicy, statefulSet.Spec.PersistentVolumeClaimRetentionPolicy) {
+	if !reflect.DeepEqual(oldSts.Spec.PersistentVolumeClaimRetentionPolicy, newSts.Spec.PersistentVolumeClaimRetentionPolicy) {
 		match = false
 		needsReplace = true
 		reasons = append(reasons, "new statefulset's persistent volume claim retention policy do not match")
 	}
 
-	needsRollUpdate, reasons = c.compareContainers("initContainers", c.Statefulset.Spec.Template.Spec.InitContainers, statefulSet.Spec.Template.Spec.InitContainers, needsRollUpdate, reasons)
-	needsRollUpdate, reasons = c.compareContainers("containers", c.Statefulset.Spec.Template.Spec.Containers, statefulSet.Spec.Template.Spec.Containers, needsRollUpdate, reasons)
+	needsRollUpdate, reasons = c.compareContainers("initContainers", oldSts.Spec.Template.Spec.InitContainers, newSts.Spec.Template.Spec.InitContainers, needsRollUpdate, reasons)
+	needsRollUpdate, reasons = c.compareContainers("containers", oldSts.Spec.Template.Spec.Containers, newSts.Spec.Template.Spec.Containers, needsRollUpdate, reasons)
 
-	if len(c.Statefulset.Spec.Template.Spec.Containers) == 0 {
-		c.logger.Warningf("statefulset %q has no container", util.NameFromMeta(c.Statefulset.ObjectMeta))
+	if len(oldSts.Spec.Template.Spec.Containers) == 0 {
+		c.logger.Warningf("statefulset %q has no container", util.NameFromMeta(oldSts.ObjectMeta))
 		return &compareStatefulsetResult{}
 	}
 	// In the comparisons below, the needsReplace and needsRollUpdate flags are never reset, since checks fall through
 	// and the combined effect of all the changes should be applied.
 	// TODO: make sure this is in sync with generatePodTemplate, ideally by using the same list of fields to generate
 	// the template and the diff
-	if c.Statefulset.Spec.Template.Spec.ServiceAccountName != statefulSet.Spec.Template.Spec.ServiceAccountName {
+	if oldSts.Spec.Template.Spec.ServiceAccountName != newSts.Spec.Template.Spec.ServiceAccountName {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's serviceAccountName service account name does not match the current one")
 	}
-	if *c.Statefulset.Spec.Template.Spec.TerminationGracePeriodSeconds != *statefulSet.Spec.Template.Spec.TerminationGracePeriodSeconds {
+	if *oldSts.Spec.Template.Spec.TerminationGracePeriodSeconds != *newSts.Spec.Template.Spec.TerminationGracePeriodSeconds {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's terminationGracePeriodSeconds does not match the current one")
 	}
-	if !reflect.DeepEqual(c.Statefulset.Spec.Template.Spec.Affinity, statefulSet.Spec.Template.Spec.Affinity) {
+	if !reflect.DeepEqual(oldSts.Spec.Template.Spec.Affinity, newSts.Spec.Template.Spec.Affinity) {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's pod affinity does not match the current one")
 	}
-	if len(c.Statefulset.Spec.Template.Spec.Tolerations) != len(statefulSet.Spec.Template.Spec.Tolerations) {
+	if len(oldSts.Spec.Template.Spec.Tolerations) != len(newSts.Spec.Template.Spec.Tolerations) {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's pod tolerations does not match the current one")
 	}
 
-	if len(c.Statefulset.Spec.Template.Spec.TopologySpreadConstraints) != len(statefulSet.Spec.Template.Spec.TopologySpreadConstraints) {
+	if len(oldSts.Spec.Template.Spec.TopologySpreadConstraints) != len(newSts.Spec.Template.Spec.TopologySpreadConstraints) {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's pod topologySpreadConstraints does not match the current one")
 	}
 
 	// Some generated fields like creationTimestamp make it not possible to use DeepCompare on Spec.Template.ObjectMeta
-	if !reflect.DeepEqual(c.Statefulset.Spec.Template.Labels, statefulSet.Spec.Template.Labels) {
+	if !reflect.DeepEqual(oldSts.Spec.Template.Labels, newSts.Spec.Template.Labels) {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's metadata labels does not match the current one")
 	}
-	if (c.Statefulset.Spec.Selector != nil) && (statefulSet.Spec.Selector != nil) {
-		if !reflect.DeepEqual(c.Statefulset.Spec.Selector.MatchLabels, statefulSet.Spec.Selector.MatchLabels) {
+	if (c.Statefulset.Spec.Selector != nil) && (newSts.Spec.Selector != nil) {
+		if !reflect.DeepEqual(oldSts.Spec.Selector.MatchLabels, newSts.Spec.Selector.MatchLabels) {
 			// forbid introducing new labels in the selector on the new statefulset, as it would cripple replacements
 			// due to the fact that the new statefulset won't be able to pick up old pods with non-matching labels.
-			if !util.MapContains(c.Statefulset.Spec.Selector.MatchLabels, statefulSet.Spec.Selector.MatchLabels) {
+			if !util.MapContains(oldSts.Spec.Selector.MatchLabels, newSts.Spec.Selector.MatchLabels) {
 				c.logger.Warningf("new statefulset introduces extra labels in the label selector, cannot continue")
 				return &compareStatefulsetResult{}
 			}
@@ -609,48 +609,48 @@ func (c *Cluster) compareStatefulSetWith(statefulSet *appsv1.StatefulSet) *compa
 		}
 	}
 
-	if changed, reason := c.compareAnnotations(c.Statefulset.Spec.Template.Annotations, statefulSet.Spec.Template.Annotations); changed {
+	if changed, reason := c.compareAnnotations(oldSts.Spec.Template.Annotations, newSts.Spec.Template.Annotations); changed {
 		match = false
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's pod template metadata annotations does not match "+reason)
 	}
-	if !reflect.DeepEqual(c.Statefulset.Spec.Template.Spec.SecurityContext, statefulSet.Spec.Template.Spec.SecurityContext) {
+	if !reflect.DeepEqual(oldSts.Spec.Template.Spec.SecurityContext, newSts.Spec.Template.Spec.SecurityContext) {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's pod template security context in spec does not match the current one")
 	}
-	if len(c.Statefulset.Spec.VolumeClaimTemplates) != len(statefulSet.Spec.VolumeClaimTemplates) {
+	if len(oldSts.Spec.VolumeClaimTemplates) != len(newSts.Spec.VolumeClaimTemplates) {
 		needsReplace = true
 		reasons = append(reasons, "new statefulset's volumeClaimTemplates contains different number of volumes to the old one")
 	}
-	for i := 0; i < len(c.Statefulset.Spec.VolumeClaimTemplates); i++ {
-		name := c.Statefulset.Spec.VolumeClaimTemplates[i].Name
+	for i := 0; i < len(oldSts.Spec.VolumeClaimTemplates); i++ {
+		name := oldSts.Spec.VolumeClaimTemplates[i].Name
 		// Some generated fields like creationTimestamp make it not possible to use DeepCompare on ObjectMeta
-		if name != statefulSet.Spec.VolumeClaimTemplates[i].Name {
+		if name != newSts.Spec.VolumeClaimTemplates[i].Name {
 			needsReplace = true
 			reasons = append(reasons, fmt.Sprintf("new statefulset's name for volume %d does not match the current one", i))
 			continue
 		}
-		if !reflect.DeepEqual(c.Statefulset.Spec.VolumeClaimTemplates[i].Annotations, statefulSet.Spec.VolumeClaimTemplates[i].Annotations) {
+		if !reflect.DeepEqual(oldSts.Spec.VolumeClaimTemplates[i].Annotations, newSts.Spec.VolumeClaimTemplates[i].Annotations) {
 			needsReplace = true
 			reasons = append(reasons, fmt.Sprintf("new statefulset's annotations for volume %q does not match the current one", name))
 		}
-		if !reflect.DeepEqual(c.Statefulset.Spec.VolumeClaimTemplates[i].Spec, statefulSet.Spec.VolumeClaimTemplates[i].Spec) {
-			name := c.Statefulset.Spec.VolumeClaimTemplates[i].Name
+		if !reflect.DeepEqual(oldSts.Spec.VolumeClaimTemplates[i].Spec, newSts.Spec.VolumeClaimTemplates[i].Spec) {
+			name := oldSts.Spec.VolumeClaimTemplates[i].Name
 			needsReplace = true
 			reasons = append(reasons, fmt.Sprintf("new statefulset's volumeClaimTemplates specification for volume %q does not match the current one", name))
 		}
 	}
 
-	if len(c.Statefulset.Spec.Template.Spec.Volumes) != len(statefulSet.Spec.Template.Spec.Volumes) {
+	if len(oldSts.Spec.Template.Spec.Volumes) != len(newSts.Spec.Template.Spec.Volumes) {
 		needsReplace = true
 		reasons = append(reasons, "new statefulset's volumes contains different number of volumes to the old one")
 	}
 
 	// we assume any change in priority happens by rolling out a new priority class
 	// changing the priority value in an existing class is not supproted
-	if c.Statefulset.Spec.Template.Spec.PriorityClassName != statefulSet.Spec.Template.Spec.PriorityClassName {
+	if oldSts.Spec.Template.Spec.PriorityClassName != newSts.Spec.Template.Spec.PriorityClassName {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's pod priority class in spec does not match the current one")
@@ -659,7 +659,7 @@ func (c *Cluster) compareStatefulSetWith(statefulSet *appsv1.StatefulSet) *compa
 	// lazy Spilo update: modify the image in the statefulset itself but let its pods run with the old image
 	// until they are re-created for other reasons, for example node rotation
 	effectivePodImage := getPostgresContainer(&c.Statefulset.Spec.Template.Spec).Image
-	desiredImage := getPostgresContainer(&statefulSet.Spec.Template.Spec).Image
+	desiredImage := getPostgresContainer(&newSts.Spec.Template.Spec).Image
 	if c.OpConfig.EnableLazySpiloUpgrade && !reflect.DeepEqual(effectivePodImage, desiredImage) {
 		needsReplace = true
 		reasons = append(reasons, "lazy Spilo update: new statefulset's pod image does not match the current one")

@@ -671,7 +671,7 @@ func (c *Cluster) compareStatefulSetWith(oldSts, newSts *appsv1.StatefulSet) *co
 
 	// lazy Spilo update: modify the image in the statefulset itself but let its pods run with the old image
 	// until they are re-created for other reasons, for example node rotation
-	effectivePodImage := getPostgresContainer(oldSts.Spec.Template.Spec).Image
+	effectivePodImage := getPostgresContainer(&oldSts.Spec.Template.Spec).Image
 	desiredImage := getPostgresContainer(&newSts.Spec.Template.Spec).Image
 	if c.OpConfig.EnableLazySpiloUpgrade && !reflect.DeepEqual(effectivePodImage, desiredImage) {
 		needsReplace = true

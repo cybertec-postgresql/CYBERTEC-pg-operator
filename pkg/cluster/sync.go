@@ -1628,6 +1628,7 @@ func (c *Cluster) syncPgbackrestRepoHostConfig() error {
 			return c.createPgbackrestRepoHostObjects()
 		}
 		// TODO: Should check and cleanup for other orphaned repo related objects?
+		return nil
 	} else {
 		c.logger.Infof("Found existing pgbackrest repository")
 		if !repoNeeded {

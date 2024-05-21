@@ -490,28 +490,19 @@ func (c *Cluster) createPgbackrestRepoHostObjects() error {
 	c.setProcessName("Creating pgbackrest repo-host related objects")
 	c.logger.Info("Creating pgbackrest repo-host related objects")
 
-	pvcName := c.getPgbackrestRepoHostName()
-	backupSecretName := c.getPgbackrestCertSecretName()
 	if err := c.createPgbackrestRepoHostConfig(); err != nil {
 		err = fmt.Errorf("could not create a pgbackrest repo-host config: %v", err)
 		return err
 	}
 
-	err := c.createPgbackrestCertSecret(backupSecretName)
+	err := c.createPgbackrestCertSecret(c.getPgbackrestCertSecretName())
+	// XXX: handle when cert secret already exists, but no statefulset
 	if !k8sutil.ResourceAlreadyExists(err) {
-		pvcStatefulSetSpec := cpov1.PostgresSpec{
-			NumberOfInstances: 1,
-			TLS: &cpov1.TLSDescription{
-				SecretName: backupSecretName},
-		}
-		pvcSpec, err := c.generateRepoHostStatefulSet(&pvcStatefulSetSpec)
+		pvcSpec, err := c.generateRepoHostStatefulSet()
 		if err != nil {
 			err = fmt.Errorf("could not generate statefulset for the repohost: %v", err)
 			return err
 		}
-
-		pvcSpec.Name = pvcName
-		pvcSpec.Namespace = c.clusterName().Namespace
 
 		_, err = c.KubeClient.StatefulSets(c.Namespace).Create(
 			context.TODO(),

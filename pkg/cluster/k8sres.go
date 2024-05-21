@@ -1806,7 +1806,12 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 
 	return statefulSet, nil
 }
-func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.StatefulSet, error) {
+func (c *Cluster) generateRepoHostStatefulSet() (*appsv1.StatefulSet, error) {
+	spec := &cpov1.PostgresSpec{
+		NumberOfInstances: 1,
+		TLS: &cpov1.TLSDescription{
+			SecretName: c.getPgbackrestCertSecretName()},
+	}
 
 	var (
 		err               error

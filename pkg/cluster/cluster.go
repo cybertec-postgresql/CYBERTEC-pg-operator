@@ -609,7 +609,7 @@ func (c *Cluster) compareStatefulSetWith(oldSts, newSts *appsv1.StatefulSet) *co
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's metadata labels does not match the current one")
 	}
-	if (c.Statefulset.Spec.Selector != nil) && (newSts.Spec.Selector != nil) {
+	if (oldSts.Spec.Selector != nil) && (newSts.Spec.Selector != nil) {
 		if !reflect.DeepEqual(oldSts.Spec.Selector.MatchLabels, newSts.Spec.Selector.MatchLabels) {
 			// forbid introducing new labels in the selector on the new statefulset, as it would cripple replacements
 			// due to the fact that the new statefulset won't be able to pick up old pods with non-matching labels.

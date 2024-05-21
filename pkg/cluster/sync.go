@@ -1932,8 +1932,8 @@ func (c *Cluster) createPgbackrestCertSecret(secretname string) error {
 	// hosts are added or removed.
 	leaf := &LeafCertificate{}
 	commonName := c.clientCommonName()
-	mainServiceName := "*." + c.clusterName().Name + "." + c.Namespace + RepoHostPostfix
-	auxServiceName := "*." + c.serviceName(ClusterPods) + "." + c.Namespace + RepoHostPostfix
+	mainServiceName := "*." + c.clusterName().Name + "." + c.Namespace + ".svc." + c.OpConfig.ClusterDomain
+	auxServiceName := "*." + c.serviceName(ClusterPods) + "." + c.Namespace + ".svc." + c.OpConfig.ClusterDomain
 	dnsNames := []string{commonName, mainServiceName, auxServiceName}
 
 	inRoot := &RootCertificateAuthority{}

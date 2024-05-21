@@ -75,7 +75,7 @@ func (c *Cluster) majorVersionUpgrade() error {
 		return nil
 	}
 
-	pods, err := c.listPods()
+	pods, err := c.listPodsOfType(TYPE_POSTGRESQL)
 	if err != nil {
 		return err
 	}

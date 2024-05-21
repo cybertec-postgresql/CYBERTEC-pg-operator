@@ -230,7 +230,7 @@ func (c *Cluster) syncEbsVolumes() error {
 func (c *Cluster) listPersistentVolumeClaims() ([]v1.PersistentVolumeClaim, error) {
 	ns := c.Namespace
 	listOptions := metav1.ListOptions{
-		LabelSelector: c.labelsSet(false).String(),
+		LabelSelector: c.labelsSetWithType(false, TYPE_POSTGRESQL).String(),
 	}
 
 	pvcs, err := c.KubeClient.PersistentVolumeClaims(ns).List(context.TODO(), listOptions)
@@ -262,7 +262,7 @@ func (c *Cluster) deletePersistentVolumeClaims() error {
 }
 
 func (c *Cluster) deleteRepoHostPersistentVolumeClaims() error {
-	c.logger.Debugln("deleting PVCs fro the repo-host")
+	c.logger.Debugln("deleting PVCs for the repo-host")
 	pvcs, err := c.KubeClient.PersistentVolumeClaims(c.Namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		c.logger.Errorf("could not list of PersistentVolumeClaims: %v", err)

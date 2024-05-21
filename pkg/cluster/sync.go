@@ -307,53 +307,63 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	return err
 }
 
-func (c *Cluster) syncPgbackrestStatefulSet(oldSpec, newSpec cpov1.Pgbackrest) error {
-	c.setProcessName("Syncing pgbackrest repo-host")
-	c.logger.Info("Syncing pgbackrest repo-host")
+func (c *Cluster) syncPgbackrestStatefulSet(newSpec cpov1.Pgbackrest) error {
 
-	pvc_repo_added := false
-	repo_host_exists := false
-
-	// check if repo-host existed in the oldSpec
-	if oldSpec.Repos != nil {
-		for _, repo := range oldSpec.Repos {
-			if repo.Storage == "pvc" {
-				repo_host_exists = true
-			}
-		}
-	}
+	repoNeeded := false
 
 	// ensure that a pvc based repo is added in the new spec
 	if newSpec.Repos != nil {
 		for _, repo := range newSpec.Repos {
 			if repo.Storage == "pvc" {
-				pvc_repo_added = true
-				sts, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.getPgbackrestRepoHostName(), metav1.GetOptions{})
-				if k8sutil.ResourceAlreadyExists(err) || sts != nil {
-					c.logger.Info("Statefulset already exists for Pgbackrest repo-host, syncing now")
-					// if the repo-host is just updated then delete the old ones and create new
-					if err = c.deletePgbackrestRepoHostObjects(); err != nil {
-						return err
+				repoNeeded = true
+			}
+		}
+	}
+
+	curSts, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.getPgbackrestRepoHostName(), metav1.GetOptions{})
+	if err != nil {
+		if !k8sutil.ResourceNotFound(err) {
+			return fmt.Errorf("Error during reading of repo-host statefulset: %v", err)
+		}
+		if repoNeeded {
+			c.logger.Infof("Pgbackrest repo-host statefulset doesn't exist, creating")
+			c.createPgbackrestRepoHostObjects()
+		}
+	} else {
+		c.logger.Infof("Found existing pgbackrest repository")
+		if !repoNeeded {
+			c.logger.Infof("No pgbackrest repository host configured, deleting")
+			c.deletePgbackrestRepoHostObjects()
+		}
+
+		desiredSts, err := c.generateRepoHostStatefulSet()
+		if err != nil {
+			return fmt.Errorf("could not generate pgbackrest repo-host statefulset: %v", err)
+		}
+
+		cmp := c.compareStatefulSetWith(curSts, desiredSts)
+		if !cmp.match {
+			c.logStatefulSetChanges(curSts, desiredSts, false, cmp.reasons)
+
+			// Replica count is only one that results in !cmp.replace and this is const 1 for repo host
+			if err := c.replaceStatefulSet(&curSts, desiredSts); err != nil {
+				return fmt.Errorf("could not replace pgbackrest repo-host statefulset: %v", err)
+			}
+
+			if cmp.rollingUpdate {
+				pods, err := c.listPodsOfType(TYPE_REPOSITORY)
+				if err != nil {
+					return fmt.Errorf("could not list pods of pgbackrest repo-host statefulset: %v", err)
+				}
+				for _, pod := range pods {
+					if _, err := c.recreatePod(util.NameFromMeta(pod.ObjectMeta)); err != nil {
+						return fmt.Errorf("could not recreate pgbackrest repo-host pod: %v", err)
 					}
-					if err = c.createPgbackrestRepoHostObjects(); err != nil {
-						return err
-					} else {
-						break
-					}
-				} else if err = c.createPgbackrestRepoHostObjects(); err != nil {
-					return err
-				} else {
-					break
 				}
 			}
 		}
 	}
-	// Attempt to delete the repo-host stuff only if they existed before
-	if !pvc_repo_added && repo_host_exists {
-		if err := c.deletePgbackrestRepoHostObjects(); err != nil {
-			return err
-		}
-	}
+
 	return nil
 }
 
@@ -548,11 +558,11 @@ func (c *Cluster) syncStatefulSet() error {
 	isSafeToRecreatePods := true
 	switchoverCandidates := make([]spec.NamespacedName, 0)
 
-	pods, err := c.listPods()
+	pods, err := c.listPodsOfType(TYPE_POSTGRESQL)
 	if err != nil {
 		c.logger.Warnf("could not list pods of the statefulset: %v", err)
 	}
-	if c.Spec.Monitoring != nil {
+	if c.Spec.Monitoring != nil { // XXX: Why are we generating a sidecar in the sync code?
 		monitor := c.Spec.Monitoring
 		sidecar := &cpov1.Sidecar{
 			Name:        "postgres-exporter",
@@ -642,7 +652,7 @@ func (c *Cluster) syncStatefulSet() error {
 					return fmt.Errorf("could not update statefulset: %v", err)
 				}
 			} else {
-				if err := c.replaceStatefulSet(desiredSts); err != nil {
+				if err := c.replaceStatefulSet(&c.Statefulset, desiredSts); err != nil {
 					return fmt.Errorf("could not replace statefulset: %v", err)
 				}
 			}
@@ -677,7 +687,7 @@ func (c *Cluster) syncStatefulSet() error {
 	// apply PostgreSQL parameters that can only be set via the Patroni API.
 	// it is important to do it after the statefulset pods are there, but before the rolling update
 	// since those parameters require PostgreSQL restart.
-	pods, err = c.listPods()
+	pods, err = c.listPodsOfType(TYPE_POSTGRESQL)
 	if err != nil {
 		c.logger.Warnf("could not get list of pods to apply PostgreSQL parameters only to be set via Patroni API: %v", err)
 	}
@@ -1184,7 +1194,7 @@ func (c *Cluster) rotatePasswordInSecret(
 		} else {
 			// when passwords of system users are rotated in place, pods have to be replaced
 			if roleOrigin == spec.RoleOriginSystem {
-				pods, err := c.listPods()
+				pods, err := c.listPodsOfType(TYPE_POSTGRESQL)
 				if err != nil {
 					return "", fmt.Errorf("could not list pods of the statefulset: %v", err)
 				}
@@ -1602,23 +1612,60 @@ func (c *Cluster) syncPgbackrestConfig() error {
 
 func (c *Cluster) syncPgbackrestRepoHostConfig() error {
 	c.logger.Info("check if a sync for repo host configmap is needed ")
-	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil && c.Postgresql.Spec.Backup.Pgbackrest.Repos != nil {
-		for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
-			if repo.Storage == "pvc" {
-				if cm, err := c.KubeClient.ConfigMaps(c.Namespace).Get(context.TODO(), c.getPgbackrestRepoHostConfigmapName(), metav1.GetOptions{}); err == nil {
-					if err := c.updatePgbackrestRepoHostConfig(cm); err != nil {
-						return fmt.Errorf("could not update a pgbackrest repo-host config: %v", err)
-					}
-					c.logger.Info("a pgbackrest restore repo-host has been successfully updated")
-				} else {
-					if err := c.createPgbackrestRepoHostConfig(); err != nil {
-						return fmt.Errorf("could not create a pgbackrest repo-host config: %v", err)
-					}
-					c.logger.Info("a pgbackrest repo-host config has been successfully created")
+
+	repoNeeded := specHasPgbackrestPVCRepo(&c.Postgresql)
+
+	c.setProcessName("Syncing pgbackrest repo-host")
+	c.logger.Info("Syncing pgbackrest repo-host")
+
+	curSts, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.getPgbackrestRepoHostName(), metav1.GetOptions{})
+	if err != nil {
+		if !k8sutil.ResourceNotFound(err) {
+			return fmt.Errorf("Error during reading of repo-host statefulset: %v", err)
+		}
+		if repoNeeded {
+			c.logger.Infof("Pgbackrest repo-host statefulset doesn't exist, creating")
+			return c.createPgbackrestRepoHostObjects()
+		}
+		// TODO: Should check and cleanup for other orphaned repo related objects?
+	} else {
+		c.logger.Infof("Found existing pgbackrest repository")
+		if !repoNeeded {
+			c.logger.Infof("No pgbackrest repository host configured, deleting")
+			return c.deletePgbackrestRepoHostObjects()
+		}
+	}
+
+	desiredSts, err := c.generateRepoHostStatefulSet()
+	if err != nil {
+		return fmt.Errorf("could not generate pgbackrest repo-host statefulset: %v", err)
+	}
+
+	cmp := c.compareStatefulSetWith(curSts, desiredSts)
+	if !cmp.match {
+		c.logStatefulSetChanges(curSts, desiredSts, false, cmp.reasons)
+
+		// Replica count is only one that results in !cmp.replace and this is const 1 for repo host
+		if err := c.replaceStatefulSet(&curSts, desiredSts); err != nil {
+			return fmt.Errorf("could not replace pgbackrest repo-host statefulset: %v", err)
+		}
+
+		if cmp.rollingUpdate {
+			pods, err := c.listPodsOfType(TYPE_REPOSITORY)
+			if err != nil {
+				return fmt.Errorf("could not list pods of pgbackrest repo-host statefulset: %v", err)
+			}
+			for _, pod := range pods {
+				c.logger.Infof("Recreating repo host pod %v", pod.Name)
+				if _, err := c.recreatePod(util.NameFromMeta(pod.ObjectMeta)); err != nil {
+					return fmt.Errorf("could not recreate pgbackrest repo-host pod: %v", err)
 				}
-				break
 			}
 		}
+	}
+
+	if err = c.updatePgbackrestRepoHostConfig(); err != nil {
+		return fmt.Errorf("could not update pgbackrest repo-host config: %v", err)
 	}
 
 	return nil

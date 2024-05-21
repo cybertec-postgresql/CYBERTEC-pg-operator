@@ -495,9 +495,19 @@ func (c *Cluster) createPgbackrestRepoHostObjects() error {
 		return err
 	}
 
-	err := c.createPgbackrestCertSecret(c.getPgbackrestCertSecretName())
-	// XXX: handle when cert secret already exists, but no statefulset
-	if !k8sutil.ResourceAlreadyExists(err) {
+	// Ensure certs secret
+	if _, err := c.KubeClient.Secrets(c.Namespace).Get(context.TODO(), c.getPgbackrestCertSecretName(), metav1.GetOptions{}); err != nil {
+		if !k8sutil.ResourceNotFound(err) {
+			return fmt.Errorf("could not get pgbackrest secret: %v", err)
+		}
+		c.createPgbackrestCertSecret(c.getPgbackrestCertSecretName())
+	}
+
+	// Ensure Stateful set
+	if _, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.getPgbackrestRepoHostName(), metav1.GetOptions{}); err != nil {
+		if !k8sutil.ResourceNotFound(err) {
+			return fmt.Errorf("could not get pgbackrest statefulset: %v", err)
+		}
 		pvcSpec, err := c.generateRepoHostStatefulSet()
 		if err != nil {
 			err = fmt.Errorf("could not generate statefulset for the repohost: %v", err)
@@ -526,6 +536,9 @@ func (c *Cluster) getPgbackrestCertSecretName() string {
 }
 
 func (c *Cluster) compareStatefulSetWith(oldSts, newSts *appsv1.StatefulSet) *compareStatefulsetResult {
+	// This function is currently used for both main sts and repo host sts. Comparison logic is currently
+	// the same, but this needn't be the case.
+
 	reasons := make([]string, 0)
 	var match, needsRollUpdate, needsReplace bool
 
@@ -1016,10 +1029,50 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 		c.syncMonitoringSecret(oldSpec, newSpec)
 	}
 
-	//sync pgbackrest statefulset
-	if !reflect.DeepEqual(oldSpec.Spec.Backup.Pgbackrest.Repos, newSpec.Spec.Backup.Pgbackrest.Repos) {
-		c.syncPgbackrestStatefulSet(*oldSpec.Spec.Backup.Pgbackrest, *newSpec.Spec.Backup.Pgbackrest)
-	}
+	// Pgbackrest backup job
+	func() {
+		// FIXME: errorhandling in this function needs to be better
+		if specHasPgbackrestPVCRepo(newSpec) || specHasPgbackrestPVCRepo(oldSpec) {
+			if err := c.syncPgbackrestRepoHostConfig(); err != nil {
+				updateFailed = true
+				return
+			}
+		}
+
+		if newSpec.Spec.Backup != nil && newSpec.Spec.Backup.Pgbackrest != nil {
+			if err := c.syncPgbackrestConfig(); err != nil {
+				err = fmt.Errorf("could not sync pgbackrest config: %v", err)
+				updateFailed = true
+				return
+			}
+
+			c.logger.Info("a pgbackrest config has been successfully created")
+			if err := c.syncPgbackrestJob(false); err != nil {
+				err = fmt.Errorf("could not create a k8s cron job for pgbackrest: %v", err)
+				updateFailed = true
+				return
+			}
+			c.logger.Info("a k8s cron job for pgbackrest has been successfully created")
+			if c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID != c.Status.PgbackrestRestoreID {
+				if err := c.syncPgbackrestRestoreConfig(); err != nil {
+					updateFailed = true
+					return
+				}
+				c.KubeClient.SetPgbackrestRestoreCRDStatus(c.clusterName(), c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID)
+				c.Status.PgbackrestRestoreID = c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID
+				c.logger.Info("a pgbackrest restore config has been successfully synced")
+			}
+		} else {
+
+			if err := c.deletePgbackrestConfig(); err != nil {
+				c.logger.Warningf("could not delete pgbackrest config: %v", err)
+			}
+			if err := c.deletePgbackrestRepoHostConfig(); err != nil {
+				c.logger.Warningf("could not delete pgbackrest repo-host config: %v", err)
+			}
+		}
+
+	}()
 
 	// Statefulset
 	func() {
@@ -1081,54 +1134,6 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 			updateFailed = true
 		}
 	}
-
-	// Pgbackrest backup job
-	func() {
-
-		if newSpec.Spec.Backup != nil && newSpec.Spec.Backup.Pgbackrest != nil {
-			if err := c.syncPgbackrestConfig(); err != nil {
-				err = fmt.Errorf("could not sync pgbackrest config: %v", err)
-				updateFailed = true
-				return
-			}
-			if newSpec.Spec.Backup.Pgbackrest.Repos != nil {
-				for _, repo := range newSpec.Spec.Backup.Pgbackrest.Repos {
-					if repo.Storage == "pvc" {
-						if err := c.syncPgbackrestRepoHostConfig(); err != nil {
-							err = fmt.Errorf("could not sync pgbackrest repohost config: %v", err)
-							updateFailed = true
-							return
-						}
-					}
-				}
-			}
-			c.logger.Info("a pgbackrest config has been successfully created")
-			if err := c.syncPgbackrestJob(false); err != nil {
-				err = fmt.Errorf("could not create a k8s cron job for pgbackrest: %v", err)
-				updateFailed = true
-				return
-			}
-			c.logger.Info("a k8s cron job for pgbackrest has been successfully created")
-			if c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID != c.Status.PgbackrestRestoreID {
-				if err := c.syncPgbackrestRestoreConfig(); err != nil {
-					updateFailed = true
-					return
-				}
-				c.KubeClient.SetPgbackrestRestoreCRDStatus(c.clusterName(), c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID)
-				c.Status.PgbackrestRestoreID = c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID
-				c.logger.Info("a pgbackrest restore config has been successfully synced")
-			}
-		} else {
-
-			if err := c.deletePgbackrestConfig(); err != nil {
-				c.logger.Warningf("could not delete pgbackrest config: %v", err)
-			}
-			if err := c.deletePgbackrestRepoHostConfig(); err != nil {
-				c.logger.Warningf("could not delete pgbackrest repo-host config: %v", err)
-			}
-		}
-
-	}()
 
 	// logical backup job
 	func() {
@@ -1218,6 +1223,17 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	}
 
 	return nil
+}
+
+func specHasPgbackrestPVCRepo(newSpec *cpov1.Postgresql) bool {
+	if newSpec.Spec.Backup != nil && newSpec.Spec.Backup.Pgbackrest != nil && newSpec.Spec.Backup.Pgbackrest.Repos != nil {
+		for _, repo := range newSpec.Spec.Backup.Pgbackrest.Repos {
+			if repo.Storage == "pvc" {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func syncResources(a, b *v1.ResourceRequirements) bool {

@@ -2085,7 +2085,7 @@ func (c *Cluster) generateRepoHostStatefulSet() (*appsv1.StatefulSet, error) {
 
 	statefulSet := &appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:        c.statefulSetName(),
+			Name:        c.getPgbackrestRepoHostName(),
 			Namespace:   c.Namespace,
 			Labels:      repoHostLabels,
 			Annotations: c.AnnotationsToPropagate(c.annotationsSet(nil)),
@@ -2680,6 +2680,7 @@ func (c *Cluster) generateService(role PostgresRole, spec *cpov1.PostgresSpec) *
 	// no selector for master, see https://github.com/cybertec-postgresql/cybertec-pg-operator/issues/340
 	// if kubernetes_use_configmaps is set master service needs a selector
 	if role == Replica || c.patroniKubernetesUseConfigMaps() {
+		// XXX: this seems broken when etcd_host is set. That makes use config maps false, but we should need a selector
 		serviceSpec.Selector = c.roleLabelsSet(false, role)
 	}
 

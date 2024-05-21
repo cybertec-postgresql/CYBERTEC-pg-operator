@@ -203,18 +203,18 @@ func (c *Cluster) updateStatefulSet(newStatefulSet *appsv1.StatefulSet) error {
 }
 
 // replaceStatefulSet deletes an old StatefulSet and creates the new using spec in the PostgreSQL CRD.
-func (c *Cluster) replaceStatefulSet(newStatefulSet *appsv1.StatefulSet) error {
+func (c *Cluster) replaceStatefulSet(curSts **appsv1.StatefulSet, newStatefulSet *appsv1.StatefulSet) error {
 	c.setProcessName("replacing statefulset")
-	if c.Statefulset == nil {
+	if *curSts == nil {
 		return fmt.Errorf("there is no statefulset in the cluster")
 	}
 
-	statefulSetName := util.NameFromMeta(c.Statefulset.ObjectMeta)
+	statefulSetName := util.NameFromMeta((*curSts).ObjectMeta)
 	c.logger.Debugf("replacing statefulset")
 
 	// Delete the current statefulset without deleting the pods
 	deletePropagationPolicy := metav1.DeletePropagationOrphan
-	oldStatefulset := c.Statefulset
+	oldStatefulset := *curSts
 
 	options := metav1.DeleteOptions{PropagationPolicy: &deletePropagationPolicy}
 	err := c.KubeClient.StatefulSets(oldStatefulset.Namespace).Delete(context.TODO(), oldStatefulset.Name, options)
@@ -222,7 +222,7 @@ func (c *Cluster) replaceStatefulSet(newStatefulSet *appsv1.StatefulSet) error {
 		return fmt.Errorf("could not delete statefulset %q: %v", statefulSetName, err)
 	}
 	// make sure we clear the stored statefulset status if the subsequent create fails.
-	c.Statefulset = nil
+	*curSts = nil
 	// wait until the statefulset is truly deleted
 	c.logger.Debugf("waiting for the statefulset to be deleted")
 
@@ -252,7 +252,7 @@ func (c *Cluster) replaceStatefulSet(newStatefulSet *appsv1.StatefulSet) error {
 		c.logger.Warningf("number of pods for the old and updated Statefulsets is not identical")
 	}
 
-	c.Statefulset = createdStatefulset
+	*curSts = createdStatefulset
 	return nil
 }
 
@@ -773,7 +773,7 @@ func (c *Cluster) createPgbackrestRepoHostConfig() (err error) {
 	c.logger.Debugf("Generated pgbackrest repo-host configmapSpec: %v", pgbackrestRepoHostConfigmapSpec)
 
 	_, err = c.KubeClient.ConfigMaps(c.Namespace).Create(context.TODO(), pgbackrestRepoHostConfigmapSpec, metav1.CreateOptions{})
-	if err != nil {
+	if err != nil && !k8sutil.ResourceAlreadyExists(err) {
 		return fmt.Errorf("could not create pgbackrest repo-host config: %v", err)
 	}
 
@@ -793,7 +793,7 @@ func (c *Cluster) deletePgbackrestRepoHostConfig() error {
 	return nil
 }
 
-func (c *Cluster) updatePgbackrestRepoHostConfig(cm *v1.ConfigMap) (err error) {
+func (c *Cluster) updatePgbackrestRepoHostConfig() (err error) {
 
 	c.setProcessName("patching configmap for pgbackrest")
 

@@ -325,7 +325,7 @@ func (c *Cluster) syncStreams() error {
 	}
 
 	c.logger.Debug("syncing logical replication slots")
-	pods, err := c.listPods()
+	pods, err := c.listPodsOfType(TYPE_POSTGRESQL)
 	if err != nil {
 		return fmt.Errorf("could not get list of pods to sync logical replication slots via Patroni API: %v", err)
 	}

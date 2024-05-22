@@ -293,9 +293,9 @@ type Repo struct {
 }
 
 type Restore struct {
-	ID      string   `json:"id"`
-	Repo    string   `json:"repo"`
-	Options []string `json:"options"`
+	ID      string            `json:"id"`
+	Repo    string            `json:"repo"`
+	Options map[string]string `json:"options"`
 }
 
 type Configuration struct {

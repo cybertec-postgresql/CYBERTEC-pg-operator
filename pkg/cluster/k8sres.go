@@ -2258,6 +2258,7 @@ func (c *Cluster) getNumberOfInstances(spec *cpov1.PostgresSpec) int32 {
 	if newcur != cur {
 		c.logger.Infof("adjusted number of instances from %d to %d (min: %d, max: %d)", cur, newcur, min, max)
 	}
+	// XXX: Why? Should probably be done somewhere more obvious.
 	if spec.Backup != nil && spec.Backup.Pgbackrest != nil && spec.Backup.Pgbackrest.Restore.ID != c.Status.PgbackrestRestoreID {
 		newcur = 0
 	}
@@ -3353,8 +3354,14 @@ func (c *Cluster) generatePgbackrestRestoreConfigmap() (*v1.ConfigMap, error) {
 	data["restore_basebackup"] = "true"
 	data["restore_method"] = "pgbackrest"
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
-		options := strings.Join(c.Postgresql.Spec.Backup.Pgbackrest.Restore.Options, " ")
-		data["restore_command"] = fmt.Sprintf(" --repo=%s %s", c.Postgresql.Spec.Backup.Pgbackrest.Restore.Repo, options)
+		optionsArray := make([]string, 0)
+		for key, value := range c.Postgresql.Spec.Backup.Pgbackrest.Restore.Options {
+			optionsArray = append(optionsArray, fmt.Sprintf("--%s=%s", key, value))
+		}
+		options := strings.Join(optionsArray, " ")
+		data["restore_command"] = fmt.Sprintf(" --repo=%v %s",
+			repoNumberFromName(c.Postgresql.Spec.Backup.Pgbackrest.Restore.Repo),
+			options)
 	} else {
 		data["restore_command"] = "n.v."
 	}
@@ -3493,11 +3500,6 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(repo *cpov1.Repo, backupType str
 		// due to pgbackrest limitations
 		selector = c.labelsSetWithType(false, TYPE_REPOSITORY).String()
 	}
-	repoNumber, err := strconv.Atoi(strings.TrimPrefix(repo.Name, "repo"))
-	if err != nil {
-		// CRD should be defining repo name to be ^repo[1-4]
-		panic("unexpected repo name " + repo.Name)
-	}
 
 	envVars := []v1.EnvVar{
 		{
@@ -3510,7 +3512,7 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(repo *cpov1.Repo, backupType str
 		},
 		{
 			Name:  "COMMAND_OPTS",
-			Value: fmt.Sprintf("--stanza=db --repo=%v --type=%s", repoNumber, backupType),
+			Value: fmt.Sprintf("--stanza=db --repo=%v --type=%s", repoNumberFromName(repo.Name), backupType),
 		},
 		{
 			Name:  "COMPARE_HASH",
@@ -3539,6 +3541,15 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(repo *cpov1.Repo, backupType str
 		},
 	}
 	return envVars
+}
+
+func repoNumberFromName(repoName string) int {
+	repoNumber, err := strconv.Atoi(strings.TrimPrefix(repoName, "repo"))
+	if err != nil {
+		// CRD should be defining repo name to be ^repo[1-4]$
+		panic("unexpected repo name " + repoName)
+	}
+	return repoNumber
 }
 
 // getLogicalBackupJobName returns the name; the job itself may not exists

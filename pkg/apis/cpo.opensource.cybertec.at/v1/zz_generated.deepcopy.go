@@ -1334,8 +1334,10 @@ func (in *Restore) DeepCopyInto(out *Restore) {
 	*out = *in
 	if in.Options != nil {
 		in, out := &in.Options, &out.Options
-		*out = make([]string, len(*in))
-		copy(*out, *in)
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
 	}
 	return
 }

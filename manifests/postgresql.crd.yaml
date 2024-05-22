@@ -793,7 +793,7 @@ spec:
                           properties:
                             name:
                               type: string
-                              pattern: ^repo[1-4]
+                              pattern: ^repo[1-4]$
                             storage:
                               type: string
                               enum:
@@ -834,9 +834,10 @@ spec:
                             type: string
                           repo:
                             type: string
+                            pattern: ^repo[1-4]$
                           options:
-                            type: array
-                            items:
+                            type: object
+                            additionalProperties:
                               type: string
                       resources:
                         type: object

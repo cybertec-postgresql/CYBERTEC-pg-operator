@@ -778,15 +778,15 @@ spec:
                         properties:
                           secret:
                             type: string
-                          parameters:
-                            additionalProperties:
-                              type: string
-                            type: object
                           protection:
                             type: object
                             properties:
                               restore:
                                 type: boolean
+                      global:
+                        type: object
+                        additionalProperties:
+                          type: string
                       repos:
                         type: array
                         items:

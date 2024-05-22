@@ -1029,6 +1029,11 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 		c.syncMonitoringSecret(oldSpec, newSpec)
 	}
 
+	//sync sts when there is a change in the pgbackrest secret, since we need to mount this
+	if !reflect.DeepEqual(oldSpec.Spec.Backup.Pgbackrest.Configuration, newSpec.Spec.Backup.Pgbackrest.Configuration) {
+		syncStatefulSet = true
+	}
+
 	// Pgbackrest backup job
 	func() {
 		// FIXME: errorhandling in this function needs to be better

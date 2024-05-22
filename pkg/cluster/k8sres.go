@@ -809,6 +809,7 @@ func (c *Cluster) generatePodTemplate(
 	additionalSecretMount string,
 	additionalSecretMountPath string,
 	additionalVolumes []cpov1.AdditionalVolume,
+	isRepoHost bool,
 ) (*v1.PodTemplateSpec, error) {
 
 	terminateGracePeriodSeconds := terminateGracePeriod
@@ -846,13 +847,12 @@ func (c *Cluster) generatePodTemplate(
 		addShmVolume(&podSpec)
 	}
 
-	if c.Postgresql.Spec.RepoHost {
+	if isRepoHost {
 		//this will be done only for repo-host
 		configmapName := c.getPgbackrestRepoHostConfigmapName()
 		secretName := c.getPgbackrestCertSecretName()
 		addPgbackrestConfigVolumePVC(&podSpec, configmapName, secretName)
 		c.logger.Debugf("Repo-host Configmap added to this pod template is %s", configmapName)
-		c.Postgresql.Spec.RepoHost = false
 	} else if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 		//this will be done for the pg-pod when we have pvc or not but have pgbackrest
 		configmapName := c.getPgbackrestConfigmapName()
@@ -1718,7 +1718,6 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			Resources:    resources,
 		})
 	}
-	c.Postgresql.Spec.RepoHost = false
 
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
@@ -1746,7 +1745,8 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		c.OpConfig.PodAntiAffinityPreferredDuringScheduling,
 		c.OpConfig.AdditionalSecretMount,
 		c.OpConfig.AdditionalSecretMountPath,
-		additionalVolumes)
+		additionalVolumes,
+		false)
 
 	if err != nil {
 		return nil, fmt.Errorf("could not generate pod template: %v", err)
@@ -2004,7 +2004,6 @@ func (c *Cluster) generateRepoHostStatefulSet() (*appsv1.StatefulSet, error) {
 	}
 
 	repoHostLabels := c.labelsSetWithType(true, TYPE_REPOSITORY)
-	c.Postgresql.Spec.RepoHost = true
 
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
@@ -2032,7 +2031,8 @@ func (c *Cluster) generateRepoHostStatefulSet() (*appsv1.StatefulSet, error) {
 		c.OpConfig.PodAntiAffinityPreferredDuringScheduling,
 		c.OpConfig.AdditionalSecretMount,
 		c.OpConfig.AdditionalSecretMountPath,
-		additionalVolumes)
+		additionalVolumes,
+		true)
 
 	if err != nil {
 		return nil, fmt.Errorf("could not generate pod template: %v", err)
@@ -2054,8 +2054,6 @@ func (c *Cluster) generateRepoHostStatefulSet() (*appsv1.StatefulSet, error) {
 		}
 	}
 
-	// Unset the Repohost flag because now it will go to creating the sts for the pg pods from the caller function
-	c.Postgresql.Spec.RepoHost = false
 	// For RepoHost only 1 instance is fixed always
 	numberOfInstances := int32(1)
 
@@ -2987,7 +2985,6 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 	)
 
 	annotations := c.generatePodAnnotations(&c.Spec)
-	c.Postgresql.Spec.RepoHost = false
 
 	// re-use the method that generates DB pod templates
 	if podTemplate, err = c.generatePodTemplate(
@@ -3015,7 +3012,8 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 		false,
 		c.OpConfig.AdditionalSecretMount,
 		c.OpConfig.AdditionalSecretMountPath,
-		[]cpov1.AdditionalVolume{}); err != nil {
+		[]cpov1.AdditionalVolume{},
+		false); err != nil {
 		return nil, fmt.Errorf("could not generate pod template for logical backup pod: %v", err)
 	}
 
@@ -3419,7 +3417,6 @@ func (c *Cluster) generatePgbackrestJob(repo *cpov1.Repo, backupType string, sch
 		}}
 
 	annotations := c.generatePodAnnotations(&c.Spec)
-	c.Postgresql.Spec.RepoHost = false
 
 	// re-use the method that generates DB pod templates
 	if podTemplate, err = c.generatePodTemplate(
@@ -3447,7 +3444,8 @@ func (c *Cluster) generatePgbackrestJob(repo *cpov1.Repo, backupType string, sch
 		false,
 		c.OpConfig.AdditionalSecretMount,
 		c.OpConfig.AdditionalSecretMountPath,
-		[]cpov1.AdditionalVolume{}); err != nil {
+		[]cpov1.AdditionalVolume{},
+		false); err != nil {
 		return nil, fmt.Errorf("could not generate pod template for logical backup pod: %v", err)
 	}
 

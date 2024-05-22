@@ -1037,7 +1037,7 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	// Pgbackrest backup job
 	func() {
 		// FIXME: errorhandling in this function needs to be better
-		if specHasPgbackrestPVCRepo(newSpec) || specHasPgbackrestPVCRepo(oldSpec) {
+		if specHasPgbackrestPVCRepo(&newSpec.Spec) || specHasPgbackrestPVCRepo(&oldSpec.Spec) {
 			if err := c.syncPgbackrestRepoHostConfig(); err != nil {
 				updateFailed = true
 				return
@@ -1230,9 +1230,9 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	return nil
 }
 
-func specHasPgbackrestPVCRepo(newSpec *cpov1.Postgresql) bool {
-	if newSpec.Spec.Backup != nil && newSpec.Spec.Backup.Pgbackrest != nil && newSpec.Spec.Backup.Pgbackrest.Repos != nil {
-		for _, repo := range newSpec.Spec.Backup.Pgbackrest.Repos {
+func specHasPgbackrestPVCRepo(newSpec *cpov1.PostgresSpec) bool {
+	if newSpec.Backup != nil && newSpec.Backup.Pgbackrest != nil && newSpec.Backup.Pgbackrest.Repos != nil {
+		for _, repo := range newSpec.Backup.Pgbackrest.Repos {
 			if repo.Storage == "pvc" {
 				return true
 			}

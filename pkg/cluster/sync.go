@@ -1613,7 +1613,7 @@ func (c *Cluster) syncPgbackrestConfig() error {
 func (c *Cluster) syncPgbackrestRepoHostConfig() error {
 	c.logger.Info("check if a sync for repo host configmap is needed ")
 
-	repoNeeded := specHasPgbackrestPVCRepo(&c.Postgresql)
+	repoNeeded := specHasPgbackrestPVCRepo(&c.Postgresql.Spec)
 
 	c.setProcessName("Syncing pgbackrest repo-host")
 	c.logger.Info("Syncing pgbackrest repo-host")
@@ -1696,27 +1696,31 @@ func (c *Cluster) syncPgbackrestJob(forceRemove bool) error {
 			if !forceRemove && len(c.Postgresql.Spec.Backup.Pgbackrest.Repos) >= 1 {
 				for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
 					for name, schedule := range repo.Schedule {
-						c.logger.Info(fmt.Sprintf("%s %s:%s %s", rep, schedul, repo.Name, name))
 						if rep == repo.Name && name == schedul {
 							remove = false
 							if cj, err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Get(context.TODO(), c.getPgbackrestJobName(repo.Name, name), metav1.GetOptions{}); err == nil {
-								if err := c.patchPgbackrestJob(cj, repo.Name, name, schedule); err != nil {
+								if err := c.patchPgbackrestJob(cj, &repo, name, schedule); err != nil {
 									return fmt.Errorf("could not update a pgbackrest cronjob: %v", err)
 								}
-								c.logger.Info("a pgbackrest cronjob has been successfully updated")
+								c.logger.Infof("pgbackrest cronjob for %v %v has been successfully updated", rep, schedul)
 							} else {
-								if err := c.createPgbackrestJob(repo.Name, name, schedule); err != nil {
+								if err := c.createPgbackrestJob(&repo, name, schedule); err != nil {
 									return fmt.Errorf("could not create a pgbackrest cronjob: %v", err)
 								}
-								c.logger.Info("a pgbackrest cronjob has been successfully created")
+								c.logger.Info("pgbackrest cronjob for %v %v has been successfully created", rep, schedul)
 							}
 						}
 					}
 				}
 			}
 			if remove {
-				c.deletePgbackrestJob(rep, schedul)
-				c.logger.Info("a pgbackrest cronjob has been successfully deleted")
+				deleted, err := c.deletePgbackrestJob(rep, schedul)
+				if err != nil {
+					c.logger.Warningf("failed to delete pgbackrest cronjob: %v", err)
+				}
+				if deleted {
+					c.logger.Infof("pgbackrest cronjob for %v %v has been successfully deleted", rep, schedul)
+				}
 			}
 		}
 	}

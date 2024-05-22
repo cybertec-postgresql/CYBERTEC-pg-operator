@@ -822,10 +822,10 @@ func (c *Cluster) updatePgbackrestRepoHostConfig() (err error) {
 	return nil
 }
 
-func (c *Cluster) createPgbackrestJob(repo, name, schedule string) (err error) {
+func (c *Cluster) createPgbackrestJob(repo *cpov1.Repo, backupType, schedule string) (err error) {
 
 	c.setProcessName("creating a k8s cron job for pgbackrest backups")
-	pgbackrestJobSpec, err := c.generatePgbackrestJob(repo, name, schedule)
+	pgbackrestJobSpec, err := c.generatePgbackrestJob(repo, backupType, schedule)
 	if err != nil {
 		return fmt.Errorf("could not generate k8s cron job spec: %v", err)
 	}
@@ -840,10 +840,10 @@ func (c *Cluster) createPgbackrestJob(repo, name, schedule string) (err error) {
 	return nil
 }
 
-func (c *Cluster) patchPgbackrestJob(newJob *batchv1.CronJob, repo string, name string, schedule string) error {
+func (c *Cluster) patchPgbackrestJob(newJob *batchv1.CronJob, repo *cpov1.Repo, backupType string, schedule string) error {
 	c.setProcessName("patching pgbackrest backup job")
 
-	newBackrestJob, err := c.generatePgbackrestJob(repo, name, schedule)
+	newBackrestJob, err := c.generatePgbackrestJob(repo, backupType, schedule)
 	patchData, err := specPatch(newBackrestJob.Spec)
 	if err != nil {
 		return fmt.Errorf("could not form patch for the logical backup job: %v", err)
@@ -852,7 +852,7 @@ func (c *Cluster) patchPgbackrestJob(newJob *batchv1.CronJob, repo string, name 
 	// update the backup job spec
 	_, err = c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Patch(
 		context.TODO(),
-		c.getPgbackrestJobName(repo, name),
+		c.getPgbackrestJobName(repo.Name, backupType),
 		types.MergePatchType,
 		patchData,
 		metav1.PatchOptions{},
@@ -864,14 +864,12 @@ func (c *Cluster) patchPgbackrestJob(newJob *batchv1.CronJob, repo string, name 
 	return nil
 }
 
-func (c *Cluster) deletePgbackrestJob(repo string, name string) error {
+func (c *Cluster) deletePgbackrestJob(repo string, name string) (bool, error) {
 	c.setProcessName("deleting pgbackrest backup job")
-	if _, err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Get(context.TODO(), c.getPgbackrestJobName(repo, name), metav1.GetOptions{}); err == nil {
-		err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Delete(context.TODO(), c.getPgbackrestJobName(repo, name), c.deleteOptions)
-		if err != nil {
-			return fmt.Errorf("could not delete pgbackrest job: %v", err)
-		}
+	err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Delete(context.TODO(), c.getPgbackrestJobName(repo, name), c.deleteOptions)
+	if !k8sutil.ResourceNotFound(err) {
+		return false, err
 	}
 
-	return nil
+	return err == nil, nil
 }

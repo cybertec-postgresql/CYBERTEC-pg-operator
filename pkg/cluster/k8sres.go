@@ -3370,7 +3370,7 @@ func (c *Cluster) generatePgbackrestRestoreConfigmap() (*v1.ConfigMap, error) {
 	return configmap, nil
 }
 
-func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule string) (*batchv1.CronJob, error) {
+func (c *Cluster) generatePgbackrestJob(repo *cpov1.Repo, backupType string, schedule string) (*batchv1.CronJob, error) {
 
 	var (
 		err                  error
@@ -3392,18 +3392,7 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 	emptyResourceRequirements := v1.ResourceRequirements{}
 	resourceRequirements = &emptyResourceRequirements
 
-	envVars := c.generatePgbbackrestPodEnvVars(name)
-	if c.Spec.Backup != nil && c.Spec.Backup.Pgbackrest.Repos != nil {
-		for _, rep := range c.Spec.Backup.Pgbackrest.Repos {
-			if rep.Storage == "pvc" {
-				for i, env := range envVars {
-					if env.Name == "SELECTOR" {
-						envVars[i].Value = fmt.Sprintf("cluster.cpo.opensource.cybertec.at/name=%s,member.cpo.opensource.cybertec.at/type=repo-host", c.Name)
-					}
-				}
-			}
-		}
-	}
+	envVars := c.generatePgbbackrestPodEnvVars(repo, backupType)
 	pgbackrestContainer := generateContainer(
 		pgbackrestContainerName,
 		&c.Postgresql.Spec.Backup.Pgbackrest.Image,
@@ -3483,7 +3472,7 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 
 	cronJob := &batchv1.CronJob{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:        c.getPgbackrestJobName(repo, name),
+			Name:        c.getPgbackrestJobName(repo.Name, backupType),
 			Namespace:   c.Namespace,
 			Labels:      c.labelsSetWithType(true, TYPE_BACKUP_JOB),
 			Annotations: c.annotationsSet(nil),
@@ -3498,7 +3487,13 @@ func (c *Cluster) generatePgbackrestJob(repo string, name string, schedule strin
 	return cronJob, nil
 }
 
-func (c *Cluster) generatePgbbackrestPodEnvVars(name string) []v1.EnvVar {
+func (c *Cluster) generatePgbbackrestPodEnvVars(repo *cpov1.Repo, backupType string) []v1.EnvVar {
+	selector := c.roleLabelsSet(false, Master).String()
+	if repo.Storage == "pvc" {
+		// With a PVC based repo the backup command needs to run on the repository system
+		// due to pgbackrest limitations
+		selector = c.labelsSetWithType(false, TYPE_REPOSITORY).String()
+	}
 
 	envVars := []v1.EnvVar{
 		{
@@ -3511,7 +3506,7 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(name string) []v1.EnvVar {
 		},
 		{
 			Name:  "COMMAND_OPTS",
-			Value: fmt.Sprintf("--stanza=db --repo=1 --type=%s", name),
+			Value: fmt.Sprintf("--stanza=db --repo=1 --type=%s", backupType),
 		},
 		{
 			Name:  "COMPARE_HASH",
@@ -3523,7 +3518,7 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(name string) []v1.EnvVar {
 		},
 		{
 			Name:  "PGUSER",
-			Value: "postgres",
+			Value: c.OpConfig.Auth.SuperUsername,
 		},
 		{
 			Name: "NAMESPACE",
@@ -3536,28 +3531,13 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(name string) []v1.EnvVar {
 		},
 		{
 			Name:  "SELECTOR",
-			Value: fmt.Sprintf("cluster.cpo.opensource.cybertec.at/name=%s,member.cpo.opensource.cybertec.at/role=master", c.Name),
+			Value: selector,
 		},
 	}
-	if c.Spec.Backup != nil && c.Spec.Backup.Pgbackrest.Repos != nil {
-		for _, rep := range c.Spec.Backup.Pgbackrest.Repos {
-			if rep.Storage == "pvc" {
-				for _, env := range envVars {
-					if env.Name == "SELECTOR" {
-						c.logger.Warningf("Now updating the env %v", env)
-						env.Value = fmt.Sprintf("cluster.cpo.opensource.cybertec.at/name=%s,member.cpo.opensource.cybertec.at/type=repo-host", c.Name)
-					}
-				}
-			}
-		}
-	}
-
-	c.logger.Debugf("Generated logical backup env vars")
-	c.logger.Debugf("%v", envVars)
 	return envVars
 }
 
 // getLogicalBackupJobName returns the name; the job itself may not exists
-func (c *Cluster) getPgbackrestJobName(repo string, name string) (jobName string) {
-	return trimCronjobName(fmt.Sprintf("%s-%s-%s-%s", "pgbackrest", c.clusterName().Name, repo, name))
+func (c *Cluster) getPgbackrestJobName(repoName string, backupType string) (jobName string) {
+	return trimCronjobName(fmt.Sprintf("%s-%s-%s-%s", "pgbackrest", c.clusterName().Name, repoName, backupType))
 }

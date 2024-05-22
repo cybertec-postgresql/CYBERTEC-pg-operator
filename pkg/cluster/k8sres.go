@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"path"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -3494,6 +3495,11 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(repo *cpov1.Repo, backupType str
 		// due to pgbackrest limitations
 		selector = c.labelsSetWithType(false, TYPE_REPOSITORY).String()
 	}
+	repoNumber, err := strconv.Atoi(strings.TrimPrefix(repo.Name, "repo"))
+	if err != nil {
+		// CRD should be defining repo name to be ^repo[1-4]
+		panic("unexpected repo name " + repo.Name)
+	}
 
 	envVars := []v1.EnvVar{
 		{
@@ -3506,7 +3512,7 @@ func (c *Cluster) generatePgbbackrestPodEnvVars(repo *cpov1.Repo, backupType str
 		},
 		{
 			Name:  "COMMAND_OPTS",
-			Value: fmt.Sprintf("--stanza=db --repo=1 --type=%s", backupType),
+			Value: fmt.Sprintf("--stanza=db --repo=%v --type=%s", repoNumber, backupType),
 		},
 		{
 			Name:  "COMPARE_HASH",

@@ -366,6 +366,20 @@ func (c *Cluster) waitForPodLabel(podEvents chan PodEvent, stopCh chan struct{},
 	}
 }
 
+func (c *Cluster) waitForPodMasterLabel(podName spec.NamespacedName) error {
+	stopCh := make(chan struct{})
+	ch := c.registerPodSubscriber(podName)
+	defer c.unregisterPodSubscriber(podName)
+	defer close(stopCh)
+
+	role := Master
+	_, err := c.waitForPodLabel(ch, stopCh, &role)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (c *Cluster) waitForPodDeletion(podEvents chan PodEvent) error {
 	timeout := time.After(c.OpConfig.PodDeletionWaitTimeout)
 	for {

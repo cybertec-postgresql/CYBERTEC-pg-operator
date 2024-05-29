@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	spc "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
@@ -101,7 +102,7 @@ func (c *Cluster) processRestore(spec *cpov1.Postgresql) error {
 			}
 		}
 		c.logger.Infof("waiting for first pod to become ready")
-		if err := c.waitStatefulsetPodsReady(); err != nil {
+		if err := c.waitForPodMasterLabel(spc.NamespacedName{Namespace: c.Namespace, Name: c.Name + "-0"}); err != nil {
 			/* TODO: Right now this will error out after OpConfig.ResourceCheckTimeout. A retry running cluster sync
 			should end up back here, effectively creating a retry loop. Don't want to run with no timeout to avoid
 			endlessly tying up a sync worker for a potential denial of service problem when restoring too many large

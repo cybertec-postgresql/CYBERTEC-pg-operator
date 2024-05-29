@@ -623,24 +623,6 @@ func (c *Cluster) GetPodDisruptionBudget() *policyv1.PodDisruptionBudget {
 	return c.PodDisruptionBudget
 }
 
-func (c *Cluster) createPgbackrestRestoreConfig() (err error) {
-
-	c.setProcessName("creating a configmap for pgbackrest restore")
-
-	pgbackrestRestoreConfigmapSpec, err := c.generatePgbackrestRestoreConfigmap()
-	if err != nil {
-		return fmt.Errorf("could not generate pgbackrest restore configmap spec: %v", err)
-	}
-	c.logger.Debugf("Generated pgbackrest restore configmapSpec: %v", pgbackrestRestoreConfigmapSpec)
-
-	_, err = c.KubeClient.ConfigMaps(c.Namespace).Create(context.TODO(), pgbackrestRestoreConfigmapSpec, metav1.CreateOptions{})
-	if err != nil {
-		return fmt.Errorf("could not create pgbackrest restore config: %v", err)
-	}
-
-	return nil
-}
-
 func (c *Cluster) createPgbackrestRepohostConfig() (err error) {
 
 	c.setProcessName("creating a configmap for pgbackrest repo-host")
@@ -668,35 +650,6 @@ func (c *Cluster) deletePgbackrestRestoreConfig() error {
 		return err
 	}
 	c.logger.Infof("configmap %q has been deleted", c.getPgbackrestRestoreConfigmapName())
-
-	return nil
-}
-
-func (c *Cluster) updatePgbackrestRestoreConfig(cm *v1.ConfigMap) (err error) {
-
-	c.setProcessName("patching configmap for pgbackrest restore")
-
-	pgbackrestRestoreConfigmapSpec, err := c.generatePgbackrestRestoreConfigmap()
-	if err != nil {
-		return fmt.Errorf("could not generate pgbackrest restore configmap: %v", err)
-	}
-	c.logger.Debugf("Generated pgbackrest restore configmapSpec: %v", pgbackrestRestoreConfigmapSpec)
-	patchData, err := dataPatch(pgbackrestRestoreConfigmapSpec.Data)
-	if err != nil {
-		return fmt.Errorf("could not form patch for the pgbackrest configmap: %v", err)
-	}
-
-	// update the pgbackrest configmap
-	_, err = c.KubeClient.ConfigMaps(c.Namespace).Patch(
-		context.TODO(),
-		c.getPgbackrestRestoreConfigmapName(),
-		types.MergePatchType,
-		patchData,
-		metav1.PatchOptions{},
-		"")
-	if err != nil {
-		return fmt.Errorf("could not patch pgbackrest config: %v", err)
-	}
 
 	return nil
 }

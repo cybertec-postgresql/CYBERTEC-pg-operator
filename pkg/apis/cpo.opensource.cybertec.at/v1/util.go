@@ -12,6 +12,7 @@ import (
 var (
 	weekdays         = map[string]int{"Sun": 0, "Mon": 1, "Tue": 2, "Wed": 3, "Thu": 4, "Fri": 5, "Sat": 6}
 	serviceNameRegex = regexp.MustCompile(serviceNameRegexString)
+	nullBackup       = Backup{Pgbackrest: nil}
 )
 
 // Clone convenience wrapper around DeepCopy
@@ -103,4 +104,19 @@ func (postgresStatus PostgresStatus) Creating() bool {
 
 func (postgresStatus PostgresStatus) String() string {
 	return postgresStatus.PostgresClusterStatus
+}
+
+func (s *PostgresSpec) GetBackup() *Backup {
+	if s.Backup == nil {
+		return &nullBackup
+	}
+	return s.Backup
+}
+
+// Returns currently specified restore ID or empty string if restore is not specified.
+func (b *Backup) GetRestoreID() string {
+	if b.Pgbackrest == nil {
+		return ""
+	}
+	return b.Pgbackrest.Restore.ID
 }

@@ -856,19 +856,15 @@ func (c *Cluster) generatePodTemplate(
 		c.logger.Debugf("Repo-host Configmap added to this pod template is %s", configmapName)
 	} else if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 		//this will be done for the pg-pod when we have pvc or not but have pgbackrest
-		configmapName := c.getPgbackrestConfigmapName()
-		secretName := c.Postgresql.Spec.Backup.Pgbackrest.Configuration.Secret
-		// If the secret is not provided and the repo has pvc type then use the secret name generated
-		// by the operator, because in this case secret is not provided in the manifest
-		if secretName == "" && c.Postgresql.Spec.Backup.Pgbackrest.Repos != nil {
-			for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
-				if repo.Storage == "pvc" {
-					secretName = c.getPgbackrestCertSecretName()
-				}
-			}
+		certSecret := ""
+		if specHasPgbackrestPVCRepo(&c.Postgresql.Spec) {
+			certSecret = c.getPgbackrestCertSecretName()
 		}
-		addPgbackrestConfigVolume(&podSpec, configmapName, secretName)
-		c.logger.Debugf("Configmap added to this pod template is %s", configmapName)
+		addPgbackrestConfigVolume(&podSpec,
+			c.getPgbackrestConfigmapName(),
+			c.Postgresql.Spec.Backup.Pgbackrest.Configuration.Secret,
+			certSecret,
+		)
 	}
 
 	if podAntiAffinity {
@@ -2268,61 +2264,78 @@ func addPgbackrestConfigVolumePVC(podSpec *v1.PodSpec, configmapName string, sec
 	podSpec.Volumes = volumes
 }
 
-func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName string, secretName string) {
+func addPgbackrestConfigVolume(podSpec *v1.PodSpec, configmapName, secretName, certSecret string) {
 
-	name := "pgbackrest-config"
-	path := "/etc/pgbackrest/conf.d"
 	defaultMode := int32(0640)
-	postgresContainerIdx := 0
-	postgresInitContainerIdx := -1
 
-	volumes := append(podSpec.Volumes, v1.Volume{
-		Name: name,
-		VolumeSource: v1.VolumeSource{
-			Projected: &v1.ProjectedVolumeSource{
-				DefaultMode: &defaultMode,
-				Sources: []v1.VolumeProjection{
-					{ConfigMap: &v1.ConfigMapProjection{
-						LocalObjectReference: v1.LocalObjectReference{Name: configmapName},
-						Optional:             util.True(),
-					},
-					},
-					{Secret: &v1.SecretProjection{
-						LocalObjectReference: v1.LocalObjectReference{Name: secretName},
-						Optional:             util.True(),
-					},
+	projections := []v1.VolumeProjection{
+		{ConfigMap: &v1.ConfigMapProjection{
+			LocalObjectReference: v1.LocalObjectReference{Name: configmapName},
+			Optional:             util.True(),
+		},
+		},
+	}
+	if secretName != "" {
+		projections = append(projections, v1.VolumeProjection{
+			Secret: &v1.SecretProjection{
+				LocalObjectReference: v1.LocalObjectReference{Name: secretName},
+				Optional:             util.True(),
+			},
+		})
+	}
+	podSpec.Volumes = append(podSpec.Volumes,
+		v1.Volume{
+			Name: "pgbackrest-config",
+			VolumeSource: v1.VolumeSource{
+				Projected: &v1.ProjectedVolumeSource{
+					DefaultMode: &defaultMode,
+					Sources:     projections,
+				},
+			},
+		})
+
+	if certSecret != "" {
+		podSpec.Volumes = append(podSpec.Volumes, v1.Volume{
+			Name: "pgbackrest-certs",
+			VolumeSource: v1.VolumeSource{
+				Projected: &v1.ProjectedVolumeSource{
+					DefaultMode: &defaultMode,
+					Sources: []v1.VolumeProjection{
+						{Secret: &v1.SecretProjection{
+							LocalObjectReference: v1.LocalObjectReference{Name: certSecret},
+							Optional:             util.True(),
+						},
+						},
 					},
 				},
 			},
+		})
+	}
+
+	newMounts := []v1.VolumeMount{
+		v1.VolumeMount{
+			Name:      "pgbackrest-config",
+			MountPath: "/etc/pgbackrest/conf.d",
 		},
-	})
+	}
+	if certSecret != "" {
+		newMounts = append(newMounts, v1.VolumeMount{
+			Name:      "pgbackrest-certs",
+			MountPath: "/etc/pgbackrest/certs",
+		})
+	}
 
 	for i, container := range podSpec.Containers {
 		if container.Name == constants.PostgresContainerName {
-			postgresContainerIdx = i
+			podSpec.Containers[i].VolumeMounts = append(podSpec.Containers[i].VolumeMounts, newMounts...)
 		}
 	}
 
-	mounts := append(podSpec.Containers[postgresContainerIdx].VolumeMounts,
-		v1.VolumeMount{
-			Name:      name,
-			MountPath: path,
-		})
-
-	podSpec.Containers[postgresContainerIdx].VolumeMounts = mounts
-
-	// Add pgbackrest-Config to init-container
 	for i, container := range podSpec.InitContainers {
 		if container.Name == "pgbackrest-restore" {
-			postgresInitContainerIdx = i
+			podSpec.InitContainers[i].VolumeMounts = append(podSpec.InitContainers[i].VolumeMounts, newMounts...)
 		}
 	}
-
-	if postgresInitContainerIdx >= 0 {
-		podSpec.InitContainers[postgresInitContainerIdx].VolumeMounts = mounts
-	}
-
-	podSpec.Volumes = volumes
 }
 
 func (c *Cluster) generatePersistentVolumeClaimTemplate(volumeSize, volumeStorageClass string,
@@ -3050,9 +3063,9 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 	config := "[db]\npg1-path = /home/postgres/pgdata/pgroot/data\npg1-port = 5432\npg1-socket-path = /var/run/postgresql/\n"
 	config += "\n[global]\nlog-path = /home/postgres/pgdata/pgbackrest/log\nspool-path = /home/postgres/pgdata/pgbackrest/spool-path"
 	config += "\ntls-server-address=*"
-	config += "\ntls-server-ca-file = /etc/pgbackrest/conf.d/pgbackrest.ca-roots"
-	config += "\ntls-server-cert-file = /etc/pgbackrest/conf.d/pgbackrest-client.crt"
-	config += "\ntls-server-key-file = /etc/pgbackrest/conf.d/pgbackrest-client.key"
+	config += "\ntls-server-ca-file = /etc/pgbackrest/certs/pgbackrest.ca-roots"
+	config += "\ntls-server-cert-file = /etc/pgbackrest/certs/pgbackrest-client.crt"
+	config += "\ntls-server-key-file = /etc/pgbackrest/certs/pgbackrest-client.key"
 	config += "\ntls-server-auth = " + c.clientCommonName() + "=*"
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 		if global := c.Postgresql.Spec.Backup.Pgbackrest.Global; global != nil {
@@ -3067,9 +3080,9 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 				if repo.Storage == "pvc" {
 					c.logger.Debugf("DEBUG_OUTPUT %s %s", c.clusterName().Name, c.Namespace)
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.clusterName().Name + "-pgbackrest-repo-host-0." + c.serviceName(ClusterPods) + "." + c.Namespace + ".svc." + c.OpConfig.ClusterDomain
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /etc/pgbackrest/conf.d/pgbackrest.ca-roots"
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /etc/pgbackrest/conf.d/pgbackrest-client.crt"
-					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-key-file = /etc/pgbackrest/conf.d/pgbackrest-client.key"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /etc/pgbackrest/certs/pgbackrest.ca-roots"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /etc/pgbackrest/certs/pgbackrest-client.crt"
+					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-key-file = /etc/pgbackrest/certs/pgbackrest-client.key"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-type = tls"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-user = postgres"
 				} else {

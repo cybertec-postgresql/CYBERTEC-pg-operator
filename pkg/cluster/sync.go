@@ -1599,19 +1599,6 @@ func (c *Cluster) syncPgbackrestRepoHostConfig(spec *cpov1.PostgresSpec) error {
 		if err := c.replaceStatefulSet(&curSts, desiredSts); err != nil {
 			return fmt.Errorf("could not replace pgbackrest repo-host statefulset: %v", err)
 		}
-
-		if cmp.rollingUpdate {
-			pods, err := c.listPodsOfType(TYPE_REPOSITORY)
-			if err != nil {
-				return fmt.Errorf("could not list pods of pgbackrest repo-host statefulset: %v", err)
-			}
-			for _, pod := range pods {
-				c.logger.Infof("Recreating repo host pod %v", pod.Name)
-				if _, err := c.recreatePod(util.NameFromMeta(pod.ObjectMeta)); err != nil {
-					return fmt.Errorf("could not recreate pgbackrest repo-host pod: %v", err)
-				}
-			}
-		}
 	}
 
 	if err = c.updatePgbackrestRepoHostConfig(); err != nil {

@@ -639,6 +639,9 @@ func (c *Cluster) compareStatefulSetWith(oldSts, newSts *appsv1.StatefulSet) *co
 	if len(oldSts.Spec.Template.Spec.Volumes) != len(newSts.Spec.Template.Spec.Volumes) {
 		needsReplace = true
 		reasons = append(reasons, "new statefulset's volumes contains different number of volumes to the old one")
+	} else if !reflect.DeepEqual(oldSts.Spec.Template.Spec.Volumes, newSts.Spec.Template.Spec.Volumes) {
+		needsReplace = true
+		reasons = append(reasons, "new statefulset's volumes do not match old one")
 	}
 
 	// we assume any change in priority happens by rolling out a new priority class

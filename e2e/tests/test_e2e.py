@@ -222,7 +222,6 @@ class EndToEndTestCase(unittest.TestCase):
             # changed security context of postgres container should trigger a rolling update
             k8s.wait_for_pod_failover(replica_nodes, 'member.cpo.opensource.cybertec.at/role=master,' + cluster_label)
             k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
-
             self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
             self.eventuallyEqual(lambda: k8s.count_pods_with_container_capabilities(capabilities, cluster_label),
                                 2, "Container capabilities not updated")
@@ -656,7 +655,6 @@ class EndToEndTestCase(unittest.TestCase):
             # wait for switched over
             k8s.wait_for_pod_failover(replica_nodes, 'member.cpo.opensource.cybertec.at/role=master,' + cluster_label)
             k8s.wait_for_pod_start('member.cpo.opensource.cybertec.at/role=replica,' + cluster_label)
-
             self.eventuallyEqual(lambda: k8s.count_pods_with_env_variable("SSL_CERTIFICATE_FILE", cluster_label), 2, "TLS env variable SSL_CERTIFICATE_FILE missing in Spilo pods")
             self.eventuallyEqual(lambda: k8s.count_pods_with_env_variable("SSL_PRIVATE_KEY_FILE", cluster_label), 2, "TLS env variable SSL_PRIVATE_KEY_FILE missing in Spilo pods")
             self.eventuallyEqual(lambda: k8s.count_pods_with_volume_mount(tls_secret, cluster_label), 2, "TLS volume mount missing in Spilo pods")
@@ -818,6 +816,7 @@ class EndToEndTestCase(unittest.TestCase):
         self.eventuallyEqual(lambda: k8s.count_services_with_label(pooler_label),
                              0, "Pooler service not removed")
         self.eventuallyEqual(lambda: k8s.count_secrets_with_label('application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'),
+
                              4, "Secrets not deleted")
 
         # Verify that all the databases have pooler schema installed.
@@ -856,7 +855,6 @@ class EndToEndTestCase(unittest.TestCase):
 
         k8s = self.k8s
         cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,member.cpo.opensource.cybertec.at/role={}'
-
         self.eventuallyEqual(lambda: k8s.get_service_type(cluster_label.format("master")),
                              'ClusterIP',
                              "Expected ClusterIP type initially, found {}")
@@ -1206,8 +1204,8 @@ class EndToEndTestCase(unittest.TestCase):
             Test the retention policy for persistent volume claim
         '''
         k8s = self.k8s
-        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
 
+        cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
         self.eventuallyEqual(lambda: k8s.get_operator_state(), {"0": "idle"}, "Operator does not get in sync")
         self.eventuallyEqual(lambda: k8s.count_pvcs_with_label(cluster_label), 2, "PVCs is not equal to number of instance")
 
@@ -1367,6 +1365,7 @@ class EndToEndTestCase(unittest.TestCase):
         '''
         k8s = self.k8s
         cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
+
 
         # verify we are in good state from potential previous tests
         self.eventuallyEqual(lambda: k8s.count_running_pods(), 2, "No 2 pods running")
@@ -1890,9 +1889,10 @@ class EndToEndTestCase(unittest.TestCase):
             "foo": "bar",
             "alice": "bob"
         }
-
+        
         self.eventuallyTrue(lambda: k8s.check_service_annotations("cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,member.cpo.opensource.cybertec.at/role=master", annotations), "Wrong annotations")
         self.eventuallyTrue(lambda: k8s.check_service_annotations("cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster,member.cpo.opensource.cybertec.at/role=replica", annotations), "Wrong annotations")
+
 
         # clean up
         unpatch_custom_service_annotations = {
@@ -2121,7 +2121,6 @@ class EndToEndTestCase(unittest.TestCase):
         '''
         k8s = self.k8s
         labels = 'member.cpo.opensource.cybertec.at/role=master,cluster.cpo.opensource.cybertec.at/name=' + clusterName
-
         num_of_master_pods = k8s.count_pods_with_label(labels, namespace)
         self.assertEqual(num_of_master_pods, 1, "Expected 1 master pod, found {}".format(num_of_master_pods))
 
@@ -2132,6 +2131,7 @@ class EndToEndTestCase(unittest.TestCase):
            Toggle pod anti affinty to distribute pods accross nodes (replica in particular).
         '''
         k8s = self.k8s
+
         cluster_labels = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
 
         # get nodes of master and replica(s)

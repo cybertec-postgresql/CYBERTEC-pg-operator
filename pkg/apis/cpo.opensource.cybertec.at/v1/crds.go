@@ -1151,11 +1151,11 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 										Items: &apiextv1.JSONSchemaPropsOrArray{
 											Schema: &apiextv1.JSONSchemaProps{
 												Type:     "object",
-												Required: []string{"name", "storage", "resource"},
+												Required: []string{"name", "storage"},
 												Properties: map[string]apiextv1.JSONSchemaProps{
 													"name": {
 														Type:    "string",
-														Pattern: "^repo[1-4]",
+														Pattern: "^repo[1-4]$",
 													},
 													"storage": {
 														Type: "string",
@@ -1168,6 +1168,9 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 															},
 															{
 																Raw: []byte(`"azure"`),
+															},
+															{
+																Raw: []byte(`"pvc"`),
 															},
 														},
 													},
@@ -1194,6 +1197,79 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 															},
 														},
 													},
+													"volume": {
+														Type:     "object",
+														Required: []string{"size"},
+														Properties: map[string]apiextv1.JSONSchemaProps{
+															"iops": {
+																Type: "integer",
+															},
+															"selector": {
+																Type: "object",
+																Properties: map[string]apiextv1.JSONSchemaProps{
+																	"matchExpressions": {
+																		Type: "array",
+																		Items: &apiextv1.JSONSchemaPropsOrArray{
+																			Schema: &apiextv1.JSONSchemaProps{
+																				Type:     "object",
+																				Required: []string{"key", "operator"},
+																				Properties: map[string]apiextv1.JSONSchemaProps{
+																					"key": {
+																						Type: "string",
+																					},
+																					"operator": {
+																						Type: "string",
+																						Enum: []apiextv1.JSON{
+																							{
+																								Raw: []byte(`"DoesNotExist"`),
+																							},
+																							{
+																								Raw: []byte(`"Exists"`),
+																							},
+																							{
+																								Raw: []byte(`"In"`),
+																							},
+																							{
+																								Raw: []byte(`"NotIn"`),
+																							},
+																						},
+																					},
+																					"values": {
+																						Type: "array",
+																						Items: &apiextv1.JSONSchemaPropsOrArray{
+																							Schema: &apiextv1.JSONSchemaProps{
+																								Type: "string",
+																							},
+																						},
+																					},
+																				},
+																			},
+																		},
+																	},
+																	"matchLabels": {
+																		Type:                   "object",
+																		XPreserveUnknownFields: util.True(),
+																	},
+																},
+															},
+															"size": {
+																Type:    "string",
+																Pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$",
+															},
+															"storageClass": {
+																Type: "string",
+															},
+															"subPath": {
+																Type: "string",
+															},
+															"throughput": {
+																Type: "integer",
+															},
+														},
+													},
+													"pvcsize": {
+														Type: "string",
+													},
 												},
 											},
 										},
@@ -1205,12 +1281,12 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 												Type: "string",
 											},
 											"repo": {
-												Type: "string",
+												Type:    "string",
+												Pattern: "^repo[1-4]$",
 											},
 											"options": {
-												Type:     "array",
-												Nullable: true,
-												Items: &apiextv1.JSONSchemaPropsOrArray{
+												Type: "object",
+												AdditionalProperties: &apiextv1.JSONSchemaPropsOrBool{
 													Schema: &apiextv1.JSONSchemaProps{
 														Type: "string",
 													},

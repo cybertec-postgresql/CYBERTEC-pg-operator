@@ -778,28 +778,29 @@ spec:
                         properties:
                           secret:
                             type: string
-                          parameters:
-                            additionalProperties:
-                              type: string
-                            type: object
                           protection:
                             type: object
                             properties:
                               restore:
                                 type: boolean
+                      global:
+                        type: object
+                        additionalProperties:
+                          type: string
                       repos:
                         type: array
                         items:
                           properties:
                             name:
                               type: string
-                              pattern: ^repo[1-4]
+                              pattern: ^repo[1-4]$
                             storage:
                               type: string
                               enum:
                                 - "s3"
                                 - "gcs"
                                 - "azure"
+                                - "pvc"
                             resource:
                               type: string
                             endpoint:
@@ -815,6 +816,8 @@ spec:
                                   type: string
                                 diff:
                                   type: string
+                            Pvcsize:
+                              type: string
                           required:
                           - name
                           - storage
@@ -831,9 +834,10 @@ spec:
                             type: string
                           repo:
                             type: string
+                            pattern: ^repo[1-4]$
                           options:
-                            type: array
-                            items:
+                            type: object
+                            additionalProperties:
                               type: string
                       resources:
                         type: object

@@ -95,6 +95,7 @@ func (c *Cluster) createStatefulSet() (*appsv1.StatefulSet, error) {
 		}
 		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
 	}
+
 	statefulSetSpec, err := c.generateStatefulSet(&c.Spec)
 	if err != nil {
 		return nil, fmt.Errorf("could not generate statefulset: %v", err)
@@ -202,18 +203,18 @@ func (c *Cluster) updateStatefulSet(newStatefulSet *appsv1.StatefulSet) error {
 }
 
 // replaceStatefulSet deletes an old StatefulSet and creates the new using spec in the PostgreSQL CRD.
-func (c *Cluster) replaceStatefulSet(newStatefulSet *appsv1.StatefulSet) error {
+func (c *Cluster) replaceStatefulSet(curSts **appsv1.StatefulSet, newStatefulSet *appsv1.StatefulSet) error {
 	c.setProcessName("replacing statefulset")
-	if c.Statefulset == nil {
+	if *curSts == nil {
 		return fmt.Errorf("there is no statefulset in the cluster")
 	}
 
-	statefulSetName := util.NameFromMeta(c.Statefulset.ObjectMeta)
+	statefulSetName := util.NameFromMeta((*curSts).ObjectMeta)
 	c.logger.Debugf("replacing statefulset")
 
 	// Delete the current statefulset without deleting the pods
 	deletePropagationPolicy := metav1.DeletePropagationOrphan
-	oldStatefulset := c.Statefulset
+	oldStatefulset := *curSts
 
 	options := metav1.DeleteOptions{PropagationPolicy: &deletePropagationPolicy}
 	err := c.KubeClient.StatefulSets(oldStatefulset.Namespace).Delete(context.TODO(), oldStatefulset.Name, options)
@@ -221,7 +222,7 @@ func (c *Cluster) replaceStatefulSet(newStatefulSet *appsv1.StatefulSet) error {
 		return fmt.Errorf("could not delete statefulset %q: %v", statefulSetName, err)
 	}
 	// make sure we clear the stored statefulset status if the subsequent create fails.
-	c.Statefulset = nil
+	*curSts = nil
 	// wait until the statefulset is truly deleted
 	c.logger.Debugf("waiting for the statefulset to be deleted")
 
@@ -251,7 +252,7 @@ func (c *Cluster) replaceStatefulSet(newStatefulSet *appsv1.StatefulSet) error {
 		c.logger.Warningf("number of pods for the old and updated Statefulsets is not identical")
 	}
 
-	c.Statefulset = createdStatefulset
+	*curSts = createdStatefulset
 	return nil
 }
 
@@ -622,15 +623,15 @@ func (c *Cluster) GetPodDisruptionBudget() *policyv1.PodDisruptionBudget {
 	return c.PodDisruptionBudget
 }
 
-func (c *Cluster) createPgbackrestRestoreConfig() (err error) {
+func (c *Cluster) createPgbackrestRepohostConfig() (err error) {
 
-	c.setProcessName("creating a configmap for pgbackrest restore")
+	c.setProcessName("creating a configmap for pgbackrest repo-host")
 
-	pgbackrestRestoreConfigmapSpec, err := c.generatePgbackrestRestoreConfigmap()
+	pgbackrestRestoreConfigmapSpec, err := c.generatePgbackrestRepoHostConfigmap()
 	if err != nil {
-		return fmt.Errorf("could not generate pgbackrest restore configmap spec: %v", err)
+		return fmt.Errorf("could not generate pgbackrest repo-host configmap spec: %v", err)
 	}
-	c.logger.Debugf("Generated pgbackrest configmapSpec: %v", pgbackrestRestoreConfigmapSpec)
+	c.logger.Debugf("Generated pgbackrest restore configmapSpec: %v", pgbackrestRestoreConfigmapSpec)
 
 	_, err = c.KubeClient.ConfigMaps(c.Namespace).Create(context.TODO(), pgbackrestRestoreConfigmapSpec, metav1.CreateOptions{})
 	if err != nil {
@@ -649,35 +650,6 @@ func (c *Cluster) deletePgbackrestRestoreConfig() error {
 		return err
 	}
 	c.logger.Infof("configmap %q has been deleted", c.getPgbackrestRestoreConfigmapName())
-
-	return nil
-}
-
-func (c *Cluster) updatePgbackrestRestoreConfig(cm *v1.ConfigMap) (err error) {
-
-	c.setProcessName("patching configmap for pgbackrest restore")
-
-	pgbackrestRestoreConfigmapSpec, err := c.generatePgbackrestRestoreConfigmap()
-	if err != nil {
-		return fmt.Errorf("could not generate pgbackrest restore configmap: %v", err)
-	}
-	c.logger.Debugf("Generated pgbackrest restore configmapSpec: %v", pgbackrestRestoreConfigmapSpec)
-	patchData, err := dataPatch(pgbackrestRestoreConfigmapSpec.Data)
-	if err != nil {
-		return fmt.Errorf("could not form patch for the pgbackrest configmap: %v", err)
-	}
-
-	// update the pgbackrest configmap
-	_, err = c.KubeClient.ConfigMaps(c.Namespace).Patch(
-		context.TODO(),
-		c.getPgbackrestRestoreConfigmapName(),
-		types.MergePatchType,
-		patchData,
-		metav1.PatchOptions{},
-		"")
-	if err != nil {
-		return fmt.Errorf("could not patch pgbackrest config: %v", err)
-	}
 
 	return nil
 }
@@ -742,15 +714,70 @@ func (c *Cluster) updatePgbackrestConfig(cm *v1.ConfigMap) (err error) {
 	return nil
 }
 
-func (c *Cluster) createPgbackrestJob(repo, name, schedule string) (err error) {
+func (c *Cluster) createPgbackrestRepoHostConfig() (err error) {
 
-	c.setProcessName("creating a k8s cron job for pgbackrest backups")
-	pgbackrestJobSpec, err := c.generatePgbackrestJob(repo, name, schedule)
+	c.setProcessName("creating a configmap for pgbackrest repo-host")
+	c.logger.Info("creating repo-host configmap")
+
+	pgbackrestRepoHostConfigmapSpec, err := c.generatePgbackrestRepoHostConfigmap()
 	if err != nil {
-		return fmt.Errorf("could not generate k8s cron job spec: %v", err)
+		return fmt.Errorf("could not generate pgbackrest repo-host configmap spec: %v", err)
+	}
+	c.logger.Debugf("Generated pgbackrest repo-host configmapSpec: %v", pgbackrestRepoHostConfigmapSpec)
+
+	_, err = c.KubeClient.ConfigMaps(c.Namespace).Create(context.TODO(), pgbackrestRepoHostConfigmapSpec, metav1.CreateOptions{})
+	if err != nil && !k8sutil.ResourceAlreadyExists(err) {
+		return fmt.Errorf("could not create pgbackrest repo-host config: %v", err)
 	}
 
-	c.logger.Debugf("Generated cronJobSpec: %v", pgbackrestJobSpec)
+	return nil
+}
+
+func (c *Cluster) deletePgbackrestRepoHostConfig() error {
+	c.setProcessName("deleting pgbackrest configmap")
+	c.logger.Debugln("deleting repo-host configmap")
+
+	err := c.KubeClient.ConfigMaps(c.Namespace).Delete(context.TODO(), c.getPgbackrestRepoHostConfigmapName(), c.deleteOptions)
+	if err != nil {
+		return err
+	}
+	c.logger.Infof("configmap %q has been deleted", c.getPgbackrestRepoHostConfigmapName())
+
+	return nil
+}
+
+func (c *Cluster) updatePgbackrestRepoHostConfig() (err error) {
+
+	c.setProcessName("patching configmap for pgbackrest")
+
+	pgbackrestRepoHostConfigmapSpec, err := c.generatePgbackrestRepoHostConfigmap()
+	if err != nil {
+		return fmt.Errorf("could not generate pgbackrest repo-host configmap spec: %v", err)
+	}
+	c.logger.Debugf("Generated pgbackrest repo-host configmapSpec: %v", pgbackrestRepoHostConfigmapSpec)
+	patchData, err := dataPatch(pgbackrestRepoHostConfigmapSpec.Data)
+	if err != nil {
+		return fmt.Errorf("could not form patch for the pgbackrest repo-host configmap: %v", err)
+	}
+
+	// update the pgbackrest repo-host configmap
+	_, err = c.KubeClient.ConfigMaps(c.Namespace).Patch(
+		context.TODO(),
+		c.getPgbackrestRepoHostConfigmapName(),
+		types.MergePatchType,
+		patchData,
+		metav1.PatchOptions{},
+		"")
+	if err != nil {
+		return fmt.Errorf("could not patch pgbackrest config: %v", err)
+	}
+
+	return nil
+}
+
+func (c *Cluster) createPgbackrestJob(pgbackrestJobSpec *batchv1.CronJob) (err error) {
+
+	c.setProcessName("creating a k8s cron job for pgbackrest backups")
 
 	_, err = c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Create(context.TODO(), pgbackrestJobSpec, metav1.CreateOptions{})
 	if err != nil {
@@ -760,11 +787,10 @@ func (c *Cluster) createPgbackrestJob(repo, name, schedule string) (err error) {
 	return nil
 }
 
-func (c *Cluster) patchPgbackrestJob(newJob *batchv1.CronJob, repo string, name string, schedule string) error {
+func (c *Cluster) patchPgbackrestJob(pgbackrestJobSpec *batchv1.CronJob) error {
 	c.setProcessName("patching pgbackrest backup job")
 
-	newBackrestJob, err := c.generatePgbackrestJob(repo, name, schedule)
-	patchData, err := specPatch(newBackrestJob.Spec)
+	patchData, err := specPatch(pgbackrestJobSpec.Spec)
 	if err != nil {
 		return fmt.Errorf("could not form patch for the logical backup job: %v", err)
 	}
@@ -772,7 +798,7 @@ func (c *Cluster) patchPgbackrestJob(newJob *batchv1.CronJob, repo string, name 
 	// update the backup job spec
 	_, err = c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Patch(
 		context.TODO(),
-		c.getPgbackrestJobName(repo, name),
+		pgbackrestJobSpec.ObjectMeta.Name,
 		types.MergePatchType,
 		patchData,
 		metav1.PatchOptions{},
@@ -784,14 +810,12 @@ func (c *Cluster) patchPgbackrestJob(newJob *batchv1.CronJob, repo string, name 
 	return nil
 }
 
-func (c *Cluster) deletePgbackrestJob(repo string, name string) error {
+func (c *Cluster) deletePgbackrestJob(repo string, name string) (bool, error) {
 	c.setProcessName("deleting pgbackrest backup job")
-	if _, err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Get(context.TODO(), c.getPgbackrestJobName(repo, name), metav1.GetOptions{}); err == nil {
-		err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Delete(context.TODO(), c.getPgbackrestJobName(repo, name), c.deleteOptions)
-		if err != nil {
-			return fmt.Errorf("could not delete pgbackrest job: %v", err)
-		}
+	err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Delete(context.TODO(), c.getPgbackrestJobName(repo, name), c.deleteOptions)
+	if !k8sutil.ResourceNotFound(err) {
+		return false, err
 	}
 
-	return nil
+	return err == nil, nil
 }

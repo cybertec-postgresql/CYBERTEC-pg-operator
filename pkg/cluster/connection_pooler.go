@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/r3labs/diff"
-	"github.com/sirupsen/logrus"
 	acidzalando "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at"
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/r3labs/diff"
+	"github.com/sirupsen/logrus"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -111,12 +111,7 @@ func (c *Cluster) poolerUser(spec *cpov1.PostgresSpec) string {
 
 // when listing pooler k8s objects
 func (c *Cluster) poolerLabelsSet(addExtraLabels bool) labels.Set {
-	poolerLabels := c.labelsSet(addExtraLabels)
-
-	// TODO should be config values
-	poolerLabels["application"] = "db-connection-pooler"
-
-	return poolerLabels
+	return c.labelsSetWithType(addExtraLabels, TYPE_POOLER)
 }
 
 // Return connection pooler labels selector, which should from one point of view
@@ -363,7 +358,7 @@ func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (
 
 			return keyName
 		}
-		tlsEnv, tlsVolumes := generateTlsMounts(spec, getPoolerTLSEnv)
+		tlsEnv, tlsVolumes := c.generateTlsMounts(spec, getPoolerTLSEnv)
 		envVars = append(envVars, tlsEnv...)
 		for _, vol := range tlsVolumes {
 			poolerVolumes = append(poolerVolumes, v1.Volume{

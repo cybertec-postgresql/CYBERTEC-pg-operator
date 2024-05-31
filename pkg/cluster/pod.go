@@ -32,6 +32,19 @@ func (c *Cluster) listPods() ([]v1.Pod, error) {
 	return pods.Items, nil
 }
 
+func (c *Cluster) listPodsOfType(podType PodType) ([]v1.Pod, error) {
+	listOptions := metav1.ListOptions{
+		LabelSelector: c.labelsSetWithType(false, podType).String(),
+	}
+
+	pods, err := c.KubeClient.Pods(c.Namespace).List(context.TODO(), listOptions)
+	if err != nil {
+		return nil, fmt.Errorf("could not get list of pods: %v", err)
+	}
+
+	return pods.Items, nil
+}
+
 func (c *Cluster) getRolePods(role PostgresRole) ([]v1.Pod, error) {
 	listOptions := metav1.ListOptions{
 		LabelSelector: c.roleLabelsSet(false, role).String(),
@@ -109,7 +122,7 @@ func (c *Cluster) getRollingUpdateFlagFromPod(pod *v1.Pod) (flag bool) {
 
 func (c *Cluster) deletePods() error {
 	c.logger.Debugln("deleting pods")
-	pods, err := c.listPods()
+	pods, err := c.listPodsOfType(TYPE_POSTGRESQL)
 	if err != nil {
 		return err
 	}

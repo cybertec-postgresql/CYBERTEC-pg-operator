@@ -26,10 +26,12 @@ BASE_IMAGE ?= rockylinux:9
 PACKAGER ?= dnf
 BUILD ?= 1
 ROOTPATH = $(GOPATH)/src/github.com/cybertec/cybertec-pg-operator
+VERIFY_CODEGEN ?= 1
 ifndef ROOTPATH
 	export ROOTPATH=$(GOPATH)/src/github.com/cybertec/cybertec-pg-operator
 endif
 
+ALL_SOURCES = $(shell find pkg/ -name '*.go')
 
 ifeq ($(DEBUG),1)
 	DOCKERFILE = DebugDockerfile
@@ -59,9 +61,11 @@ default: local
 clean:
 	rm -rf build
 
-local: ${SOURCES}
-	hack/verify-codegen.sh
-	CGO_ENABLED=${CGO_ENABLED} go build -o build/${BINARY} $(LOCAL_BUILD_FLAGS) -ldflags "$(LDFLAGS)" $^
+local: build/cybertec-pg-operator
+
+build/cybertec-pg-operator: ${SOURCES} ${ALL_SOURCES}
+	if [ "$(VERIFY_CODEGEN)" = "1" ]; then hack/verify-codegen.sh; fi
+	CGO_ENABLED=${CGO_ENABLED} go build -o build/${BINARY} $(LOCAL_BUILD_FLAGS) -ldflags "$(LDFLAGS)" $<
 
 linux: ${SOURCES}
 	GOOS=linux GOARCH=amd64 CGO_ENABLED=${CGO_ENABLED} go build -o build/linux/${BINARY} ${BUILD_FLAGS} -ldflags "$(LDFLAGS)" $^
@@ -78,6 +82,9 @@ docker: ${DOCKERDIR}/${DOCKERFILE}
 # 	docker build --rm -t "$(IMAGE):$(TAG)$(CDP_TAG)$(DEBUG_FRESH)$(DEBUG_POSTFIX)" -f "${DOCKERDIR}/${DOCKERFILE}" --build-arg VERSION="${VERSION}" .
 
 # ${VERSION}
+
+docker-local: build/cybertec-pg-operator
+	docker build --rm -t "$(IMAGE):$(TAG)$(CDP_TAG)$(DEBUG_FRESH)$(DEBUG_POSTFIX)" -f "${DOCKERDIR}/Dockerfile-dev" --build-arg VERSION="${VERSION}" --build-arg BASE_IMAGE="${BASE_IMAGE}" --build-arg PACKAGER="${PACKAGER}" .
 
 
 indocker-race:

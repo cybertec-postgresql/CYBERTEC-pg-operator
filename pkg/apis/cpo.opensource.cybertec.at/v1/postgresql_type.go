@@ -83,11 +83,12 @@ type PostgresSpec struct {
 	// MasterServiceAnnotations takes precedence over ServiceAnnotations for master role if not empty
 	MasterServiceAnnotations map[string]string `json:"masterServiceAnnotations,omitempty"`
 	// ReplicaServiceAnnotations takes precedence over ServiceAnnotations for replica role if not empty
-	ReplicaServiceAnnotations map[string]string  `json:"replicaServiceAnnotations,omitempty"`
-	TLS                       *TLSDescription    `json:"tls,omitempty"`
-	AdditionalVolumes         []AdditionalVolume `json:"additionalVolumes,omitempty"`
-	Streams                   []Stream           `json:"streams,omitempty"`
-	Env                       []v1.EnvVar        `json:"env,omitempty"`
+	ReplicaServiceAnnotations     map[string]string  `json:"replicaServiceAnnotations,omitempty"`
+	ClusterPodsServiceAnnotations map[string]string  `json:"clusterPodsServiceAnnotations,omitempty"`
+	TLS                           *TLSDescription    `json:"tls,omitempty"`
+	AdditionalVolumes             []AdditionalVolume `json:"additionalVolumes,omitempty"`
+	Streams                       []Stream           `json:"streams,omitempty"`
+	Env                           []v1.EnvVar        `json:"env,omitempty"`
 
 	// deprecated json tags
 	InitContainersOld       []v1.Container `json:"init_containers,omitempty"`
@@ -226,7 +227,7 @@ type UserFlags []string
 // PostgresStatus contains status of the PostgreSQL cluster (running, creation failed etc.)
 type PostgresStatus struct {
 	PostgresClusterStatus string `json:"PostgresClusterStatus"`
-	PgbackrestRestoreID   string `json:"PgbackrestRestoreID"`
+	RestoreID             string `json:"RestoreID"`
 }
 
 // ConnectionPooler Options for connection pooler
@@ -288,12 +289,13 @@ type Repo struct {
 	Endpoint string            `json:"endpoint"`
 	Region   string            `json:"region"`
 	Schedule map[string]string `json:"schedule"`
+	Volume   `json:"volume,omitempty"`
 }
 
 type Restore struct {
-	ID      string   `json:"id"`
-	Repo    string   `json:"repo"`
-	Options []string `json:"options"`
+	ID      string            `json:"id"`
+	Repo    string            `json:"repo"`
+	Options map[string]string `json:"options"`
 }
 
 type Configuration struct {

@@ -13,9 +13,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/golang/mock/gomock"
-	"github.com/sirupsen/logrus"
-	"github.com/stretchr/testify/assert"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/mocks"
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	fakecpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/fake"
@@ -25,6 +22,9 @@ import (
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/patroni"
+	"github.com/golang/mock/gomock"
+	"github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 	"k8s.io/client-go/kubernetes/fake"
 )
 
@@ -120,7 +120,7 @@ func TestSyncStatefulSetsAnnotations(t *testing.T) {
 	desiredSts, err := cluster.generateStatefulSet(&cluster.Postgresql.Spec)
 	assert.NoError(t, err)
 
-	cmp := cluster.compareStatefulSetWith(desiredSts)
+	cmp := cluster.compareStatefulSetWith(cluster.Statefulset, desiredSts)
 	if cmp.match {
 		t.Errorf("%s: match between current and desired statefulsets albeit differences: %#v", testName, cmp)
 	}
@@ -129,7 +129,7 @@ func TestSyncStatefulSetsAnnotations(t *testing.T) {
 	cluster.syncStatefulSet()
 
 	// compare again after the SYNC - must be identical to the desired state
-	cmp = cluster.compareStatefulSetWith(desiredSts)
+	cmp = cluster.compareStatefulSetWith(cluster.Statefulset, desiredSts)
 	if !cmp.match {
 		t.Errorf("%s: current and desired statefulsets are not matching %#v", testName, cmp)
 	}

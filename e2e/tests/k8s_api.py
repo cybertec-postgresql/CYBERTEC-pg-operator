@@ -54,6 +54,7 @@ class K8s:
         return master_pod_node, replica_pod_nodes
 
     def get_cluster_nodes(self, cluster_labels='application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster', namespace='default'):
+
         m = []
         r = []
         podsList = self.api.core_v1.list_namespaced_pod(namespace, label_selector=cluster_labels)
@@ -342,6 +343,7 @@ class K8s:
         return pod.items[0].spec.containers[0].image
 
     def get_cluster_pod(self, role, labels='application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster', namespace='default'):
+
         labels = labels + ',member.cpo.opensource.cybertec.at/role=' + role
 
         pods = self.api.core_v1.list_namespaced_pod(

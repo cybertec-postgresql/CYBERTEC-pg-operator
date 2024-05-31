@@ -1,14 +1,10 @@
+
 # CYBERTEC PG Operator
 
 CPO (CYBERTEC PG Operator) allows you to create and run PostgreSQL clusters on Kubernetes.
 
 The operator reduces your efforts and simplifies the administration of your PostgreSQL clusters so that you can concentrate on other things.
-# CYBERTEC PG Operator
-
-CPO (CYBERTEC PG Operator) allows you to create and run PostgreSQL clusters on Kubernetes.
-
-The operator reduces your efforts and simplifies the administration of your PostgreSQL clusters so that you can concentrate on other things.
-<img src="docs/diagrams/logo.png" width="200">
+<img src="docs/diagrams/cpo_logo.svg" width="350">
 
 The Postgres Operator delivers an easy to run highly-available [PostgreSQL](https://www.postgresql.org/)
 clusters on Kubernetes (K8s) powered by [Patroni](https://github.com/zalando/patroni).
@@ -22,7 +18,6 @@ pipelines with no access to Kubernetes API directly, promoting infrastructure as
 * Database connection pooling with PGBouncer
 * Support fast in place major version upgrade. Supports global upgrade of all clusters.
 * Restore and cloning Postgres clusters on PVC, AWS, GCS and Azure
-* Additionally logical backups to S3 or GCS bucket can be configured
 * Standby cluster
 * Configurable for non-cloud environments
 * Basic credential and user management on K8s, eases application deployments
@@ -33,47 +28,37 @@ pipelines with no access to Kubernetes API directly, promoting infrastructure as
 
 ### PostgreSQL features
 
-* Supports PostgreSQL 15, starting from 10+
+* Supports PostgreSQL 16, starting from 10+
 * Streaming replication cluster via Patroni
+* Integrated backup solution, automatic backups and very easy restore (Backup & PITR)
+* Rolling update procedure for adjustments to the pods and minor updates
+* Major upgrade with minimum interruption time
+* Reduction of downtime thanks to redundancy, pod anti-affinity, auto-failover and self-healing
+* Supports PostgreSQL 16, starting from 10+
+* Streaming replication cluster via Patroni
+* Point-In-Time-Recovery with
 * Point-In-Time-Recovery with
 [pg_basebackup](https://www.postgresql.org/docs/16/app-pgbasebackup.html) /
 [pgBackRest](https://pgbackrest.org/) via [CYBERTEC-pg-container](https://github.com/cybertec-postgresql/CYBERTEC-pg-container)
-[pg_stat_statements](https://www.postgresql.org/docs/15/pgstatstatements.html),
+[pg_stat_statements](https://www.postgresql.org/docs/16/pgstatstatements.html),
 * Incl. popular Postgres extensions such as
-[pg_cron](https://github.com/citusdata/pg_cron),
-[pg_partman](https://github.com/pgpartman/pg_partman),
+[pgaudit](https://github.com/pgaudit/pgaudit),
+[pgauditlogtofile](https://github.com/fmbiete/pgauditlogtofile),
+<!-- [pg_partman](https://github.com/pgpartman/pg_partman), -->
 [postgis](https://postgis.net/),
-[set_user](https://github.com/pgaudit/set_user) and
+[set_user](https://github.com/pgaudit/set_user)
+[pg_cron](https://github.com/citusdata/pg_cron),
 [timescaledb](https://github.com/timescale/timescaledb)
 [credcheck](https://github.com/MigOpsRepos/credcheck)
 
-The Postgres Operator has been developed at Zalando and is being used in
-production for over five years.
+The Operator project is being driven forward by CYBERTEC and is currently in production at various locations.
 
 ## Supported Postgres & K8s versions
 
 | Release   | Postgres versions | pgBackRest versions   | Patroni versions | K8s versions      | Golang  |
 | :-------- | :---------------: | :-------------------: | :--------------: | :----------------:| :-----: |
-| latest    | 13 &rarr; 16      | 2.51                  | 3.2.2            | 1.21+             | 1.19.8  |
-| next rc   | 13 &rarr; 16      | 2.51                  | 3.2.2            | 1.21+             | 1.22.1  |
-
-* Integrated backup solution, automatic backups and very easy restore (snapshot & PITR)
-* Rolling update procedure for adjustments to the pods and minor updates
-* Major upgrade with minimum interruption time
-* Reduction of downtime thanks to redundancy, pod anti-affinity, auto-failover and self-healing
-* Supports PostgreSQL 16, starting from 13+
-* Streaming replication cluster via Patroni
-* Point-In-Time-Recovery with
-[pg_basebackup](https://www.postgresql.org/docs/11/app-pgbasebackup.html) /
-[pgBackRest](https://pgbackrest.org/) via [CYBERTEC-pg-container](https://github.com/cybertec-postgresql/CYBERTEC-pg-container)
-[pg_stat_statements](https://www.postgresql.org/docs/15/pgstatstatements.html),
-* Incl. popular Postgres extensions such as
-[pg_cron](https://github.com/citusdata/pg_cron),
-[pg_partman](https://github.com/pgpartman/pg_partman),
-[postgis](https://postgis.net/),
-[set_user](https://github.com/pgaudit/set_user) and
-[timescaledb](https://github.com/timescale/timescaledb)
-[credcheck](https://github.com/MigOpsRepos/credcheck)
+| latest    | 10 &rarr; 16      | 2.51                  | 3.3.0            | 1.21+             | 1.22.1  |
+| next rc   | 10 &rarr; 16      | 2.51                  | 3.3.0            | 1.21+             | 1.22.1  |
 
 ## Getting started
 

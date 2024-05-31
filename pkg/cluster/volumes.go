@@ -230,7 +230,7 @@ func (c *Cluster) syncEbsVolumes() error {
 func (c *Cluster) listPersistentVolumeClaims() ([]v1.PersistentVolumeClaim, error) {
 	ns := c.Namespace
 	listOptions := metav1.ListOptions{
-		LabelSelector: c.labelsSet(false).String(),
+		LabelSelector: c.labelsSetWithType(false, TYPE_POSTGRESQL).String(),
 	}
 
 	pvcs, err := c.KubeClient.PersistentVolumeClaims(ns).List(context.TODO(), listOptions)
@@ -253,6 +253,31 @@ func (c *Cluster) deletePersistentVolumeClaims() error {
 		}
 	}
 	if len(pvcs) > 0 {
+		c.logger.Debugln("PVCs have been deleted")
+	} else {
+		c.logger.Debugln("no PVCs to delete")
+	}
+
+	return nil
+}
+
+func (c *Cluster) deleteRepoHostPersistentVolumeClaims() error {
+	c.logger.Debugln("deleting PVCs for the repo-host")
+	pvcs, err := c.KubeClient.PersistentVolumeClaims(c.Namespace).List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		c.logger.Errorf("could not list of PersistentVolumeClaims: %v", err)
+	}
+
+	for _, pvc := range pvcs.Items {
+		if strings.Contains(pvc.Name, c.getPgbackrestRepoHostName()) {
+			c.logger.Debugf("deleting PVC %q", util.NameFromMeta(pvc.ObjectMeta))
+			if err := c.KubeClient.PersistentVolumeClaims(pvc.Namespace).Delete(context.TODO(), pvc.Name, c.deleteOptions); err != nil {
+				c.logger.Warningf("could not delete PersistentVolumeClaim: %v", err)
+			}
+		}
+
+	}
+	if len(pvcs.Items) > 0 {
 		c.logger.Debugln("PVCs have been deleted")
 	} else {
 		c.logger.Debugln("no PVCs to delete")

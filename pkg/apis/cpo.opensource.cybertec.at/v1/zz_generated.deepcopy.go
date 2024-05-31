@@ -910,6 +910,13 @@ func (in *PostgresSpec) DeepCopyInto(out *PostgresSpec) {
 			(*out)[key] = val
 		}
 	}
+	if in.ClusterPodsServiceAnnotations != nil {
+		in, out := &in.ClusterPodsServiceAnnotations, &out.ClusterPodsServiceAnnotations
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
+	}
 	if in.TLS != nil {
 		in, out := &in.TLS, &out.TLS
 		*out = new(TLSDescription)
@@ -1274,6 +1281,7 @@ func (in *Repo) DeepCopyInto(out *Repo) {
 			(*out)[key] = val
 		}
 	}
+	in.Volume.DeepCopyInto(&out.Volume)
 	return
 }
 
@@ -1326,8 +1334,10 @@ func (in *Restore) DeepCopyInto(out *Restore) {
 	*out = *in
 	if in.Options != nil {
 		in, out := &in.Options, &out.Options
-		*out = make([]string, len(*in))
-		copy(*out, *in)
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
 	}
 	return
 }

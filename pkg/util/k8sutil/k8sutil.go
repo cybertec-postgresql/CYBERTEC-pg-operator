@@ -70,7 +70,7 @@ type KubernetesClient struct {
 	zalandov1.FabricEventStreamsGetter
 
 	RESTClient         rest.Interface
-	CpoV1ClientSet    *zalandoclient.Clientset
+	CpoV1ClientSet     *zalandoclient.Clientset
 	Zalandov1ClientSet *zalandoclient.Clientset
 }
 
@@ -216,13 +216,14 @@ func (client *KubernetesClient) SetPostgresCRDStatus(clusterName spec.Namespaced
 	return pg, nil
 }
 
-func (client *KubernetesClient) SetPgbackrestRestoreCRDStatus(clusterName spec.NamespacedName, id string) (*apicpov1.Postgresql, error) {
+func (client *KubernetesClient) SetCRDRestoreStatus(clusterName spec.NamespacedName, restoreId string) (*apicpov1.Postgresql, error) {
 	var pg *apicpov1.Postgresql
 	type PS struct {
-		PgbackrestRestoreID string `json:"PgbackrestRestoreID"`
+		RestoreID string `json:"RestoreID"`
 	}
-	var pgStatus PS
-	pgStatus.PgbackrestRestoreID = id
+	pgStatus := PS{
+		RestoreID: restoreId,
+	}
 
 	patch, err := json.Marshal(struct {
 		PgStatus interface{} `json:"status"`

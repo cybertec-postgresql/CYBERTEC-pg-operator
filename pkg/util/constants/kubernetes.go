@@ -6,6 +6,8 @@ import "time"
 const (
 	PostgresContainerName = "postgres"
 	RepoContainerName     = "pgbackrest"
+	BackupContainerName   = "pgbackrest-backup"
+	RestoreContainerName  = "pgbackrest-restore"
 	K8sAPIPath            = "/apis"
 
 	QueueResyncPeriodPod  = 5 * time.Minute

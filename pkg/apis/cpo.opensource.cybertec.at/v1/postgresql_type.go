@@ -96,6 +96,12 @@ type PostgresSpec struct {
 	Backup                  *Backup        `json:"backup,omitempty"`
 	TDE                     *TDE           `json:"tde,omitempty"`
 	Monitoring              *Monitoring    `json:"monitor,omitempty"`
+	WalPvc                  *PVCVolume     `json:"walPvc,omitempty"`
+}
+
+type PVCVolume struct {
+	WalVolume Volume `json:"walvolume,omitempty"`
+	WalDir    string `json:"waldir,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

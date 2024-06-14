@@ -614,6 +614,8 @@ spec:
                       type: integer
                     database:
                       type: string
+                    enableRecovery:
+                      type: boolean
                     filter:
                       type: object
                       additionalProperties:
@@ -630,6 +632,8 @@ spec:
                           idColumn:
                             type: string
                           payloadColumn:
+                            type: string
+                          recoveryEventType:
                             type: string
               teamId:
                 type: string

@@ -93,6 +93,7 @@ type PostgresSpec struct {
 	InitContainersOld       []v1.Container `json:"init_containers,omitempty"`
 	PodPriorityClassNameOld string         `json:"pod_priority_class_name,omitempty"`
 	Backup                  *Backup        `json:"backup,omitempty"`
+	TDE                     *TDE           `json:"tde,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -250,18 +251,20 @@ type ConnectionPooler struct {
 
 // Stream defines properties for creating FabricEventStream resources
 type Stream struct {
-	ApplicationId string                 `json:"applicationId"`
-	Database      string                 `json:"database"`
-	Tables        map[string]StreamTable `json:"tables"`
-	Filter        map[string]*string     `json:"filter,omitempty"`
-	BatchSize     *uint32                `json:"batchSize,omitempty"`
+	ApplicationId  string                 `json:"applicationId"`
+	Database       string                 `json:"database"`
+	Tables         map[string]StreamTable `json:"tables"`
+	Filter         map[string]*string     `json:"filter,omitempty"`
+	BatchSize      *uint32                `json:"batchSize,omitempty"`
+	EnableRecovery *bool                  `json:"enableRecovery,omitempty"`
 }
 
 // StreamTable defines properties of outbox tables for FabricEventStreams
 type StreamTable struct {
-	EventType     string  `json:"eventType"`
-	IdColumn      *string `json:"idColumn,omitempty"`
-	PayloadColumn *string `json:"payloadColumn,omitempty"`
+	EventType         string  `json:"eventType"`
+	RecoveryEventType string  `json:"recoveryEventType"`
+	IdColumn          *string `json:"idColumn,omitempty"`
+	PayloadColumn     *string `json:"payloadColumn,omitempty"`
 }
 
 type Backup struct {
@@ -294,4 +297,8 @@ type Restore struct {
 
 type Configuration struct {
 	Secret string `json:"secret"`
+}
+
+type TDE struct {
+	Enable bool `json:"enable"`
 }

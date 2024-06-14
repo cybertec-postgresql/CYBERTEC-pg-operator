@@ -241,12 +241,11 @@ func (c *Cluster) initUsers() error {
 }
 
 // Create creates the new kubernetes objects associated with the cluster.
-func (c *Cluster) Create() error {
+func (c *Cluster) Create() (err error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	var (
-		err error
 
+	var (
 		service *v1.Service
 		ep      *v1.Endpoints
 		ss      *appsv1.StatefulSet
@@ -337,6 +336,12 @@ func (c *Cluster) Create() error {
 		}
 
 	}
+	if c.Postgresql.Spec.TDE != nil && c.Postgresql.Spec.TDE.Enable {
+		if err := c.createTDESecret(); err != nil {
+			return fmt.Errorf("could not create the TDE secret: %v", err)
+		}
+		c.logger.Info("a TDE secret was successfully created")
+	}
 
 	if c.Statefulset != nil {
 		return fmt.Errorf("statefulset already exists in the cluster")
@@ -389,6 +394,7 @@ func (c *Cluster) Create() error {
 		c.logger.Info("a k8s cron job for pgbackrest has been successfully created")
 	}
 
+
 	if err := c.listResources(); err != nil {
 		c.logger.Errorf("could not list resources: %v", err)
 	}
@@ -439,6 +445,12 @@ func (c *Cluster) compareStatefulSetWith(statefulSet *appsv1.StatefulSet) *compa
 		match = false
 		needsReplace = true
 		reasons = append(reasons, "new statefulset's pod management policy do not match")
+	}
+
+	if !reflect.DeepEqual(c.Statefulset.Spec.PersistentVolumeClaimRetentionPolicy, statefulSet.Spec.PersistentVolumeClaimRetentionPolicy) {
+		match = false
+		needsReplace = true
+		reasons = append(reasons, "new statefulset's persistent volume claim retention policy do not match")
 	}
 
 	needsRollUpdate, reasons = c.compareContainers("initContainers", c.Statefulset.Spec.Template.Spec.InitContainers, statefulSet.Spec.Template.Spec.InitContainers, needsRollUpdate, reasons)

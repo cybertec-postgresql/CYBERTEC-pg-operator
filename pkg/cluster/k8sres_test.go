@@ -152,7 +152,7 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 	}
 	for _, tt := range tests {
 		cluster.OpConfig = *tt.opConfig
-		result, err := generateSpiloJSONConfiguration(tt.pgParam, tt.patroni, tt.opConfig, logger)
+		result, err := generateSpiloJSONConfiguration(tt.pgParam, tt.patroni, tt.opConfig, false, logger)
 		if err != nil {
 			t.Errorf("Unexpected error: %v", err)
 		}
@@ -2619,7 +2619,7 @@ func TestEnableLoadBalancers(t *testing.T) {
 			cluster.syncService(role)
 			cluster.ConnectionPooler[role] = &ConnectionPoolerObjects{
 				Name:        cluster.connectionPoolerName(role),
-				ClusterName: cluster.ClusterName,
+				ClusterName: cluster.Name,
 				Namespace:   cluster.Namespace,
 				Role:        role,
 			}

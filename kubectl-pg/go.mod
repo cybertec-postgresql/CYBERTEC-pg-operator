@@ -1,6 +1,6 @@
 module github.com/cybertec-postgresql/cybertec-pg-operator/kubectl-pg
 
-go 1.18
+go 1.21.7
 
 require (
 	github.com/spf13/cobra v1.4.0

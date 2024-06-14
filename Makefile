@@ -88,7 +88,7 @@ docker-local: build/cybertec-pg-operator
 
 
 indocker-race:
-	docker run --rm -v "${GOPATH}":"${GOPATH}" -e GOPATH="${GOPATH}" -e RACE=1 -w ${PWD} golang:1.19.8 bash -c "make linux"
+	docker run --rm -v "${GOPATH}":"${GOPATH}" -e GOPATH="${GOPATH}" -e RACE=1 -w ${PWD} golang:1.21.7 bash -c "make linux"
 
 push:
 	docker push "$(IMAGE):$(TAG)$(CDP_TAG)"

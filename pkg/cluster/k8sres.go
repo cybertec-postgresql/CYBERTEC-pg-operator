@@ -331,9 +331,9 @@ func generateSpiloJSONConfiguration(pg *cpov1.PostgresqlParam, patroni *cpov1.Pa
 	config.Bootstrap.Initdb = []interface{}{map[string]string{"auth-host": "scram-sha-256"},
 		map[string]string{"auth-local": "trust"},
 		map[string]string{"encoding": "UTF8"},
-		map[string]string{"locale:": "en_US.UTF-8"},
-		map[string]string{"locale-provider:": "icu"},
-		map[string]string{"icu-locale:": "en_US"}}
+		map[string]string{"locale": "en_US.UTF-8"},
+		map[string]string{"locale-provider": "icu"},
+		map[string]string{"icu-locale": "en_US"}}
 	if enableTDE {
 		config.Bootstrap.Initdb = append(config.Bootstrap.Initdb, map[string]string{"encryption-key-command": "/scripts/pgee/tde.sh"})
 	}

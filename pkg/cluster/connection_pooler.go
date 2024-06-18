@@ -379,8 +379,8 @@ func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (
 	securityContext := v1.PodSecurityContext{}
 
 	// determine the User, Group and FSGroup for the pooler pod
-	securityContext.RunAsUser = &poolerRunAsUser
-	securityContext.RunAsGroup = &poolerRunAsGroup
+	// securityContext.RunAsUser = &poolerRunAsUser
+	// securityContext.RunAsGroup = &poolerRunAsGroup
 
 	effectiveFSGroup := c.OpConfig.Resources.SpiloFSGroup
 	if spec.SpiloFSGroup != nil {

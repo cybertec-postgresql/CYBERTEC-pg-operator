@@ -1290,9 +1290,9 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		sidecarContainers   []v1.Container
 		podTemplate         *v1.PodTemplateSpec
 		volumeClaimTemplate *v1.PersistentVolumeClaim
+		WalPvcClaim         *v1.PersistentVolumeClaim
 		additionalVolumes   = spec.AdditionalVolumes
 	)
-
 	defaultResources := makeDefaultResources(&c.OpConfig)
 	resourceRequirements, err := c.generateResourceRequirements(
 		spec.Resources, defaultResources, constants.PostgresContainerName)
@@ -1332,6 +1332,9 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	enableTDE := false
 	if spec.TDE != nil && spec.TDE.Enable {
 		enableTDE = true
+	}
+	if spec.WalPvc != nil {
+		spec.PostgresqlParam.Parameters["basebackup"] = "- waldir: " + spec.WalPvc.WalDir
 	}
 	spiloConfiguration, err := generateSpiloJSONConfiguration(&spec.PostgresqlParam, &spec.Patroni, &c.OpConfig, enableTDE, c.logger)
 	if err != nil {
@@ -1509,6 +1512,15 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			additionalVolumes = append(additionalVolumes, c.generateCertSecretVolume())
 		}
 	}
+	if spec.WalPvc != nil {
+		WalPvcClaim, err = c.generatePersistentVolumeClaimTemplate(spec.WalPvc.WalVolume.Size,
+			spec.WalPvc.WalVolume.StorageClass, spec.WalPvc.WalVolume.Selector, spec.WalPvc.WalDir)
+		if err != nil {
+			c.logger.Errorf("could not generate volume claim template for WAL directory: %v", err)
+		}
+	} else {
+		WalPvcClaim = nil
+	}
 
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
@@ -1590,7 +1602,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			Selector:                             c.labelsSelector(TYPE_POSTGRESQL),
 			ServiceName:                          c.serviceName(Master),
 			Template:                             *podTemplate,
-			VolumeClaimTemplates:                 []v1.PersistentVolumeClaim{*volumeClaimTemplate},
+			VolumeClaimTemplates:                 []v1.PersistentVolumeClaim{*volumeClaimTemplate, *WalPvcClaim},
 			UpdateStrategy:                       updateStrategy,
 			PodManagementPolicy:                  podManagementPolicy,
 			PersistentVolumeClaimRetentionPolicy: &persistentVolumeClaimRetentionPolicy,

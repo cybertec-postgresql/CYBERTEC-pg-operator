@@ -428,6 +428,7 @@ PatroniInitDBParams:
 
 		if len(local) > 0 {
 			config.PgLocalConfiguration[constants.PatroniPGParametersParameterName] = local
+			logger.Infof("+-+--+-+--+--+-- Recevived local params are %v", local)
 		}
 		if len(bootstrap) > 0 {
 			config.Bootstrap.DCS.PGBootstrapConfiguration = make(map[string]interface{})
@@ -656,6 +657,14 @@ func generateVolumeMounts(volume cpov1.Volume) []v1.VolumeMount {
 			MountPath: constants.PostgresDataMount, //TODO: fetch from manifest
 			SubPath:   volume.SubPath,
 		},
+	}
+}
+
+func generateWalVolumeMounts(volume cpov1.Volume, dir string) v1.VolumeMount {
+	return v1.VolumeMount{
+		Name:      dir,
+		MountPath: constants.PostgresWalMount, //TODO: fetch from manifest
+		SubPath:   volume.SubPath,
 	}
 }
 
@@ -1334,12 +1343,13 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		enableTDE = true
 	}
 	if spec.WalPvc != nil {
-		spec.PostgresqlParam.Parameters["basebackup"] = "- waldir: " + spec.WalPvc.WalDir
+		spec.PostgresqlParam.Parameters["basebackup"] = "- waldir: \n\t " + spec.WalPvc.WalDir
 	}
 	spiloConfiguration, err := generateSpiloJSONConfiguration(&spec.PostgresqlParam, &spec.Patroni, &c.OpConfig, enableTDE, c.logger)
 	if err != nil {
 		return nil, fmt.Errorf("could not generate Spilo JSON configuration: %v", err)
 	}
+	c.logger.Infof("######## params are %v", spec.PostgresqlParam)
 
 	// generate environment variables for the spilo container
 	spiloEnvVars, err := c.generateSpiloPodEnvVars(spec, c.Postgresql.GetUID(), spiloConfiguration)
@@ -1367,6 +1377,10 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	}
 
 	volumeMounts := generateVolumeMounts(spec.Volume)
+
+	if spec.WalPvc != nil {
+		volumeMounts = append(volumeMounts, generateWalVolumeMounts(spec.WalPvc.WalVolume, spec.WalPvc.WalDir))
+	}
 
 	// configure TLS with a custom secret volume
 	if spec.TLS != nil && spec.TLS.SecretName != "" {
@@ -1518,10 +1532,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		if err != nil {
 			c.logger.Errorf("could not generate volume claim template for WAL directory: %v", err)
 		}
-	} else {
-		WalPvcClaim = nil
 	}
-
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
@@ -1590,6 +1601,11 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		persistentVolumeClaimRetentionPolicy.WhenScaled = appsv1.RetainPersistentVolumeClaimRetentionPolicyType
 	}
 
+	final_vols := []v1.PersistentVolumeClaim{*volumeClaimTemplate}
+	if spec.WalPvc != nil {
+		final_vols = []v1.PersistentVolumeClaim{*volumeClaimTemplate, *WalPvcClaim}
+	}
+
 	statefulSet := &appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        c.statefulSetName(),
@@ -1602,7 +1618,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			Selector:                             c.labelsSelector(TYPE_POSTGRESQL),
 			ServiceName:                          c.serviceName(Master),
 			Template:                             *podTemplate,
-			VolumeClaimTemplates:                 []v1.PersistentVolumeClaim{*volumeClaimTemplate, *WalPvcClaim},
+			VolumeClaimTemplates:                 final_vols, //[]v1.PersistentVolumeClaim{*volumeClaimTemplate, *WalPvcClaim},
 			UpdateStrategy:                       updateStrategy,
 			PodManagementPolicy:                  podManagementPolicy,
 			PersistentVolumeClaimRetentionPolicy: &persistentVolumeClaimRetentionPolicy,

@@ -557,7 +557,7 @@ func (c *Cluster) roleLabelsSet(shouldAddExtraLabels bool, role PostgresRole) la
 	var lbls labels.Set
 	// Ignore PodRoleLabel for Role ClusterPods
 	if role != ClusterPods {
-		lbls = c.labelsSetWithType(shouldAddExtraLabels, TYPE_POSTGRESQL)
+		lbls = c.labelsSet(shouldAddExtraLabels) //c.labelsSetWithType(shouldAddExtraLabels, TYPE_POSTGRESQL)
 		lbls[c.OpConfig.PodRoleLabel] = string(role)
 	} else {
 		lbls = c.labelsSetWithType(shouldAddExtraLabels, "")

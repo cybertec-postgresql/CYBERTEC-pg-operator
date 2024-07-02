@@ -1,11 +1,11 @@
 module github.com/cybertec-postgresql/cybertec-pg-operator/kubectl-pg
 
-go 1.18
+go 1.21.7
 
 require (
+	github.com/cybertec-postgresql/cybertec-pg-operator v0.7.0-rc2
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.9.0
-	github.com/cybertec-postgresql/cybertec-pg-operator v1.10.0
 	k8s.io/api v0.25.9
 	k8s.io/apiextensions-apiserver v0.25.9
 	k8s.io/apimachinery v0.25.9
@@ -47,15 +47,15 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
-	golang.org/x/crypto v0.8.0 // indirect
-	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
+	golang.org/x/net v0.23.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect
-	golang.org/x/sys v0.7.0 // indirect
-	golang.org/x/term v0.7.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/term v0.18.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.0.0-20220210224613-90d013bbcef8 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.63.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

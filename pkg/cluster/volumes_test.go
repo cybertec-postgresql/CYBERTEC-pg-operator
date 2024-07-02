@@ -14,13 +14,13 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/golang/mock/gomock"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/mocks"
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/volumes"
+	"github.com/stretchr/testify/assert"
 	"k8s.io/client-go/kubernetes/fake"
 )
 

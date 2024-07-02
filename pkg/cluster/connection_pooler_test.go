@@ -7,13 +7,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	fakecpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/fake"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
+	"github.com/stretchr/testify/assert"
 
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
@@ -65,12 +65,12 @@ func objectsAreSaved(cluster *Cluster, err error, reason SyncReason) error {
 	}
 
 	for _, role := range []PostgresRole{Master, Replica} {
-		poolerLabels := cluster.labelsSet(false)
+		poolerLabels := cluster.poolerLabelsSet(false)
 		poolerLabels["application"] = "db-connection-pooler"
 		poolerLabels["connection-pooler"] = cluster.connectionPoolerName(role)
 
 		if cluster.ConnectionPooler[role].Deployment == nil || !util.MapContains(cluster.ConnectionPooler[role].Deployment.Labels, poolerLabels) {
-			return fmt.Errorf("Deployment was not saved or labels not attached %s %s", role, cluster.ConnectionPooler[role].Deployment.Labels)
+			return fmt.Errorf("Deployment was not saved or labels not attached role = %s Labels = %s PoolerLabels=%s", role, cluster.ConnectionPooler[role].Deployment.Labels, poolerLabels)
 		}
 
 		if cluster.ConnectionPooler[role].Service == nil || !util.MapContains(cluster.ConnectionPooler[role].Service.Labels, poolerLabels) {
@@ -86,12 +86,12 @@ func MasterObjectsAreSaved(cluster *Cluster, err error, reason SyncReason) error
 		return fmt.Errorf("Connection pooler resources are empty")
 	}
 
-	poolerLabels := cluster.labelsSet(false)
+	poolerLabels := cluster.poolerLabelsSet(false)
 	poolerLabels["application"] = "db-connection-pooler"
 	poolerLabels["connection-pooler"] = cluster.connectionPoolerName(Master)
 
 	if cluster.ConnectionPooler[Master].Deployment == nil || !util.MapContains(cluster.ConnectionPooler[Master].Deployment.Labels, poolerLabels) {
-		return fmt.Errorf("Deployment was not saved or labels not attached %s", cluster.ConnectionPooler[Master].Deployment.Labels)
+		return fmt.Errorf("Deployment was not saved or labels not attached for MAster %s pooler labels are %s", cluster.ConnectionPooler[Master].Deployment.Labels, poolerLabels)
 	}
 
 	if cluster.ConnectionPooler[Master].Service == nil || !util.MapContains(cluster.ConnectionPooler[Master].Service.Labels, poolerLabels) {
@@ -106,12 +106,12 @@ func ReplicaObjectsAreSaved(cluster *Cluster, err error, reason SyncReason) erro
 		return fmt.Errorf("Connection pooler resources are empty")
 	}
 
-	poolerLabels := cluster.labelsSet(false)
+	poolerLabels := cluster.poolerLabelsSet(false)
 	poolerLabels["application"] = "db-connection-pooler"
 	poolerLabels["connection-pooler"] = cluster.connectionPoolerName(Replica)
 
 	if cluster.ConnectionPooler[Replica].Deployment == nil || !util.MapContains(cluster.ConnectionPooler[Replica].Deployment.Labels, poolerLabels) {
-		return fmt.Errorf("Deployment was not saved or labels not attached %s", cluster.ConnectionPooler[Replica].Deployment.Labels)
+		return fmt.Errorf("Deployment was not saved or labels not attached for Replica %s pooler labels are %s", cluster.ConnectionPooler[Replica].Deployment.Labels, poolerLabels)
 	}
 
 	if cluster.ConnectionPooler[Replica].Service == nil || !util.MapContains(cluster.ConnectionPooler[Replica].Service.Labels, poolerLabels) {

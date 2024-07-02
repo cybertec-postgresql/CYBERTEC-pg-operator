@@ -111,7 +111,12 @@ func (c *Cluster) poolerUser(spec *cpov1.PostgresSpec) string {
 
 // when listing pooler k8s objects
 func (c *Cluster) poolerLabelsSet(addExtraLabels bool) labels.Set {
-	return c.labelsSetWithType(addExtraLabels, TYPE_POOLER)
+
+	poolerLabels := c.labelsSet(addExtraLabels)
+	// TODO should be config values
+	poolerLabels["application"] = "db-connection-pooler"
+	return poolerLabels
+	//return c.labelsSetWithType(addExtraLabels, TYPE_POOLER)
 }
 
 // Return connection pooler labels selector, which should from one point of view

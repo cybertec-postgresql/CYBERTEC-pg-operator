@@ -230,7 +230,8 @@ func (c *Cluster) syncEbsVolumes() error {
 func (c *Cluster) listPersistentVolumeClaims() ([]v1.PersistentVolumeClaim, error) {
 	ns := c.Namespace
 	listOptions := metav1.ListOptions{
-		LabelSelector: c.labelsSetWithType(false, TYPE_POSTGRESQL).String(),
+		//LabelSelector: c.labelsSetWithType(false, TYPE_POSTGRESQL).String(),
+		LabelSelector: c.labelsSet(false).String(),
 	}
 
 	pvcs, err := c.KubeClient.PersistentVolumeClaims(ns).List(context.TODO(), listOptions)

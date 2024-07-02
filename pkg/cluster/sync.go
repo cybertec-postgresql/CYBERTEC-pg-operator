@@ -1632,7 +1632,7 @@ func (c *Cluster) syncPgbackrestJob(forceRemove bool) error {
 								if err := c.createPgbackrestJob(job); err != nil {
 									return fmt.Errorf("could not create a pgbackrest cronjob: %v", err)
 								}
-								c.logger.Info("pgbackrest cronjob for %v %v has been successfully created", rep, schedul)
+								c.logger.Infof("pgbackrest cronjob for %v %v has been successfully created", rep, schedul)
 							}
 						}
 					}

@@ -428,7 +428,6 @@ PatroniInitDBParams:
 
 		if len(local) > 0 {
 			config.PgLocalConfiguration[constants.PatroniPGParametersParameterName] = local
-			logger.Infof("+-+--+-+--+--+-- Recevived local params are %v", local)
 		}
 		if len(bootstrap) > 0 {
 			config.Bootstrap.DCS.PGBootstrapConfiguration = make(map[string]interface{})
@@ -1341,9 +1340,6 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	enableTDE := false
 	if spec.TDE != nil && spec.TDE.Enable {
 		enableTDE = true
-	}
-	if spec.WalPvc != nil {
-		spec.PostgresqlParam.Parameters["basebackup"] = "- waldir: \n\t " + spec.WalPvc.WalDir
 	}
 	spiloConfiguration, err := generateSpiloJSONConfiguration(&spec.PostgresqlParam, &spec.Patroni, &c.OpConfig, enableTDE, c.logger)
 	if err != nil {

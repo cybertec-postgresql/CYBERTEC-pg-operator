@@ -1012,6 +1012,9 @@ func (c *Cluster) generateSpiloPodEnvVars(
 	if spec.Monitoring != nil {
 		envVars = append(envVars, v1.EnvVar{Name: "cpo_monitoring_stack", Value: "true"})
 	}
+	if spec.WalPvc != nil {
+		envVars = append(envVars, v1.EnvVar{Name: "WALDIR", Value: spec.WalPvc.WalDir})
+	}
 
 	if c.OpConfig.EnablePgVersionEnvVar {
 		envVars = append(envVars, v1.EnvVar{Name: "PGVERSION", Value: c.GetDesiredMajorVersion()})
@@ -1345,7 +1348,6 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	if err != nil {
 		return nil, fmt.Errorf("could not generate Spilo JSON configuration: %v", err)
 	}
-	c.logger.Infof("######## params are %v", spec.PostgresqlParam)
 
 	// generate environment variables for the spilo container
 	spiloEnvVars, err := c.generateSpiloPodEnvVars(spec, c.Postgresql.GetUID(), spiloConfiguration)

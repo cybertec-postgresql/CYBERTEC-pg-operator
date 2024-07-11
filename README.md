@@ -37,7 +37,6 @@ pipelines with no access to Kubernetes API directly, promoting infrastructure as
 * Supports PostgreSQL 16, starting from 10+
 * Streaming replication cluster via Patroni
 * Point-In-Time-Recovery with
-* Point-In-Time-Recovery with
 [pg_basebackup](https://www.postgresql.org/docs/16/app-pgbasebackup.html) /
 [pgBackRest](https://pgbackrest.org/) via [CYBERTEC-pg-container](https://github.com/cybertec-postgresql/CYBERTEC-pg-container)
 [pg_stat_statements](https://www.postgresql.org/docs/16/pgstatstatements.html),
@@ -57,8 +56,8 @@ The Operator project is being driven forward by CYBERTEC and is currently in pro
 
 | Release   | Postgres versions | pgBackRest versions   | Patroni versions | K8s versions      | Golang  |
 | :-------- | :---------------: | :-------------------: | :--------------: | :----------------:| :-----: |
-| latest    | 10 &rarr; 16      | 2.51                  | 3.3.0            | 1.21+             | 1.22.1  |
-| next rc   | 10 &rarr; 16      | 2.51                  | 3.3.0            | 1.21+             | 1.22.1  |
+| 0.7.0     | 12 &rarr; 16      | 2.52.1                | 3.3.1            | 1.21+             | 1.21.7  |
+| next rc   | 13 &rarr; 16      | 2.51                  | 3.3.1            | 1.21+             | 1.21.7  |
 
 ## Getting started
 

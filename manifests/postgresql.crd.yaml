@@ -1,9 +1,9 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: postgresqls.acid.zalan.do
+  name: postgresqls.cpo.opensource.cybertec.at
 spec:
-  group: acid.zalan.do
+  group: cpo.opensource.cybertec.at
   names:
     kind: postgresql
     listKind: postgresqlList
@@ -67,7 +67,7 @@ spec:
           apiVersion:
             type: string
             enum:
-              - acid.zalan.do/v1
+              - cpo.opensource.cybertec.at/v1
           spec:
             type: object
             required:
@@ -484,12 +484,10 @@ spec:
                   version:
                     type: string
                     enum:
-                      - "10"
-                      - "11"
-                      - "12"
                       - "13"
                       - "14"
                       - "15"
+                      - "16"
                   parameters:
                     type: object
                     additionalProperties:
@@ -780,28 +778,29 @@ spec:
                         properties:
                           secret:
                             type: string
-                          parameters:
-                            additionalProperties:
-                              type: string
-                            type: object
                           protection:
                             type: object
                             properties:
                               restore:
                                 type: boolean
+                      global:
+                        type: object
+                        additionalProperties:
+                          type: string
                       repos:
                         type: array
                         items:
                           properties:
                             name:
                               type: string
-                              pattern: ^repo[1-4]
+                              pattern: ^repo[1-4]$
                             storage:
                               type: string
                               enum:
                                 - "s3"
                                 - "gcs"
                                 - "azure"
+                                - "pvc"
                             resource:
                               type: string
                             endpoint:
@@ -817,6 +816,8 @@ spec:
                                   type: string
                                 diff:
                                   type: string
+                            Pvcsize:
+                              type: string
                           required:
                           - name
                           - storage
@@ -833,9 +834,10 @@ spec:
                             type: string
                           repo:
                             type: string
+                            pattern: ^repo[1-4]$
                           options:
-                            type: array
-                            items:
+                            type: object
+                            additionalProperties:
                               type: string
                       resources:
                         type: object

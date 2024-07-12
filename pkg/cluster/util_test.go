@@ -5,24 +5,24 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	fakeacidv1 "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/fake"
-	"github.com/zalando/postgres-operator/pkg/util"
-	"github.com/zalando/postgres-operator/pkg/util/config"
-	"github.com/zalando/postgres-operator/pkg/util/k8sutil"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	fakecpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/fake"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	k8sFake "k8s.io/client-go/kubernetes/fake"
 )
 
 func newFakeK8sAnnotationsClient() (k8sutil.KubernetesClient, *k8sFake.Clientset) {
 	clientSet := k8sFake.NewSimpleClientset()
-	acidClientSet := fakeacidv1.NewSimpleClientset()
+	acidClientSet := fakecpov1.NewSimpleClientset()
 
 	return k8sutil.KubernetesClient{
 		PodDisruptionBudgetsGetter: clientSet.PolicyV1(),
 		ServicesGetter:             clientSet.CoreV1(),
 		StatefulSetsGetter:         clientSet.AppsV1(),
-		PostgresqlsGetter:          acidClientSet.AcidV1(),
+		PostgresqlsGetter:          acidClientSet.CpoV1(),
 	}, clientSet
 }
 
@@ -34,16 +34,16 @@ func TestInheritedAnnotations(t *testing.T) {
 	annotationValue := "acid"
 	role := Master
 
-	pg := acidv1.Postgresql{
+	pg := cpov1.Postgresql{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: clusterName,
 			Annotations: map[string]string{
 				"owned-by": annotationValue,
 			},
 		},
-		Spec: acidv1.PostgresSpec{
+		Spec: cpov1.PostgresSpec{
 			EnableReplicaConnectionPooler: boolToPointer(true),
-			Volume: acidv1.Volume{
+			Volume: cpov1.Volume{
 				Size: "1Gi",
 			},
 		},
@@ -61,14 +61,14 @@ func TestInheritedAnnotations(t *testing.T) {
 				},
 				PodManagementPolicy: "ordered_ready",
 				Resources: config.Resources{
-					ClusterLabels:        map[string]string{"application": "spilo"},
-					ClusterNameLabel:     "cluster-name",
+					ClusterLabels:        map[string]string{"application": "cpo"},
+					ClusterNameLabel:     "cluster.cpo.opensource.cybertec.at/name",
 					DefaultCPURequest:    "300m",
 					DefaultCPULimit:      "300m",
 					DefaultMemoryRequest: "300Mi",
 					DefaultMemoryLimit:   "300Mi",
 					InheritedAnnotations: []string{"owned-by"},
-					PodRoleLabel:         "spilo-role",
+					PodRoleLabel:         "member.cpo.opensource.cybertec.at/role",
 				},
 			},
 		}, client, pg, logger, eventRecorder)

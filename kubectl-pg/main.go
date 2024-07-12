@@ -23,7 +23,7 @@ THE SOFTWARE.
 package main
 
 import (
-	"github.com/zalando/postgres-operator/kubectl-pg/cmd"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/kubectl-pg/cmd"
 )
 
 func main() {

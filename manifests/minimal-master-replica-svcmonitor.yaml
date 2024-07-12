@@ -6,7 +6,7 @@ kind: Namespace
 metadata:
   name: test-pg
 ---
-apiVersion: "acid.zalan.do/v1"
+apiVersion: "cpo.opensource.cybertec.at/v1"
 kind: postgresql
 metadata:
   name: acid-minimal-cluster
@@ -51,7 +51,7 @@ metadata:
   namespace: test-pg
   labels:
     app: test-pg
-    spilo-role: master
+    member.cpo.opensource.cybertec.at/role: master
   annotations:
       prometheus.io/scrape: "true"
       prometheus.io/port: "9187"
@@ -62,9 +62,9 @@ spec:
       port: 9187
       targetPort: exporter
   selector:
-    application: spilo
-    cluster-name: acid-minimal-cluster
-    spilo-role: master
+    application: cpo
+    cluster.cpo.opensource.cybertec.at/name: acid-minimal-cluster
+    member.cpo.opensource.cybertec.at/role: master
 ---
 apiVersion: v1
 kind: Service
@@ -73,7 +73,7 @@ metadata:
   namespace: test-pg
   labels:
     app: test-pg
-    spilo-role: replica
+    member.cpo.opensource.cybertec.at/role: replica
   annotations:
       prometheus.io/scrape: "true"
       prometheus.io/port: "9187"
@@ -84,9 +84,9 @@ spec:
       port: 9187
       targetPort: exporter
   selector:
-    application: spilo
-    cluster-name: acid-minimal-cluster
-    spilo-role: replica
+    application: cpo
+    cluster.cpo.opensource.cybertec.at/name: acid-minimal-cluster
+    member.cpo.opensource.cybertec.at/role: replica
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -95,7 +95,7 @@ metadata:
   namespace: test-pg
   labels:
     app: test-pg
-    spilo-role: master
+    member.cpo.opensource.cybertec.at/role: master
 spec:
   endpoints:
     - port: exporter
@@ -107,7 +107,7 @@ spec:
   selector:
     matchLabels:
       app: test-pg
-      spilo-role: master
+      member.cpo.opensource.cybertec.at/role: master
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -116,7 +116,7 @@ metadata:
   namespace: test-pg
   labels:
     app: test-pg
-    spilo-role: replica
+    member.cpo.opensource.cybertec.at/role: replica
 spec:
   endpoints:
     - port: exporter
@@ -128,4 +128,4 @@ spec:
   selector:
     matchLabels:
       app: test-pg
-      spilo-role: replica
+      member.cpo.opensource.cybertec.at/role: replica

@@ -8,13 +8,13 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	zalandov1 "github.com/zalando/postgres-operator/pkg/apis/zalando.org/v1"
-	fakezalandov1 "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/fake"
-	"github.com/zalando/postgres-operator/pkg/util"
-	"github.com/zalando/postgres-operator/pkg/util/config"
-	"github.com/zalando/postgres-operator/pkg/util/constants"
-	"github.com/zalando/postgres-operator/pkg/util/k8sutil"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	zalandov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/zalando.org/v1"
+	fakezalandov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/fake"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -27,7 +27,7 @@ func newFakeK8sStreamClient() (k8sutil.KubernetesClient, *fake.Clientset) {
 
 	return k8sutil.KubernetesClient{
 		FabricEventStreamsGetter: zalandoClientSet.ZalandoV1(),
-		PostgresqlsGetter:        zalandoClientSet.AcidV1(),
+		PostgresqlsGetter:        zalandoClientSet.CpoV1(),
 		PodsGetter:               clientSet.CoreV1(),
 		StatefulSetsGetter:       clientSet.AppsV1(),
 	}, clientSet
@@ -41,30 +41,30 @@ var (
 	fesUser     string = fmt.Sprintf("%s%s", constants.EventStreamSourceSlotPrefix, constants.UserRoleNameSuffix)
 	slotName    string = fmt.Sprintf("%s_%s_%s", constants.EventStreamSourceSlotPrefix, dbName, strings.Replace(appId, "-", "_", -1))
 
-	pg = acidv1.Postgresql{
+	pg = cpov1.Postgresql{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Postgresql",
-			APIVersion: "acid.zalan.do/v1",
+			APIVersion: "cpo.opensource.cybertec.at/v1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      clusterName,
 			Namespace: namespace,
 		},
-		Spec: acidv1.PostgresSpec{
+		Spec: cpov1.PostgresSpec{
 			Databases: map[string]string{
 				dbName: fmt.Sprintf("%s%s", dbName, constants.UserRoleNameSuffix),
 			},
-			Streams: []acidv1.Stream{
+			Streams: []cpov1.Stream{
 				{
 					ApplicationId: appId,
 					Database:      "foo",
-					Tables: map[string]acidv1.StreamTable{
-						"data.bar": acidv1.StreamTable{
+					Tables: map[string]cpov1.StreamTable{
+						"data.bar": cpov1.StreamTable{
 							EventType:     "stream-type-a",
 							IdColumn:      k8sutil.StringToPointer("b_id"),
 							PayloadColumn: k8sutil.StringToPointer("b_payload"),
 						},
-						"data.foobar": acidv1.StreamTable{
+						"data.foobar": cpov1.StreamTable{
 							EventType:         "stream-type-b",
 							RecoveryEventType: "stream-type-b-dlq",
 						},
@@ -77,7 +77,7 @@ var (
 				},
 			},
 			TeamID: "acid",
-			Volume: acidv1.Volume{
+			Volume: cpov1.Volume{
 				Size: "1Gi",
 			},
 		},
@@ -125,7 +125,7 @@ var (
 						Filter: k8sutil.StringToPointer("[?(@.source.txId > 500 && @.source.lsn > 123456)]"),
 						Connection: zalandov1.Connection{
 							DBAuth: zalandov1.DBAuth{
-								Name:        fmt.Sprintf("fes-user.%s.credentials.postgresql.acid.zalan.do", clusterName),
+								Name:        fmt.Sprintf("fes-user.%s.credentials.postgresql.cpo.opensource.cybertec.at", clusterName),
 								PasswordKey: "password",
 								Type:        constants.EventStreamSourceAuthType,
 								UserKey:     "username",
@@ -162,7 +162,7 @@ var (
 					EventStreamSource: zalandov1.EventStreamSource{
 						Connection: zalandov1.Connection{
 							DBAuth: zalandov1.DBAuth{
-								Name:        fmt.Sprintf("fes-user.%s.credentials.postgresql.acid.zalan.do", clusterName),
+								Name:        fmt.Sprintf("fes-user.%s.credentials.postgresql.cpo.opensource.cybertec.at", clusterName),
 								PasswordKey: "password",
 								Type:        constants.EventStreamSourceAuthType,
 								UserKey:     "username",
@@ -203,13 +203,13 @@ func TestGenerateFabricEventStream(t *testing.T) {
 				},
 				PodManagementPolicy: "ordered_ready",
 				Resources: config.Resources{
-					ClusterLabels:        map[string]string{"application": "spilo"},
-					ClusterNameLabel:     "cluster-name",
+					ClusterLabels:        map[string]string{"application": "cpo"},
+					ClusterNameLabel:     "cluster.cpo.opensource.cybertec.at/name",
 					DefaultCPURequest:    "300m",
 					DefaultCPULimit:      "300m",
 					DefaultMemoryRequest: "300Mi",
 					DefaultMemoryLimit:   "300Mi",
-					PodRoleLabel:         "spilo-role",
+					PodRoleLabel:         "member.cpo.opensource.cybertec.at/role",
 				},
 			},
 		}, client, pg, logger, eventRecorder)
@@ -355,13 +355,13 @@ func TestUpdateFabricEventStream(t *testing.T) {
 			OpConfig: config.Config{
 				PodManagementPolicy: "ordered_ready",
 				Resources: config.Resources{
-					ClusterLabels:        map[string]string{"application": "spilo"},
-					ClusterNameLabel:     "cluster-name",
+					ClusterLabels:        map[string]string{"application": "cpo"},
+					ClusterNameLabel:     "cluster.cpo.opensource.cybertec.at/name",
 					DefaultCPURequest:    "300m",
 					DefaultCPULimit:      "300m",
 					DefaultMemoryRequest: "300Mi",
 					DefaultMemoryLimit:   "300Mi",
-					PodRoleLabel:         "spilo-role",
+					PodRoleLabel:         "member.cpo.opensource.cybertec.at/role",
 				},
 			},
 		}, client, pg, logger, eventRecorder)

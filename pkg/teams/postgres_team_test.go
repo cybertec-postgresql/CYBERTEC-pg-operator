@@ -3,27 +3,27 @@ package teams
 import (
 	"testing"
 
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	"github.com/zalando/postgres-operator/pkg/util"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var (
-	pgTeamList = acidv1.PostgresTeamList{
+	pgTeamList = cpov1.PostgresTeamList{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "List",
 			APIVersion: "v1",
 		},
-		Items: []acidv1.PostgresTeam{
+		Items: []cpov1.PostgresTeam{
 			{
 				TypeMeta: metav1.TypeMeta{
 					Kind:       "PostgresTeam",
-					APIVersion: "acid.zalan.do/v1",
+					APIVersion: "cpo.opensource.cybertec.at/v1",
 				},
 				ObjectMeta: metav1.ObjectMeta{
 					Name: "teamAB",
 				},
-				Spec: acidv1.PostgresTeamSpec{
+				Spec: cpov1.PostgresTeamSpec{
 					AdditionalSuperuserTeams: map[string][]string{"teamA": []string{"teamB", "team24x7"}, "teamB": []string{"teamA", "teamC", "team24x7"}},
 					AdditionalTeams:          map[string][]string{"teamA": []string{"teamC"}, "teamB": []string{}},
 					AdditionalMembers:        map[string][]string{"team24x7": []string{"optimusprime"}, "teamB": []string{"drno"}},
@@ -31,12 +31,12 @@ var (
 			}, {
 				TypeMeta: metav1.TypeMeta{
 					Kind:       "PostgresTeam",
-					APIVersion: "acid.zalan.do/v1",
+					APIVersion: "cpo.opensource.cybertec.at/v1",
 				},
 				ObjectMeta: metav1.ObjectMeta{
 					Name: "teamC",
 				},
-				Spec: acidv1.PostgresTeamSpec{
+				Spec: cpov1.PostgresTeamSpec{
 					AdditionalSuperuserTeams: map[string][]string{"teamC": []string{"team24x7"}},
 					AdditionalTeams:          map[string][]string{"teamA": []string{"teamC"}, "teamC": []string{"teamA", "teamB", "acid"}},
 					AdditionalMembers:        map[string][]string{"acid": []string{"batman"}},
@@ -45,12 +45,12 @@ var (
 			{
 				TypeMeta: metav1.TypeMeta{
 					Kind:       "PostgresTeam",
-					APIVersion: "acid.zalan.do/v1",
+					APIVersion: "cpo.opensource.cybertec.at/v1",
 				},
 				ObjectMeta: metav1.ObjectMeta{
 					Name: "teamD",
 				},
-				Spec: acidv1.PostgresTeamSpec{
+				Spec: cpov1.PostgresTeamSpec{
 					AdditionalSuperuserTeams: map[string][]string{},
 					AdditionalTeams:          map[string][]string{"teamA": []string{"teamD"}, "teamC": []string{"teamD"}, "teamD": []string{"teamA", "teamB", "teamC"}},
 					AdditionalMembers:        map[string][]string{"acid": []string{"batman"}},
@@ -96,7 +96,7 @@ var (
 func TestLoadingPostgresTeamCRD(t *testing.T) {
 	tests := []struct {
 		name  string
-		crd   acidv1.PostgresTeamList
+		crd   cpov1.PostgresTeamList
 		ptm   PostgresTeamMap
 		error string
 	}{

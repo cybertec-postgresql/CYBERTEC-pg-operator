@@ -10,9 +10,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/zalando/postgres-operator/pkg/controller"
-	"github.com/zalando/postgres-operator/pkg/spec"
-	"github.com/zalando/postgres-operator/pkg/util/k8sutil"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/controller"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 )
 
 var (

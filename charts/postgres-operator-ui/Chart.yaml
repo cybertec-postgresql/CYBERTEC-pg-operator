@@ -2,7 +2,7 @@ apiVersion: v2
 name: postgres-operator-ui
 version: 1.10.1
 appVersion: 1.10.1
-home: https://github.com/zalando/postgres-operator
+home: https://github.com/cybertec-postgresql/cybertec-pg-operator
 description: Postgres Operator UI provides a graphical interface for a convenient database-as-a-service user experience
 keywords:
 - postgres
@@ -15,5 +15,5 @@ maintainers:
 - name: Zalando
   email: opensource@zalando.de
 sources:
-- https://github.com/zalando/postgres-operator
+- https://github.com/cybertec-postgresql/cybertec-pg-operator
 engine: gotpl

@@ -45,7 +45,7 @@ adjusting the manifests to your K8s environment (e.g. namespaces).
 
 ```bash
 # First, clone the repository and change to the directory
-git clone https://github.com/zalando/postgres-operator.git
+git clone https://github.com/cybertec-postgresql/cybertec-pg-operator.git
 cd postgres-operator
 
 # apply the manifests in the following order
@@ -56,15 +56,15 @@ kubectl create -f manifests/api-service.yaml  # operator API to be used by UI
 ```
 
 There is a [Kustomization](https://github.com/kubernetes-sigs/kustomize)
-manifest that [combines the mentioned resources](https://github.com/zalando/postgres-operator/blob/master/manifests/kustomization.yaml)
+manifest that [combines the mentioned resources](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/kustomization.yaml)
 (except for the CRD) - it can be used with kubectl 1.14 or newer as easy as:
 
 ```bash
-kubectl apply -k github.com/zalando/postgres-operator/manifests
+kubectl apply -k github.com/cybertec-postgresql/cybertec-pg-operator/manifests
 ```
 
 For convenience, we have automated starting the operator with minikube using the
-`run_operator_locally` script. It applies the [`acid-minimal-cluster`](https://github.com/zalando/postgres-operator/blob/master/manifests/minimal-postgres-manifest.yaml).
+`run_operator_locally` script. It applies the [`acid-minimal-cluster`](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/minimal-postgres-manifest.yaml).
 manifest.
 
 ```bash
@@ -131,8 +131,8 @@ In the following paragraphs we describe how to access and manage PostgreSQL
 clusters from the command line with kubectl. But it can also be done from the
 browser-based [Postgres Operator UI](operator-ui.md). Before deploying the UI
 make sure the operator is running and its REST API is reachable through a
-[K8s service](https://github.com/zalando/postgres-operator/blob/master/manifests/api-service.yaml). The URL to this API must be
-configured in the [deployment manifest](https://github.com/zalando/postgres-operator/blob/master/ui/manifests/deployment.yaml#L43)
+[K8s service](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/api-service.yaml). The URL to this API must be
+configured in the [deployment manifest](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/ui/manifests/deployment.yaml#L43)
 of the UI.
 
 To deploy the UI simply apply all its manifests files or use the UI helm chart:
@@ -142,7 +142,7 @@ To deploy the UI simply apply all its manifests files or use the UI helm chart:
 kubectl apply -f ui/manifests/
 
 # or kustomization
-kubectl apply -k github.com/zalando/postgres-operator/ui/manifests
+kubectl apply -k github.com/cybertec-postgresql/cybertec-pg-operator/ui/manifests
 
 # or helm chart
 helm install postgres-operator-ui ./charts/postgres-operator-ui
@@ -184,18 +184,18 @@ are named like the cluster. The database pods can be identified by their number
 suffix, starting from `-0`. They run the [Spilo](https://github.com/zalando/spilo)
 container image by Zalando. As for the services and endpoints, there will be one
 for the master pod and another one for all the replicas (`-repl` suffix). Check
-if all components are coming up. Use the label `application=spilo` to filter and
-list the label `spilo-role` to see who is currently the master.
+if all components are coming up. Use the label `application=cpo` to filter and
+list the label `member.cpo.opensource.cybertec.at/role` to see who is currently the master.
 
 ```bash
 # check the deployed cluster
 kubectl get postgresql
 
 # check created database pods
-kubectl get pods -l application=spilo -L spilo-role
+kubectl get pods -l application=cpo -L member.cpo.opensource.cybertec.at/role
 
 # check created service resources
-kubectl get svc -l application=spilo -L spilo-role
+kubectl get svc -l application=cpo -L member.cpo.opensource.cybertec.at/role
 ```
 
 ## Connect to the Postgres cluster via psql
@@ -216,7 +216,7 @@ Non-encrypted connections are rejected by default, so set the SSL mode to
 require:
 
 ```bash
-export PGPASSWORD=$(kubectl get secret postgres.acid-minimal-cluster.credentials.postgresql.acid.zalan.do -o 'jsonpath={.data.password}' | base64 -d)
+export PGPASSWORD=$(kubectl get secret postgres.acid-minimal-cluster.credentials.postgresql.cpo.opensource.cybertec.at -o 'jsonpath={.data.password}' | base64 -d)
 export PGSSLMODE=require
 psql -U postgres
 ```
@@ -234,7 +234,7 @@ Endpoints. The PersistentVolumes are released and the PodDisruptionBudget is
 deleted. Secrets however are not deleted and backups will remain in place.
 
 When deleting a cluster while it is still starting up or got stuck during that
-phase it can [happen](https://github.com/zalando/postgres-operator/issues/551)
+phase it can [happen](https://github.com/cybertec-postgresql/cybertec-pg-operator/issues/551)
 that the `postgresql` resource is deleted leaving orphaned components behind.
 This can cause troubles when creating a new Postgres cluster. For a fresh setup
 you can delete your local minikube or kind cluster and start again.

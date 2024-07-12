@@ -13,23 +13,23 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
+	"github.com/cybertec-postgresql/cybertec-pg-operator/mocks"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	fakecpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/fake"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/patroni"
 	"github.com/golang/mock/gomock"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
-	"github.com/zalando/postgres-operator/mocks"
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	fakeacidv1 "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/fake"
-	"github.com/zalando/postgres-operator/pkg/spec"
-	"github.com/zalando/postgres-operator/pkg/util"
-	"github.com/zalando/postgres-operator/pkg/util/config"
-	"github.com/zalando/postgres-operator/pkg/util/constants"
-	"github.com/zalando/postgres-operator/pkg/util/k8sutil"
-	"github.com/zalando/postgres-operator/pkg/util/patroni"
 	"k8s.io/client-go/kubernetes/fake"
 )
 
 var patroniLogger = logrus.New().WithField("test", "patroni")
-var acidClientSet = fakeacidv1.NewSimpleClientset()
+var acidClientSet = fakecpov1.NewSimpleClientset()
 var clientSet = fake.NewSimpleClientset()
 
 func newMockPod(ip string) *v1.Pod {
@@ -43,7 +43,7 @@ func newMockPod(ip string) *v1.Pod {
 func newFakeK8sSyncClient() (k8sutil.KubernetesClient, *fake.Clientset) {
 	return k8sutil.KubernetesClient{
 		PodsGetter:         clientSet.CoreV1(),
-		PostgresqlsGetter:  acidClientSet.AcidV1(),
+		PostgresqlsGetter:  acidClientSet.CpoV1(),
 		StatefulSetsGetter: clientSet.AppsV1(),
 	}, clientSet
 }
@@ -61,14 +61,14 @@ func TestSyncStatefulSetsAnnotations(t *testing.T) {
 	namespace := "default"
 	inheritedAnnotation := "environment"
 
-	pg := acidv1.Postgresql{
+	pg := cpov1.Postgresql{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        clusterName,
 			Namespace:   namespace,
 			Annotations: map[string]string{inheritedAnnotation: "test"},
 		},
-		Spec: acidv1.PostgresSpec{
-			Volume: acidv1.Volume{
+		Spec: cpov1.PostgresSpec{
+			Volume: cpov1.Volume{
 				Size: "1Gi",
 			},
 		},
@@ -79,14 +79,14 @@ func TestSyncStatefulSetsAnnotations(t *testing.T) {
 			OpConfig: config.Config{
 				PodManagementPolicy: "ordered_ready",
 				Resources: config.Resources{
-					ClusterLabels:         map[string]string{"application": "spilo"},
-					ClusterNameLabel:      "cluster-name",
+					ClusterLabels:         map[string]string{"application": "cpo"},
+					ClusterNameLabel:      "cluster.cpo.opensource.cybertec.at/name",
 					DefaultCPURequest:     "300m",
 					DefaultCPULimit:       "300m",
 					DefaultMemoryRequest:  "300Mi",
 					DefaultMemoryLimit:    "300Mi",
 					InheritedAnnotations:  []string{inheritedAnnotation},
-					PodRoleLabel:          "spilo-role",
+					PodRoleLabel:          "member.cpo.opensource.cybertec.at/role",
 					ResourceCheckInterval: time.Duration(3),
 					ResourceCheckTimeout:  time.Duration(10),
 				},
@@ -120,7 +120,7 @@ func TestSyncStatefulSetsAnnotations(t *testing.T) {
 	desiredSts, err := cluster.generateStatefulSet(&cluster.Postgresql.Spec)
 	assert.NoError(t, err)
 
-	cmp := cluster.compareStatefulSetWith(desiredSts)
+	cmp := cluster.compareStatefulSetWith(cluster.Statefulset, desiredSts)
 	if cmp.match {
 		t.Errorf("%s: match between current and desired statefulsets albeit differences: %#v", testName, cmp)
 	}
@@ -129,7 +129,7 @@ func TestSyncStatefulSetsAnnotations(t *testing.T) {
 	cluster.syncStatefulSet()
 
 	// compare again after the SYNC - must be identical to the desired state
-	cmp = cluster.compareStatefulSetWith(desiredSts)
+	cmp = cluster.compareStatefulSetWith(cluster.Statefulset, desiredSts)
 	if !cmp.match {
 		t.Errorf("%s: current and desired statefulsets are not matching %#v", testName, cmp)
 	}
@@ -160,21 +160,21 @@ func TestCheckAndSetGlobalPostgreSQLConfiguration(t *testing.T) {
 		"log_min_duration_statement": "200",
 		"max_connections":            "50",
 	}
-	defaultPatroniParameters := acidv1.Patroni{
+	defaultPatroniParameters := cpov1.Patroni{
 		TTL: 20,
 	}
 
-	pg := acidv1.Postgresql{
+	pg := cpov1.Postgresql{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      clusterName,
 			Namespace: namespace,
 		},
-		Spec: acidv1.PostgresSpec{
+		Spec: cpov1.PostgresSpec{
 			Patroni: defaultPatroniParameters,
-			PostgresqlParam: acidv1.PostgresqlParam{
+			PostgresqlParam: cpov1.PostgresqlParam{
 				Parameters: defaultPgParameters,
 			},
-			Volume: acidv1.Volume{
+			Volume: cpov1.Volume{
 				Size: "1Gi",
 			},
 		},
@@ -185,13 +185,13 @@ func TestCheckAndSetGlobalPostgreSQLConfiguration(t *testing.T) {
 			OpConfig: config.Config{
 				PodManagementPolicy: "ordered_ready",
 				Resources: config.Resources{
-					ClusterLabels:         map[string]string{"application": "spilo"},
-					ClusterNameLabel:      "cluster-name",
+					ClusterLabels:         map[string]string{"application": "cpo"},
+					ClusterNameLabel:      "cluster.cpo.opensource.cybertec.at/name",
 					DefaultCPURequest:     "300m",
 					DefaultCPULimit:       "300m",
 					DefaultMemoryRequest:  "300Mi",
 					DefaultMemoryLimit:    "300Mi",
-					PodRoleLabel:          "spilo-role",
+					PodRoleLabel:          "member.cpo.opensource.cybertec.at/role",
 					ResourceCheckInterval: time.Duration(3),
 					ResourceCheckTimeout:  time.Duration(10),
 				},
@@ -217,7 +217,7 @@ func TestCheckAndSetGlobalPostgreSQLConfiguration(t *testing.T) {
 	// simulate existing config that differs from cluster.Spec
 	tests := []struct {
 		subtest         string
-		patroni         acidv1.Patroni
+		patroni         cpov1.Patroni
 		desiredSlots    map[string]map[string]string
 		removedSlots    map[string]map[string]string
 		pgParams        map[string]string
@@ -226,7 +226,7 @@ func TestCheckAndSetGlobalPostgreSQLConfiguration(t *testing.T) {
 	}{
 		{
 			subtest: "Patroni and Postgresql.Parameters do not differ",
-			patroni: acidv1.Patroni{
+			patroni: cpov1.Patroni{
 				TTL: 20,
 			},
 			pgParams: map[string]string{
@@ -238,7 +238,7 @@ func TestCheckAndSetGlobalPostgreSQLConfiguration(t *testing.T) {
 		},
 		{
 			subtest: "Patroni and Postgresql.Parameters differ - restart replica first",
-			patroni: acidv1.Patroni{
+			patroni: cpov1.Patroni{
 				TTL: 30, // desired 20
 			},
 			pgParams: map[string]string{
@@ -280,7 +280,7 @@ func TestCheckAndSetGlobalPostgreSQLConfiguration(t *testing.T) {
 		},
 		{
 			subtest: "slot does not exist but is desired",
-			patroni: acidv1.Patroni{
+			patroni: cpov1.Patroni{
 				TTL: 20,
 			},
 			desiredSlots: testSlots,
@@ -293,7 +293,7 @@ func TestCheckAndSetGlobalPostgreSQLConfiguration(t *testing.T) {
 		},
 		{
 			subtest: "slot exist, nothing specified in manifest",
-			patroni: acidv1.Patroni{
+			patroni: cpov1.Patroni{
 				TTL: 20,
 				Slots: map[string]map[string]string{
 					"slot1": {
@@ -312,7 +312,7 @@ func TestCheckAndSetGlobalPostgreSQLConfiguration(t *testing.T) {
 		},
 		{
 			subtest: "slot is removed from manifest",
-			patroni: acidv1.Patroni{
+			patroni: cpov1.Patroni{
 				TTL: 20,
 				Slots: map[string]map[string]string{
 					"slot1": {
@@ -332,7 +332,7 @@ func TestCheckAndSetGlobalPostgreSQLConfiguration(t *testing.T) {
 		},
 		{
 			subtest: "slot plugin differs",
-			patroni: acidv1.Patroni{
+			patroni: cpov1.Patroni{
 				TTL: 20,
 				Slots: map[string]map[string]string{
 					"slot1": {
@@ -492,27 +492,27 @@ func TestUpdateSecret(t *testing.T) {
 	retentionUsers := make([]string, 0)
 
 	// define manifest users and enable rotation for dbowner
-	pg := acidv1.Postgresql{
+	pg := cpov1.Postgresql{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      clusterName,
 			Namespace: namespace,
 		},
-		Spec: acidv1.PostgresSpec{
+		Spec: cpov1.PostgresSpec{
 			Databases:                      map[string]string{dbname: dbowner},
-			Users:                          map[string]acidv1.UserFlags{"foo": {}, dbowner: {}},
+			Users:                          map[string]cpov1.UserFlags{"foo": {}, dbowner: {}},
 			UsersWithInPlaceSecretRotation: []string{dbowner},
-			Streams: []acidv1.Stream{
+			Streams: []cpov1.Stream{
 				{
 					ApplicationId: appId,
 					Database:      dbname,
-					Tables: map[string]acidv1.StreamTable{
-						"data.foo": acidv1.StreamTable{
+					Tables: map[string]cpov1.StreamTable{
+						"data.foo": cpov1.StreamTable{
 							EventType: "stream-type-b",
 						},
 					},
 				},
 			},
-			Volume: acidv1.Volume{
+			Volume: cpov1.Volume{
 				Size: "1Gi",
 			},
 		},
@@ -531,8 +531,8 @@ func TestUpdateSecret(t *testing.T) {
 					PasswordRotationUserRetention: 3,
 				},
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
-					ClusterNameLabel: "cluster-name",
+					ClusterLabels:    map[string]string{"application": "cpo"},
+					ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name",
 				},
 			},
 		}, client, pg, logger, eventRecorder)

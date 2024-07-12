@@ -1,4 +1,4 @@
-apiVersion: "acid.zalan.do/v1"
+apiVersion: "cpo.opensource.cybertec.at/v1"
 kind: PostgresTeam
 metadata:
   name: custom-team-membership

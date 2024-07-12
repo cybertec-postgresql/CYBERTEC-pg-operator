@@ -30,7 +30,7 @@ import (
 	"strconv"
 
 	"github.com/spf13/cobra"
-	PostgresqlLister "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/typed/acid.zalan.do/v1"
+	PostgresqlLister "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/typed/cpo.opensource.cybertec.at/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"

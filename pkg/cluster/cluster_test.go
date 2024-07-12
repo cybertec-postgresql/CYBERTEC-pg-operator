@@ -9,14 +9,14 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	fakeacidv1 "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/fake"
-	"github.com/zalando/postgres-operator/pkg/spec"
-	"github.com/zalando/postgres-operator/pkg/util"
-	"github.com/zalando/postgres-operator/pkg/util/config"
-	"github.com/zalando/postgres-operator/pkg/util/constants"
-	"github.com/zalando/postgres-operator/pkg/util/k8sutil"
-	"github.com/zalando/postgres-operator/pkg/util/teams"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	fakecpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/fake"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/teams"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"
@@ -28,8 +28,8 @@ const (
 	replicationUserName = "standby"
 	poolerUserName      = "pooler"
 	adminUserName       = "admin"
-	exampleSpiloConfig  = `{"postgresql":{"bin_dir":"/usr/lib/postgresql/12/bin","parameters":{"autovacuum_analyze_scale_factor":"0.1"},"pg_hba":["hostssl all all 0.0.0.0/0 md5","host all all 0.0.0.0/0 md5"]},"bootstrap":{"initdb":[{"auth-host":"md5"},{"auth-local":"trust"},"data-checksums",{"encoding":"UTF8"},{"locale":"en_US.UTF-8"}],"users":{"test":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"ttl":30,"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"postgresql":{"parameters":{"max_connections":"100","max_locks_per_transaction":"64","max_worker_processes":"4"}}}}}`
-	spiloConfigDiff     = `{"postgresql":{"bin_dir":"/usr/lib/postgresql/12/bin","parameters":{"autovacuum_analyze_scale_factor":"0.1"},"pg_hba":["hostssl all all 0.0.0.0/0 md5","host all all 0.0.0.0/0 md5"]},"bootstrap":{"initdb":[{"auth-host":"md5"},{"auth-local":"trust"},"data-checksums",{"encoding":"UTF8"},{"locale":"en_US.UTF-8"}],"users":{"test":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"postgresql":{"parameters":{"max_locks_per_transaction":"64","max_worker_processes":"4"}}}}}`
+	exampleSpiloConfig  = `{"postgresql":{"bin_dir":"/usr/lib/postgresql/12/bin","parameters":{"autovacuum_analyze_scale_factor":"0.1"},"pg_hba":["hostssl all all 0.0.0.0/0 scram-sha-256","host all all 0.0.0.0/0 scram-sha-256"]},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"},"data-checksums",{"encoding":"UTF8"},{"locale":"en_US.UTF-8"}],"users":{"test":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"ttl":30,"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"postgresql":{"parameters":{"max_connections":"100","max_locks_per_transaction":"64","max_worker_processes":"4"}}}}}`
+	spiloConfigDiff     = `{"postgresql":{"bin_dir":"/usr/lib/postgresql/12/bin","parameters":{"autovacuum_analyze_scale_factor":"0.1"},"pg_hba":["hostssl all all 0.0.0.0/0 scram-sha-256","host all all 0.0.0.0/0 scram-sha-256"]},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"},"data-checksums",{"encoding":"UTF8"},{"locale":"en_US.UTF-8"}],"users":{"test":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"postgresql":{"parameters":{"max_locks_per_transaction":"64","max_worker_processes":"4"}}}}}`
 )
 
 var logger = logrus.New().WithField("test", "cluster")
@@ -54,20 +54,20 @@ var cl = New(
 		},
 	},
 	k8sutil.NewMockKubernetesClient(),
-	acidv1.Postgresql{
+	cpov1.Postgresql{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        "acid-test",
 			Namespace:   "test",
 			Annotations: map[string]string{"downscaler/downtime_replicas": "0"},
 		},
-		Spec: acidv1.PostgresSpec{
+		Spec: cpov1.PostgresSpec{
 			EnableConnectionPooler: util.True(),
-			Streams: []acidv1.Stream{
-				acidv1.Stream{
+			Streams: []cpov1.Stream{
+				cpov1.Stream{
 					ApplicationId: "test-app",
 					Database:      "test_db",
-					Tables: map[string]acidv1.StreamTable{
-						"test_table": acidv1.StreamTable{
+					Tables: map[string]cpov1.StreamTable{
+						"test_table": cpov1.StreamTable{
 							EventType: "test-app.test",
 						},
 					},
@@ -80,13 +80,13 @@ var cl = New(
 )
 
 func TestStatefulSetAnnotations(t *testing.T) {
-	spec := acidv1.PostgresSpec{
+	spec := cpov1.PostgresSpec{
 		TeamID: "myapp", NumberOfInstances: 1,
-		Resources: &acidv1.Resources{
-			ResourceRequests: acidv1.ResourceDescription{CPU: "1", Memory: "10"},
-			ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "10"},
+		Resources: &cpov1.Resources{
+			ResourceRequests: cpov1.ResourceDescription{CPU: "1", Memory: "10"},
+			ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "10"},
 		},
-		Volume: acidv1.Volume{
+		Volume: cpov1.Volume{
 			Size: "1G",
 		},
 	}
@@ -103,13 +103,13 @@ func TestStatefulSetAnnotations(t *testing.T) {
 }
 
 func TestStatefulSetUpdateWithEnv(t *testing.T) {
-	oldSpec := &acidv1.PostgresSpec{
+	oldSpec := &cpov1.PostgresSpec{
 		TeamID: "myapp", NumberOfInstances: 1,
-		Resources: &acidv1.Resources{
-			ResourceRequests: acidv1.ResourceDescription{CPU: "1", Memory: "10"},
-			ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "10"},
+		Resources: &cpov1.Resources{
+			ResourceRequests: cpov1.ResourceDescription{CPU: "1", Memory: "10"},
+			ResourceLimits:   cpov1.ResourceDescription{CPU: "1", Memory: "10"},
 		},
-		Volume: acidv1.Volume{
+		Volume: cpov1.Volume{
 			Size: "1G",
 		},
 	}
@@ -147,65 +147,65 @@ func TestStatefulSetUpdateWithEnv(t *testing.T) {
 func TestInitRobotUsers(t *testing.T) {
 	tests := []struct {
 		testCase      string
-		manifestUsers map[string]acidv1.UserFlags
+		manifestUsers map[string]cpov1.UserFlags
 		infraRoles    map[string]spec.PgUser
 		result        map[string]spec.PgUser
 		err           error
 	}{
 		{
 			testCase:      "manifest user called like infrastructure role - latter should take percedence",
-			manifestUsers: map[string]acidv1.UserFlags{"foo": {"superuser", "createdb"}},
+			manifestUsers: map[string]cpov1.UserFlags{"foo": {"superuser", "createdb"}},
 			infraRoles:    map[string]spec.PgUser{"foo": {Origin: spec.RoleOriginInfrastructure, Name: "foo", Namespace: cl.Namespace, Password: "bar"}},
 			result:        map[string]spec.PgUser{"foo": {Origin: spec.RoleOriginInfrastructure, Name: "foo", Namespace: cl.Namespace, Password: "bar"}},
 			err:           nil,
 		},
 		{
 			testCase:      "manifest user with forbidden characters",
-			manifestUsers: map[string]acidv1.UserFlags{"!fooBar": {"superuser", "createdb"}},
+			manifestUsers: map[string]cpov1.UserFlags{"!fooBar": {"superuser", "createdb"}},
 			err:           fmt.Errorf(`invalid username: "!fooBar"`),
 		},
 		{
 			testCase:      "manifest user with unknown privileges (should be catched by CRD, too)",
-			manifestUsers: map[string]acidv1.UserFlags{"foobar": {"!superuser", "createdb"}},
+			manifestUsers: map[string]cpov1.UserFlags{"foobar": {"!superuser", "createdb"}},
 			err: fmt.Errorf(`invalid flags for user "foobar": ` +
 				`user flag "!superuser" is not alphanumeric`),
 		},
 		{
 			testCase:      "manifest user with unknown privileges - part 2 (should be catched by CRD, too)",
-			manifestUsers: map[string]acidv1.UserFlags{"foobar": {"superuser1", "createdb"}},
+			manifestUsers: map[string]cpov1.UserFlags{"foobar": {"superuser1", "createdb"}},
 			err: fmt.Errorf(`invalid flags for user "foobar": ` +
 				`user flag "SUPERUSER1" is not valid`),
 		},
 		{
 			testCase:      "manifest user with conflicting flags",
-			manifestUsers: map[string]acidv1.UserFlags{"foobar": {"inherit", "noinherit"}},
+			manifestUsers: map[string]cpov1.UserFlags{"foobar": {"inherit", "noinherit"}},
 			err: fmt.Errorf(`invalid flags for user "foobar": ` +
 				`conflicting user flags: "NOINHERIT" and "INHERIT"`),
 		},
 		{
 			testCase:      "manifest user called like Spilo system users",
-			manifestUsers: map[string]acidv1.UserFlags{superUserName: {"createdb"}, replicationUserName: {"replication"}},
+			manifestUsers: map[string]cpov1.UserFlags{superUserName: {"createdb"}, replicationUserName: {"replication"}},
 			infraRoles:    map[string]spec.PgUser{},
 			result:        map[string]spec.PgUser{},
 			err:           nil,
 		},
 		{
 			testCase:      "manifest user called like protected user name",
-			manifestUsers: map[string]acidv1.UserFlags{adminUserName: {"superuser"}},
+			manifestUsers: map[string]cpov1.UserFlags{adminUserName: {"superuser"}},
 			infraRoles:    map[string]spec.PgUser{},
 			result:        map[string]spec.PgUser{},
 			err:           nil,
 		},
 		{
 			testCase:      "manifest user called like pooler system user",
-			manifestUsers: map[string]acidv1.UserFlags{poolerUserName: {}},
+			manifestUsers: map[string]cpov1.UserFlags{poolerUserName: {}},
 			infraRoles:    map[string]spec.PgUser{},
 			result:        map[string]spec.PgUser{},
 			err:           nil,
 		},
 		{
 			testCase:      "manifest user called like stream system user",
-			manifestUsers: map[string]acidv1.UserFlags{"fes_user": {"replication"}},
+			manifestUsers: map[string]cpov1.UserFlags{"fes_user": {"replication"}},
 			infraRoles:    map[string]spec.PgUser{},
 			result:        map[string]spec.PgUser{},
 			err:           nil,
@@ -231,7 +231,7 @@ func TestInitRobotUsers(t *testing.T) {
 }
 
 func TestInitAdditionalOwnerRoles(t *testing.T) {
-	manifestUsers := map[string]acidv1.UserFlags{"foo_owner": {}, "bar_owner": {}, "app_user": {}}
+	manifestUsers := map[string]cpov1.UserFlags{"foo_owner": {}, "bar_owner": {}, "app_user": {}}
 	expectedUsers := map[string]spec.PgUser{
 		"foo_owner": {Origin: spec.RoleOriginManifest, Name: "foo_owner", Namespace: cl.Namespace, Password: "f123", Flags: []string{"LOGIN"}, IsDbOwner: true, MemberOf: []string{"cron_admin", "part_man"}},
 		"bar_owner": {Origin: spec.RoleOriginManifest, Name: "bar_owner", Namespace: cl.Namespace, Password: "b123", Flags: []string{"LOGIN"}, IsDbOwner: true, MemberOf: []string{"cron_admin", "part_man"}},
@@ -297,7 +297,7 @@ func TestInitHumanUsers(t *testing.T) {
 	cl.OpConfig.EnableTeamMemberDeprecation = true
 	cl.OpConfig.PamRoleName = "zalandos"
 	cl.Spec.TeamID = "test"
-	cl.Spec.Users = map[string]acidv1.UserFlags{"bar": []string{}}
+	cl.Spec.Users = map[string]cpov1.UserFlags{"bar": []string{}}
 
 	tests := []struct {
 		existingRoles map[string]spec.PgUser
@@ -947,7 +947,7 @@ func TestInitSystemUsers(t *testing.T) {
 	// reset system users, pooler and stream section
 	cl.systemUsers = make(map[string]spec.PgUser)
 	cl.Spec.EnableConnectionPooler = boolToPointer(false)
-	cl.Spec.Streams = []acidv1.Stream{}
+	cl.Spec.Streams = []cpov1.Stream{}
 
 	// default cluster without connection pooler and event streams
 	cl.initSystemUsers()
@@ -966,7 +966,7 @@ func TestInitSystemUsers(t *testing.T) {
 	}
 
 	// superuser is not allowed as connection pool user
-	cl.Spec.ConnectionPooler = &acidv1.ConnectionPooler{
+	cl.Spec.ConnectionPooler = &cpov1.ConnectionPooler{
 		User: superUserName,
 	}
 	cl.OpConfig.SuperUsername = superUserName
@@ -979,7 +979,7 @@ func TestInitSystemUsers(t *testing.T) {
 
 	// neither protected users are
 	delete(cl.systemUsers, poolerUserName)
-	cl.Spec.ConnectionPooler = &acidv1.ConnectionPooler{
+	cl.Spec.ConnectionPooler = &cpov1.ConnectionPooler{
 		User: adminUserName,
 	}
 	cl.OpConfig.ProtectedRoles = []string{adminUserName}
@@ -990,7 +990,7 @@ func TestInitSystemUsers(t *testing.T) {
 	}
 
 	delete(cl.systemUsers, poolerUserName)
-	cl.Spec.ConnectionPooler = &acidv1.ConnectionPooler{
+	cl.Spec.ConnectionPooler = &cpov1.ConnectionPooler{
 		User: replicationUserName,
 	}
 
@@ -1001,18 +1001,18 @@ func TestInitSystemUsers(t *testing.T) {
 
 	// using stream user in manifest but no streams defined should be treated like normal robot user
 	streamUser := fmt.Sprintf("%s%s", constants.EventStreamSourceSlotPrefix, constants.UserRoleNameSuffix)
-	cl.Spec.Users = map[string]acidv1.UserFlags{streamUser: []string{}}
+	cl.Spec.Users = map[string]cpov1.UserFlags{streamUser: []string{}}
 	cl.initSystemUsers()
 	if _, exist := cl.systemUsers[constants.EventStreamUserKeyName]; exist {
 		t.Errorf("%s, stream user is present", t.Name())
 	}
 
 	// cluster with streams
-	cl.Spec.Streams = []acidv1.Stream{
+	cl.Spec.Streams = []cpov1.Stream{
 		{
 			ApplicationId: "test-app",
 			Database:      "test_db",
-			Tables: map[string]acidv1.StreamTable{
+			Tables: map[string]cpov1.StreamTable{
 				"test_table": {
 					EventType: "test-app.test",
 				},
@@ -1026,7 +1026,7 @@ func TestInitSystemUsers(t *testing.T) {
 }
 
 func TestPreparedDatabases(t *testing.T) {
-	cl.Spec.PreparedDatabases = map[string]acidv1.PreparedDatabase{}
+	cl.Spec.PreparedDatabases = map[string]cpov1.PreparedDatabase{}
 	cl.initPreparedDatabaseRoles()
 
 	for _, role := range []string{"acid_test_owner", "acid_test_reader", "acid_test_writer",
@@ -1038,10 +1038,10 @@ func TestPreparedDatabases(t *testing.T) {
 
 	testName := "TestPreparedDatabaseWithSchema"
 
-	cl.Spec.PreparedDatabases = map[string]acidv1.PreparedDatabase{
+	cl.Spec.PreparedDatabases = map[string]cpov1.PreparedDatabase{
 		"foo": {
 			DefaultUsers: true,
-			PreparedSchemas: map[string]acidv1.PreparedSchema{
+			PreparedSchemas: map[string]cpov1.PreparedSchema{
 				"bar": {
 					DefaultUsers: true,
 				},
@@ -1115,15 +1115,15 @@ func TestCompareSpiloConfiguration(t *testing.T) {
 		ExpectedResult bool
 	}{
 		{
-			`{"postgresql":{"bin_dir":"/usr/lib/postgresql/12/bin","parameters":{"autovacuum_analyze_scale_factor":"0.1"},"pg_hba":["hostssl all all 0.0.0.0/0 md5","host all all 0.0.0.0/0 md5"]},"bootstrap":{"initdb":[{"auth-host":"md5"},{"auth-local":"trust"},"data-checksums",{"encoding":"UTF8"},{"locale":"en_US.UTF-8"}],"users":{"test":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"ttl":30,"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"postgresql":{"parameters":{"max_connections":"100","max_locks_per_transaction":"64","max_worker_processes":"4"}}}}}`,
+			`{"postgresql":{"bin_dir":"/usr/lib/postgresql/12/bin","parameters":{"autovacuum_analyze_scale_factor":"0.1"},"pg_hba":["hostssl all all 0.0.0.0/0 scram-sha-256","host all all 0.0.0.0/0 scram-sha-256"]},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"},"data-checksums",{"encoding":"UTF8"},{"locale":"en_US.UTF-8"}],"users":{"test":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"ttl":30,"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"postgresql":{"parameters":{"max_connections":"100","max_locks_per_transaction":"64","max_worker_processes":"4"}}}}}`,
 			true,
 		},
 		{
-			`{"postgresql":{"bin_dir":"/usr/lib/postgresql/12/bin","parameters":{"autovacuum_analyze_scale_factor":"0.1"},"pg_hba":["hostssl all all 0.0.0.0/0 md5","host all all 0.0.0.0/0 md5"]},"bootstrap":{"initdb":[{"auth-host":"md5"},{"auth-local":"trust"},"data-checksums",{"encoding":"UTF8"},{"locale":"en_US.UTF-8"}],"users":{"test":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"ttl":30,"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"postgresql":{"parameters":{"max_connections":"200","max_locks_per_transaction":"64","max_worker_processes":"4"}}}}}`,
+			`{"postgresql":{"bin_dir":"/usr/lib/postgresql/12/bin","parameters":{"autovacuum_analyze_scale_factor":"0.1"},"pg_hba":["hostssl all all 0.0.0.0/0 scram-sha-256","host all all 0.0.0.0/0 scram-sha-256"]},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"},"data-checksums",{"encoding":"UTF8"},{"locale":"en_US.UTF-8"}],"users":{"test":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"ttl":30,"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"postgresql":{"parameters":{"max_connections":"200","max_locks_per_transaction":"64","max_worker_processes":"4"}}}}}`,
 			true,
 		},
 		{
-			`{"postgresql":{"bin_dir":"/usr/lib/postgresql/12/bin","parameters":{"autovacuum_analyze_scale_factor":"0.1"},"pg_hba":["hostssl all all 0.0.0.0/0 md5","host all all 0.0.0.0/0 md5"]},"bootstrap":{"initdb":[{"auth-host":"md5"},{"auth-local":"trust"},"data-checksums",{"encoding":"UTF8"},{"locale":"en_US.UTF-8"}],"users":{"test":{"password":"","options":["CREATEDB"]}},"dcs":{"ttl":30,"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"postgresql":{"parameters":{"max_connections":"200","max_locks_per_transaction":"64","max_worker_processes":"4"}}}}}`,
+			`{"postgresql":{"bin_dir":"/usr/lib/postgresql/12/bin","parameters":{"autovacuum_analyze_scale_factor":"0.1"},"pg_hba":["hostssl all all 0.0.0.0/0 scram-sha-256","host all all 0.0.0.0/0 scram-sha-256"]},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"},"data-checksums",{"encoding":"UTF8"},{"locale":"en_US.UTF-8"}],"users":{"test":{"password":"","options":["CREATEDB"]}},"dcs":{"ttl":30,"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"postgresql":{"parameters":{"max_connections":"200","max_locks_per_transaction":"64","max_worker_processes":"4"}}}}}`,
 			false,
 		},
 		{
@@ -1297,14 +1297,14 @@ func TestCompareServices(t *testing.T) {
 			about: "two equal services",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeClusterIP,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeClusterIP,
@@ -1315,14 +1315,14 @@ func TestCompareServices(t *testing.T) {
 			about: "services differ on service type",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeClusterIP,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
@@ -1334,14 +1334,14 @@ func TestCompareServices(t *testing.T) {
 			about: "services differ on lb source ranges",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
@@ -1353,14 +1353,14 @@ func TestCompareServices(t *testing.T) {
 			about: "new service doesn't have lb source ranges",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
@@ -1372,33 +1372,33 @@ func TestCompareServices(t *testing.T) {
 			about: "services differ on DNS annotation",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "new_clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "new_clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			match:  false,
-			reason: `new service's annotations does not match the current one: "external-dns.alpha.kubernetes.io/hostname" changed from "clstr.acid.zalan.do" to "new_clstr.acid.zalan.do".`,
+			reason: `new service's annotations does not match the current one: "external-dns.alpha.kubernetes.io/hostname" changed from "clstr.cpo.opensource.cybertec.at" to "new_clstr.cpo.opensource.cybertec.at".`,
 		},
 		{
 			about: "services differ on AWS ELB annotation",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: "1800",
 				},
 				v1.ServiceTypeLoadBalancer,
@@ -1410,7 +1410,7 @@ func TestCompareServices(t *testing.T) {
 			about: "service changes existing annotation",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "bar",
 				},
@@ -1418,7 +1418,7 @@ func TestCompareServices(t *testing.T) {
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "baz",
 				},
@@ -1431,7 +1431,7 @@ func TestCompareServices(t *testing.T) {
 			about: "service changes multiple existing annotations",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "bar",
 					"bar":                              "foo",
@@ -1440,7 +1440,7 @@ func TestCompareServices(t *testing.T) {
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "baz",
 					"bar":                              "fooz",
@@ -1455,14 +1455,14 @@ func TestCompareServices(t *testing.T) {
 			about: "service adds a new custom annotation",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "bar",
 				},
@@ -1475,7 +1475,7 @@ func TestCompareServices(t *testing.T) {
 			about: "service removes a custom annotation",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "bar",
 				},
@@ -1483,7 +1483,7 @@ func TestCompareServices(t *testing.T) {
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
@@ -1495,7 +1495,7 @@ func TestCompareServices(t *testing.T) {
 			about: "service removes a custom annotation and adds a new one",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "bar",
 				},
@@ -1503,7 +1503,7 @@ func TestCompareServices(t *testing.T) {
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"bar":                              "foo",
 				},
@@ -1516,7 +1516,7 @@ func TestCompareServices(t *testing.T) {
 			about: "service removes a custom annotation, adds a new one and change another",
 			current: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"foo":                              "bar",
 					"zalan":                            "do",
@@ -1525,7 +1525,7 @@ func TestCompareServices(t *testing.T) {
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 					"bar":                              "foo",
 					"zalan":                            "do.com",
@@ -1544,7 +1544,7 @@ func TestCompareServices(t *testing.T) {
 				[]string{"128.141.0.0/16", "137.138.0.0/16"}),
 			new: newService(
 				map[string]string{
-					constants.ZalandoDNSNameAnnotation: "clstr.acid.zalan.do",
+					constants.ZalandoDNSNameAnnotation: "clstr.cpo.opensource.cybertec.at",
 					constants.ElbTimeoutAnnotationName: constants.ElbTimeoutAnnotationValue,
 				},
 				v1.ServiceTypeLoadBalancer,
@@ -1594,26 +1594,26 @@ func TestCompareServices(t *testing.T) {
 func TestCrossNamespacedSecrets(t *testing.T) {
 	testName := "test secrets in different namespace"
 	clientSet := fake.NewSimpleClientset()
-	acidClientSet := fakeacidv1.NewSimpleClientset()
+	acidClientSet := fakecpov1.NewSimpleClientset()
 	namespace := "default"
 
 	client := k8sutil.KubernetesClient{
 		StatefulSetsGetter: clientSet.AppsV1(),
 		ServicesGetter:     clientSet.CoreV1(),
 		DeploymentsGetter:  clientSet.AppsV1(),
-		PostgresqlsGetter:  acidClientSet.AcidV1(),
+		PostgresqlsGetter:  acidClientSet.CpoV1(),
 		SecretsGetter:      clientSet.CoreV1(),
 	}
-	pg := acidv1.Postgresql{
+	pg := cpov1.Postgresql{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "acid-fake-cluster",
 			Namespace: namespace,
 		},
-		Spec: acidv1.PostgresSpec{
-			Volume: acidv1.Volume{
+		Spec: cpov1.PostgresSpec{
+			Volume: cpov1.Volume{
 				Size: "1Gi",
 			},
-			Users: map[string]acidv1.UserFlags{
+			Users: map[string]cpov1.UserFlags{
 				"appspace.db_user": {},
 				"db_user":          {},
 			},
@@ -1632,13 +1632,13 @@ func TestCrossNamespacedSecrets(t *testing.T) {
 				},
 				PodManagementPolicy: "ordered_ready",
 				Resources: config.Resources{
-					ClusterLabels:        map[string]string{"application": "spilo"},
-					ClusterNameLabel:     "cluster-name",
+					ClusterLabels:        map[string]string{"application": "cpo"},
+					ClusterNameLabel:     "cluster.cpo.opensource.cybertec.at/name",
 					DefaultCPURequest:    "300m",
 					DefaultCPULimit:      "300m",
 					DefaultMemoryRequest: "300Mi",
 					DefaultMemoryLimit:   "300Mi",
-					PodRoleLabel:         "spilo-role",
+					PodRoleLabel:         "member.cpo.opensource.cybertec.at/role",
 				},
 				EnableCrossNamespaceSecret: true,
 			},

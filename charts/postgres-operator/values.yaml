@@ -89,9 +89,9 @@ configMajorVersionUpgrade:
   # - acid
 
   # minimal Postgres major version that will not automatically be upgraded
-  minimal_major_version: "11"
+  minimal_major_version: "13"
   # target Postgres major version when upgrading clusters automatically
-  target_major_version: "15"
+  target_major_version: "16"
 
 configKubernetes:
   # list of additional capabilities for postgres container
@@ -102,9 +102,9 @@ configKubernetes:
   cluster_domain: cluster.local
   # additional labels assigned to the cluster objects
   cluster_labels:
-    application: spilo
+    application: cpo
   # label assigned to Kubernetes objects created by the operator
-  cluster_name_label: cluster-name
+  cluster_name_label: cluster.cpo.opensource.cybertec.at/name
   # additional annotations to add to every database pod
   # custom_pod_annotations:
   #   keya: valuea
@@ -181,7 +181,7 @@ configKubernetes:
   # specify the pod management policy of stateful sets of Postgres clusters
   pod_management_policy: "ordered_ready"
   # label assigned to the Postgres pods (and services/endpoints)
-  pod_role_label: spilo-role
+  pod_role_label: member.cpo.opensource.cybertec.at/role
   # service account definition as JSON/YAML string to be used by postgres cluster pods
   # pod_service_account_definition: ""
 
@@ -498,7 +498,7 @@ tolerations: []
 controllerID:
   # Specifies whether a controller ID should be defined for the operator
   # Note, all postgres manifest must then contain the following annotation to be found by this operator
-  # "acid.zalan.do/controller": <controller-ID-of-the-operator>
+  # "cpo.opensource.cybertec.at/controller": <controller-ID-of-the-operator>
   create: false
   # The name of the controller ID to use.
   # If not set and create is true, a name is generated using the fullname template

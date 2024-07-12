@@ -2,20 +2,27 @@ package cluster
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/x509"
+	"crypto/x509/pkix"
+	"encoding"
 	"encoding/json"
+	"encoding/pem"
 	"fmt"
+	"math/big"
 	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	"github.com/zalando/postgres-operator/pkg/spec"
-	"github.com/zalando/postgres-operator/pkg/util"
-	"github.com/zalando/postgres-operator/pkg/util/constants"
-	"github.com/zalando/postgres-operator/pkg/util/k8sutil"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 	batchv1 "k8s.io/api/batch/v1"
 	v1 "k8s.io/api/core/v1"
 	policyv1 "k8s.io/api/policy/v1"
@@ -30,9 +37,140 @@ var requirePrimaryRestartWhenDecreased = []string{
 	"max_wal_senders",
 }
 
+const (
+	certAuthoritySecretKey        = "pgbackrest.ca-roots"      // #nosec G101 this is a name, not a credential
+	certClientPrivateKeySecretKey = "pgbackrest-client.key"    // #nosec G101 this is a name, not a credential
+	certClientSecretKey           = "pgbackrest-client.crt"    // #nosec G101 this is a name, not a credential
+	certRepoSecretKey             = "pgbackrest-repo-host.crt" // #nosec G101 this is a name, not a credential
+	certRepoPrivateKeySecretKey   = "pgbackrest-repo-host.key" // #nosec G101 this is a name, not a credential
+
+	// pemLabelCertificate is the textual encoding label for an X.509 certificate
+	// according to RFC 7468. See https://tools.ietf.org/html/rfc7468.
+	pemLabelCertificate = "CERTIFICATE"
+
+	// pemLabelECDSAKey is the textual encoding label for an elliptic curve private key
+	// according to RFC 5915. See https://tools.ietf.org/html/rfc5915.
+	pemLabelECDSAKey = "EC PRIVATE KEY"
+)
+
+type RootCertificateAuthority struct {
+	Certificate Certificate
+	PrivateKey  PrivateKey
+}
+
+// Certificate represents an X.509 certificate that conforms to the Internet
+// PKI Profile, RFC 5280.
+type Certificate struct{ x509 *x509.Certificate }
+
+// PrivateKey represents the private key of a Certificate.
+type PrivateKey struct{ ecdsa *ecdsa.PrivateKey }
+
+var (
+	_ encoding.TextMarshaler   = Certificate{}
+	_ encoding.TextMarshaler   = (*Certificate)(nil)
+	_ encoding.TextUnmarshaler = (*Certificate)(nil)
+
+	_ encoding.TextMarshaler   = PrivateKey{}
+	_ encoding.TextMarshaler   = (*PrivateKey)(nil)
+	_ encoding.TextUnmarshaler = (*PrivateKey)(nil)
+)
+
+// certificateSignatureAlgorithm is ECDSA with SHA-384, the recommended
+// signature algorithm with the P-256 curve.
+const certificateSignatureAlgorithm = x509.ECDSAWithSHA384
+
+// currentTime returns the current local time. It is a variable so it can be
+// replaced during testing.
+var currentTime = time.Now
+
+// MarshalText returns a PEM encoding of c that OpenSSL understands.
+func (c Certificate) MarshalText() ([]byte, error) {
+	if c.x509 == nil || len(c.x509.Raw) == 0 {
+		_, err := x509.ParseCertificate(nil)
+		return nil, err
+	}
+
+	return pem.EncodeToMemory(&pem.Block{
+		Type:  pemLabelCertificate,
+		Bytes: c.x509.Raw,
+	}), nil
+}
+
+// UnmarshalText populates c from its PEM encoding.
+func (c *Certificate) UnmarshalText(data []byte) error {
+	block, _ := pem.Decode(data)
+
+	if block == nil || block.Type != pemLabelCertificate {
+		return fmt.Errorf("not a PEM-encoded certificate")
+	}
+
+	parsed, err := x509.ParseCertificate(block.Bytes)
+	if err == nil {
+		c.x509 = parsed
+	}
+	return err
+}
+
+// MarshalText returns a PEM encoding of k that OpenSSL understands.
+func (k PrivateKey) MarshalText() ([]byte, error) {
+	if k.ecdsa == nil {
+		k.ecdsa = new(ecdsa.PrivateKey)
+	}
+
+	der, err := x509.MarshalECPrivateKey(k.ecdsa)
+	if err != nil {
+		return nil, err
+	}
+
+	return pem.EncodeToMemory(&pem.Block{
+		Type:  pemLabelECDSAKey,
+		Bytes: der,
+	}), nil
+}
+
+// UnmarshalText populates k from its PEM encoding.
+func (k *PrivateKey) UnmarshalText(data []byte) error {
+	block, _ := pem.Decode(data)
+
+	if block == nil || block.Type != pemLabelECDSAKey {
+		return fmt.Errorf("not a PEM-encoded private key")
+	}
+
+	key, err := x509.ParseECPrivateKey(block.Bytes)
+	if err == nil {
+		k.ecdsa = key
+	}
+	return err
+}
+
+// LeafCertificate is a certificate and private key pair that can be validated
+// by RootCertificateAuthority.
+type LeafCertificate struct {
+	Certificate Certificate
+	PrivateKey  PrivateKey
+}
+
+// Equal reports whether c and other have the same value.
+func (c Certificate) Equal(other Certificate) bool {
+	return c.x509.Equal(other.x509)
+}
+
+// generateKey returns a random ECDSA key using a P-256 curve. This curve is
+// roughly equivalent to an RSA 3072-bit key but requires less bits to achieve
+// the equivalent cryptographic strength. Additionally, ECDSA is FIPS 140-2
+// compliant.
+func generateKey() (*ecdsa.PrivateKey, error) {
+	return ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+}
+
+// generateSerialNumber returns a random 128-bit integer.
+func generateSerialNumber() (*big.Int, error) {
+	return rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
+}
+
 // Sync syncs the cluster, making sure the actual Kubernetes objects correspond to what is defined in the manifest.
 // Unlike the update, sync does not error out if some objects do not exist and takes care of creating them.
-func (c *Cluster) Sync(newSpec *acidv1.Postgresql) error {
+func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	var err error
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -43,11 +181,16 @@ func (c *Cluster) Sync(newSpec *acidv1.Postgresql) error {
 	defer func() {
 		if err != nil {
 			c.logger.Warningf("error while syncing cluster state: %v", err)
-			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusSyncFailed)
+			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusSyncFailed)
 		} else if !c.Status.Running() {
-			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusRunning)
+			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusRunning)
 		}
 	}()
+
+	// Make sure we know about any in progress restores before touching other stuff
+	if err = c.refreshRestoreConfigMap(); err != nil {
+		return fmt.Errorf("error refreshing restore configmap: %v", err)
+	}
 
 	if err = c.initUsers(); err != nil {
 		err = fmt.Errorf("could not init users: %v", err)
@@ -66,6 +209,11 @@ func (c *Cluster) Sync(newSpec *acidv1.Postgresql) error {
 	}
 
 	if err = c.syncPgbackrestConfig(); err != nil {
+		err = fmt.Errorf("could not sync pgbackrest repo-host config: %v", err)
+		return err
+	}
+
+	if err = c.syncPgbackrestRepoHostConfig(&c.Spec); err != nil {
 		err = fmt.Errorf("could not sync pgbackrest config: %v", err)
 		return err
 	}
@@ -106,24 +254,15 @@ func (c *Cluster) Sync(newSpec *acidv1.Postgresql) error {
 		}
 	}
 
-	if c.Spec.Backup != nil && c.Spec.Backup.Pgbackrest != nil {
-
-		c.logger.Debug("syncing pgbackrest jobs")
-		if err = c.syncPgbackrestJob(false); err != nil {
-			err = fmt.Errorf("could not sync the pgbackrest jobs: %v", err)
-			return err
-		}
-		if c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID != c.Status.PgbackrestRestoreID {
-			if err = c.syncPgbackrestRestoreConfig(); err != nil {
-				return err
-			}
-			c.KubeClient.SetPgbackrestRestoreCRDStatus(c.clusterName(), c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID)
-			c.logger.Info("a pgbackrest restore config has been successfully synced")
-		}
+	c.logger.Debug("syncing pgbackrest jobs")
+	deleteBackupJobs := c.Spec.GetBackup().Pgbackrest == nil
+	if err = c.syncPgbackrestJob(deleteBackupJobs); err != nil {
+		err = fmt.Errorf("could not sync the pgbackrest jobs: %v", err)
+		return err
 	}
 
 	// create database objects unless we are running without pods or disabled that feature explicitly
-	if !(c.databaseAccessDisabled() || c.getNumberOfInstances(&newSpec.Spec) <= 0 || c.Spec.StandbyCluster != nil) {
+	if !(c.databaseAccessDisabled() || c.getNumberOfInstances(&newSpec.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress()) {
 		c.logger.Debug("syncing roles")
 		if err = c.syncRoles(); err != nil {
 			c.logger.Errorf("could not sync roles: %v", err)
@@ -143,11 +282,25 @@ func (c *Cluster) Sync(newSpec *acidv1.Postgresql) error {
 		return fmt.Errorf("could not sync connection pooler: %v", err)
 	}
 
+	// sync monitoring
+	if err = c.syncMonitoringSecret(&oldSpec, newSpec); err != nil {
+		return fmt.Errorf("could not sync monitoring: %v", err)
+	}
+
 	if len(c.Spec.Streams) > 0 {
 		c.logger.Debug("syncing streams")
 		if err = c.syncStreams(); err != nil {
 			err = fmt.Errorf("could not sync streams: %v", err)
 			return err
+		}
+	}
+
+	// If we are requested to replace database contents with a restore only do so after we have everything
+	// properly set up, but before we try to run the upgrade.
+	restoreId := newSpec.Spec.GetBackup().GetRestoreID()
+	if c.restoreInProgress() || c.Status.RestoreID != restoreId {
+		if err := c.processRestore(newSpec); err != nil {
+			return fmt.Errorf("restoring backup failed: %v", err)
 		}
 	}
 
@@ -159,8 +312,42 @@ func (c *Cluster) Sync(newSpec *acidv1.Postgresql) error {
 	return err
 }
 
+func (c *Cluster) deletePgbackrestRepoHostObjects() error {
+	c.setProcessName("Deleting pgbackrest repo-host")
+	c.logger.Info("Deleting pgbackrest repo-host")
+
+	var err error
+	if err = c.KubeClient.StatefulSets(c.Namespace).Delete(context.TODO(), c.getPgbackrestRepoHostName(), metav1.DeleteOptions{}); err != nil {
+		c.logger.Errorf("Could not delete Pgbackrest repo-host statefulset %v", err)
+	} else {
+		c.logger.Info("Repo-host statefulset is now deleted")
+	}
+	if err = c.KubeClient.Pods(c.Namespace).Delete(context.TODO(), c.getPgbackrestRepoHostName()+"-0", metav1.DeleteOptions{}); err != nil {
+		c.logger.Errorf("Could not delete Pgbackrest repo-host pods %v", err)
+	} else {
+		c.logger.Info("Repo-host pods are now deleted")
+	}
+	if err = c.deleteRepoHostPersistentVolumeClaims(); err != nil {
+		c.logger.Errorf("Could not delete Pgbackrest repo-host pvc %v", err)
+	} else {
+		c.logger.Info("Repo-host pvcs are now deleted")
+	}
+	if err = c.KubeClient.Secrets(c.Namespace).Delete(context.TODO(), c.getPgbackrestCertSecretName(), metav1.DeleteOptions{}); err != nil {
+		c.logger.Errorf("Could not delete Pgbackrest repo-host secrets %v", err)
+	} else {
+		c.logger.Info("Repo-host secret is now deleted")
+	}
+	if err = c.KubeClient.ConfigMaps(c.Namespace).Delete(context.TODO(), c.getPgbackrestRepoHostConfigmapName(), metav1.DeleteOptions{}); err != nil {
+		c.logger.Errorf("Could not delete Pgbackrest repo-host configmap %v", err)
+	} else {
+		c.logger.Info("Repo-host configmap is now deleted")
+	}
+
+	return nil
+}
+
 func (c *Cluster) syncServices() error {
-	for _, role := range []PostgresRole{Master, Replica} {
+	for _, role := range []PostgresRole{Master, Replica, ClusterPods} {
 		c.logger.Debugf("syncing %s service", role)
 
 		if !c.patroniKubernetesUseConfigMaps() {
@@ -279,18 +466,29 @@ func (c *Cluster) syncPodDisruptionBudget(isUpdate bool) error {
 	c.PodDisruptionBudget = nil
 	c.logger.Infof("could not find the cluster's pod disruption budget")
 
-	if pdb, err = c.createPodDisruptionBudget(); err != nil {
-		if !k8sutil.ResourceAlreadyExists(err) {
-			return fmt.Errorf("could not create pod disruption budget: %v", err)
+	// When number of instances is 1, we don't need to create a pod disruption budget.
+	if c.Spec.NumberOfInstances <= 1 {
+		if c.PodDisruptionBudget != nil {
+			c.logger.Warning("deleting pod disruption budget creation, number of instances is less than 1")
+			if err := c.deletePodDisruptionBudget(); err != nil {
+				c.logger.Warningf("could not delete pod disruption budget: %v", err)
+			}
 		}
-		c.logger.Infof("pod disruption budget %q already exists", util.NameFromMeta(pdb.ObjectMeta))
-		if pdb, err = c.KubeClient.PodDisruptionBudgets(c.Namespace).Get(context.TODO(), c.podDisruptionBudgetName(), metav1.GetOptions{}); err != nil {
-			return fmt.Errorf("could not fetch existing %q pod disruption budget", util.NameFromMeta(pdb.ObjectMeta))
+		c.logger.Warning("skipping pod disruption budget creation, number of instances is less than 1")
+	} else {
+		if pdb, err = c.createPodDisruptionBudget(); err != nil {
+			if !k8sutil.ResourceAlreadyExists(err) {
+				return fmt.Errorf("could not create pod disruption budget: %v", err)
+			}
+			c.logger.Infof("pod disruption budget %q already exists", util.NameFromMeta(pdb.ObjectMeta))
+			if pdb, err = c.KubeClient.PodDisruptionBudgets(c.Namespace).Get(context.TODO(), c.podDisruptionBudgetName(), metav1.GetOptions{}); err != nil {
+				return fmt.Errorf("could not fetch existing %q pod disruption budget", util.NameFromMeta(pdb.ObjectMeta))
+			}
 		}
-	}
+		c.logger.Infof("created missing pod disruption budget %q", util.NameFromMeta(pdb.ObjectMeta))
+		c.PodDisruptionBudget = pdb
 
-	c.logger.Infof("created missing pod disruption budget %q", util.NameFromMeta(pdb.ObjectMeta))
-	c.PodDisruptionBudget = pdb
+	}
 
 	return nil
 }
@@ -305,11 +503,25 @@ func (c *Cluster) syncStatefulSet() error {
 	isSafeToRecreatePods := true
 	switchoverCandidates := make([]spec.NamespacedName, 0)
 
-	pods, err := c.listPods()
+	pods, err := c.listPodsOfType(TYPE_POSTGRESQL)
 	if err != nil {
 		c.logger.Warnf("could not list pods of the statefulset: %v", err)
 	}
-
+	if c.Spec.Monitoring != nil { // XXX: Why are we generating a sidecar in the sync code?
+		monitor := c.Spec.Monitoring
+		sidecar := &cpov1.Sidecar{
+			Name:        "postgres-exporter",
+			DockerImage: monitor.Image,
+			Ports: []v1.ContainerPort{
+				{
+					ContainerPort: monitorPort,
+					Protocol:      v1.ProtocolTCP,
+				},
+			},
+			Env: c.generateMonitoringEnvVars(),
+		}
+		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
+	}
 	// NB: Be careful to consider the codepath that acts on podsRollingUpdateRequired before returning early.
 	sset, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.statefulSetName(), metav1.GetOptions{})
 	if err != nil {
@@ -365,7 +577,11 @@ func (c *Cluster) syncStatefulSet() error {
 			return fmt.Errorf("could not generate statefulset: %v", err)
 		}
 
-		cmp := c.compareStatefulSetWith(desiredSts)
+		if c.restoreInProgress() {
+			c.applyRestoreStatefulSetSyncOverrides(desiredSts, c.Statefulset)
+		}
+
+		cmp := c.compareStatefulSetWith(c.Statefulset, desiredSts)
 		if !cmp.match {
 			if cmp.rollingUpdate {
 				podsToRecreate = make([]v1.Pod, 0)
@@ -385,7 +601,7 @@ func (c *Cluster) syncStatefulSet() error {
 					return fmt.Errorf("could not update statefulset: %v", err)
 				}
 			} else {
-				if err := c.replaceStatefulSet(desiredSts); err != nil {
+				if err := c.replaceStatefulSet(&c.Statefulset, desiredSts); err != nil {
 					return fmt.Errorf("could not replace statefulset: %v", err)
 				}
 			}
@@ -420,7 +636,7 @@ func (c *Cluster) syncStatefulSet() error {
 	// apply PostgreSQL parameters that can only be set via the Patroni API.
 	// it is important to do it after the statefulset pods are there, but before the rolling update
 	// since those parameters require PostgreSQL restart.
-	pods, err = c.listPods()
+	pods, err = c.listPodsOfType(TYPE_POSTGRESQL)
 	if err != nil {
 		c.logger.Warnf("could not get list of pods to apply PostgreSQL parameters only to be set via Patroni API: %v", err)
 	}
@@ -465,9 +681,9 @@ func (c *Cluster) syncStatefulSet() error {
 	return nil
 }
 
-func (c *Cluster) syncPatroniConfig(pods []v1.Pod, requiredPatroniConfig acidv1.Patroni, requiredPgParameters map[string]string) (bool, bool, uint32, error) {
+func (c *Cluster) syncPatroniConfig(pods []v1.Pod, requiredPatroniConfig cpov1.Patroni, requiredPgParameters map[string]string) (bool, bool, uint32, error) {
 	var (
-		effectivePatroniConfig acidv1.Patroni
+		effectivePatroniConfig cpov1.Patroni
 		effectivePgParameters  map[string]string
 		loopWait               uint32
 		configPatched          bool
@@ -488,7 +704,7 @@ func (c *Cluster) syncPatroniConfig(pods []v1.Pod, requiredPatroniConfig acidv1.
 		loopWait = effectivePatroniConfig.LoopWait
 
 		// empty config probably means cluster is not fully initialized yet, e.g. restoring from backup
-		if reflect.DeepEqual(effectivePatroniConfig, acidv1.Patroni{}) || len(effectivePgParameters) == 0 {
+		if reflect.DeepEqual(effectivePatroniConfig, cpov1.Patroni{}) || len(effectivePgParameters) == 0 {
 			errors = append(errors, fmt.Sprintf("empty Patroni config on pod %s - skipping config patch", podName))
 		} else {
 			configPatched, restartPrimaryFirst, err = c.checkAndSetGlobalPostgreSQLConfiguration(&pod, effectivePatroniConfig, requiredPatroniConfig, effectivePgParameters, requiredPgParameters)
@@ -606,7 +822,7 @@ func (c *Cluster) AnnotationsToPropagate(annotations map[string]string) map[stri
 
 // checkAndSetGlobalPostgreSQLConfiguration checks whether cluster-wide API parameters
 // (like max_connections) have changed and if necessary sets it via the Patroni API
-func (c *Cluster) checkAndSetGlobalPostgreSQLConfiguration(pod *v1.Pod, effectivePatroniConfig, desiredPatroniConfig acidv1.Patroni, effectivePgParameters, desiredPgParameters map[string]string) (bool, bool, error) {
+func (c *Cluster) checkAndSetGlobalPostgreSQLConfiguration(pod *v1.Pod, effectivePatroniConfig, desiredPatroniConfig cpov1.Patroni, effectivePgParameters, desiredPgParameters map[string]string) (bool, bool, error) {
 	configToSet := make(map[string]interface{})
 	parametersToSet := make(map[string]string)
 	restartPrimary := make([]bool, 0)
@@ -927,7 +1143,7 @@ func (c *Cluster) rotatePasswordInSecret(
 		} else {
 			// when passwords of system users are rotated in place, pods have to be replaced
 			if roleOrigin == spec.RoleOriginSystem {
-				pods, err := c.listPods()
+				pods, err := c.listPodsOfType(TYPE_POSTGRESQL)
 				if err != nil {
 					return "", fmt.Errorf("could not list pods of the statefulset: %v", err)
 				}
@@ -992,6 +1208,11 @@ func (c *Cluster) syncRoles() (err error) {
 			}
 		}
 	}()
+
+	//Check if monitoring user is added in manifest
+	if _, ok := c.Spec.Users["cpo-exporter"]; ok {
+		c.logger.Error("creating user of name cpo-exporter is not allowed as it is reserved for monitoring")
+	}
 
 	// mapping between original role name and with deletion suffix
 	deletedUsers := map[string]string{}
@@ -1094,7 +1315,7 @@ func (c *Cluster) syncDatabases() error {
 
 	// if no prepared databases are specified create a database named like the cluster
 	if c.Spec.PreparedDatabases != nil && len(c.Spec.PreparedDatabases) == 0 { // TODO: add option to disable creating such a default DB
-		c.Spec.PreparedDatabases = map[string]acidv1.PreparedDatabase{strings.Replace(c.Name, "-", "_", -1): {}}
+		c.Spec.PreparedDatabases = map[string]cpov1.PreparedDatabase{strings.Replace(c.Name, "-", "_", -1): {}}
 	}
 	for preparedDatabaseName := range c.Spec.PreparedDatabases {
 		_, exists := currentDatabases[preparedDatabaseName]
@@ -1131,7 +1352,7 @@ func (c *Cluster) syncDatabases() error {
 	if len(createDatabases) > 0 {
 		// trigger creation of pooler objects in new database in syncConnectionPooler
 		if c.ConnectionPooler != nil {
-			for _, role := range [2]PostgresRole{Master, Replica} {
+			for _, role := range [3]PostgresRole{Master, Replica, ClusterPods} {
 				c.ConnectionPooler[role].LookupFunction = false
 			}
 		}
@@ -1172,7 +1393,7 @@ func (c *Cluster) syncPreparedDatabases() error {
 		// now, prepare defined schemas
 		preparedSchemas := preparedDB.PreparedSchemas
 		if len(preparedDB.PreparedSchemas) == 0 {
-			preparedSchemas = map[string]acidv1.PreparedSchema{"data": {DefaultRoles: util.True()}}
+			preparedSchemas = map[string]cpov1.PreparedSchema{"data": {DefaultRoles: util.True()}}
 		}
 		if err := c.syncPreparedSchemas(preparedDbName, preparedSchemas); err != nil {
 			errors = append(errors, err.Error())
@@ -1196,7 +1417,7 @@ func (c *Cluster) syncPreparedDatabases() error {
 	return nil
 }
 
-func (c *Cluster) syncPreparedSchemas(databaseName string, preparedSchemas map[string]acidv1.PreparedSchema) error {
+func (c *Cluster) syncPreparedSchemas(databaseName string, preparedSchemas map[string]cpov1.PreparedSchema) error {
 	c.setProcessName("syncing prepared schemas")
 	errors := make([]string, 0)
 
@@ -1338,18 +1559,52 @@ func (c *Cluster) syncPgbackrestConfig() error {
 	return nil
 }
 
-func (c *Cluster) syncPgbackrestRestoreConfig() error {
-	if cm, err := c.KubeClient.ConfigMaps(c.Namespace).Get(context.TODO(), c.getPgbackrestRestoreConfigmapName(), metav1.GetOptions{}); err == nil {
-		if err := c.updatePgbackrestRestoreConfig(cm); err != nil {
-			return fmt.Errorf("could not update a pgbackrest restore config: %v", err)
+func (c *Cluster) syncPgbackrestRepoHostConfig(spec *cpov1.PostgresSpec) error {
+	c.logger.Info("check if a sync for repo host configmap is needed ")
+
+	repoNeeded := specHasPgbackrestPVCRepo(&c.Postgresql.Spec)
+
+	c.setProcessName("Syncing pgbackrest repo-host")
+	c.logger.Info("Syncing pgbackrest repo-host")
+
+	curSts, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.getPgbackrestRepoHostName(), metav1.GetOptions{})
+	if err != nil {
+		if !k8sutil.ResourceNotFound(err) {
+			return fmt.Errorf("Error during reading of repo-host statefulset: %v", err)
 		}
-		c.logger.Info("a pgbackrest restore config has been successfully updated")
+		if repoNeeded {
+			c.logger.Infof("Pgbackrest repo-host statefulset doesn't exist, creating")
+			return c.createPgbackrestRepoHostObjects(spec)
+		}
+		// TODO: Should check and cleanup for other orphaned repo related objects?
+		return nil
 	} else {
-		if err := c.createPgbackrestRestoreConfig(); err != nil {
-			return fmt.Errorf("could not create a pgbackrest restore config: %v", err)
+		c.logger.Infof("Found existing pgbackrest repository")
+		if !repoNeeded {
+			c.logger.Infof("No pgbackrest repository host configured, deleting")
+			return c.deletePgbackrestRepoHostObjects()
 		}
-		c.logger.Info("a pgbackrest restore config has been successfully created")
 	}
+
+	desiredSts, err := c.generateRepoHostStatefulSet(spec)
+	if err != nil {
+		return fmt.Errorf("could not generate pgbackrest repo-host statefulset: %v", err)
+	}
+
+	cmp := c.compareStatefulSetWith(curSts, desiredSts)
+	if !cmp.match {
+		c.logStatefulSetChanges(curSts, desiredSts, false, cmp.reasons)
+
+		// Replica count is only one that results in !cmp.replace and this is const 1 for repo host
+		if err := c.replaceStatefulSet(&curSts, desiredSts); err != nil {
+			return fmt.Errorf("could not replace pgbackrest repo-host statefulset: %v", err)
+		}
+	}
+
+	if err = c.updatePgbackrestRepoHostConfig(); err != nil {
+		return fmt.Errorf("could not update pgbackrest repo-host config: %v", err)
+	}
+
 	return nil
 }
 
@@ -1362,27 +1617,35 @@ func (c *Cluster) syncPgbackrestJob(forceRemove bool) error {
 			if !forceRemove && len(c.Postgresql.Spec.Backup.Pgbackrest.Repos) >= 1 {
 				for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
 					for name, schedule := range repo.Schedule {
-						c.logger.Info(fmt.Sprintf("%s %s:%s %s", rep, schedul, repo.Name, name))
 						if rep == repo.Name && name == schedul {
+							job, err := c.generatePgbackrestJob(c.Postgresql.Spec.Backup.Pgbackrest, &repo, name, schedule)
+							if err != nil {
+								return fmt.Errorf("could not generate pgbackrest job: %v", err)
+							}
 							remove = false
-							if cj, err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Get(context.TODO(), c.getPgbackrestJobName(repo.Name, name), metav1.GetOptions{}); err == nil {
-								if err := c.patchPgbackrestJob(cj, repo.Name, name, schedule); err != nil {
+							if _, err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Get(context.TODO(), c.getPgbackrestJobName(repo.Name, name), metav1.GetOptions{}); err == nil {
+								if err := c.patchPgbackrestJob(job); err != nil {
 									return fmt.Errorf("could not update a pgbackrest cronjob: %v", err)
 								}
-								c.logger.Info("a pgbackrest cronjob has been successfully updated")
+								c.logger.Infof("pgbackrest cronjob for %v %v has been successfully updated", rep, schedul)
 							} else {
-								if err := c.createPgbackrestJob(repo.Name, name, schedule); err != nil {
+								if err := c.createPgbackrestJob(job); err != nil {
 									return fmt.Errorf("could not create a pgbackrest cronjob: %v", err)
 								}
-								c.logger.Info("a pgbackrest cronjob has been successfully created")
+								c.logger.Infof("pgbackrest cronjob for %v %v has been successfully created", rep, schedul)
 							}
 						}
 					}
 				}
 			}
 			if remove {
-				c.deletePgbackrestJob(rep, schedul)
-				c.logger.Info("a pgbackrest cronjob has been successfully deleted")
+				deleted, err := c.deletePgbackrestJob(rep, schedul)
+				if err != nil {
+					c.logger.Warningf("failed to delete pgbackrest cronjob: %v", err)
+				}
+				if deleted {
+					c.logger.Infof("pgbackrest cronjob for %v %v has been successfully deleted", rep, schedul)
+				}
 			}
 		}
 	}
@@ -1411,6 +1674,303 @@ func (c *Cluster) createTDESecret() error {
 		c.logger.Debugf("created new secret %s, namespace: %s, uid: %s", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, secret.UID)
 	} else {
 		return fmt.Errorf("could not create secret for TDE %s: in namespace %s: %v", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, err)
+	}
+
+	return nil
+}
+
+func (c *Cluster) createMonitoringSecret() error {
+	c.logger.Info("creating Monitoring secret")
+	c.setProcessName("creating Monitoring secret")
+	generatedKey := make([]byte, 16)
+	rand.Read(generatedKey)
+
+	generatedSecret := v1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      c.getMonitoringSecretName(),
+			Namespace: c.Namespace,
+			Labels:    c.labelsSet(true),
+		},
+		Type: v1.SecretTypeOpaque,
+		Data: map[string][]byte{
+			"username": []byte(c.getMonitoringSecretName()),
+			"password": []byte(fmt.Sprintf("%x", generatedKey)),
+		},
+	}
+	secret, err := c.KubeClient.Secrets(generatedSecret.Namespace).Create(context.TODO(), &generatedSecret, metav1.CreateOptions{})
+	if err == nil {
+		c.Secrets[secret.UID] = secret
+		c.logger.Debugf("created new secret %s, namespace: %s, uid: %s", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, secret.UID)
+	} else {
+		if !k8sutil.ResourceAlreadyExists(err) {
+			return fmt.Errorf("could not create secret for Monitoring %s: in namespace %s: %v", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, err)
+		}
+	}
+
+	return nil
+}
+
+// delete monitoring secret
+func (c *Cluster) deleteMonitoringSecret() (err error) {
+	// Repeat the same for the secret object
+	secretName := c.getMonitoringSecretName()
+
+	secret, err := c.KubeClient.
+		Secrets(c.Namespace).
+		Get(context.TODO(), secretName, metav1.GetOptions{})
+
+	if err != nil {
+		c.logger.Debugf("could not get monitoring secret %s: %v", secretName, err)
+	} else {
+		if err = c.deleteSecret(secret.UID, *secret); err != nil {
+			return fmt.Errorf("could not delete monitoring secret: %v", err)
+		}
+	}
+	return nil
+}
+
+// Sync monitoring
+// In case of monitoring is added/deleted, we need to
+// 1. Update sts to in/exclude the exporter contianer
+// 2. Add/Delete the respective user
+// 3. Add/Delete the respective secret
+// Point 1 and 2 are taken care in Update func, so we only need to take care
+// Point 3 here.
+func (c *Cluster) syncMonitoringSecret(oldSpec, newSpec *cpov1.Postgresql) error {
+	c.logger.Info("syncing Monitoring secret")
+	c.setProcessName("syncing Monitoring secret")
+
+	if newSpec.Spec.Monitoring != nil && oldSpec.Spec.Monitoring == nil {
+		// Create monitoring secret
+		if err := c.createMonitoringSecret(); err != nil {
+			return fmt.Errorf("could not create the monitoring secret: %v", err)
+		}
+		c.logger.Info("monitoring secret was successfully created")
+	} else if newSpec.Spec.Monitoring == nil && oldSpec.Spec.Monitoring != nil {
+		// Delete the monitoring secret
+		if err := c.deleteMonitoringSecret(); err != nil {
+			return fmt.Errorf("could not delete the monitoring secret: %v", err)
+		}
+		c.logger.Info("monitoring secret was successfully deleted")
+	}
+	return nil
+}
+
+func generateRootCertificate(
+	privateKey *ecdsa.PrivateKey, serialNumber *big.Int,
+) (*x509.Certificate, error) {
+	const rootCommonName = "postgres-operator-ca"
+	const rootExpiration = time.Hour * 24 * 365 * 10
+	const rootStartValid = time.Hour * -1
+
+	now := currentTime()
+	template := &x509.Certificate{
+		BasicConstraintsValid: true,
+		IsCA:                  true,
+		KeyUsage:              x509.KeyUsageCertSign | x509.KeyUsageCRLSign,
+		MaxPathLenZero:        true, // there are no intermediate certificates
+		NotBefore:             now.Add(rootStartValid),
+		NotAfter:              now.Add(rootExpiration),
+		SerialNumber:          serialNumber,
+		SignatureAlgorithm:    certificateSignatureAlgorithm,
+		Subject: pkix.Name{
+			CommonName: rootCommonName,
+		},
+		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
+	}
+
+	// A root certificate is self-signed, so pass in the template twice.
+	bytes, err := x509.CreateCertificate(rand.Reader, template, template,
+		privateKey.Public(), privateKey)
+
+	parsed, _ := x509.ParseCertificate(bytes)
+	return parsed, err
+}
+
+func generateLeafCertificate(
+	signer *x509.Certificate, signerPrivate *ecdsa.PrivateKey,
+	signeePublic *ecdsa.PublicKey, serialNumber *big.Int,
+	commonName string, dnsNames []string, server bool,
+) (*x509.Certificate, error) {
+	const leafExpiration = time.Hour * 24 * 365
+	const leafStartValid = time.Hour * -1
+	extKey := []x509.ExtKeyUsage{
+		x509.ExtKeyUsageClientAuth,
+		x509.ExtKeyUsageServerAuth,
+	}
+
+	now := currentTime()
+	template := &x509.Certificate{
+		BasicConstraintsValid: true,
+		DNSNames:              dnsNames,
+		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageKeyEncipherment,
+		ExtKeyUsage:           extKey,
+		NotBefore:             now.Add(leafStartValid),
+		NotAfter:              now.Add(leafExpiration),
+		SerialNumber:          serialNumber,
+		SignatureAlgorithm:    certificateSignatureAlgorithm,
+		Subject: pkix.Name{
+			CommonName: commonName,
+		},
+	}
+
+	bytes, err := x509.CreateCertificate(rand.Reader, template, signer,
+		signeePublic, signerPrivate)
+
+	parsed, _ := x509.ParseCertificate(bytes)
+	return parsed, err
+}
+
+// GenerateLeafCertificate generates a new key and certificate signed by root.
+func (root *RootCertificateAuthority) GenerateLeafCertificate(
+	commonName string, dnsNames []string, server bool,
+) (*LeafCertificate, error) {
+	var leaf LeafCertificate
+	var serial *big.Int
+
+	key, err := generateKey()
+	if err == nil {
+		serial, err = generateSerialNumber()
+	}
+	if err == nil {
+		leaf.PrivateKey.ecdsa = key
+		leaf.Certificate.x509, err = generateLeafCertificate(
+			root.Certificate.x509, root.PrivateKey.ecdsa, &key.PublicKey, serial,
+			commonName, dnsNames, server)
+	}
+
+	return &leaf, err
+}
+
+// NewRootCertificateAuthority generates a new key and self-signed certificate
+// for issuing other certificates.
+func NewRootCertificateAuthority() (*RootCertificateAuthority, error) {
+	var root RootCertificateAuthority
+	var serial *big.Int
+
+	key, err := generateKey()
+	if err == nil {
+		serial, err = generateSerialNumber()
+	}
+	if err == nil {
+		root.PrivateKey.ecdsa = key
+		root.Certificate.x509, err = generateRootCertificate(key, serial)
+	}
+
+	return &root, err
+}
+
+// certFile concatenates the results of multiple PEM-encoding marshalers.
+func certFile(texts ...encoding.TextMarshaler) ([]byte, error) {
+	var out []byte
+
+	for i := range texts {
+		if b, err := texts[i].MarshalText(); err == nil {
+			out = append(out, b...)
+		} else {
+			return nil, err
+		}
+	}
+
+	return out, nil
+}
+
+// clientCommonName returns a client certificate common name (CN) for cluster.
+func (c *Cluster) clientCommonName() string {
+	// The common name (ASN.1 OID 2.5.4.3) of a certificate must be
+	// 64 characters or less. ObjectMeta.UID is a UUID in its 36-character
+	// string representation.
+	// - https://tools.ietf.org/html/rfc5280#appendix-A
+	// - https://docs.k8s.io/concepts/overview/working-with-objects/names/#uids
+	// - https://releases.k8s.io/v1.22.0/staging/src/k8s.io/apiserver/pkg/registry/rest/create.go#L111
+	// - https://releases.k8s.io/v1.22.0/staging/src/k8s.io/apiserver/pkg/registry/rest/meta.go#L30
+	return c.clusterName().Name
+}
+
+// ByteMap initializes m when it points to nil.
+func ByteMap(m *map[string][]byte) {
+	if m != nil && *m == nil {
+		*m = make(map[string][]byte)
+	}
+}
+
+func (c *Cluster) createPgbackrestCertSecret(secretname string) error {
+	c.logger.Info("creating PVC secret")
+	c.setProcessName("creating PVC secret")
+	generatedKey := make([]byte, 16)
+	rand.Read(generatedKey)
+
+	// Save the CA and generate a TLS client certificate for the entire cluster.
+
+	// The server verifies its "tls-server-auth" option contains the common
+	// name (CN) of the certificate presented by a client. The entire
+	// cluster uses a single client certificate so the "tls-server-auth"
+	// option can stay the same when PostgreSQL instances and repository
+	// hosts are added or removed.
+	leaf := &LeafCertificate{}
+	commonName := c.clientCommonName()
+	mainServiceName := "*." + c.clusterName().Name + "." + c.Namespace + ".svc." + c.OpConfig.ClusterDomain
+	auxServiceName := "*." + c.serviceName(ClusterPods) + "." + c.Namespace + ".svc." + c.OpConfig.ClusterDomain
+	dnsNames := []string{commonName, mainServiceName, auxServiceName}
+
+	inRoot := &RootCertificateAuthority{}
+	inRoot, err := NewRootCertificateAuthority()
+	if err != nil {
+		c.logger.Errorf("Error in certificate creation %v", err)
+	}
+
+	leaf, err = inRoot.GenerateLeafCertificate(commonName, dnsNames, false)
+
+	if err != nil {
+		c.logger.Errorf("could not generate root certificate %s", err)
+	}
+	var tsl_certAuthoritySecretKey, tsl_certClientPrivateKeySecretKey, tsl_certClientSecretKey, tsl_certRepoPrivateKeySecretKey, tsl_certRepoSecretKey []byte
+
+	if err == nil {
+		tsl_certAuthoritySecretKey, err = certFile(inRoot.Certificate)
+	}
+	if err == nil {
+		tsl_certClientPrivateKeySecretKey, err = certFile(leaf.PrivateKey)
+	}
+	if err == nil {
+		tsl_certClientSecretKey, _ = certFile(leaf.Certificate)
+	}
+
+	repo_leaf := &LeafCertificate{}
+	repo_leaf, err = inRoot.GenerateLeafCertificate(commonName, dnsNames, true)
+
+	if err == nil {
+		tsl_certRepoPrivateKeySecretKey, err = certFile(repo_leaf.PrivateKey)
+	}
+	if err == nil {
+		tsl_certRepoSecretKey, err = certFile(repo_leaf.Certificate)
+	}
+	if err != nil {
+		c.logger.Errorf("Error in certificate creation %v", err)
+	}
+	generatedSecret := v1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      secretname,
+			Namespace: c.Namespace,
+		},
+		Type: v1.SecretTypeOpaque,
+		Data: map[string][]byte{
+			"key":                         []byte(fmt.Sprintf("%x", generatedKey)),
+			certAuthoritySecretKey:        tsl_certAuthoritySecretKey,
+			certClientPrivateKeySecretKey: tsl_certClientPrivateKeySecretKey,
+			certClientSecretKey:           tsl_certClientSecretKey,
+			certRepoPrivateKeySecretKey:   tsl_certRepoPrivateKeySecretKey,
+			certRepoSecretKey:             tsl_certRepoSecretKey,
+		},
+	}
+	secret, err := c.KubeClient.Secrets(generatedSecret.Namespace).Create(context.TODO(), &generatedSecret, metav1.CreateOptions{})
+	if err == nil {
+		c.Secrets[secret.UID] = secret
+		c.logger.Debugf("created new secret %s, namespace: %s, uid: %s", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, secret.UID)
+	} else {
+		if !k8sutil.ResourceAlreadyExists(err) {
+			return fmt.Errorf("could not create secret for PVC %s: in namespace %s: %v", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, err)
+		}
 	}
 
 	return nil

@@ -18,9 +18,9 @@ session = Session()
 
 AWS_ENDPOINT = getenv('AWS_ENDPOINT')
 
-OPERATOR_CLUSTER_NAME_LABEL = getenv('OPERATOR_CLUSTER_NAME_LABEL', 'cluster-name')
+OPERATOR_CLUSTER_NAME_LABEL = getenv('OPERATOR_CLUSTER_NAME_LABEL', 'cluster.cpo.opensource.cybertec.at/name')
 
-COMMON_CLUSTER_LABEL = getenv('COMMON_CLUSTER_LABEL', '{"application":"spilo"}')
+COMMON_CLUSTER_LABEL = getenv('COMMON_CLUSTER_LABEL', '{"application":"cpo"}')
 COMMON_POOLER_LABEL = getenv('COMMON_POOLER_LABEL', '{"application":"db-connection-pooler"}')
 
 logger.info("Common Cluster Label: {}".format(COMMON_CLUSTER_LABEL))
@@ -94,7 +94,7 @@ def request_delete(cluster, path, **kwargs):
 
 def resource_api_version(resource_type):
     return {
-        'postgresqls': 'apis/acid.zalan.do/v1',
+        'postgresqls': 'apis/cpo.opensource.cybertec.at/v1',
         'statefulsets': 'apis/apps/v1',
         'deployments': 'apis/apps/v1',
     }.get(resource_type, 'api/v1')

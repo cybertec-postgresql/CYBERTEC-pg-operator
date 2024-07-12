@@ -21,7 +21,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
-	"github.com/zalando/postgres-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
 	"golang.org/x/crypto/pbkdf2"
 )
 
@@ -87,7 +87,7 @@ func NewEncryptor(encryption string) *Encryptor {
 	}
 	hasher, ok := m[encryption]
 	if !ok {
-		hasher = e.PGUserPasswordMD5
+		hasher = e.PGUserPasswordScramSHA256
 	}
 	e.encrypt = hasher
 	return &e

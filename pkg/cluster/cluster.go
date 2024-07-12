@@ -13,20 +13,20 @@ import (
 	"sync"
 	"time"
 
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/sirupsen/logrus"
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
 
-	"github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/scheme"
-	"github.com/zalando/postgres-operator/pkg/spec"
-	pgteams "github.com/zalando/postgres-operator/pkg/teams"
-	"github.com/zalando/postgres-operator/pkg/util"
-	"github.com/zalando/postgres-operator/pkg/util/config"
-	"github.com/zalando/postgres-operator/pkg/util/constants"
-	"github.com/zalando/postgres-operator/pkg/util/k8sutil"
-	"github.com/zalando/postgres-operator/pkg/util/patroni"
-	"github.com/zalando/postgres-operator/pkg/util/teams"
-	"github.com/zalando/postgres-operator/pkg/util/users"
-	"github.com/zalando/postgres-operator/pkg/util/volumes"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/scheme"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	pgteams "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/teams"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/patroni"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/teams"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/users"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/volumes"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	policyv1 "k8s.io/api/policy/v1"
@@ -64,12 +64,14 @@ type kubeResources struct {
 	PodDisruptionBudget *policyv1.PodDisruptionBudget
 	//Pods are treated separately
 	//PVCs are treated separately
+
+	RestoreCM *v1.ConfigMap
 }
 
 // Cluster describes postgresql cluster
 type Cluster struct {
 	kubeResources
-	acidv1.Postgresql
+	cpov1.Postgresql
 	Config
 	logger           *logrus.Entry
 	eventRecorder    record.EventRecorder
@@ -106,7 +108,7 @@ type compareStatefulsetResult struct {
 }
 
 // New creates a new cluster. This function should be called from a controller.
-func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec acidv1.Postgresql, logger *logrus.Entry, eventRecorder record.EventRecorder) *Cluster {
+func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec cpov1.Postgresql, logger *logrus.Entry, eventRecorder record.EventRecorder) *Cluster {
 	deletePropagationPolicy := metav1.DeletePropagationOrphan
 
 	podEventsQueue := cache.NewFIFO(func(obj interface{}) (string, error) {
@@ -119,9 +121,18 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec acidv1.Postgres
 	})
 	passwordEncryption, ok := pgSpec.Spec.PostgresqlParam.Parameters["password_encryption"]
 	if !ok {
-		passwordEncryption = "md5"
+		passwordEncryption = "scram-sha-256"
 	}
-
+	if pgSpec.Spec.Monitoring != nil {
+		flg := cpov1.UserFlags{constants.RoleFlagLogin}
+		if pgSpec.Spec.Users != nil {
+			pgSpec.Spec.Users[monitorUsername] = flg
+		} else {
+			users := make(map[string]cpov1.UserFlags)
+			pgSpec.Spec.Users = users
+			pgSpec.Spec.Users[monitorUsername] = flg
+		}
+	}
 	cluster := &Cluster{
 		Config:         cfg,
 		Postgresql:     pgSpec,
@@ -143,7 +154,7 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec acidv1.Postgres
 		currentMajorVersion: 0,
 		replicationSlots:    make(map[string]interface{}),
 	}
-	cluster.logger = logger.WithField("pkg", "cluster").WithField("cluster-name", cluster.clusterName())
+	cluster.logger = logger.WithField("pkg", "cluster").WithField("cluster.cpo.opensource.cybertec.at/name", cluster.clusterName())
 	cluster.teamsAPIClient = teams.NewTeamsAPI(cfg.OpConfig.TeamsAPIUrl, logger)
 	cluster.oauthTokenGetter = newSecretOauthTokenGetter(&kubeClient, cfg.OpConfig.OAuthTokenSecretName)
 	cluster.patroni = patroni.New(cluster.logger, nil)
@@ -154,6 +165,10 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec acidv1.Postgres
 		cluster.VolumeResizer = &volumes.EBSVolumeResizer{AWSRegion: cfg.OpConfig.AWSRegion}
 	}
 
+	//Check if monitoring user is added in manifest
+	if _, ok := pgSpec.Spec.Users["cpo-exporter"]; ok {
+		cluster.logger.Error("creating user of name cpo-exporter is not allowed as it is reserved for monitoring")
+	}
 	return cluster
 }
 
@@ -253,17 +268,16 @@ func (c *Cluster) Create() (err error) {
 
 	defer func() {
 		if err == nil {
-			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusRunning) //TODO: are you sure it's running?
+			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusRunning) //TODO: are you sure it's running?
 		} else {
-			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusAddFailed)
+			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusAddFailed)
 		}
 	}()
 
-	c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusCreating)
+	c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusCreating)
 	c.eventRecorder.Event(c.GetReference(), v1.EventTypeNormal, "Create", "Started creation of new cluster resources")
 
-	for _, role := range []PostgresRole{Master, Replica} {
-
+	for _, role := range []PostgresRole{Master, Replica, ClusterPods} {
 		// if kubernetes_use_configmaps is set Patroni will create configmaps
 		// otherwise it will use endpoints
 		if !c.patroniKubernetesUseConfigMaps() {
@@ -307,40 +321,44 @@ func (c *Cluster) Create() (err error) {
 	if c.PodDisruptionBudget != nil {
 		return fmt.Errorf("pod disruption budget already exists in the cluster")
 	}
-	pdb, err := c.createPodDisruptionBudget()
-	if err != nil {
-		return fmt.Errorf("could not create pod disruption budget: %v", err)
+	// create the pod disruption budget only when number of instances > 1
+	if c.Spec.NumberOfInstances == 1 {
+		c.logger.Warning("skipping the creation of pod disruption budget because number of instance is 1")
+	} else {
+		pdb, err := c.createPodDisruptionBudget()
+		if err != nil {
+			return fmt.Errorf("could not create pod disruption budget: %v", err)
+		}
+		c.logger.Infof("pod disruption budget %q has been successfully created", util.NameFromMeta(pdb.ObjectMeta))
 	}
-	c.logger.Infof("pod disruption budget %q has been successfully created", util.NameFromMeta(pdb.ObjectMeta))
 
-	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
+	if c.Postgresql.Spec.GetBackup().Pgbackrest != nil {
 		if err = c.syncPgbackrestConfig(); err != nil {
 			err = fmt.Errorf("could not sync pgbackrest config: %v", err)
 			return err
 		}
-		c.logger.Info("a pgbackrest config has been successfully synced")
-		if c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID != c.Status.PgbackrestRestoreID {
-			if err = c.syncPgbackrestRestoreConfig(); err != nil {
-				err = fmt.Errorf("could not sync pgbackrest restore config: %v", err)
-				return err
+		// if found a pvc based pgbackrest repo, then create objects related to it.
+		// Note that we need to do this only for the first such repo found, because
+		// in the function createPgbackrestRepoHostObjects it is taken care that
+		// all pvc based repo(s) are included in volume mounting, etc.
+		if specHasPgbackrestPVCRepo(&c.Postgresql.Spec) {
+			if err := c.createPgbackrestRepoHostObjects(&c.Postgresql.Spec); err != nil {
+				return fmt.Errorf("could not create pgbackrest repo-host related objects: %v", err)
 			}
-			c.KubeClient.SetPgbackrestRestoreCRDStatus(c.clusterName(), c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID)
-			c.Status.PgbackrestRestoreID = c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID
-			c.logger.Info("a pgbackrest restore config has been successfully synced")
-		} else {
-			if err = c.createPgbackrestRestoreConfig(); err != nil {
-				err = fmt.Errorf("could not create a pgbackrest restore config: %v", err)
-				return err
-			}
-			c.logger.Info("a pgbackrest restore config has been successfully created")
 		}
-
 	}
 	if c.Postgresql.Spec.TDE != nil && c.Postgresql.Spec.TDE.Enable {
 		if err := c.createTDESecret(); err != nil {
 			return fmt.Errorf("could not create the TDE secret: %v", err)
 		}
 		c.logger.Info("a TDE secret was successfully created")
+	}
+	if c.Postgresql.Spec.Monitoring != nil {
+		c.logger.Infof("Spec.Users are %s", c.Spec.Users)
+		if err := c.createMonitoringSecret(); err != nil {
+			return fmt.Errorf("could not create the monitoring secret: %v", err)
+		}
+		c.logger.Info("a monitoring secret was successfully created")
 	}
 
 	if c.Statefulset != nil {
@@ -364,7 +382,7 @@ func (c *Cluster) Create() (err error) {
 
 	// create database objects unless we are running without pods or disabled
 	// that feature explicitly
-	if !(c.databaseAccessDisabled() || c.getNumberOfInstances(&c.Spec) <= 0 || c.Spec.StandbyCluster != nil) {
+	if !(c.databaseAccessDisabled() || c.getNumberOfInstances(&c.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress()) {
 		c.logger.Infof("Create roles")
 		if err = c.createRoles(); err != nil {
 			return fmt.Errorf("could not create users: %v", err)
@@ -394,7 +412,6 @@ func (c *Cluster) Create() (err error) {
 		c.logger.Info("a k8s cron job for pgbackrest has been successfully created")
 	}
 
-
 	if err := c.listResources(); err != nil {
 		c.logger.Errorf("could not list resources: %v", err)
 	}
@@ -406,6 +423,29 @@ func (c *Cluster) Create() (err error) {
 	// Do not consider connection pooler as a strict requirement, and if
 	// something fails, report warning
 	c.createConnectionPooler(c.installLookupFunction)
+
+	//Setup cpo monitoring related sql statements
+	if c.Spec.Monitoring != nil {
+		c.logger.Info("setting up CPO monitoring")
+
+		// Open a new connection to the postgres db tp setup monitoring struc and permissions
+		if err := c.initDbConnWithName("postgres"); err != nil {
+			return fmt.Errorf("could not init database connection")
+		}
+		defer func() {
+			if c.connectionIsClosed() {
+				return
+			}
+
+			if err := c.closeDbConn(); err != nil {
+				c.logger.Errorf("could not close database connection: %v", err)
+			}
+		}()
+		_, err := c.pgDb.Exec(CPOmonitoring)
+		if err != nil {
+			return fmt.Errorf("CPO monitoring could not be setup: %v", err)
+		}
+	}
 
 	// remember slots to detect deletion from manifest
 	for slotName, desiredSlot := range c.Spec.Patroni.Slots {
@@ -426,82 +466,134 @@ func (c *Cluster) Create() (err error) {
 	return nil
 }
 
-func (c *Cluster) compareStatefulSetWith(statefulSet *appsv1.StatefulSet) *compareStatefulsetResult {
+func (c *Cluster) createPgbackrestRepoHostObjects(spec *cpov1.PostgresSpec) error {
+	c.setProcessName("Creating pgbackrest repo-host related objects")
+	c.logger.Info("Creating pgbackrest repo-host related objects")
+
+	if err := c.createPgbackrestRepoHostConfig(); err != nil {
+		err = fmt.Errorf("could not create a pgbackrest repo-host config: %v", err)
+		return err
+	}
+
+	// Ensure certs secret
+	if _, err := c.KubeClient.Secrets(c.Namespace).Get(context.TODO(), c.getPgbackrestCertSecretName(), metav1.GetOptions{}); err != nil {
+		if !k8sutil.ResourceNotFound(err) {
+			return fmt.Errorf("could not get pgbackrest secret: %v", err)
+		}
+		c.createPgbackrestCertSecret(c.getPgbackrestCertSecretName())
+	}
+
+	// Ensure Stateful set
+	if _, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.getPgbackrestRepoHostName(), metav1.GetOptions{}); err != nil {
+		if !k8sutil.ResourceNotFound(err) {
+			return fmt.Errorf("could not get pgbackrest statefulset: %v", err)
+		}
+		pvcSpec, err := c.generateRepoHostStatefulSet(spec)
+		if err != nil {
+			err = fmt.Errorf("could not generate statefulset for the repohost: %v", err)
+			return err
+		}
+
+		_, err = c.KubeClient.StatefulSets(c.Namespace).Create(
+			context.TODO(),
+			pvcSpec,
+			metav1.CreateOptions{})
+		if err != nil {
+			err = fmt.Errorf("could not create pgbackrest statefulset for the repohost: %v", err)
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (c *Cluster) getPgbackrestRepoHostName() string {
+	return c.clusterName().Name + "-pgbackrest-repo-host"
+}
+
+func (c *Cluster) getPgbackrestCertSecretName() string {
+	return c.clusterName().Name + "-pgbackrest-cert"
+}
+
+func (c *Cluster) compareStatefulSetWith(oldSts, newSts *appsv1.StatefulSet) *compareStatefulsetResult {
+	// This function is currently used for both main sts and repo host sts. Comparison logic is currently
+	// the same, but this needn't be the case.
+
 	reasons := make([]string, 0)
 	var match, needsRollUpdate, needsReplace bool
 
 	match = true
 	//TODO: improve me
-	if *c.Statefulset.Spec.Replicas != *statefulSet.Spec.Replicas {
+	if *oldSts.Spec.Replicas != *newSts.Spec.Replicas {
 		match = false
 		reasons = append(reasons, "new statefulset's number of replicas does not match the current one")
 	}
-	if changed, reason := c.compareAnnotations(c.Statefulset.Annotations, statefulSet.Annotations); changed {
+	if changed, reason := c.compareAnnotations(oldSts.Annotations, newSts.Annotations); changed {
 		match = false
 		needsReplace = true
 		reasons = append(reasons, "new statefulset's annotations do not match: "+reason)
 	}
-	if c.Statefulset.Spec.PodManagementPolicy != statefulSet.Spec.PodManagementPolicy {
+	if oldSts.Spec.PodManagementPolicy != newSts.Spec.PodManagementPolicy {
 		match = false
 		needsReplace = true
 		reasons = append(reasons, "new statefulset's pod management policy do not match")
 	}
 
-	if !reflect.DeepEqual(c.Statefulset.Spec.PersistentVolumeClaimRetentionPolicy, statefulSet.Spec.PersistentVolumeClaimRetentionPolicy) {
+	if !reflect.DeepEqual(oldSts.Spec.PersistentVolumeClaimRetentionPolicy, newSts.Spec.PersistentVolumeClaimRetentionPolicy) {
 		match = false
 		needsReplace = true
 		reasons = append(reasons, "new statefulset's persistent volume claim retention policy do not match")
 	}
 
-	needsRollUpdate, reasons = c.compareContainers("initContainers", c.Statefulset.Spec.Template.Spec.InitContainers, statefulSet.Spec.Template.Spec.InitContainers, needsRollUpdate, reasons)
-	needsRollUpdate, reasons = c.compareContainers("containers", c.Statefulset.Spec.Template.Spec.Containers, statefulSet.Spec.Template.Spec.Containers, needsRollUpdate, reasons)
+	needsRollUpdate, reasons = c.compareContainers("initContainers", oldSts.Spec.Template.Spec.InitContainers, newSts.Spec.Template.Spec.InitContainers, needsRollUpdate, reasons)
+	needsRollUpdate, reasons = c.compareContainers("containers", oldSts.Spec.Template.Spec.Containers, newSts.Spec.Template.Spec.Containers, needsRollUpdate, reasons)
 
-	if len(c.Statefulset.Spec.Template.Spec.Containers) == 0 {
-		c.logger.Warningf("statefulset %q has no container", util.NameFromMeta(c.Statefulset.ObjectMeta))
+	if len(oldSts.Spec.Template.Spec.Containers) == 0 {
+		c.logger.Warningf("statefulset %q has no container", util.NameFromMeta(oldSts.ObjectMeta))
 		return &compareStatefulsetResult{}
 	}
 	// In the comparisons below, the needsReplace and needsRollUpdate flags are never reset, since checks fall through
 	// and the combined effect of all the changes should be applied.
 	// TODO: make sure this is in sync with generatePodTemplate, ideally by using the same list of fields to generate
 	// the template and the diff
-	if c.Statefulset.Spec.Template.Spec.ServiceAccountName != statefulSet.Spec.Template.Spec.ServiceAccountName {
+	if oldSts.Spec.Template.Spec.ServiceAccountName != newSts.Spec.Template.Spec.ServiceAccountName {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's serviceAccountName service account name does not match the current one")
 	}
-	if *c.Statefulset.Spec.Template.Spec.TerminationGracePeriodSeconds != *statefulSet.Spec.Template.Spec.TerminationGracePeriodSeconds {
+	if *oldSts.Spec.Template.Spec.TerminationGracePeriodSeconds != *newSts.Spec.Template.Spec.TerminationGracePeriodSeconds {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's terminationGracePeriodSeconds does not match the current one")
 	}
-	if !reflect.DeepEqual(c.Statefulset.Spec.Template.Spec.Affinity, statefulSet.Spec.Template.Spec.Affinity) {
+	if !reflect.DeepEqual(oldSts.Spec.Template.Spec.Affinity, newSts.Spec.Template.Spec.Affinity) {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's pod affinity does not match the current one")
 	}
-	if len(c.Statefulset.Spec.Template.Spec.Tolerations) != len(statefulSet.Spec.Template.Spec.Tolerations) {
+	if len(oldSts.Spec.Template.Spec.Tolerations) != len(newSts.Spec.Template.Spec.Tolerations) {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's pod tolerations does not match the current one")
 	}
 
-	if len(c.Statefulset.Spec.Template.Spec.TopologySpreadConstraints) != len(statefulSet.Spec.Template.Spec.TopologySpreadConstraints) {
+	if len(oldSts.Spec.Template.Spec.TopologySpreadConstraints) != len(newSts.Spec.Template.Spec.TopologySpreadConstraints) {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's pod topologySpreadConstraints does not match the current one")
 	}
 
 	// Some generated fields like creationTimestamp make it not possible to use DeepCompare on Spec.Template.ObjectMeta
-	if !reflect.DeepEqual(c.Statefulset.Spec.Template.Labels, statefulSet.Spec.Template.Labels) {
+	if !reflect.DeepEqual(oldSts.Spec.Template.Labels, newSts.Spec.Template.Labels) {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's metadata labels does not match the current one")
 	}
-	if (c.Statefulset.Spec.Selector != nil) && (statefulSet.Spec.Selector != nil) {
-		if !reflect.DeepEqual(c.Statefulset.Spec.Selector.MatchLabels, statefulSet.Spec.Selector.MatchLabels) {
+	if (oldSts.Spec.Selector != nil) && (newSts.Spec.Selector != nil) {
+		if !reflect.DeepEqual(oldSts.Spec.Selector.MatchLabels, newSts.Spec.Selector.MatchLabels) {
 			// forbid introducing new labels in the selector on the new statefulset, as it would cripple replacements
 			// due to the fact that the new statefulset won't be able to pick up old pods with non-matching labels.
-			if !util.MapContains(c.Statefulset.Spec.Selector.MatchLabels, statefulSet.Spec.Selector.MatchLabels) {
+			if !util.MapContains(oldSts.Spec.Selector.MatchLabels, newSts.Spec.Selector.MatchLabels) {
 				c.logger.Warningf("new statefulset introduces extra labels in the label selector, cannot continue")
 				return &compareStatefulsetResult{}
 			}
@@ -510,48 +602,51 @@ func (c *Cluster) compareStatefulSetWith(statefulSet *appsv1.StatefulSet) *compa
 		}
 	}
 
-	if changed, reason := c.compareAnnotations(c.Statefulset.Spec.Template.Annotations, statefulSet.Spec.Template.Annotations); changed {
+	if changed, reason := c.compareAnnotations(oldSts.Spec.Template.Annotations, newSts.Spec.Template.Annotations); changed {
 		match = false
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's pod template metadata annotations does not match "+reason)
 	}
-	if !reflect.DeepEqual(c.Statefulset.Spec.Template.Spec.SecurityContext, statefulSet.Spec.Template.Spec.SecurityContext) {
+	if !reflect.DeepEqual(oldSts.Spec.Template.Spec.SecurityContext, newSts.Spec.Template.Spec.SecurityContext) {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's pod template security context in spec does not match the current one")
 	}
-	if len(c.Statefulset.Spec.VolumeClaimTemplates) != len(statefulSet.Spec.VolumeClaimTemplates) {
+	if len(oldSts.Spec.VolumeClaimTemplates) != len(newSts.Spec.VolumeClaimTemplates) {
 		needsReplace = true
 		reasons = append(reasons, "new statefulset's volumeClaimTemplates contains different number of volumes to the old one")
 	}
-	for i := 0; i < len(c.Statefulset.Spec.VolumeClaimTemplates); i++ {
-		name := c.Statefulset.Spec.VolumeClaimTemplates[i].Name
+	for i := 0; i < len(oldSts.Spec.VolumeClaimTemplates); i++ {
+		name := oldSts.Spec.VolumeClaimTemplates[i].Name
 		// Some generated fields like creationTimestamp make it not possible to use DeepCompare on ObjectMeta
-		if name != statefulSet.Spec.VolumeClaimTemplates[i].Name {
+		if name != newSts.Spec.VolumeClaimTemplates[i].Name {
 			needsReplace = true
 			reasons = append(reasons, fmt.Sprintf("new statefulset's name for volume %d does not match the current one", i))
 			continue
 		}
-		if !reflect.DeepEqual(c.Statefulset.Spec.VolumeClaimTemplates[i].Annotations, statefulSet.Spec.VolumeClaimTemplates[i].Annotations) {
+		if !reflect.DeepEqual(oldSts.Spec.VolumeClaimTemplates[i].Annotations, newSts.Spec.VolumeClaimTemplates[i].Annotations) {
 			needsReplace = true
 			reasons = append(reasons, fmt.Sprintf("new statefulset's annotations for volume %q does not match the current one", name))
 		}
-		if !reflect.DeepEqual(c.Statefulset.Spec.VolumeClaimTemplates[i].Spec, statefulSet.Spec.VolumeClaimTemplates[i].Spec) {
-			name := c.Statefulset.Spec.VolumeClaimTemplates[i].Name
+		if !reflect.DeepEqual(oldSts.Spec.VolumeClaimTemplates[i].Spec, newSts.Spec.VolumeClaimTemplates[i].Spec) {
+			name := oldSts.Spec.VolumeClaimTemplates[i].Name
 			needsReplace = true
 			reasons = append(reasons, fmt.Sprintf("new statefulset's volumeClaimTemplates specification for volume %q does not match the current one", name))
 		}
 	}
 
-	if len(c.Statefulset.Spec.Template.Spec.Volumes) != len(statefulSet.Spec.Template.Spec.Volumes) {
+	if len(oldSts.Spec.Template.Spec.Volumes) != len(newSts.Spec.Template.Spec.Volumes) {
 		needsReplace = true
 		reasons = append(reasons, "new statefulset's volumes contains different number of volumes to the old one")
+	} else if !reflect.DeepEqual(oldSts.Spec.Template.Spec.Volumes, newSts.Spec.Template.Spec.Volumes) {
+		needsReplace = true
+		reasons = append(reasons, "new statefulset's volumes do not match old one")
 	}
 
 	// we assume any change in priority happens by rolling out a new priority class
 	// changing the priority value in an existing class is not supproted
-	if c.Statefulset.Spec.Template.Spec.PriorityClassName != statefulSet.Spec.Template.Spec.PriorityClassName {
+	if oldSts.Spec.Template.Spec.PriorityClassName != newSts.Spec.Template.Spec.PriorityClassName {
 		needsReplace = true
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's pod priority class in spec does not match the current one")
@@ -559,8 +654,8 @@ func (c *Cluster) compareStatefulSetWith(statefulSet *appsv1.StatefulSet) *compa
 
 	// lazy Spilo update: modify the image in the statefulset itself but let its pods run with the old image
 	// until they are re-created for other reasons, for example node rotation
-	effectivePodImage := getPostgresContainer(&c.Statefulset.Spec.Template.Spec).Image
-	desiredImage := getPostgresContainer(&statefulSet.Spec.Template.Spec).Image
+	effectivePodImage := getPostgresContainer(&oldSts.Spec.Template.Spec).Image
+	desiredImage := getPostgresContainer(&newSts.Spec.Template.Spec).Image
 	if c.OpConfig.EnableLazySpiloUpgrade && !reflect.DeepEqual(effectivePodImage, desiredImage) {
 		needsReplace = true
 		reasons = append(reasons, "lazy Spilo update: new statefulset's pod image does not match the current one")
@@ -810,7 +905,7 @@ func (c *Cluster) compareServices(old, new *v1.Service) (bool, string) {
 // (i.e. service) is treated as an error
 // logical backup cron jobs are an exception: a user-initiated Update can enable a logical backup job
 // for a cluster that had no such job before. In this case a missing job is not an error.
-func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
+func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	updateFailed := false
 	userInitFailed := false
 	syncStatefulSet := false
@@ -818,14 +913,14 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusUpdating)
+	c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusUpdating)
 	c.setSpec(newSpec)
 
 	defer func() {
 		if updateFailed {
-			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusUpdateFailed)
+			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusUpdateFailed)
 		} else {
-			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), acidv1.ClusterStatusRunning)
+			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusRunning)
 		}
 	}()
 
@@ -843,11 +938,27 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 
 	// Service
 	if !reflect.DeepEqual(c.generateService(Master, &oldSpec.Spec), c.generateService(Master, &newSpec.Spec)) ||
-		!reflect.DeepEqual(c.generateService(Replica, &oldSpec.Spec), c.generateService(Replica, &newSpec.Spec)) {
+		!reflect.DeepEqual(c.generateService(Replica, &oldSpec.Spec), c.generateService(Replica, &newSpec.Spec)) ||
+		!reflect.DeepEqual(c.generateService(ClusterPods, &oldSpec.Spec), c.generateService(ClusterPods, &newSpec.Spec)) {
 		if err := c.syncServices(); err != nil {
 			c.logger.Errorf("could not sync services: %v", err)
 			updateFailed = true
 		}
+	}
+	//Add monitoring user if required
+	if newSpec.Spec.Monitoring != nil {
+		flg := cpov1.UserFlags{constants.RoleFlagLogin}
+		if newSpec.Spec.Users != nil {
+			newSpec.Spec.Users[monitorUsername] = flg
+		} else {
+			users := make(map[string]cpov1.UserFlags)
+			newSpec.Spec.Users = users
+			newSpec.Spec.Users[monitorUsername] = flg
+		}
+	}
+	//Check if monitoring user is added in manifest
+	if _, ok := newSpec.Spec.Users["cpo-exporter"]; ok {
+		c.logger.Error("creating user of name cpo-exporter is not allowed as it is reserved for monitoring")
 	}
 
 	// Users
@@ -857,7 +968,6 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 			reflect.DeepEqual(oldSpec.Spec.PreparedDatabases, newSpec.Spec.PreparedDatabases)
 		sameRotatedUsers := reflect.DeepEqual(oldSpec.Spec.UsersWithSecretRotation, newSpec.Spec.UsersWithSecretRotation) &&
 			reflect.DeepEqual(oldSpec.Spec.UsersWithInPlaceSecretRotation, newSpec.Spec.UsersWithInPlaceSecretRotation)
-
 		// connection pooler needs one system user created who is initialized in initUsers
 		// only when disabled in oldSpec and enabled in newSpec
 		needPoolerUser := c.needConnectionPoolerUser(&oldSpec.Spec, &newSpec.Spec)
@@ -896,6 +1006,53 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 		syncStatefulSet = true
 	}
 
+	//sync monitoring container
+	if !reflect.DeepEqual(oldSpec.Spec.Monitoring, newSpec.Spec.Monitoring) {
+		syncStatefulSet = true
+		c.syncMonitoringSecret(oldSpec, newSpec)
+	}
+
+	//sync sts when there is a change in the pgbackrest secret, since we need to mount this
+	if !reflect.DeepEqual(oldSpec.Spec.Backup.Pgbackrest.Configuration, newSpec.Spec.Backup.Pgbackrest.Configuration) {
+		syncStatefulSet = true
+	}
+
+	// Pgbackrest backup job
+	func() {
+		if specHasPgbackrestPVCRepo(&newSpec.Spec) || specHasPgbackrestPVCRepo(&oldSpec.Spec) {
+			if err := c.syncPgbackrestRepoHostConfig(&newSpec.Spec); err != nil {
+				updateFailed = true
+				return
+			}
+		}
+
+		if newSpec.Spec.GetBackup().Pgbackrest != nil {
+			if err := c.syncPgbackrestConfig(); err != nil {
+				err = fmt.Errorf("could not sync pgbackrest config: %v", err)
+				updateFailed = true
+				return
+			}
+
+			c.logger.Info("a pgbackrest config has been successfully created")
+			if err := c.syncPgbackrestJob(false); err != nil {
+				err = fmt.Errorf("could not create a k8s cron job for pgbackrest: %v", err)
+				updateFailed = true
+				return
+			}
+			c.logger.Info("a k8s cron job for pgbackrest has been successfully created")
+		} else if oldSpec.Spec.GetBackup().Pgbackrest != nil {
+			if err := c.deletePgbackrestRestoreConfig(); err != nil {
+				c.logger.Warningf("could not delete pgbackrest restore config: %v", err)
+			}
+			if err := c.deletePgbackrestConfig(); err != nil {
+				c.logger.Warningf("could not delete pgbackrest config: %v", err)
+			}
+			if err := c.deletePgbackrestRepoHostConfig(); err != nil {
+				c.logger.Warningf("could not delete pgbackrest repo-host config: %v", err)
+			}
+		}
+	}()
+
 	// Statefulset
 	func() {
 		oldSs, err := c.generateStatefulSet(&oldSpec.Spec)
@@ -912,6 +1069,10 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 			return
 		}
 
+		if c.restoreInProgress() {
+			c.applyRestoreStatefulSetSyncOverrides(newSs, oldSs)
+		}
+
 		if syncStatefulSet || !reflect.DeepEqual(oldSs, newSs) {
 			c.logger.Debugf("syncing statefulsets")
 			syncStatefulSet = false
@@ -919,24 +1080,6 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 			if err := c.syncStatefulSet(); err != nil {
 				c.logger.Errorf("could not sync statefulsets: %v", err)
 				updateFailed = true
-			}
-
-			if c.Spec.Backup != nil && c.Spec.Backup.Pgbackrest != nil && c.Spec.Backup.Pgbackrest.Restore.ID != c.Status.PgbackrestRestoreID {
-				if err := c.syncPgbackrestRestoreConfig(); err != nil {
-					updateFailed = true
-					return
-				}
-
-				if err = c.waitStatefulsetPodsReady(); err != nil {
-					updateFailed = true
-					return
-				}
-
-				c.KubeClient.SetPgbackrestRestoreCRDStatus(c.clusterName(), c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID)
-				c.Status.PgbackrestRestoreID = c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID
-				c.logger.Info("a pgbackrest restore config has been successfully synced")
-			} else {
-				return
 			}
 			// TODO: avoid generating the StatefulSet object twice by passing it to syncStatefulSet
 			if err := c.syncStatefulSet(); err != nil {
@@ -956,40 +1099,6 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 			updateFailed = true
 		}
 	}
-
-	// Pgrest backup job
-	func() {
-
-		if newSpec.Spec.Backup != nil && newSpec.Spec.Backup.Pgbackrest != nil {
-			if err := c.syncPgbackrestConfig(); err != nil {
-				err = fmt.Errorf("could not sync pgbackrest config: %v", err)
-				updateFailed = true
-				return
-			}
-			c.logger.Info("a pgbackrest config has been successfully created")
-			if err := c.syncPgbackrestJob(false); err != nil {
-				err = fmt.Errorf("could not create a k8s cron job for pgbackrest: %v", err)
-				updateFailed = true
-				return
-			}
-			c.logger.Info("a k8s cron job for pgbackrest has been successfully created")
-			if c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID != c.Status.PgbackrestRestoreID {
-				if err := c.syncPgbackrestRestoreConfig(); err != nil {
-					updateFailed = true
-					return
-				}
-				c.KubeClient.SetPgbackrestRestoreCRDStatus(c.clusterName(), c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID)
-				c.Status.PgbackrestRestoreID = c.Postgresql.Spec.Backup.Pgbackrest.Restore.ID
-				c.logger.Info("a pgbackrest restore config has been successfully synced")
-			}
-		} else {
-
-			if err := c.deletePgbackrestConfig(); err != nil {
-				c.logger.Warningf("could not delete pgbackrest config: %v", err)
-			}
-		}
-
-	}()
 
 	// logical backup job
 	func() {
@@ -1029,7 +1138,7 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 	}()
 
 	// Roles and Databases
-	if !userInitFailed && !(c.databaseAccessDisabled() || c.getNumberOfInstances(&c.Spec) <= 0 || c.Spec.StandbyCluster != nil) {
+	if !userInitFailed && !(c.databaseAccessDisabled() || c.getNumberOfInstances(&c.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress()) {
 		c.logger.Debugf("syncing roles")
 		if err := c.syncRoles(); err != nil {
 			c.logger.Errorf("could not sync roles: %v", err)
@@ -1070,6 +1179,16 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 		}
 	}
 
+	// If we are requested to replace database contents with a restore only do so after we have everything
+	// properly set up, but before we try to run the upgrade.
+	restoreId := newSpec.Spec.GetBackup().GetRestoreID()
+	if restoreId != "" && newSpec.Status.RestoreID != restoreId || c.RestoreCM != nil {
+		if err := c.processRestore(newSpec); err != nil {
+			c.logger.Errorf("restoring backup failed: %v", err)
+			updateFailed = true
+		}
+	}
+
 	if !updateFailed {
 		// Major version upgrade must only fire after success of earlier operations and should stay last
 		if err := c.majorVersionUpgrade(); err != nil {
@@ -1079,6 +1198,17 @@ func (c *Cluster) Update(oldSpec, newSpec *acidv1.Postgresql) error {
 	}
 
 	return nil
+}
+
+func specHasPgbackrestPVCRepo(newSpec *cpov1.PostgresSpec) bool {
+	if newSpec.Backup != nil && newSpec.Backup.Pgbackrest != nil && newSpec.Backup.Pgbackrest.Repos != nil {
+		for _, repo := range newSpec.Backup.Pgbackrest.Repos {
+			if repo.Storage == "pvc" {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func syncResources(a, b *v1.ResourceRequirements) bool {
@@ -1115,6 +1245,14 @@ func (c *Cluster) Delete() {
 		c.logger.Warningf("could not remove the logical backup k8s cron job; %v", err)
 	}
 
+	if err := c.deleteStatefulSet(); err != nil {
+		c.logger.Warningf("could not delete statefulset: %v", err)
+	}
+
+	if err := c.deletePgbackrestRepoHostObjects(); err != nil {
+		c.logger.Warningf("could not delete pgbackrest objects: %v", err)
+	}
+
 	if err := c.syncPgbackrestJob(true); err != nil {
 		c.logger.Warningf("could not delete pgbackrest jobs: %v", err)
 	}
@@ -1123,12 +1261,12 @@ func (c *Cluster) Delete() {
 		c.logger.Warningf("could not delete pgbackrest config: %v", err)
 	}
 
-	if err := c.deletePgbackrestRestoreConfig(); err != nil {
-		c.logger.Warningf("could not delete pgbackrest restore config: %v", err)
+	if err := c.deletePgbackrestRepoHostConfig(); err != nil {
+		c.logger.Warningf("could not delete pgbackrest repo-host config: %v", err)
 	}
 
-	if err := c.deleteStatefulSet(); err != nil {
-		c.logger.Warningf("could not delete statefulset: %v", err)
+	if err := c.deletePgbackrestRestoreConfig(); err != nil {
+		c.logger.Warningf("could not delete pgbackrest restore config: %v", err)
 	}
 
 	if err := c.deleteSecrets(); err != nil {
@@ -1139,7 +1277,7 @@ func (c *Cluster) Delete() {
 		c.logger.Warningf("could not delete pod disruption budget: %v", err)
 	}
 
-	for _, role := range []PostgresRole{Master, Replica} {
+	for _, role := range []PostgresRole{Master, Replica, ClusterPods} {
 
 		if !c.patroniKubernetesUseConfigMaps() {
 			if err := c.deleteEndpoint(role); err != nil {
@@ -1168,7 +1306,7 @@ func (c *Cluster) Delete() {
 }
 
 // NeedsRepair returns true if the cluster should be included in the repair scan (based on its in-memory status).
-func (c *Cluster) NeedsRepair() (bool, acidv1.PostgresStatus) {
+func (c *Cluster) NeedsRepair() (bool, cpov1.PostgresStatus) {
 	c.specMu.RLock()
 	defer c.specMu.RUnlock()
 	return !c.Status.Success(), c.Status
@@ -1182,7 +1320,7 @@ func (c *Cluster) ReceivePodEvent(event PodEvent) {
 	}
 }
 
-func (c *Cluster) processPodEvent(obj interface{}) error {
+func (c *Cluster) processPodEvent(obj interface{}, isInInitialList bool) error {
 	event, ok := obj.(PodEvent)
 	if !ok {
 		return fmt.Errorf("could not cast to PodEvent")
@@ -1283,7 +1421,7 @@ func (c *Cluster) initSystemUsers() {
 func (c *Cluster) initPreparedDatabaseRoles() error {
 
 	if c.Spec.PreparedDatabases != nil && len(c.Spec.PreparedDatabases) == 0 { // TODO: add option to disable creating such a default DB
-		c.Spec.PreparedDatabases = map[string]acidv1.PreparedDatabase{strings.Replace(c.Name, "-", "_", -1): {}}
+		c.Spec.PreparedDatabases = map[string]cpov1.PreparedDatabase{strings.Replace(c.Name, "-", "_", -1): {}}
 	}
 
 	// create maps with default roles/users as keys and their membership as values
@@ -1302,7 +1440,7 @@ func (c *Cluster) initPreparedDatabaseRoles() error {
 		// get list of prepared schemas to set in search_path
 		preparedSchemas := preparedDB.PreparedSchemas
 		if len(preparedDB.PreparedSchemas) == 0 {
-			preparedSchemas = map[string]acidv1.PreparedSchema{"data": {DefaultRoles: util.True()}}
+			preparedSchemas = map[string]cpov1.PreparedSchema{"data": {DefaultRoles: util.True()}}
 		}
 
 		var searchPath strings.Builder

@@ -7,8 +7,8 @@ import (
 
 	"fmt"
 
-	"github.com/zalando/postgres-operator/pkg/spec"
-	"github.com/zalando/postgres-operator/pkg/util/constants"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -38,15 +38,15 @@ type Resources struct {
 	SpiloPrivileged               bool                `name:"spilo_privileged" default:"false"`
 	SpiloAllowPrivilegeEscalation *bool               `name:"spilo_allow_privilege_escalation" default:"true"`
 	AdditionalPodCapabilities     []string            `name:"additional_pod_capabilities" default:""`
-	ClusterLabels                 map[string]string   `name:"cluster_labels" default:"application:spilo"`
+	ClusterLabels                 map[string]string   `name:"cluster_labels" default:"application:cpo"`
 	InheritedLabels               []string            `name:"inherited_labels" default:""`
 	InheritedAnnotations          []string            `name:"inherited_annotations" default:""`
 	DownscalerAnnotations         []string            `name:"downscaler_annotations"`
 	IgnoredAnnotations            []string            `name:"ignored_annotations"`
-	ClusterNameLabel              string              `name:"cluster_name_label" default:"cluster-name"`
+	ClusterNameLabel              string              `name:"cluster_name_label" default:"cluster.cpo.opensource.cybertec.at/name"`
 	DeleteAnnotationDateKey       string              `name:"delete_annotation_date_key"`
 	DeleteAnnotationNameKey       string              `name:"delete_annotation_name_key"`
-	PodRoleLabel                  string              `name:"pod_role_label" default:"spilo-role"`
+	PodRoleLabel                  string              `name:"pod_role_label" default:"member.cpo.opensource.cybertec.at/role"`
 	PodToleration                 map[string]string   `name:"toleration" default:""`
 	DefaultCPURequest             string              `name:"default_cpu_request" default:"100m"`
 	DefaultMemoryRequest          string              `name:"default_memory_request" default:"100Mi"`
@@ -241,8 +241,8 @@ type Config struct {
 	EnableTeamIdClusternamePrefix            bool              `name:"enable_team_id_clustername_prefix" default:"false"`
 	MajorVersionUpgradeMode                  string            `name:"major_version_upgrade_mode" default:"off"`
 	MajorVersionUpgradeTeamAllowList         []string          `name:"major_version_upgrade_team_allow_list" default:""`
-	MinimalMajorVersion                      string            `name:"minimal_major_version" default:"11"`
-	TargetMajorVersion                       string            `name:"target_major_version" default:"15"`
+	MinimalMajorVersion                      string            `name:"minimal_major_version" default:"13"`
+	TargetMajorVersion                       string            `name:"target_major_version" default:"16"`
 	PatroniAPICheckInterval                  time.Duration     `name:"patroni_api_check_interval" default:"1s"`
 	PatroniAPICheckTimeout                   time.Duration     `name:"patroni_api_check_timeout" default:"5s"`
 	EnablePatroniFailsafeMode                *bool             `name:"enable_patroni_failsafe_mode" default:"false"`

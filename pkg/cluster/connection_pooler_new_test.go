@@ -18,7 +18,7 @@ func TestFakeClient(t *testing.T) {
 	namespace := "default"
 
 	l := labels.Set(map[string]string{
-		"application": "spilo",
+		"application": "cpo",
 	})
 
 	deployment := &appsv1.Deployment{
@@ -37,7 +37,7 @@ func TestFakeClient(t *testing.T) {
 		t.Errorf("Deployments are not equal")
 	}
 
-	deployments, _ := clientSet.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{LabelSelector: "application=spilo"})
+	deployments, _ := clientSet.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{LabelSelector: "application=cpo"})
 
 	if len(deployments.Items) != 1 {
 		t.Errorf("Label search does not work")

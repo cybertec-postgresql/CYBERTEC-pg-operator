@@ -17,12 +17,12 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/tools/cache"
 
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	"github.com/zalando/postgres-operator/pkg/cluster"
-	"github.com/zalando/postgres-operator/pkg/spec"
-	"github.com/zalando/postgres-operator/pkg/util"
-	"github.com/zalando/postgres-operator/pkg/util/k8sutil"
-	"github.com/zalando/postgres-operator/pkg/util/ringlog"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/cluster"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/ringlog"
 )
 
 func (c *Controller) clusterResync(stopCh <-chan struct{}, wg *sync.WaitGroup) {
@@ -42,8 +42,8 @@ func (c *Controller) clusterResync(stopCh <-chan struct{}, wg *sync.WaitGroup) {
 }
 
 // clusterListFunc obtains a list of all PostgreSQL clusters
-func (c *Controller) listClusters(options metav1.ListOptions) (*acidv1.PostgresqlList, error) {
-	var pgList acidv1.PostgresqlList
+func (c *Controller) listClusters(options metav1.ListOptions) (*cpov1.PostgresqlList, error) {
+	var pgList cpov1.PostgresqlList
 
 	// TODO: use the SharedInformer cache instead of quering Kubernetes API directly.
 	list, err := c.KubeClient.PostgresqlsGetter.Postgresqls(c.opConfig.WatchedNamespace).List(context.TODO(), options)
@@ -79,7 +79,7 @@ func (c *Controller) clusterListAndSync() error {
 		event = EventRepair
 	}
 	if event != "" {
-		var list *acidv1.PostgresqlList
+		var list *cpov1.PostgresqlList
 		if list, err = c.listClusters(metav1.ListOptions{ResourceVersion: "0"}); err != nil {
 			return err
 		}
@@ -92,7 +92,7 @@ func (c *Controller) clusterListAndSync() error {
 }
 
 // queueEvents queues a sync or repair event for every cluster with a valid manifest
-func (c *Controller) queueEvents(list *acidv1.PostgresqlList, event EventType) {
+func (c *Controller) queueEvents(list *cpov1.PostgresqlList, event EventType) {
 	var activeClustersCnt, failedClustersCnt, clustersToRepair int
 	for i, pg := range list.Items {
 		// XXX: check the cluster status field instead
@@ -135,7 +135,7 @@ func (c *Controller) queueEvents(list *acidv1.PostgresqlList, event EventType) {
 
 func (c *Controller) acquireInitialListOfClusters() error {
 	var (
-		list        *acidv1.PostgresqlList
+		list        *cpov1.PostgresqlList
 		err         error
 		clusterName spec.NamespacedName
 	)
@@ -158,10 +158,10 @@ func (c *Controller) acquireInitialListOfClusters() error {
 	return nil
 }
 
-func (c *Controller) addCluster(lg *logrus.Entry, clusterName spec.NamespacedName, pgSpec *acidv1.Postgresql) (*cluster.Cluster, error) {
+func (c *Controller) addCluster(lg *logrus.Entry, clusterName spec.NamespacedName, pgSpec *cpov1.Postgresql) (*cluster.Cluster, error) {
 	if c.opConfig.EnableTeamIdClusternamePrefix {
-		if _, err := acidv1.ExtractClusterName(clusterName.Name, pgSpec.Spec.TeamID); err != nil {
-			c.KubeClient.SetPostgresCRDStatus(clusterName, acidv1.ClusterStatusInvalid)
+		if _, err := cpov1.ExtractClusterName(clusterName.Name, pgSpec.Spec.TeamID); err != nil {
+			c.KubeClient.SetPostgresCRDStatus(clusterName, cpov1.ClusterStatusInvalid)
 			return nil, err
 		}
 	}
@@ -193,7 +193,7 @@ func (c *Controller) processEvent(event ClusterEvent) {
 	} else {
 		clusterName = util.NameFromMeta(event.OldSpec.ObjectMeta)
 	}
-	lg = lg.WithField("cluster-name", clusterName)
+	lg = lg.WithField("cluster.cpo.opensource.cybertec.at/name", clusterName)
 
 	c.clustersMu.RLock()
 	cl, clusterFound := c.clusters[clusterName]
@@ -249,7 +249,7 @@ func (c *Controller) processEvent(event ClusterEvent) {
 
 		err = cl.Create()
 		if err != nil {
-			cl.Status = acidv1.PostgresStatus{PostgresClusterStatus: acidv1.ClusterStatusInvalid}
+			cl.Status = cpov1.PostgresStatus{PostgresClusterStatus: cpov1.ClusterStatusInvalid}
 			cl.Error = fmt.Sprintf("could not create cluster: %v", err)
 			lg.Error(cl.Error)
 			c.eventRecorder.Eventf(cl.GetReference(), v1.EventTypeWarning, "Create", "%v", cl.Error)
@@ -347,7 +347,7 @@ func (c *Controller) processClusterEventsQueue(idx int, stopCh <-chan struct{}, 
 	}()
 
 	for {
-		obj, err := c.clusterEventQueues[idx].Pop(cache.PopProcessFunc(func(interface{}) error { return nil }))
+		obj, err := c.clusterEventQueues[idx].Pop(cache.PopProcessFunc(func(interface{}, bool) error { return nil }))
 		if err != nil {
 			if err == cache.ErrFIFOClosed {
 				return
@@ -364,7 +364,7 @@ func (c *Controller) processClusterEventsQueue(idx int, stopCh <-chan struct{}, 
 	}
 }
 
-func (c *Controller) warnOnDeprecatedPostgreSQLSpecParameters(spec *acidv1.PostgresSpec) {
+func (c *Controller) warnOnDeprecatedPostgreSQLSpecParameters(spec *cpov1.PostgresSpec) {
 
 	deprecate := func(deprecated, replacement string) {
 		c.logger.Warningf("parameter %q is deprecated. Consider setting %q instead", deprecated, replacement)
@@ -394,7 +394,7 @@ func (c *Controller) warnOnDeprecatedPostgreSQLSpecParameters(spec *acidv1.Postg
 // mergeDeprecatedPostgreSQLSpecParameters modifies the spec passed to the cluster by setting current parameter
 // values from the obsolete ones. Note: while the spec that is modified is a copy made in queueClusterEvent, it is
 // still a shallow copy, so be extra careful not to modify values pointer fields point to, but copy them instead.
-func (c *Controller) mergeDeprecatedPostgreSQLSpecParameters(spec *acidv1.PostgresSpec) *acidv1.PostgresSpec {
+func (c *Controller) mergeDeprecatedPostgreSQLSpecParameters(spec *cpov1.PostgresSpec) *cpov1.PostgresSpec {
 	if (spec.UseLoadBalancer != nil || spec.ReplicaLoadBalancer != nil) &&
 		(spec.EnableReplicaLoadBalancer == nil && spec.EnableMasterLoadBalancer == nil) {
 		if spec.UseLoadBalancer != nil {
@@ -412,7 +412,7 @@ func (c *Controller) mergeDeprecatedPostgreSQLSpecParameters(spec *acidv1.Postgr
 	return spec
 }
 
-func (c *Controller) queueClusterEvent(informerOldSpec, informerNewSpec *acidv1.Postgresql, eventType EventType) {
+func (c *Controller) queueClusterEvent(informerOldSpec, informerNewSpec *cpov1.Postgresql, eventType EventType) {
 	var (
 		uid          types.UID
 		clusterName  spec.NamespacedName
@@ -443,31 +443,31 @@ func (c *Controller) queueClusterEvent(informerOldSpec, informerNewSpec *acidv1.
 	// only allow deletion if delete annotations are set and conditions are met
 	if eventType == EventDelete {
 		if err := c.meetsClusterDeleteAnnotations(informerOldSpec); err != nil {
-			c.logger.WithField("cluster-name", clusterName).Warnf(
+			c.logger.WithField("cluster.cpo.opensource.cybertec.at/name", clusterName).Warnf(
 				"ignoring %q event for cluster %q - manifest does not fulfill delete requirements: %s", eventType, clusterName, err)
-			c.logger.WithField("cluster-name", clusterName).Warnf(
+			c.logger.WithField("cluster.cpo.opensource.cybertec.at/name", clusterName).Warnf(
 				"please, recreate Postgresql resource %q and set annotations to delete properly", clusterName)
 			if currentManifest, marshalErr := json.Marshal(informerOldSpec); marshalErr != nil {
-				c.logger.WithField("cluster-name", clusterName).Warnf("could not marshal current manifest:\n%+v", informerOldSpec)
+				c.logger.WithField("cluster.cpo.opensource.cybertec.at/name", clusterName).Warnf("could not marshal current manifest:\n%+v", informerOldSpec)
 			} else {
-				c.logger.WithField("cluster-name", clusterName).Warnf("%s\n", string(currentManifest))
+				c.logger.WithField("cluster.cpo.opensource.cybertec.at/name", clusterName).Warnf("%s\n", string(currentManifest))
 			}
 			return
 		}
 	}
 
 	if clusterError != "" && eventType != EventDelete {
-		c.logger.WithField("cluster-name", clusterName).Debugf("skipping %q event for the invalid cluster: %s", eventType, clusterError)
+		c.logger.WithField("cluster.cpo.opensource.cybertec.at/name", clusterName).Debugf("skipping %q event for the invalid cluster: %s", eventType, clusterError)
 
 		switch eventType {
 		case EventAdd:
-			c.KubeClient.SetPostgresCRDStatus(clusterName, acidv1.ClusterStatusAddFailed)
+			c.KubeClient.SetPostgresCRDStatus(clusterName, cpov1.ClusterStatusAddFailed)
 			c.eventRecorder.Eventf(c.GetReference(informerNewSpec), v1.EventTypeWarning, "Create", "%v", clusterError)
 		case EventUpdate:
-			c.KubeClient.SetPostgresCRDStatus(clusterName, acidv1.ClusterStatusUpdateFailed)
+			c.KubeClient.SetPostgresCRDStatus(clusterName, cpov1.ClusterStatusUpdateFailed)
 			c.eventRecorder.Eventf(c.GetReference(informerNewSpec), v1.EventTypeWarning, "Update", "%v", clusterError)
 		default:
-			c.KubeClient.SetPostgresCRDStatus(clusterName, acidv1.ClusterStatusSyncFailed)
+			c.KubeClient.SetPostgresCRDStatus(clusterName, cpov1.ClusterStatusSyncFailed)
 			c.eventRecorder.Eventf(c.GetReference(informerNewSpec), v1.EventTypeWarning, "Sync", "%v", clusterError)
 		}
 
@@ -488,7 +488,7 @@ func (c *Controller) queueClusterEvent(informerOldSpec, informerNewSpec *acidv1.
 		WorkerID:  workerID,
 	}
 
-	lg := c.logger.WithField("worker", workerID).WithField("cluster-name", clusterName)
+	lg := c.logger.WithField("worker", workerID).WithField("cluster.cpo.opensource.cybertec.at/name", clusterName)
 	if err := c.clusterEventQueues[workerID].Add(clusterEvent); err != nil {
 		lg.Errorf("error while queueing cluster event: %v", clusterEvent)
 	}
@@ -547,8 +547,8 @@ func (c *Controller) postgresqlDelete(obj interface{}) {
 	}
 }
 
-func (c *Controller) postgresqlCheck(obj interface{}) *acidv1.Postgresql {
-	pg, ok := obj.(*acidv1.Postgresql)
+func (c *Controller) postgresqlCheck(obj interface{}) *cpov1.Postgresql {
+	pg, ok := obj.(*cpov1.Postgresql)
 	if !ok {
 		c.logger.Errorf("could not cast to postgresql spec")
 		return nil
@@ -560,13 +560,13 @@ func (c *Controller) postgresqlCheck(obj interface{}) *acidv1.Postgresql {
 }
 
 /*
-  Ensures the pod service account and role bindings exists in a namespace
-  before a PG cluster is created there so that a user does not have to deploy
-  these credentials manually.  StatefulSets require the service account to
-  create pods; Patroni requires relevant RBAC bindings to access endpoints
-  or config maps.
+Ensures the pod service account and role bindings exists in a namespace
+before a PG cluster is created there so that a user does not have to deploy
+these credentials manually.  StatefulSets require the service account to
+create pods; Patroni requires relevant RBAC bindings to access endpoints
+or config maps.
 
-  The operator does not sync accounts/role bindings after creation.
+The operator does not sync accounts/role bindings after creation.
 */
 func (c *Controller) submitRBACCredentials(event ClusterEvent) error {
 

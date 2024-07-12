@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/zalando/postgres-operator/pkg/spec"
-	"github.com/zalando/postgres-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -17,7 +17,7 @@ var VersionMap = map[string]int{
 	"13": 130000,
 	"14": 140000,
 	"15": 150000,
-
+	"16": 160000,
 }
 
 // IsBiggerPostgresVersion Compare two Postgres version numbers
@@ -75,7 +75,7 @@ func (c *Cluster) majorVersionUpgrade() error {
 		return nil
 	}
 
-	pods, err := c.listPods()
+	pods, err := c.listPodsOfType(TYPE_POSTGRESQL)
 	if err != nil {
 		return err
 	}

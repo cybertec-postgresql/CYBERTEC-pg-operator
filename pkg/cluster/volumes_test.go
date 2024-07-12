@@ -14,13 +14,13 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/golang/mock/gomock"
 
+	"github.com/cybertec-postgresql/cybertec-pg-operator/mocks"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/volumes"
 	"github.com/stretchr/testify/assert"
-	"github.com/zalando/postgres-operator/mocks"
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	"github.com/zalando/postgres-operator/pkg/util/config"
-	"github.com/zalando/postgres-operator/pkg/util/constants"
-	"github.com/zalando/postgres-operator/pkg/util/k8sutil"
-	"github.com/zalando/postgres-operator/pkg/util/volumes"
 	"k8s.io/client-go/kubernetes/fake"
 )
 
@@ -63,12 +63,12 @@ func TestResizeVolumeClaim(t *testing.T) {
 		Config{
 			OpConfig: config.Config{
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
-					ClusterNameLabel: "cluster-name",
+					ClusterLabels:    map[string]string{"application": "cpo"},
+					ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name",
 				},
 				StorageResizeMode: "pvc",
 			},
-		}, client, acidv1.Postgresql{}, logger, eventRecorder)
+		}, client, cpov1.Postgresql{}, logger, eventRecorder)
 
 	// set metadata, so that labels will get correct values
 	cluster.Name = clusterName
@@ -85,7 +85,7 @@ func TestResizeVolumeClaim(t *testing.T) {
 	}
 
 	// test resizing
-	cluster.resizeVolumeClaims(acidv1.Volume{Size: newVolumeSize})
+	cluster.resizeVolumeClaims(cpov1.Volume{Size: newVolumeSize})
 
 	pvcs, err := cluster.listPersistentVolumeClaims()
 	assert.NoError(t, err)
@@ -188,14 +188,14 @@ func TestMigrateEBS(t *testing.T) {
 		Config{
 			OpConfig: config.Config{
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
-					ClusterNameLabel: "cluster-name",
+					ClusterLabels:    map[string]string{"application": "cpo"},
+					ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name",
 				},
 				StorageResizeMode:            "pvc",
 				EnableEBSGp3Migration:        true,
 				EnableEBSGp3MigrationMaxSize: 1000,
 			},
-		}, client, acidv1.Postgresql{}, logger, eventRecorder)
+		}, client, cpov1.Postgresql{}, logger, eventRecorder)
 	cluster.Spec.Volume.Size = "1Gi"
 
 	// set metadata, so that labels will get correct values
@@ -290,14 +290,14 @@ func TestMigrateGp3Support(t *testing.T) {
 		Config{
 			OpConfig: config.Config{
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
-					ClusterNameLabel: "cluster-name",
+					ClusterLabels:    map[string]string{"application": "cpo"},
+					ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name",
 				},
 				StorageResizeMode:            "mixed",
 				EnableEBSGp3Migration:        false,
 				EnableEBSGp3MigrationMaxSize: 1000,
 			},
-		}, client, acidv1.Postgresql{}, logger, eventRecorder)
+		}, client, cpov1.Postgresql{}, logger, eventRecorder)
 
 	cluster.Spec.Volume.Size = "150Gi"
 	cluster.Spec.Volume.Iops = aws.Int64(6000)
@@ -346,14 +346,14 @@ func TestManualGp2Gp3Support(t *testing.T) {
 		Config{
 			OpConfig: config.Config{
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
-					ClusterNameLabel: "cluster-name",
+					ClusterLabels:    map[string]string{"application": "cpo"},
+					ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name",
 				},
 				StorageResizeMode:            "mixed",
 				EnableEBSGp3Migration:        false,
 				EnableEBSGp3MigrationMaxSize: 1000,
 			},
-		}, client, acidv1.Postgresql{}, logger, eventRecorder)
+		}, client, cpov1.Postgresql{}, logger, eventRecorder)
 
 	cluster.Spec.Volume.Size = "150Gi"
 	cluster.Spec.Volume.Iops = aws.Int64(6000)
@@ -400,14 +400,14 @@ func TestDontTouchType(t *testing.T) {
 		Config{
 			OpConfig: config.Config{
 				Resources: config.Resources{
-					ClusterLabels:    map[string]string{"application": "spilo"},
-					ClusterNameLabel: "cluster-name",
+					ClusterLabels:    map[string]string{"application": "cpo"},
+					ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name",
 				},
 				StorageResizeMode:            "mixed",
 				EnableEBSGp3Migration:        false,
 				EnableEBSGp3MigrationMaxSize: 1000,
 			},
-		}, client, acidv1.Postgresql{}, logger, eventRecorder)
+		}, client, cpov1.Postgresql{}, logger, eventRecorder)
 
 	cluster.Spec.Volume.Size = "177Gi"
 

@@ -56,7 +56,7 @@ function set_kind_api_server_ip(){
 }
 
 function generate_certificate(){
-  openssl req -x509 -nodes -newkey rsa:2048 -keyout tls/tls.key -out tls/tls.crt -subj "/CN=acid.zalan.do"
+  openssl req -x509 -nodes -newkey rsa:2048 -keyout tls/tls.key -out tls/tls.crt -subj "/CN=cpo.opensource.cybertec.at"
 }
 
 function run_tests(){

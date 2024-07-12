@@ -1,5 +1,5 @@
 /*
-Copyright 2023 Compose, Zalando SE
+Copyright 2024 Compose, Zalando SE
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,8 @@ import (
 	"fmt"
 	"net/http"
 
-	acidv1 "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/typed/acid.zalan.do/v1"
-	zalandov1 "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/typed/zalando.org/v1"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/typed/cpo.opensource.cybertec.at/v1"
+	zalandov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/typed/zalando.org/v1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"
@@ -37,7 +37,7 @@ import (
 
 type Interface interface {
 	Discovery() discovery.DiscoveryInterface
-	AcidV1() acidv1.AcidV1Interface
+	CpoV1() cpov1.CpoV1Interface
 	ZalandoV1() zalandov1.ZalandoV1Interface
 }
 
@@ -45,13 +45,13 @@ type Interface interface {
 // version included in a Clientset.
 type Clientset struct {
 	*discovery.DiscoveryClient
-	acidV1    *acidv1.AcidV1Client
+	cpoV1     *cpov1.CpoV1Client
 	zalandoV1 *zalandov1.ZalandoV1Client
 }
 
-// AcidV1 retrieves the AcidV1Client
-func (c *Clientset) AcidV1() acidv1.AcidV1Interface {
-	return c.acidV1
+// CpoV1 retrieves the CpoV1Client
+func (c *Clientset) CpoV1() cpov1.CpoV1Interface {
+	return c.cpoV1
 }
 
 // ZalandoV1 retrieves the ZalandoV1Client
@@ -103,7 +103,7 @@ func NewForConfigAndClient(c *rest.Config, httpClient *http.Client) (*Clientset,
 
 	var cs Clientset
 	var err error
-	cs.acidV1, err = acidv1.NewForConfigAndClient(&configShallowCopy, httpClient)
+	cs.cpoV1, err = cpov1.NewForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +132,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 // New creates a new Clientset for the given RESTClient.
 func New(c rest.Interface) *Clientset {
 	var cs Clientset
-	cs.acidV1 = acidv1.New(c)
+	cs.cpoV1 = cpov1.New(c)
 	cs.zalandoV1 = zalandov1.New(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClient(c)

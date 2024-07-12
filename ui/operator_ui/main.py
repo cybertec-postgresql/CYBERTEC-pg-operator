@@ -78,7 +78,7 @@ ACCESS_TOKEN_URL = getenv('ACCESS_TOKEN_URL')
 TOKENINFO_URL = getenv('OAUTH2_TOKEN_INFO_URL')
 
 OPERATOR_API_URL = getenv('OPERATOR_API_URL', 'http://postgres-operator')
-OPERATOR_CLUSTER_NAME_LABEL = getenv('OPERATOR_CLUSTER_NAME_LABEL', 'cluster-name')
+OPERATOR_CLUSTER_NAME_LABEL = getenv('OPERATOR_CLUSTER_NAME_LABEL', 'cluster.cpo.opensource.cybertec.at/name')
 OPERATOR_UI_CONFIG = loads(getenv('OPERATOR_UI_CONFIG', '{}'))
 OPERATOR_UI_MAINTENANCE_CHECK = getenv('OPERATOR_UI_MAINTENANCE_CHECK', '{}')
 READ_ONLY_MODE = getenv('READ_ONLY_MODE', False) in [True, 'true']
@@ -315,7 +315,7 @@ def index():
 
 
 DEFAULT_UI_CONFIG = {
-    'docs_link': 'https://github.com/zalando/postgres-operator',
+    'docs_link': 'https://github.com/cybertec-postgresql/cybertec-pg-operator',
     'odd_host_visible': True,
     'nat_gateways_visible': True,
     'users_visible': True,
@@ -550,7 +550,7 @@ def get_postgresqls():
 
 
 # Note these are meant to be consistent with the operator backend validations;
-# See https://github.com/zalando/postgres-operator/blob/master/pkg/cluster/cluster.go  # noqa
+# See https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/pkg/cluster/cluster.go  # noqa
 VALID_SIZE = compile(r'^[1-9][0-9]{0,3}Gi$')
 VALID_CLUSTER_NAME = compile(r'^[a-z0-9]+[a-z0-9\-]+[a-z0-9]+$')
 VALID_DATABASE_NAME = compile(r'^[a-zA-Z_][a-zA-Z0-9_]*$')

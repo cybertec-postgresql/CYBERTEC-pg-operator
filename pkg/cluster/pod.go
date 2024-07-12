@@ -12,16 +12,29 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	"github.com/zalando/postgres-operator/pkg/spec"
-	"github.com/zalando/postgres-operator/pkg/util"
-	"github.com/zalando/postgres-operator/pkg/util/patroni"
-	"github.com/zalando/postgres-operator/pkg/util/retryutil"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/patroni"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/retryutil"
 )
 
 func (c *Cluster) listPods() ([]v1.Pod, error) {
 	listOptions := metav1.ListOptions{
 		LabelSelector: c.labelsSet(false).String(),
+	}
+
+	pods, err := c.KubeClient.Pods(c.Namespace).List(context.TODO(), listOptions)
+	if err != nil {
+		return nil, fmt.Errorf("could not get list of pods: %v", err)
+	}
+
+	return pods.Items, nil
+}
+
+func (c *Cluster) listPodsOfType(podType PodType) ([]v1.Pod, error) {
+	listOptions := metav1.ListOptions{
+		LabelSelector: c.labelsSetWithType(false, podType).String(),
 	}
 
 	pods, err := c.KubeClient.Pods(c.Namespace).List(context.TODO(), listOptions)
@@ -109,7 +122,7 @@ func (c *Cluster) getRollingUpdateFlagFromPod(pod *v1.Pod) (flag bool) {
 
 func (c *Cluster) deletePods() error {
 	c.logger.Debugln("deleting pods")
-	pods, err := c.listPods()
+	pods, err := c.listPodsOfType(TYPE_POSTGRESQL)
 	if err != nil {
 		return err
 	}
@@ -322,9 +335,9 @@ func (c *Cluster) MigrateReplicaPod(podName spec.NamespacedName, fromNodeName st
 	return nil
 }
 
-func (c *Cluster) getPatroniConfig(pod *v1.Pod) (acidv1.Patroni, map[string]string, error) {
+func (c *Cluster) getPatroniConfig(pod *v1.Pod) (cpov1.Patroni, map[string]string, error) {
 	var (
-		patroniConfig acidv1.Patroni
+		patroniConfig cpov1.Patroni
 		pgParameters  map[string]string
 	)
 	podName := util.NameFromMeta(pod.ObjectMeta)
@@ -341,7 +354,7 @@ func (c *Cluster) getPatroniConfig(pod *v1.Pod) (acidv1.Patroni, map[string]stri
 	)
 
 	if err != nil {
-		return acidv1.Patroni{}, nil, fmt.Errorf("could not get Postgres config from pod %s: %v", podName, err)
+		return cpov1.Patroni{}, nil, fmt.Errorf("could not get Postgres config from pod %s: %v", podName, err)
 	}
 
 	return patroniConfig, pgParameters, nil
@@ -503,7 +516,7 @@ func (c *Cluster) getSwitchoverCandidate(master *v1.Pod) (spec.NamespacedName, e
 	} else {
 		// in asynchronous mode find running replicas
 		for _, member := range members {
-			if PostgresRole(member.Role) != Leader && PostgresRole(member.Role) != StandbyLeader && member.State == "running" {
+			if PostgresRole(member.Role) != Leader && PostgresRole(member.Role) != StandbyLeader && member.State == "streaming" {
 				candidates = append(candidates, member)
 			}
 		}

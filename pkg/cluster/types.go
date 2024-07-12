@@ -3,7 +3,7 @@ package cluster
 import (
 	"time"
 
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	policyv1 "k8s.io/api/policy/v1"
@@ -22,6 +22,10 @@ const (
 	Leader        PostgresRole = "leader"
 	StandbyLeader PostgresRole = "standby_leader"
 	SyncStandby   PostgresRole = "sync_standby"
+
+	// clusterrole for service
+	ClusterPods PostgresRole = "clusterpods"
+
 )
 
 // PodEventType represents the type of a pod-related event
@@ -62,6 +66,7 @@ type ClusterStatus struct {
 	Namespace           string
 	MasterService       *v1.Service
 	ReplicaService      *v1.Service
+	ClusterPodsService	*v1.Service
 	MasterEndpoint      *v1.Endpoints
 	ReplicaEndpoint     *v1.Endpoints
 	StatefulSet         *appsv1.StatefulSet
@@ -69,8 +74,8 @@ type ClusterStatus struct {
 
 	CurrentProcess Process
 	Worker         uint32
-	Status         acidv1.PostgresStatus
-	Spec           acidv1.PostgresSpec
+	Status         cpov1.PostgresStatus
+	Spec           cpov1.PostgresSpec
 	Error          error
 }
 

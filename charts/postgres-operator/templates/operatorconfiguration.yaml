@@ -1,5 +1,5 @@
 {{- if eq .Values.configTarget "OperatorConfigurationCRD" }}
-apiVersion: "acid.zalan.do/v1"
+apiVersion: "cpo.opensource.cybertec.at/v1"
 kind: OperatorConfiguration
 metadata:
   name: {{ template "postgres-operator.fullname" . }}

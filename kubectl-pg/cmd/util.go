@@ -33,7 +33,7 @@ import (
 	"strconv"
 	"strings"
 
-	PostgresqlLister "github.com/zalando/postgres-operator/pkg/generated/clientset/versioned/typed/acid.zalan.do/v1"
+	PostgresqlLister "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/typed/cpo.opensource.cybertec.at/v1"
 	v1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -125,7 +125,7 @@ func getPodName(clusterName string, master bool, replicaNumber string) string {
 			log.Fatal(err)
 		}
 
-		podRole = pod.Labels["spilo-role"]
+		podRole = pod.Labels["member.cpo.opensource.cybertec.at/role"]
 		if podRole == "master" && master {
 			podName = pod.Name
 			fmt.Printf("connected to %s with pod name as %s\n", podRole, podName)

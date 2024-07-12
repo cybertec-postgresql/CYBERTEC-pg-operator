@@ -8,12 +8,12 @@ set -ex
 
 # Install dependencies
 
-apt-get update
-apt-get install -y wget
+# apt-get update
+# apt-get install -y wget
 
 (
     cd /tmp
-    wget -q "https://storage.googleapis.com/golang/go1.19.8.linux-${arch}.tar.gz" -O go.tar.gz
+    wget -q "https://storage.googleapis.com/golang/go1.22.1.linux-${arch}.tar.gz" -O go.tar.gz
     tar -xf go.tar.gz
     mv go /usr/local
     ln -s /usr/local/go/bin/go /usr/bin/go

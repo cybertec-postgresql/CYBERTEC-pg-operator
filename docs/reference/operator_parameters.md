@@ -10,12 +10,12 @@ configuration.
   maps. String values containing ':' should be enclosed in quotes. The
   configuration is flat, parameter group names below are not reflected in the
   configuration structure. There is an
-  [example](https://github.com/zalando/postgres-operator/blob/master/manifests/configmap.yaml)
+  [example](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/configmap.yaml)
 
 * CRD-based configuration. The configuration is stored in a custom YAML
   manifest. The manifest is an instance of the custom resource definition (CRD)
   called `OperatorConfiguration`. The operator registers this CRD during the
-  start and uses it for configuration if the [operator deployment manifest](https://github.com/zalando/postgres-operator/blob/master/manifests/postgres-operator.yaml#L36)
+  start and uses it for configuration if the [operator deployment manifest](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/postgres-operator.yaml#L36)
   sets the `POSTGRES_OPERATOR_CONFIGURATION_OBJECT` env variable to a non-empty
   value. The variable should point to the `postgresql-operator-configuration`
   object in the operator's namespace.
@@ -24,7 +24,7 @@ configuration.
   simply represented in the usual YAML way. There are no default values built-in
   in the operator, each parameter that is not supplied in the configuration
   receives an empty value. In order to create your own configuration just copy
-  the [default one](https://github.com/zalando/postgres-operator/blob/master/manifests/postgresql-operator-default-configuration.yaml)
+  the [default one](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/postgresql-operator-default-configuration.yaml)
   and change it.
 
   To test the CRD-based configuration locally, use the following
@@ -58,11 +58,11 @@ parameters, those parameters have no effect and are replaced by the
 `CRD_READY_WAIT_INTERVAL` and `CRD_READY_WAIT_TIMEOUT` environment variables.
 They will be deprecated and removed in the future.
 
-For the configmap configuration, the [default parameter values](https://github.com/zalando/postgres-operator/blob/master/pkg/util/config/config.go#L14)
+For the configmap configuration, the [default parameter values](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/pkg/util/config/config.go#L14)
 mentioned here are likely to be overwritten in your local operator installation
 via your local version of the operator configmap. In the case you use the
 operator CRD, all the CRD defaults are provided in the
-[operator's default configuration manifest](https://github.com/zalando/postgres-operator/blob/master/manifests/postgresql-operator-default-configuration.yaml)
+[operator's default configuration manifest](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/postgresql-operator-default-configuration.yaml)
 
 Variable names are underscore-separated words.
 
@@ -174,7 +174,7 @@ Those are top-level keys, containing both leaf keys and groups.
   nodes. This affects all containers created by the operator (Postgres,
   connection pooler, logical backup, scalyr sidecar, and other sidecars except
   **sidecars** defined in the operator configuration); to set resources for the
-  operator's own container, change the [operator deployment manually](https://github.com/zalando/postgres-operator/blob/master/manifests/postgres-operator.yaml#L20).
+  operator's own container, change the [operator deployment manually](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/postgres-operator.yaml#L20).
   The default is `false`.
 
 ## Postgres users
@@ -277,7 +277,7 @@ configuration they are grouped under the `kubernetes` key.
   sufficient for the pods to start and for Patroni to access K8s endpoints;
   service account on its own lacks any such rights starting with K8s v1.8. If
   not explicitly defined by the user, a simple definition that binds the
-  account to the 'postgres-pod' [cluster role](https://github.com/zalando/postgres-operator/blob/master/manifests/operator-service-account-rbac.yaml#L198)
+  account to the 'postgres-pod' [cluster role](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/operator-service-account-rbac.yaml#L198)
   will be used. The default is empty.
 
 * **pod_terminate_grace_period**
@@ -387,11 +387,11 @@ configuration they are grouped under the `kubernetes` key.
 
 * **pod_role_label**
   name of the label assigned to the Postgres pods (and services/endpoints) by
-  the operator. The default is `spilo-role`.
+  the operator. The default is `member.cpo.opensource.cybertec.at/role`.
 
 * **cluster_labels**
   list of `name:value` pairs for additional labels assigned to the cluster
-  objects. The default is `application:spilo`.
+  objects. The default is `application:cpo`.
 
 * **inherited_labels**
   list of label keys that can be inherited from the cluster manifest, and
@@ -404,7 +404,7 @@ configuration they are grouped under the `kubernetes` key.
 * **cluster_name_label**
   name of the label assigned to Kubernetes objects created by the operator
   that indicates which cluster a given object belongs to. The default is
-  `cluster-name`.
+  `cluster.cpo.opensource.cybertec.at/name`.
 
 * **node_readiness_label**
   a set of labels that a running and active node should possess to be
@@ -770,7 +770,7 @@ grouped under the `logical_backup` key.
   default values from `postgres_pod_resources` will be used.
 
 * **logical_backup_docker_image**
-  An image for pods of the logical backup job. The [example image](https://github.com/zalando/postgres-operator/blob/master/docker/logical-backup/Dockerfile)
+  An image for pods of the logical backup job. The [example image](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/docker/logical-backup/Dockerfile)
   runs `pg_dumpall` on a replica if possible and uploads compressed results to
   an S3 bucket under the key `/spilo/pg_cluster_name/cluster_k8s_uuid/logical_backups`.
   The default image is the same image built with the Zalando-internal CI

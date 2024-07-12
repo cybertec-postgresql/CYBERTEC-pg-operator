@@ -11,12 +11,12 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/aws/aws-sdk-go/aws"
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	"github.com/zalando/postgres-operator/pkg/spec"
-	"github.com/zalando/postgres-operator/pkg/util"
-	"github.com/zalando/postgres-operator/pkg/util/constants"
-	"github.com/zalando/postgres-operator/pkg/util/filesystems"
-	"github.com/zalando/postgres-operator/pkg/util/volumes"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/filesystems"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/volumes"
 )
 
 func (c *Cluster) syncVolumes() error {
@@ -230,6 +230,7 @@ func (c *Cluster) syncEbsVolumes() error {
 func (c *Cluster) listPersistentVolumeClaims() ([]v1.PersistentVolumeClaim, error) {
 	ns := c.Namespace
 	listOptions := metav1.ListOptions{
+		//LabelSelector: c.labelsSetWithType(false, TYPE_POSTGRESQL).String(),
 		LabelSelector: c.labelsSet(false).String(),
 	}
 
@@ -261,7 +262,32 @@ func (c *Cluster) deletePersistentVolumeClaims() error {
 	return nil
 }
 
-func (c *Cluster) resizeVolumeClaims(newVolume acidv1.Volume) error {
+func (c *Cluster) deleteRepoHostPersistentVolumeClaims() error {
+	c.logger.Debugln("deleting PVCs for the repo-host")
+	pvcs, err := c.KubeClient.PersistentVolumeClaims(c.Namespace).List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		c.logger.Errorf("could not list of PersistentVolumeClaims: %v", err)
+	}
+
+	for _, pvc := range pvcs.Items {
+		if strings.Contains(pvc.Name, c.getPgbackrestRepoHostName()) {
+			c.logger.Debugf("deleting PVC %q", util.NameFromMeta(pvc.ObjectMeta))
+			if err := c.KubeClient.PersistentVolumeClaims(pvc.Namespace).Delete(context.TODO(), pvc.Name, c.deleteOptions); err != nil {
+				c.logger.Warningf("could not delete PersistentVolumeClaim: %v", err)
+			}
+		}
+
+	}
+	if len(pvcs.Items) > 0 {
+		c.logger.Debugln("PVCs have been deleted")
+	} else {
+		c.logger.Debugln("no PVCs to delete")
+	}
+
+	return nil
+}
+
+func (c *Cluster) resizeVolumeClaims(newVolume cpov1.Volume) error {
 	c.logger.Debugln("resizing PVCs")
 	pvcs, err := c.listPersistentVolumeClaims()
 	if err != nil {
@@ -406,7 +432,7 @@ func (c *Cluster) resizeVolumes() error {
 	return nil
 }
 
-func (c *Cluster) volumeClaimsNeedResizing(newVolume acidv1.Volume) (bool, error) {
+func (c *Cluster) volumeClaimsNeedResizing(newVolume cpov1.Volume) (bool, error) {
 	newSize, err := resource.ParseQuantity(newVolume.Size)
 	manifestSize := quantityToGigabyte(newSize)
 	if err != nil {

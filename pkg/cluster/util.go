@@ -18,15 +18,15 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 
+	acidzalando "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at"
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/nicediff"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/retryutil"
 	"github.com/sirupsen/logrus"
-	acidzalando "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do"
-	acidv1 "github.com/zalando/postgres-operator/pkg/apis/acid.zalan.do/v1"
-	"github.com/zalando/postgres-operator/pkg/spec"
-	"github.com/zalando/postgres-operator/pkg/util"
-	"github.com/zalando/postgres-operator/pkg/util/constants"
-	"github.com/zalando/postgres-operator/pkg/util/k8sutil"
-	"github.com/zalando/postgres-operator/pkg/util/nicediff"
-	"github.com/zalando/postgres-operator/pkg/util/retryutil"
 )
 
 // OAuthTokenGetter provides the method for fetching OAuth tokens
@@ -39,6 +39,16 @@ type SecretOauthTokenGetter struct {
 	kubeClient           *k8sutil.KubernetesClient
 	OAuthTokenSecretName spec.NamespacedName
 }
+
+type PodType string
+
+const (
+	TYPE_POSTGRESQL     = PodType("postgresql")
+	TYPE_REPOSITORY     = PodType("repo-host")
+	TYPE_BACKUP_JOB     = PodType("backup-job")
+	TYPE_LOGICAL_BACKUP = PodType("logical-backup")
+	TYPE_POOLER         = PodType("pooler")
+)
 
 func newSecretOauthTokenGetter(kubeClient *k8sutil.KubernetesClient,
 	OAuthTokenSecretName spec.NamespacedName) *SecretOauthTokenGetter {
@@ -356,6 +366,20 @@ func (c *Cluster) waitForPodLabel(podEvents chan PodEvent, stopCh chan struct{},
 	}
 }
 
+func (c *Cluster) waitForPodMasterLabel(podName spec.NamespacedName) error {
+	stopCh := make(chan struct{})
+	ch := c.registerPodSubscriber(podName)
+	defer c.unregisterPodSubscriber(podName)
+	defer close(stopCh)
+
+	role := Master
+	_, err := c.waitForPodLabel(ch, stopCh, &role)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (c *Cluster) waitForPodDeletion(podEvents chan PodEvent) error {
 	timeout := time.After(c.OpConfig.PodDeletionWaitTimeout)
 	for {
@@ -374,7 +398,7 @@ func (c *Cluster) waitStatefulsetReady() error {
 	return retryutil.Retry(c.OpConfig.ResourceCheckInterval, c.OpConfig.ResourceCheckTimeout,
 		func() (bool, error) {
 			listOptions := metav1.ListOptions{
-				LabelSelector: c.labelsSet(false).String(),
+				LabelSelector: c.labelsSetWithType(false, TYPE_POSTGRESQL).String(),
 			}
 			ss, err := c.KubeClient.StatefulSets(c.Namespace).List(context.TODO(), listOptions)
 			if err != nil {
@@ -393,7 +417,7 @@ func (c *Cluster) _waitPodLabelsReady(anyReplica bool) error {
 	var (
 		podsNumber int
 	)
-	ls := c.labelsSet(false)
+	ls := c.labelsSetWithType(false, TYPE_POSTGRESQL)
 	namespace := c.Namespace
 
 	listOptions := metav1.ListOptions{
@@ -478,11 +502,18 @@ func (c *Cluster) waitStatefulsetPodsReady() error {
 // For backward compatibility, shouldAddExtraLabels must be false
 // when listing k8s objects. See operator PR #252
 func (c *Cluster) labelsSet(shouldAddExtraLabels bool) labels.Set {
+	return c.labelsSetWithType(shouldAddExtraLabels, "")
+}
+
+func (c *Cluster) labelsSetWithType(shouldAddExtraLabels bool, typeLabel PodType) labels.Set {
 	lbls := make(map[string]string)
 	for k, v := range c.OpConfig.ClusterLabels {
 		lbls[k] = v
 	}
 	lbls[c.OpConfig.ClusterNameLabel] = c.Name
+	if typeLabel != "" {
+		lbls["member.cpo.opensource.cybertec.at/type"] = string(typeLabel)
+	}
 
 	if shouldAddExtraLabels {
 		// enables filtering resources owned by a team
@@ -505,16 +536,32 @@ func (c *Cluster) labelsSet(shouldAddExtraLabels bool) labels.Set {
 	return labels.Set(lbls)
 }
 
-func (c *Cluster) labelsSelector() *metav1.LabelSelector {
+func (c *Cluster) labelsSelector(typeLabel PodType) *metav1.LabelSelector {
 	return &metav1.LabelSelector{
-		MatchLabels:      c.labelsSet(false),
+		MatchLabels:      c.labelsSetWithType(false, typeLabel),
+		MatchExpressions: nil,
+	}
+}
+
+func (c *Cluster) roleLabelsSelector(role PostgresRole) *metav1.LabelSelector {
+	lbls := c.labelsSetWithType(false, TYPE_POSTGRESQL)
+	lbls[c.OpConfig.PodRoleLabel] = string(role)
+	return &metav1.LabelSelector{
+		MatchLabels:      c.labelsSetWithType(false, TYPE_POSTGRESQL),
 		MatchExpressions: nil,
 	}
 }
 
 func (c *Cluster) roleLabelsSet(shouldAddExtraLabels bool, role PostgresRole) labels.Set {
-	lbls := c.labelsSet(shouldAddExtraLabels)
-	lbls[c.OpConfig.PodRoleLabel] = string(role)
+	// Role labels set is only matching database pods
+	var lbls labels.Set
+	// Ignore PodRoleLabel for Role ClusterPods
+	if role != ClusterPods {
+		lbls = c.labelsSet(shouldAddExtraLabels) //c.labelsSetWithType(shouldAddExtraLabels, TYPE_POSTGRESQL)
+		lbls[c.OpConfig.PodRoleLabel] = string(role)
+	} else {
+		lbls = c.labelsSetWithType(shouldAddExtraLabels, "")
+	}
 	return lbls
 }
 
@@ -528,7 +575,7 @@ func (c *Cluster) dnsName(role PostgresRole) string {
 	}
 
 	// if cluster name starts with teamID we might need to provide backwards compatibility
-	clusterNameWithoutTeamPrefix, _ := acidv1.ExtractClusterName(c.Name, c.Spec.TeamID)
+	clusterNameWithoutTeamPrefix, _ := cpov1.ExtractClusterName(c.Name, c.Spec.TeamID)
 	if clusterNameWithoutTeamPrefix != "" {
 		if role == Master {
 			oldDnsString = c.oldMasterDNSName(clusterNameWithoutTeamPrefix)
@@ -582,14 +629,14 @@ func (c *Cluster) credentialSecretNameForCluster(username string, clusterName st
 	return c.OpConfig.SecretNameTemplate.Format(
 		"username", strings.Replace(username, "_", "-", -1),
 		"cluster", clusterName,
-		"tprkind", acidv1.PostgresCRDResourceKind,
+		"tprkind", cpov1.PostgresCRDResourceKind,
 		"tprgroup", acidzalando.GroupName)
 }
 
-func cloneSpec(from *acidv1.Postgresql) (*acidv1.Postgresql, error) {
+func cloneSpec(from *cpov1.Postgresql) (*cpov1.Postgresql, error) {
 	var (
 		buf    bytes.Buffer
-		result *acidv1.Postgresql
+		result *cpov1.Postgresql
 		err    error
 	)
 	enc := gob.NewEncoder(&buf)
@@ -603,14 +650,14 @@ func cloneSpec(from *acidv1.Postgresql) (*acidv1.Postgresql, error) {
 	return result, nil
 }
 
-func (c *Cluster) setSpec(newSpec *acidv1.Postgresql) {
+func (c *Cluster) setSpec(newSpec *cpov1.Postgresql) {
 	c.specMu.Lock()
 	c.Postgresql = *newSpec
 	c.specMu.Unlock()
 }
 
 // GetSpec returns a copy of the operator-side spec of a Postgres cluster in a thread-safe manner
-func (c *Cluster) GetSpec() (*acidv1.Postgresql, error) {
+func (c *Cluster) GetSpec() (*cpov1.Postgresql, error) {
 	c.specMu.RLock()
 	defer c.specMu.RUnlock()
 	return cloneSpec(&c.Postgresql)
@@ -657,14 +704,14 @@ func trimCronjobName(name string) string {
 	return name
 }
 
-func parseResourceRequirements(resourcesRequirement v1.ResourceRequirements) (acidv1.Resources, error) {
-	var resources acidv1.Resources
+func parseResourceRequirements(resourcesRequirement v1.ResourceRequirements) (cpov1.Resources, error) {
+	var resources cpov1.Resources
 	resourcesJSON, err := json.Marshal(resourcesRequirement)
 	if err != nil {
-		return acidv1.Resources{}, fmt.Errorf("could not marshal K8s resources requirements")
+		return cpov1.Resources{}, fmt.Errorf("could not marshal K8s resources requirements")
 	}
 	if err = json.Unmarshal(resourcesJSON, &resources); err != nil {
-		return acidv1.Resources{}, fmt.Errorf("could not unmarshal K8s resources requirements into acidv1.Resources struct")
+		return cpov1.Resources{}, fmt.Errorf("could not unmarshal K8s resources requirements into cpov1.Resources struct")
 	}
 	return resources, nil
 }

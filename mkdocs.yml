@@ -1,5 +1,5 @@
 site_name: Postgres Operator
-repo_url: https://github.com/zalando/postgres-operator
+repo_url: https://github.com/cybertec-postgresql/cybertec-pg-operator
 theme: readthedocs
 
 nav:

@@ -8,7 +8,7 @@ kubectl get pods -o jsonpath='{.items[].metadata.annotations.zalando-postgres-op
 echo
 echo
 echo 'Pods'
-kubectl get pods -l application=spilo -o wide --all-namespaces
+kubectl get pods -l application=cpo -o wide --all-namespaces
 echo
 kubectl get pods -l application=db-connection-pooler -o wide --all-namespaces
 echo
@@ -25,7 +25,7 @@ kubectl get pods -l name=postgres-operator -o jsonpath='{.items..metadata.annota
 echo
 echo
 echo 'Spilo Image in statefulset'
-kubectl get pods -l application=spilo -o jsonpath='{.items..spec.containers..image}'
+kubectl get pods -l application=cpo -o jsonpath='{.items..spec.containers..image}'
 echo
 echo
 echo 'Queue Status'

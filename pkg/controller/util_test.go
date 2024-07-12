@@ -8,9 +8,9 @@ import (
 	b64 "encoding/base64"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/zalando/postgres-operator/pkg/spec"
-	"github.com/zalando/postgres-operator/pkg/util/config"
-	"github.com/zalando/postgres-operator/pkg/util/k8sutil"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -22,7 +22,7 @@ const (
 
 func newUtilTestController() *Controller {
 	controller := NewController(&spec.ControllerConfig{}, "util-test")
-	controller.opConfig.ClusterNameLabel = "cluster-name"
+	controller.opConfig.ClusterNameLabel = "cluster.cpo.opensource.cybertec.at/name"
 	controller.opConfig.InfrastructureRolesSecretName =
 		spec.NamespacedName{
 			Namespace: v1.NamespaceDefault,

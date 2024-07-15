@@ -13,7 +13,7 @@ set -ex
 
 (
     cd /tmp
-    wget -q "https://storage.googleapis.com/golang/go1.22.1.linux-${arch}.tar.gz" -O go.tar.gz
+    wget -q "https://storage.googleapis.com/golang/go1.22.5.linux-${arch}.tar.gz" -O go.tar.gz
     tar -xf go.tar.gz
     mv go /usr/local
     ln -s /usr/local/go/bin/go /usr/bin/go

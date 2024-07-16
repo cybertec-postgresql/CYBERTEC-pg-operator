@@ -2862,7 +2862,7 @@ func (c *Cluster) getTDESecretName() string {
 
 func (c *Cluster) getMonitoringSecretName() string {
 	return c.OpConfig.SecretNameTemplate.Format(
-		"username", "cpo-exporter",
+		"username", "cpo_exporter",
 		"cluster", c.clusterName().Name,
 		"tprkind", cpov1.PostgresCRDResourceKind,
 		"tprgroup", cpo.GroupName)

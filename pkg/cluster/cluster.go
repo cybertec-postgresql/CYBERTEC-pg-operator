@@ -166,8 +166,8 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec cpov1.Postgresq
 	}
 
 	//Check if monitoring user is added in manifest
-	if _, ok := pgSpec.Spec.Users["cpo-exporter"]; ok {
-		cluster.logger.Error("creating user of name cpo-exporter is not allowed as it is reserved for monitoring")
+	if _, ok := pgSpec.Spec.Users["cpo_exporter"]; ok {
+		cluster.logger.Error("creating user of name cpo_exporter is not allowed as it is reserved for monitoring")
 	}
 	return cluster
 }
@@ -957,8 +957,8 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 		}
 	}
 	//Check if monitoring user is added in manifest
-	if _, ok := newSpec.Spec.Users["cpo-exporter"]; ok {
-		c.logger.Error("creating user of name cpo-exporter is not allowed as it is reserved for monitoring")
+	if _, ok := newSpec.Spec.Users["cpo_exporter"]; ok {
+		c.logger.Error("creating user of name cpo_exporter is not allowed as it is reserved for monitoring")
 	}
 
 	// Users

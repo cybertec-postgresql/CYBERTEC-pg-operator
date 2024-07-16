@@ -1210,8 +1210,8 @@ func (c *Cluster) syncRoles() (err error) {
 	}()
 
 	//Check if monitoring user is added in manifest
-	if _, ok := c.Spec.Users["cpo-exporter"]; ok {
-		c.logger.Error("creating user of name cpo-exporter is not allowed as it is reserved for monitoring")
+	if _, ok := c.Spec.Users["cpo_exporter"]; ok {
+		c.logger.Error("creating user of name cpo_exporter is not allowed as it is reserved for monitoring")
 	}
 
 	// mapping between original role name and with deletion suffix

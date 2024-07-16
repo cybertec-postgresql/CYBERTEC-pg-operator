@@ -1703,7 +1703,7 @@ func (c *Cluster) createMonitoringSecret() error {
 		},
 		Type: v1.SecretTypeOpaque,
 		Data: map[string][]byte{
-			"username": []byte(c.getMonitoringSecretName()),
+			"username": []byte(monitorUsername),
 			"password": []byte(fmt.Sprintf("%x", generatedKey)),
 		},
 	}

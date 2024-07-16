@@ -15,6 +15,7 @@ import (
 
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/retryutil"
 )
@@ -94,6 +95,16 @@ func (c *Cluster) createStatefulSet() (*appsv1.StatefulSet, error) {
 			Env: c.generateMonitoringEnvVars(),
 		}
 		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
+
+		//Add monitoring user
+		flg := cpov1.UserFlags{constants.RoleFlagLogin}
+		if c.Spec.Users != nil {
+			c.Spec.Users[monitorUsername] = flg
+		} else {
+			users := make(map[string]cpov1.UserFlags)
+			c.Spec.Users = users
+			c.Spec.Users[monitorUsername] = flg
+		}
 	}
 
 	statefulSetSpec, err := c.generateStatefulSet(&c.Spec)

@@ -1,0 +1,8 @@
+@@ -32,6 +32,7 @@
+ 	GetMemberData(server *v1.Pod) (MemberData, error)
+ 	Restart(server *v1.Pod) error
+ 	GetConfig(server *v1.Pod) (map[string]interface{}, error)
++	SetConfig(server *v1.Pod, config map[string]interface{}) error
+ }
+ 
+ // Patroni API client

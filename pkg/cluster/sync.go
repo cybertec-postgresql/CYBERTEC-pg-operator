@@ -192,6 +192,11 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		return fmt.Errorf("error refreshing restore configmap: %v", err)
 	}
 
+	// sync monitoring
+	if err = c.syncMonitoringSecret(&oldSpec, newSpec); err != nil {
+		return fmt.Errorf("could not sync monitoring: %v", err)
+	}
+
 	if err = c.initUsers(); err != nil {
 		err = fmt.Errorf("could not init users: %v", err)
 		return err
@@ -280,11 +285,6 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	// sync connection pooler
 	if _, err = c.syncConnectionPooler(&oldSpec, newSpec, c.installLookupFunction); err != nil {
 		return fmt.Errorf("could not sync connection pooler: %v", err)
-	}
-
-	// sync monitoring
-	if err = c.syncMonitoringSecret(&oldSpec, newSpec); err != nil {
-		return fmt.Errorf("could not sync monitoring: %v", err)
 	}
 
 	if len(c.Spec.Streams) > 0 {
@@ -1754,6 +1754,15 @@ func (c *Cluster) syncMonitoringSecret(oldSpec, newSpec *cpov1.Postgresql) error
 		// Create monitoring secret
 		if err := c.createMonitoringSecret(); err != nil {
 			return fmt.Errorf("could not create the monitoring secret: %v", err)
+		} else {
+			flg := cpov1.UserFlags{constants.RoleFlagLogin}
+			if newSpec.Spec.Users != nil {
+				newSpec.Spec.Users[monitorUsername] = flg
+			} else {
+				users := make(map[string]cpov1.UserFlags)
+				newSpec.Spec.Users = users
+				newSpec.Spec.Users[monitorUsername] = flg
+			}
 		}
 		c.logger.Info("monitoring secret was successfully created")
 	} else if newSpec.Spec.Monitoring == nil && oldSpec.Spec.Monitoring != nil {

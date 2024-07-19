@@ -354,7 +354,6 @@ func (c *Cluster) Create() (err error) {
 		c.logger.Info("a TDE secret was successfully created")
 	}
 	if c.Postgresql.Spec.Monitoring != nil {
-		c.logger.Infof("Spec.Users are %s", c.Spec.Users)
 		if err := c.createMonitoringSecret(); err != nil {
 			return fmt.Errorf("could not create the monitoring secret: %v", err)
 		}
@@ -947,14 +946,16 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	}
 	//Add monitoring user if required
 	if newSpec.Spec.Monitoring != nil {
-		flg := cpov1.UserFlags{constants.RoleFlagLogin}
-		if newSpec.Spec.Users != nil {
-			newSpec.Spec.Users[monitorUsername] = flg
-		} else {
-			users := make(map[string]cpov1.UserFlags)
-			newSpec.Spec.Users = users
-			newSpec.Spec.Users[monitorUsername] = flg
+		flags := []string{constants.RoleFlagLogin}
+		monitorUser := map[string]spec.PgUser{
+			monitorUsername: {
+				Origin:    spec.RoleOriginInfrastructure,
+				Name:      monitorUsername,
+				Namespace: c.Namespace,
+				Flags:     flags,
+			},
 		}
+		c.pgUsers[monitorUsername] = monitorUser[monitorUsername]
 	}
 	//Check if monitoring user is added in manifest
 	if _, ok := newSpec.Spec.Users["cpo-exporter"]; ok {
@@ -1013,7 +1014,9 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	}
 
 	//sync sts when there is a change in the pgbackrest secret, since we need to mount this
-	if !reflect.DeepEqual(oldSpec.Spec.Backup.Pgbackrest.Configuration, newSpec.Spec.Backup.Pgbackrest.Configuration) {
+	if newSpec.Spec.Backup != nil && oldSpec.Spec.Backup != nil &&
+		newSpec.Spec.Backup.Pgbackrest != nil && oldSpec.Spec.Backup.Pgbackrest != nil &&
+		!reflect.DeepEqual(oldSpec.Spec.Backup.Pgbackrest.Configuration, newSpec.Spec.Backup.Pgbackrest.Configuration) {
 		syncStatefulSet = true
 	}
 

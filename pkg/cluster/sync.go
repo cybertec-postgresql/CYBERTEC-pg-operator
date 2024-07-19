@@ -521,16 +521,6 @@ func (c *Cluster) syncStatefulSet() error {
 			Env: c.generateMonitoringEnvVars(),
 		}
 		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
-
-		//Add monitoring user
-		flg := cpov1.UserFlags{constants.RoleFlagLogin}
-		if c.Spec.Users != nil {
-			c.Spec.Users[monitorUsername] = flg
-		} else {
-			users := make(map[string]cpov1.UserFlags)
-			c.Spec.Users = users
-			c.Spec.Users[monitorUsername] = flg
-		}
 	}
 	// NB: Be careful to consider the codepath that acts on podsRollingUpdateRequired before returning early.
 	sset, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.statefulSetName(), metav1.GetOptions{})
@@ -1276,6 +1266,9 @@ DBUSERS:
 				continue DBUSERS
 			}
 		}
+		if dbUser.Name == monitorUsername && dbUser.Deleted {
+			delete(dbUsers, dbUser.Name)
+		}
 
 		// update pgUsers where a deleted role was found
 		// so that they are skipped in ProduceSyncRequests
@@ -1744,8 +1737,6 @@ func (c *Cluster) deleteMonitoringSecret() (err error) {
 // 1. Update sts to in/exclude the exporter contianer
 // 2. Add/Delete the respective user
 // 3. Add/Delete the respective secret
-// Point 1 and 2 are taken care in Update func, so we only need to take care
-// Point 3 here.
 func (c *Cluster) syncMonitoringSecret(oldSpec, newSpec *cpov1.Postgresql) error {
 	c.logger.Info("syncing Monitoring secret")
 	c.setProcessName("syncing Monitoring secret")
@@ -1755,20 +1746,27 @@ func (c *Cluster) syncMonitoringSecret(oldSpec, newSpec *cpov1.Postgresql) error
 		if err := c.createMonitoringSecret(); err != nil {
 			return fmt.Errorf("could not create the monitoring secret: %v", err)
 		} else {
-			flg := cpov1.UserFlags{constants.RoleFlagLogin}
-			if newSpec.Spec.Users != nil {
-				newSpec.Spec.Users[monitorUsername] = flg
-			} else {
-				users := make(map[string]cpov1.UserFlags)
-				newSpec.Spec.Users = users
-				newSpec.Spec.Users[monitorUsername] = flg
+			flags := []string{constants.RoleFlagLogin}
+			monitorUser := map[string]spec.PgUser{
+				monitorUsername: {
+					Origin:    spec.RoleOriginInfrastructure,
+					Name:      monitorUsername,
+					Namespace: c.Namespace,
+					Flags:     flags,
+				},
 			}
+			c.pgUsers[monitorUsername] = monitorUser[monitorUsername]
 		}
 		c.logger.Info("monitoring secret was successfully created")
 	} else if newSpec.Spec.Monitoring == nil && oldSpec.Spec.Monitoring != nil {
 		// Delete the monitoring secret
 		if err := c.deleteMonitoringSecret(); err != nil {
 			return fmt.Errorf("could not delete the monitoring secret: %v", err)
+		} else {
+			// Delete the monitoring user
+			monitorUser := c.pgUsers[monitorUsername]
+			monitorUser.Deleted = true
+			c.pgUsers[monitorUsername] = monitorUser
 		}
 		c.logger.Info("monitoring secret was successfully deleted")
 	}

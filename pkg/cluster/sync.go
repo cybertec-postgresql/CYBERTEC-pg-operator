@@ -192,6 +192,11 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		return fmt.Errorf("error refreshing restore configmap: %v", err)
 	}
 
+	// sync monitoring
+	if err = c.syncMonitoringSecret(&oldSpec, newSpec); err != nil {
+		return fmt.Errorf("could not sync monitoring: %v", err)
+	}
+
 	if err = c.initUsers(); err != nil {
 		err = fmt.Errorf("could not init users: %v", err)
 		return err
@@ -280,11 +285,6 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	// sync connection pooler
 	if _, err = c.syncConnectionPooler(&oldSpec, newSpec, c.installLookupFunction); err != nil {
 		return fmt.Errorf("could not sync connection pooler: %v", err)
-	}
-
-	// sync monitoring
-	if err = c.syncMonitoringSecret(&oldSpec, newSpec); err != nil {
-		return fmt.Errorf("could not sync monitoring: %v", err)
 	}
 
 	if len(c.Spec.Streams) > 0 {
@@ -1266,6 +1266,9 @@ DBUSERS:
 				continue DBUSERS
 			}
 		}
+		if dbUser.Name == monitorUsername && dbUser.Deleted {
+			delete(dbUsers, dbUser.Name)
+		}
 
 		// update pgUsers where a deleted role was found
 		// so that they are skipped in ProduceSyncRequests
@@ -1693,7 +1696,7 @@ func (c *Cluster) createMonitoringSecret() error {
 		},
 		Type: v1.SecretTypeOpaque,
 		Data: map[string][]byte{
-			"username": []byte(c.getMonitoringSecretName()),
+			"username": []byte(monitorUsername),
 			"password": []byte(fmt.Sprintf("%x", generatedKey)),
 		},
 	}
@@ -1734,8 +1737,6 @@ func (c *Cluster) deleteMonitoringSecret() (err error) {
 // 1. Update sts to in/exclude the exporter contianer
 // 2. Add/Delete the respective user
 // 3. Add/Delete the respective secret
-// Point 1 and 2 are taken care in Update func, so we only need to take care
-// Point 3 here.
 func (c *Cluster) syncMonitoringSecret(oldSpec, newSpec *cpov1.Postgresql) error {
 	c.logger.Info("syncing Monitoring secret")
 	c.setProcessName("syncing Monitoring secret")
@@ -1744,12 +1745,28 @@ func (c *Cluster) syncMonitoringSecret(oldSpec, newSpec *cpov1.Postgresql) error
 		// Create monitoring secret
 		if err := c.createMonitoringSecret(); err != nil {
 			return fmt.Errorf("could not create the monitoring secret: %v", err)
+		} else {
+			flags := []string{constants.RoleFlagLogin}
+			monitorUser := map[string]spec.PgUser{
+				monitorUsername: {
+					Origin:    spec.RoleOriginInfrastructure,
+					Name:      monitorUsername,
+					Namespace: c.Namespace,
+					Flags:     flags,
+				},
+			}
+			c.pgUsers[monitorUsername] = monitorUser[monitorUsername]
 		}
 		c.logger.Info("monitoring secret was successfully created")
 	} else if newSpec.Spec.Monitoring == nil && oldSpec.Spec.Monitoring != nil {
 		// Delete the monitoring secret
 		if err := c.deleteMonitoringSecret(); err != nil {
 			return fmt.Errorf("could not delete the monitoring secret: %v", err)
+		} else {
+			// Delete the monitoring user
+			monitorUser := c.pgUsers[monitorUsername]
+			monitorUser.Deleted = true
+			c.pgUsers[monitorUsername] = monitorUser
 		}
 		c.logger.Info("monitoring secret was successfully deleted")
 	}

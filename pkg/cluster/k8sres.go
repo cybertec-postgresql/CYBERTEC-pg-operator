@@ -2961,7 +2961,9 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 				} else {
 					config += fmt.Sprintf("\n%s-%s-bucket = %s", repo.Name, repo.Storage, repo.Resource)
 					config += fmt.Sprintf("\n%s-%s-endpoint = %s", repo.Name, repo.Storage, repo.Endpoint)
-					config += fmt.Sprintf("\n%s-%s-region = %s", repo.Name, repo.Storage, repo.Region)
+					if repo.Storage != "gcs" {
+						config += fmt.Sprintf("\n%s-%s-region = %s", repo.Name, repo.Storage, repo.Region)
+					}
 					config += fmt.Sprintf("\n%s-type = %s", repo.Name, repo.Storage)
 				}
 			}

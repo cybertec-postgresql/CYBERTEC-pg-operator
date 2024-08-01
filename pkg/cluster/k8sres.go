@@ -2950,7 +2950,8 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 
 		if len(repos) >= 1 {
 			for i, repo := range repos {
-				if repo.Storage == "pvc" {
+				switch repo.Storage {
+				case "pvc":
 					c.logger.Debugf("DEBUG_OUTPUT %s %s", c.clusterName().Name, c.Namespace)
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.clusterName().Name + "-pgbackrest-repo-host-0." + c.serviceName(ClusterPods) + "." + c.Namespace + ".svc." + c.OpConfig.ClusterDomain
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /etc/pgbackrest/certs/pgbackrest.ca-roots"
@@ -2958,16 +2959,30 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-key-file = /etc/pgbackrest/certs/pgbackrest-client.key"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-type = tls"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-user = postgres"
-				} else {
+
+				case "s3":
 					config += fmt.Sprintf("\n%s-%s-bucket = %s", repo.Name, repo.Storage, repo.Resource)
 					config += fmt.Sprintf("\n%s-%s-endpoint = %s", repo.Name, repo.Storage, repo.Endpoint)
-					// https://github.com/cybertec-postgresql/CYBERTEC-pg-container/issues/50
-					// P00   WARN: configuration file contains invalid option 'repo1-gcs-region'
-					if repo.Storage != "gcs" {
-						config += fmt.Sprintf("\n%s-%s-region = %s", repo.Name, repo.Storage, repo.Region)
-					}
+					config += fmt.Sprintf("\n%s-%s-region = %s", repo.Name, repo.Storage, repo.Region)
 					config += fmt.Sprintf("\n%s-type = %s", repo.Name, repo.Storage)
+
+				case "gcs":
+					config += fmt.Sprintf("\n%s-%s-bucket = %s", repo.Name, repo.Storage, repo.Resource)
+					config += fmt.Sprintf("\n%s-%s-project-id = %s", repo.Name, repo.Storage, repo.ProjectId)
+					config += fmt.Sprintf("\n%s-%s-key = %s", repo.Name, repo.Storage, repo.Key)
+					config += fmt.Sprintf("\n%s-%s-key-typ = %s", repo.Name, repo.Storage, repo.KeyType)
+					config += fmt.Sprintf("\n%s-type = %s", repo.Name, repo.Storage)
+
+				case "azure":
+					config += fmt.Sprintf("\n%s-%s-container = %s", repo.Name, repo.Storage, repo.Resource)
+					config += fmt.Sprintf("\n%s-%s-endpoint = %s", repo.Name, repo.Storage, repo.Endpoint)
+					config += fmt.Sprintf("\n%s-%s-key = %s", repo.Name, repo.Storage, repo.Key)
+					config += fmt.Sprintf("\n%s-%s-account = %s", repo.Name, repo.Storage, repo.Account)
+
+					config += fmt.Sprintf("\n%s-type = %s", repo.Name, repo.Storage)
+				default:
 				}
+
 			}
 		}
 	}

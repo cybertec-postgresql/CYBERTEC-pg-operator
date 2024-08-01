@@ -2935,11 +2935,7 @@ func ensurePath(file string, defaultDir string, defaultFile string) string {
 func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 	config := "[db]\npg1-path = /home/postgres/pgdata/pgroot/data\npg1-port = 5432\npg1-socket-path = /var/run/postgresql/\n"
 	config += "\n[global]\nlog-path = /home/postgres/pgdata/pgbackrest/log\nspool-path = /home/postgres/pgdata/pgbackrest/spool-path"
-	config += "\ntls-server-address=*"
-	config += "\ntls-server-ca-file = /etc/pgbackrest/certs/pgbackrest.ca-roots"
-	config += "\ntls-server-cert-file = /etc/pgbackrest/certs/pgbackrest-client.crt"
-	config += "\ntls-server-key-file = /etc/pgbackrest/certs/pgbackrest-client.key"
-	config += "\ntls-server-auth = " + c.clientCommonName() + "=*"
+
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 		if global := c.Postgresql.Spec.Backup.Pgbackrest.Global; global != nil {
 			for k, v := range global {
@@ -2953,6 +2949,11 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 				switch repo.Storage {
 				case "pvc":
 					c.logger.Debugf("DEBUG_OUTPUT %s %s", c.clusterName().Name, c.Namespace)
+					config += "\ntls-server-address=*"
+					config += "\ntls-server-ca-file = /etc/pgbackrest/certs/pgbackrest.ca-roots"
+					config += "\ntls-server-cert-file = /etc/pgbackrest/certs/pgbackrest-client.crt"
+					config += "\ntls-server-key-file = /etc/pgbackrest/certs/pgbackrest-client.key"
+					config += "\ntls-server-auth = " + c.clientCommonName() + "=*"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host = " + c.clusterName().Name + "-pgbackrest-repo-host-0." + c.serviceName(ClusterPods) + "." + c.Namespace + ".svc." + c.OpConfig.ClusterDomain
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-ca-file = /etc/pgbackrest/certs/pgbackrest.ca-roots"
 					config += "\nrepo" + fmt.Sprintf("%d", i+1) + "-host-cert-file = /etc/pgbackrest/certs/pgbackrest-client.crt"
@@ -2968,9 +2969,8 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 
 				case "gcs":
 					config += fmt.Sprintf("\n%s-%s-bucket = %s", repo.Name, repo.Storage, repo.Resource)
-					config += fmt.Sprintf("\n%s-%s-project-id = %s", repo.Name, repo.Storage, repo.ProjectId)
 					config += fmt.Sprintf("\n%s-%s-key = %s", repo.Name, repo.Storage, repo.Key)
-					config += fmt.Sprintf("\n%s-%s-key-typ = %s", repo.Name, repo.Storage, repo.KeyType)
+					config += fmt.Sprintf("\n%s-%s-key-type = %s", repo.Name, repo.Storage, repo.KeyType)
 					config += fmt.Sprintf("\n%s-type = %s", repo.Name, repo.Storage)
 
 				case "azure":

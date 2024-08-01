@@ -1186,9 +1186,6 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 													"region": {
 														Type: "string",
 													},
-													"projectId": {
-														Type: "string",
-													},
 													"account": {
 														Type: "string",
 													},

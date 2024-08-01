@@ -283,17 +283,16 @@ type Pgbackrest struct {
 }
 
 type Repo struct {
-	Name      string            `json:"name"`
-	Storage   string            `json:"storage"`
-	Resource  string            `json:"resource"`
-	Endpoint  string            `json:"endpoint"`
-	Region    string            `json:"region"`
-	ProjectId string            `json:"projectId"`
-	Account   string            `json:"account"`
-	Key       string            `json:"key"`
-	KeyType   string            `json:"keyType"`
-	Schedule  map[string]string `json:"schedule"`
-	Volume    `json:"volume,omitempty"`
+	Name     string            `json:"name"`
+	Storage  string            `json:"storage"`
+	Resource string            `json:"resource"`
+	Endpoint string            `json:"endpoint"`
+	Region   string            `json:"region"`
+	Account  string            `json:"account"`
+	Key      string            `json:"key"`
+	KeyType  string            `json:"keyType"`
+	Schedule map[string]string `json:"schedule"`
+	Volume   `json:"volume,omitempty"`
 }
 
 type Restore struct {

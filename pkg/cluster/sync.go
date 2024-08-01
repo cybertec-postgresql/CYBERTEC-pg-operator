@@ -230,6 +230,11 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		}
 	}
 
+	// sync WAL PVC
+	if !reflect.DeepEqual(oldSpec.Spec.WalPvc, newSpec.Spec.WalPvc) {
+		c.syncWalPvc(&oldSpec, newSpec)
+	}
+
 	c.logger.Debug("syncing statefulsets")
 	if err = c.syncStatefulSet(); err != nil {
 		if !k8sutil.ResourceAlreadyExists(err) {
@@ -1754,6 +1759,37 @@ func (c *Cluster) syncMonitoringSecret(oldSpec, newSpec *cpov1.Postgresql) error
 		c.logger.Info("monitoring secret was successfully deleted")
 	}
 	return nil
+}
+
+func (c *Cluster) syncWalPvc(oldSpec, newSpec *cpov1.Postgresql) {
+	if oldSpec.Spec.WalPvc != nil && newSpec.Spec.WalPvc == nil {
+		// if the wal_pvc is removed, then
+		// 1. Change env-vars
+		// 2. Remove the PVC
+		pvcs, err := c.listPersistentVolumeClaims()
+		if err != nil {
+			c.logger.Error("Could not list PVCs")
+		} else {
+			for _, pvc := range pvcs {
+				if strings.Contains(pvc.Name, oldSpec.Spec.WalPvc.WalDir) {
+					c.logger.Debugf("deleting WAL-PVC %q", util.NameFromMeta(pvc.ObjectMeta))
+					if err := c.KubeClient.PersistentVolumeClaims(pvc.Namespace).Delete(context.TODO(), pvc.Name, c.deleteOptions); err != nil {
+						c.logger.Warningf("could not delete WAL PVC: %v", err)
+					}
+				}
+			}
+			containers := c.Statefulset.Spec.Template.Spec.Containers
+			for _, con := range containers {
+				con.Env = append(con.Env, v1.EnvVar{Name: "WALDIR", Value: ""})
+				con.Env = append(con.Env, v1.EnvVar{Name: "OLD_WALDIR", Value: oldSpec.Spec.WalPvc.WalDir})
+			}
+		}
+
+	} else if oldSpec.Spec.WalPvc == nil && newSpec.Spec.WalPvc != nil {
+		// if the wal_pvc is added, then
+		// 1. Create the PVC
+		// 2. Change env-vars
+	}
 }
 
 func generateRootCertificate(

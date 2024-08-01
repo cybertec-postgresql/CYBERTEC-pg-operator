@@ -1014,6 +1014,7 @@ func (c *Cluster) generateSpiloPodEnvVars(
 	}
 	if spec.WalPvc != nil {
 		envVars = append(envVars, v1.EnvVar{Name: "WALDIR", Value: spec.WalPvc.WalDir})
+		envVars = append(envVars, v1.EnvVar{Name: "OLD_WALDIR", Value: ""})
 	}
 
 	if c.OpConfig.EnablePgVersionEnvVar {
@@ -1616,7 +1617,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			Selector:                             c.labelsSelector(TYPE_POSTGRESQL),
 			ServiceName:                          c.serviceName(Master),
 			Template:                             *podTemplate,
-			VolumeClaimTemplates:                 final_vols, //[]v1.PersistentVolumeClaim{*volumeClaimTemplate, *WalPvcClaim},
+			VolumeClaimTemplates:                 final_vols,
 			UpdateStrategy:                       updateStrategy,
 			PodManagementPolicy:                  podManagementPolicy,
 			PersistentVolumeClaimRetentionPolicy: &persistentVolumeClaimRetentionPolicy,

@@ -2961,7 +2961,11 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 				} else {
 					config += fmt.Sprintf("\n%s-%s-bucket = %s", repo.Name, repo.Storage, repo.Resource)
 					config += fmt.Sprintf("\n%s-%s-endpoint = %s", repo.Name, repo.Storage, repo.Endpoint)
-					config += fmt.Sprintf("\n%s-%s-region = %s", repo.Name, repo.Storage, repo.Region)
+					// https://github.com/cybertec-postgresql/CYBERTEC-pg-container/issues/50
+					// P00   WARN: configuration file contains invalid option 'repo1-gcs-region'
+					if repo.Storage != "gcs" {
+						config += fmt.Sprintf("\n%s-%s-region = %s", repo.Name, repo.Storage, repo.Region)
+					}
 					config += fmt.Sprintf("\n%s-type = %s", repo.Name, repo.Storage)
 				}
 			}

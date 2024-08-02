@@ -1354,6 +1354,9 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							"waldir": {
 								Type: "string",
 							},
+							"oldwaldir": {
+								Type: "string",
+							},
 							"walvolume": {
 								Type:     "object",
 								Required: []string{"size"},

@@ -218,7 +218,7 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		return err
 	}
 
-	// sync volume may already transition volumes to gp3, if iops/throughput or type is specified
+	//sync volume may already transition volumes to gp3, if iops/throughput or type is specified
 	if err = c.syncVolumes(); err != nil {
 		return err
 	}
@@ -228,11 +228,6 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		if nil != err {
 			return err
 		}
-	}
-
-	// sync WAL PVC
-	if !reflect.DeepEqual(oldSpec.Spec.WalPvc, newSpec.Spec.WalPvc) {
-		c.syncWalPvc(&oldSpec, newSpec)
 	}
 
 	c.logger.Debug("syncing statefulsets")
@@ -290,6 +285,10 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	// sync monitoring
 	if err = c.syncMonitoringSecret(&oldSpec, newSpec); err != nil {
 		return fmt.Errorf("could not sync monitoring: %v", err)
+	}
+
+	if err = c.syncWalPvc(&oldSpec, newSpec); err != nil {
+		return fmt.Errorf("could not sync WAL-PVC: %v", err)
 	}
 
 	if len(c.Spec.Streams) > 0 {
@@ -1761,35 +1760,43 @@ func (c *Cluster) syncMonitoringSecret(oldSpec, newSpec *cpov1.Postgresql) error
 	return nil
 }
 
-func (c *Cluster) syncWalPvc(oldSpec, newSpec *cpov1.Postgresql) {
-	if oldSpec.Spec.WalPvc != nil && newSpec.Spec.WalPvc == nil {
+func (c *Cluster) syncWalPvc(oldSpec, newSpec *cpov1.Postgresql) error {
+	c.logger.Info("syncing PVC for WAL with Spec")
+	c.setProcessName("syncing PVC for WAL")
+
+	if newSpec.Spec.WalPvc == nil && oldSpec.Spec.WalPvc != nil {
 		// if the wal_pvc is removed, then
 		// 1. Change env-vars
 		// 2. Remove the PVC
+		// 3. Remember the old dir name
 		pvcs, err := c.listPersistentVolumeClaims()
 		if err != nil {
-			c.logger.Error("Could not list PVCs")
+			return fmt.Errorf("Could not list PVCs")
 		} else {
 			for _, pvc := range pvcs {
+				c.logger.Infof("Current PVC name is %v", pvc.Name)
 				if strings.Contains(pvc.Name, oldSpec.Spec.WalPvc.WalDir) {
-					c.logger.Debugf("deleting WAL-PVC %q", util.NameFromMeta(pvc.ObjectMeta))
+					c.logger.Infof("deleting WAL-PVC %q", util.NameFromMeta(pvc.ObjectMeta))
 					if err := c.KubeClient.PersistentVolumeClaims(pvc.Namespace).Delete(context.TODO(), pvc.Name, c.deleteOptions); err != nil {
-						c.logger.Warningf("could not delete WAL PVC: %v", err)
+						return fmt.Errorf("could not delete WAL PVC: %v", err)
 					}
 				}
 			}
 			containers := c.Statefulset.Spec.Template.Spec.Containers
 			for _, con := range containers {
+				c.logger.Infof("changing env-vars for wal pvc %v", con)
 				con.Env = append(con.Env, v1.EnvVar{Name: "WALDIR", Value: ""})
 				con.Env = append(con.Env, v1.EnvVar{Name: "OLD_WALDIR", Value: oldSpec.Spec.WalPvc.WalDir})
+				c.logger.Infof("changed env-vars for wal pvc %v", con.Env)
 			}
 		}
-
-	} else if oldSpec.Spec.WalPvc == nil && newSpec.Spec.WalPvc != nil {
-		// if the wal_pvc is added, then
-		// 1. Create the PVC
-		// 2. Change env-vars
+		c.Spec.WalPvc = &cpov1.PVCVolume{
+			OldWalDir: oldSpec.Spec.WalPvc.WalDir,
+			WalVolume: cpov1.Volume{},
+			WalDir:    "",
+		}
 	}
+	return nil
 }
 
 func generateRootCertificate(

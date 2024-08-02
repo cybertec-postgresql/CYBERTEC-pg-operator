@@ -102,6 +102,7 @@ type PostgresSpec struct {
 type PVCVolume struct {
 	WalVolume Volume `json:"walvolume,omitempty"`
 	WalDir    string `json:"waldir,omitempty"`
+	OldWalDir string `json:"oldwaldir,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

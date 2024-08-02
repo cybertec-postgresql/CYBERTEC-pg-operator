@@ -2969,7 +2969,7 @@ func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 
 				case "gcs":
 					config += fmt.Sprintf("\n%s-%s-bucket = %s", repo.Name, repo.Storage, repo.Resource)
-					config += fmt.Sprintf("\n%s-%s-key = %s", repo.Name, repo.Storage, repo.Key)
+					config += fmt.Sprintf("\n%s-%s-key = /etc/pgbackrest/conf.d/%s", repo.Name, repo.Storage, repo.Key)
 					config += fmt.Sprintf("\n%s-%s-key-type = %s", repo.Name, repo.Storage, repo.KeyType)
 					config += fmt.Sprintf("\n%s-type = %s", repo.Name, repo.Storage)
 

@@ -1761,7 +1761,7 @@ func (c *Cluster) syncMonitoringSecret(oldSpec, newSpec *cpov1.Postgresql) error
 }
 
 func (c *Cluster) syncWalPvc(oldSpec, newSpec *cpov1.Postgresql) error {
-	c.logger.Info("syncing PVC for WAL with Spec")
+	c.logger.Info("syncing PVC for WAL")
 	c.setProcessName("syncing PVC for WAL")
 
 	if newSpec.Spec.WalPvc == nil && oldSpec.Spec.WalPvc != nil {
@@ -1774,8 +1774,7 @@ func (c *Cluster) syncWalPvc(oldSpec, newSpec *cpov1.Postgresql) error {
 			return fmt.Errorf("Could not list PVCs")
 		} else {
 			for _, pvc := range pvcs {
-				c.logger.Infof("Current PVC name is %v", pvc.Name)
-				if strings.Contains(pvc.Name, oldSpec.Spec.WalPvc.WalDir) {
+				if strings.Contains(pvc.Name, getWALPVCName(c.Spec.ClusterName)) {
 					c.logger.Infof("deleting WAL-PVC %q", util.NameFromMeta(pvc.ObjectMeta))
 					if err := c.KubeClient.PersistentVolumeClaims(pvc.Namespace).Delete(context.TODO(), pvc.Name, c.deleteOptions); err != nil {
 						return fmt.Errorf("could not delete WAL PVC: %v", err)
@@ -1784,16 +1783,9 @@ func (c *Cluster) syncWalPvc(oldSpec, newSpec *cpov1.Postgresql) error {
 			}
 			containers := c.Statefulset.Spec.Template.Spec.Containers
 			for _, con := range containers {
-				c.logger.Infof("changing env-vars for wal pvc %v", con)
-				con.Env = append(con.Env, v1.EnvVar{Name: "WALDIR", Value: ""})
-				con.Env = append(con.Env, v1.EnvVar{Name: "OLD_WALDIR", Value: oldSpec.Spec.WalPvc.WalDir})
-				c.logger.Infof("changed env-vars for wal pvc %v", con.Env)
+				con.Env = append(con.Env, v1.EnvVar{Name: "WALDIR", Value: constants.PostgresWalMount})
+				con.Env = append(con.Env, v1.EnvVar{Name: "OLD_WALDIR", Value: constants.PostgresPVCWalMount})
 			}
-		}
-		c.Spec.WalPvc = &cpov1.PVCVolume{
-			OldWalDir: oldSpec.Spec.WalPvc.WalDir,
-			WalVolume: cpov1.Volume{},
-			WalDir:    "",
 		}
 	}
 	return nil

@@ -1088,11 +1088,7 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 		}
 		if oldSpec.Spec.WalPvc != nil {
 			//if pvc wal is removed then carry the relevant env vars to the new sts
-			c.Spec.WalPvc = &cpov1.PVCVolume{
-				OldWalDir: oldSpec.Spec.WalPvc.WalDir,
-				WalVolume: cpov1.Volume{},
-				WalDir:    "",
-			}
+
 		}
 
 		if c.restoreInProgress() {

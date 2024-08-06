@@ -1349,83 +1349,71 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 					},
 					"walPvc": {
 						Type:     "object",
-						Nullable: true,
+						Required: []string{"size"},
 						Properties: map[string]apiextv1.JSONSchemaProps{
-							"waldir": {
-								Type: "string",
+							"iops": {
+								Type: "integer",
 							},
-							"oldwaldir": {
-								Type: "string",
-							},
-							"walvolume": {
-								Type:     "object",
-								Required: []string{"size"},
+							"selector": {
+								Type: "object",
 								Properties: map[string]apiextv1.JSONSchemaProps{
-									"iops": {
-										Type: "integer",
-									},
-									"selector": {
-										Type: "object",
-										Properties: map[string]apiextv1.JSONSchemaProps{
-											"matchExpressions": {
-												Type: "array",
-												Items: &apiextv1.JSONSchemaPropsOrArray{
-													Schema: &apiextv1.JSONSchemaProps{
-														Type:     "object",
-														Required: []string{"key", "operator"},
-														Properties: map[string]apiextv1.JSONSchemaProps{
-															"key": {
-																Type: "string",
+									"matchExpressions": {
+										Type: "array",
+										Items: &apiextv1.JSONSchemaPropsOrArray{
+											Schema: &apiextv1.JSONSchemaProps{
+												Type:     "object",
+												Required: []string{"key", "operator"},
+												Properties: map[string]apiextv1.JSONSchemaProps{
+													"key": {
+														Type: "string",
+													},
+													"operator": {
+														Type: "string",
+														Enum: []apiextv1.JSON{
+															{
+																Raw: []byte(`"DoesNotExist"`),
 															},
-															"operator": {
-																Type: "string",
-																Enum: []apiextv1.JSON{
-																	{
-																		Raw: []byte(`"DoesNotExist"`),
-																	},
-																	{
-																		Raw: []byte(`"Exists"`),
-																	},
-																	{
-																		Raw: []byte(`"In"`),
-																	},
-																	{
-																		Raw: []byte(`"NotIn"`),
-																	},
-																},
+															{
+																Raw: []byte(`"Exists"`),
 															},
-															"values": {
-																Type: "array",
-																Items: &apiextv1.JSONSchemaPropsOrArray{
-																	Schema: &apiextv1.JSONSchemaProps{
-																		Type: "string",
-																	},
-																},
+															{
+																Raw: []byte(`"In"`),
+															},
+															{
+																Raw: []byte(`"NotIn"`),
+															},
+														},
+													},
+													"values": {
+														Type: "array",
+														Items: &apiextv1.JSONSchemaPropsOrArray{
+															Schema: &apiextv1.JSONSchemaProps{
+																Type: "string",
 															},
 														},
 													},
 												},
 											},
-											"matchLabels": {
-												Type:                   "object",
-												XPreserveUnknownFields: util.True(),
-											},
 										},
 									},
-									"size": {
-										Type:    "string",
-										Pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$",
-									},
-									"storageClass": {
-										Type: "string",
-									},
-									"subPath": {
-										Type: "string",
-									},
-									"throughput": {
-										Type: "integer",
+									"matchLabels": {
+										Type:                   "object",
+										XPreserveUnknownFields: util.True(),
 									},
 								},
+							},
+							"size": {
+								Type:    "string",
+								Pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$",
+							},
+							"storageClass": {
+								Type: "string",
+							},
+							"subPath": {
+								Type: "string",
+							},
+							"throughput": {
+								Type: "integer",
 							},
 						},
 					},

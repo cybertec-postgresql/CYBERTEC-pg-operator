@@ -649,6 +649,10 @@ func isBootstrapOnlyParameter(param string) bool {
 	return result
 }
 
+func getWALPVCName(cluster_name string) string {
+	return "walpvc" + cluster_name
+}
+
 func generateVolumeMounts(volume cpov1.Volume) []v1.VolumeMount {
 	return []v1.VolumeMount{
 		{
@@ -659,10 +663,10 @@ func generateVolumeMounts(volume cpov1.Volume) []v1.VolumeMount {
 	}
 }
 
-func generateWalVolumeMounts(volume cpov1.Volume, dir string) v1.VolumeMount {
+func generateWalVolumeMounts(volume cpov1.Volume, cluster_name string) v1.VolumeMount {
 	return v1.VolumeMount{
-		Name:      dir,
-		MountPath: constants.PostgresWalMount, //TODO: fetch from manifest
+		Name:      getWALPVCName(cluster_name),
+		MountPath: constants.PostgresPVCWalMount,
 		SubPath:   volume.SubPath,
 	}
 }
@@ -1013,12 +1017,9 @@ func (c *Cluster) generateSpiloPodEnvVars(
 		envVars = append(envVars, v1.EnvVar{Name: "cpo_monitoring_stack", Value: "true"})
 	}
 	if spec.WalPvc != nil {
-		if spec.WalPvc.WalDir != "" {
-			envVars = append(envVars, v1.EnvVar{Name: "WALDIR", Value: spec.WalPvc.WalDir})
+		if spec.WalPvc != nil {
+			envVars = append(envVars, v1.EnvVar{Name: "WALDIR", Value: constants.PostgresPVCWalMount})
 			envVars = append(envVars, v1.EnvVar{Name: "OLD_WALDIR", Value: ""})
-		} else if spec.WalPvc.OldWalDir != "" {
-			envVars = append(envVars, v1.EnvVar{Name: "WALDIR", Value: ""})
-			envVars = append(envVars, v1.EnvVar{Name: "OLD_WALDIR", Value: spec.WalPvc.OldWalDir})
 		}
 	}
 	if c.OpConfig.EnablePgVersionEnvVar {
@@ -1381,8 +1382,8 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 
 	volumeMounts := generateVolumeMounts(spec.Volume)
 
-	if spec.WalPvc != nil && spec.WalPvc.WalDir != "" {
-		volumeMounts = append(volumeMounts, generateWalVolumeMounts(spec.WalPvc.WalVolume, spec.WalPvc.WalDir))
+	if spec.WalPvc != nil {
+		volumeMounts = append(volumeMounts, generateWalVolumeMounts(*spec.WalPvc, c.Spec.ClusterName))
 	}
 
 	// configure TLS with a custom secret volume
@@ -1529,9 +1530,9 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			additionalVolumes = append(additionalVolumes, c.generateCertSecretVolume())
 		}
 	}
-	if spec.WalPvc != nil && spec.WalPvc.WalDir != "" {
-		WalPvcClaim, err = c.generatePersistentVolumeClaimTemplate(spec.WalPvc.WalVolume.Size,
-			spec.WalPvc.WalVolume.StorageClass, spec.WalPvc.WalVolume.Selector, spec.WalPvc.WalDir)
+	if spec.WalPvc != nil {
+		WalPvcClaim, err = c.generatePersistentVolumeClaimTemplate(spec.WalPvc.Size,
+			spec.WalPvc.StorageClass, spec.WalPvc.Selector, getWALPVCName(spec.ClusterName))
 		if err != nil {
 			c.logger.Errorf("could not generate volume claim template for WAL directory: %v", err)
 		}
@@ -1605,7 +1606,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	}
 
 	final_vols := []v1.PersistentVolumeClaim{*volumeClaimTemplate}
-	if spec.WalPvc != nil && spec.WalPvc.WalDir != "" {
+	if spec.WalPvc != nil {
 		final_vols = []v1.PersistentVolumeClaim{*volumeClaimTemplate, *WalPvcClaim}
 	}
 

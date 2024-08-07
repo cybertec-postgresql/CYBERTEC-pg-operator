@@ -218,7 +218,7 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		return err
 	}
 
-	// sync volume may already transition volumes to gp3, if iops/throughput or type is specified
+	//sync volume may already transition volumes to gp3, if iops/throughput or type is specified
 	if err = c.syncVolumes(); err != nil {
 		return err
 	}
@@ -285,6 +285,10 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	// sync monitoring
 	if err = c.syncMonitoringSecret(&oldSpec, newSpec); err != nil {
 		return fmt.Errorf("could not sync monitoring: %v", err)
+	}
+
+	if err = c.syncWalPvc(&oldSpec, newSpec); err != nil {
+		return fmt.Errorf("could not sync WAL-PVC: %v", err)
 	}
 
 	if len(c.Spec.Streams) > 0 {
@@ -1752,6 +1756,49 @@ func (c *Cluster) syncMonitoringSecret(oldSpec, newSpec *cpov1.Postgresql) error
 			return fmt.Errorf("could not delete the monitoring secret: %v", err)
 		}
 		c.logger.Info("monitoring secret was successfully deleted")
+	}
+	return nil
+}
+
+func (c *Cluster) syncWalPvc(oldSpec, newSpec *cpov1.Postgresql) error {
+	c.logger.Info("syncing PVC for WAL")
+	c.setProcessName("syncing PVC for WAL")
+
+	if newSpec.Spec.WalPvc == nil && oldSpec.Spec.WalPvc != nil {
+		// if the wal_pvc is removed, then
+		// 1. Change log_directory
+		// 2. Remove the PVC
+		// 3. Change env vars
+
+		log_dir := map[string]string{
+			"log_directory": constants.PostgresWalMount,
+		}
+		pods, _ := c.listPodsOfType(TYPE_POSTGRESQL)
+		for _, p := range pods {
+			err := c.patroni.SetPostgresParameters(&p, log_dir)
+			if err != nil {
+				return fmt.Errorf("log_directory with pvc could not be set: %v", err)
+			}
+		}
+
+		pvcs, err := c.listPersistentVolumeClaims()
+		if err != nil {
+			return fmt.Errorf("Could not list PVCs")
+		} else {
+			for _, pvc := range pvcs {
+				if strings.Contains(pvc.Name, getWALPVCName(c.Spec.ClusterName)) {
+					c.logger.Infof("deleting WAL-PVC %q", util.NameFromMeta(pvc.ObjectMeta))
+					if err := c.KubeClient.PersistentVolumeClaims(pvc.Namespace).Delete(context.TODO(), pvc.Name, c.deleteOptions); err != nil {
+						return fmt.Errorf("could not delete WAL PVC: %v", err)
+					}
+				}
+			}
+			containers := c.Statefulset.Spec.Template.Spec.Containers
+			for _, con := range containers {
+				con.Env = append(con.Env, v1.EnvVar{Name: "WALDIR", Value: constants.PostgresWalMount})
+				con.Env = append(con.Env, v1.EnvVar{Name: "OLD_WALDIR", Value: constants.PostgresPVCWalMount})
+			}
+		}
 	}
 	return nil
 }

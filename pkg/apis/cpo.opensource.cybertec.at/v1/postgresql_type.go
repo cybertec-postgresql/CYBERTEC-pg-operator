@@ -288,6 +288,9 @@ type Repo struct {
 	Resource string            `json:"resource"`
 	Endpoint string            `json:"endpoint"`
 	Region   string            `json:"region"`
+	Account  string            `json:"account"`
+	Key      string            `json:"key"`
+	KeyType  string            `json:"keyType"`
 	Schedule map[string]string `json:"schedule"`
 	Volume   `json:"volume,omitempty"`
 }

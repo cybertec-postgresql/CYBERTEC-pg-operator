@@ -1186,6 +1186,15 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 													"region": {
 														Type: "string",
 													},
+													"account": {
+														Type: "string",
+													},
+													"key": {
+														Type: "string",
+													},
+													"keyType": {
+														Type: "string",
+													},
 													"schedule": {
 														Type: "object",
 														Properties: map[string]apiextv1.JSONSchemaProps{

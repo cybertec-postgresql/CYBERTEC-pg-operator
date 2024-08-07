@@ -447,6 +447,20 @@ func (c *Cluster) Create() (err error) {
 		}
 	}
 
+	if c.Spec.WalPvc != nil {
+		log_dir := map[string]string{
+			"log_directory": constants.PostgresPVCWalMount,
+		}
+		pods, _ := c.listPodsOfType(TYPE_POSTGRESQL)
+		for _, p := range pods {
+			err := c.patroni.SetPostgresParameters(&p, log_dir)
+			if err != nil {
+				return fmt.Errorf("log_directory with pvc could not be set: %v", err)
+			}
+		}
+
+	}
+
 	// remember slots to detect deletion from manifest
 	for slotName, desiredSlot := range c.Spec.Patroni.Slots {
 		c.replicationSlots[slotName] = desiredSlot

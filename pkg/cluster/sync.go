@@ -1766,9 +1766,21 @@ func (c *Cluster) syncWalPvc(oldSpec, newSpec *cpov1.Postgresql) error {
 
 	if newSpec.Spec.WalPvc == nil && oldSpec.Spec.WalPvc != nil {
 		// if the wal_pvc is removed, then
-		// 1. Change env-vars
+		// 1. Change log_directory
 		// 2. Remove the PVC
-		// 3. Remember the old dir name
+		// 3. Change env vars
+
+		log_dir := map[string]string{
+			"log_directory": constants.PostgresWalMount,
+		}
+		pods, _ := c.listPodsOfType(TYPE_POSTGRESQL)
+		for _, p := range pods {
+			err := c.patroni.SetPostgresParameters(&p, log_dir)
+			if err != nil {
+				return fmt.Errorf("log_directory with pvc could not be set: %v", err)
+			}
+		}
+
 		pvcs, err := c.listPersistentVolumeClaims()
 		if err != nil {
 			return fmt.Errorf("Could not list PVCs")

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CPO on CYBERTEC-PG-Operator</title>
+    <link>http://localhost:1313/CYBERTEC-pg-operator/project/</link>
+    <description>Recent content in CPO on CYBERTEC-PG-Operator</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 11 Mar 2024 14:26:51 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/CYBERTEC-pg-operator/project/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The Project</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/project/project/</link>
+      <pubDate>Mon, 11 Mar 2024 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/project/project/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Container Images</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/project/project-copy/</link>
+      <pubDate>Mon, 11 Mar 2024 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/project/project-copy/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

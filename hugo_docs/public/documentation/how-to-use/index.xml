@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>How to use on CYBERTEC-PG-Operator</title>
+    <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/</link>
+    <description>Recent content in How to use on CYBERTEC-PG-Operator</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 31 May 2024 14:26:51 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Installation</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/installation/</link>
+      <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/installation/</guid>
+      <description>Prerequisites For the installation you either need our CPO tutorial repository or you install CPO directly from our registry. Exception: Installation via Operatorhub (Openshift only)&#xA;CPO-Tutorial-Repository To get started, you can fork our tutorial repository on Github and then download it. CYBERTEC-operator-tutorials&#xA;GITHUB_USER=&amp;#39;[YOUR_USERNAME]&amp;#39; git clone https://github.com/$GITHUB_USER/CYBERTEC-operator-tutorials.git cd CYBERTEC-operator-tutorials CPO-Registry Create Namespace # kubectl kubectl create namespace cpo # oc oc create namespace cpo Install CPO There are several ways to install CPO:</description>
+    </item>
+    <item>
+      <title>Operator-Configuration</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/configuration_operator/</link>
+      <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/configuration_operator/</guid>
+      <description>Users who are already used to working with PostgreSQL from Baremetal or VMs are already familiar with the need for various files to configure PostgreSQL. These include&#xA;postgresql.conf pg_hba.conf &amp;hellip; Although these files are available in the container, direct modification is not planned. As part of the declarative mode of operation of the operator, these files are defined via the operator. The modifying intervention within the container also represents a contradiction to the immutability of the container.</description>
+    </item>
+    <item>
+      <title>Create a Cluster</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/create-cluster/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/create-cluster/</guid>
+      <description>To set up a cluster, the implementation is based on a description, as with the other Kubernetes deplyoments. To do this, the operator uses a document of type postgresql.&#xA;You can also find the basic minimum specifications for a single-node cluster in our tutorial project on Github&#xA;minimal Single-Node Cluster apiVersion: cpo.opensource.cybertec.at/v1 kind: postgresql metadata: name: cluster-1 spec: dockerImage: &amp;#34;docker.io/cybertecpostgresql/cybertec-pg-container:postgres-16.1-6-dev&amp;#34; numberOfInstances: 1 postgresql: version: &amp;#34;16&amp;#34; resources: limits: cpu: 500m memory: 500Mi requests: cpu: 500m memory: 500Mi volume: size: 5Gi Based on this Manifest the Operator will deploy a single-Node-Cluster based on the defined dockerImage and start the included Postgres-16-Server.</description>
+    </item>
+    <item>
+      <title>Apply Ressources</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/ressources/</link>
+      <pubDate>Sun, 28 Apr 2024 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/ressources/</guid>
+      <description>Kubernetes workloads are often deployed without a direct resource definition. This means that, apart from the limits specified by the administrators, the workloads can use the required resources of the worker node very dynamically.&#xA;The cluster manifest is used to define the Postgres pod resources via the typical resources objects.&#xA;There are basically two different definitions:&#xA;requests: Basic requirement and guaranteed by the worker node limits: maximum availability, allocation is increased dynamically if the worker node can provide the resources.</description>
+    </item>
+    <item>
+      <title>Storage</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/storage/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/storage/</guid>
+      <description>Storage is crucial for the performance of a database and is therefore a central element. As with systems based on bare metal or virtual machines, the same requirements apply to Kubernetes workloads, such as constant availability, good performance, consistency and durability.&#xA;A basic distinction is made between local storage, which is directly connected to the worker node, and network storage, which is mounted on the worker node and thus made available to the pod.</description>
+    </item>
+    <item>
+      <title>Databases &amp; Users</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/databases_roles/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/databases_roles/</guid>
+      <description>CPO not only supports you in deploying your cluster, it also supports you in setting it up in terms of the database and users. CPO offers you three different options for this:&#xA;Create roles Create databases preapared databases Create Roles The creation of users is based on the definition of the user name and the definition of the required rights for this user. Available rights are&#xA;superuser inherit login nologin createrole createdb replication bypassrls Unless explicitly defined via NOLOGIN, a created user automatically receives the LOGIN permission.</description>
+    </item>
+    <item>
+      <title>Modify Cluster</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/modify-cluster/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/modify-cluster/</guid>
+      <description>Starting with the Single-Node-Cluster from the previous section, we want to modify the Instance a bit to see.&#xA;CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 500m memory: 500mi Based on the ressources-Definiton we&amp;rsquo;re able to modify the reserved Hardware (requests) and the limits, which allows use to consume more than the reserved definitons if the k8s-worker has this hardware available. There are some Restrictions when modifiying the limits-section.</description>
+    </item>
+    <item>
+      <title>High Availability Cluster (HA)</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/ha-cluster/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/ha-cluster/</guid>
+      <description>To ensure continiues productive usage you can create a HA-Cluster or modify a Single-Node-Cluster to a HA-Cluster. The needed changes are less complicated&#xA;spec: numberOfInstances: 2 # or more The example above will create a HA-Cluster based on two Nodes.&#xA;kubectl get pods ----------------------------------------------------------------------------- NAME | READY | STATUS | RESTARTS | AGE cluster-1-0 | 1/1 | Running | 0 | 54s cluster-1-1 | 1/1 | Running | 0 | 31s </description>
+    </item>
+    <item>
+      <title>PostgreSQL Configuration</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/configuration_cluster/</link>
+      <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/configuration_cluster/</guid>
+      <description>Users who are already used to working with PostgreSQL from Baremetal or VMs are already familiar with the need for various files to configure PostgreSQL. These include&#xA;postgresql.conf pg_hba.conf &amp;hellip; Although these files are available in the container, direct modification is not planned. As part of the declarative mode of operation of the operator, these files are defined via the operator. The modifying intervention within the container also represents a contradiction to the immutability of the container.</description>
+    </item>
+    <item>
+      <title>Backup</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/backup/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/backup/</guid>
+      <description>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&#xA;Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options.</description>
+    </item>
+    <item>
+      <title>Restore</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/restore/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/restore/</guid>
+      <description>Restore or recovery is the process of starting a PostgreSQL instance or a cluster based on a defined and existing backup. This can be just a Backup or a combination of a Backup and additional WAL files. The difference is that a Backup represents a fixed point in time, whereas the combination with WAL enables a point-in-time recovery(PITR).&#xA;You can find more information about backups here&#xA;Rescue my cluster CPO enables the restore based on an existing backup using pgBackRest.</description>
+    </item>
+    <item>
+      <title>Monitoring</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/monitoring/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/monitoring/</guid>
+      <description>The CPO-Project has prepared severall Tools which allows to setup a Monitoring-Stack including Alerting and Metric-Viewer. These Stack is based on:&#xA;Prometheus Alertmanager Grafana exporter-container CPO has prepared an own Exporter for the PostgreSQl-Pod which can used as a sidecar.&#xA;Setting up the Monitoring Stack To setup the Monitoring-Stack we suggest that you create an own namespace and use the prepared kustomization file inside the Operator-Tutorials.&#xA;$ kubectl create namespace cpo-monitoring namespace/cpo-monitoring created $ kubectl get pods -n cpo-monitoring No resources found in cpo-monitoring namespace.</description>
+    </item>
+    <item>
+      <title>ConnectionPooler</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/connectionpooler/</link>
+      <pubDate>Fri, 31 May 2024 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/connectionpooler/</guid>
+      <description>A connection pooler is a tool that acts as a proxy between the application and the database and enables the performance of the application to be improved and the load on the database to be reduced. The reason for this lies in the connection handling of PostgreSQL.&#xA;How PostgreSQL handles connection PostgreSQL use a new Process for every database-connection created by the postmaster. This process is handling the connection. On the positive side, this enables a stable connection and isolation, but it is not particularly efficient for short-lived connections due to the effort required to create them.</description>
+    </item>
+    <item>
+      <title>Major-Upgrade</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/major-upgrades/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/major-upgrades/</guid>
+      <description>CPO enables the use of the in-place upgrade, which makes it possible to upgrade a cluster to a new PG major. For this purpose, pg_upgrade is used in the background.&#xA;PAY ATTENTION: Note that an in-place upgrade generates both a pod restore in the form of a rolling update and an operational interruption of the cluster during the actual execution of the restore.&#xA;How does the upgrade work? Preconditions: Pod restart - Use the rolling update strategy to replace all pods based on the new ENV PGVERSION with the version you want to update to.</description>
+    </item>
+  </channel>
+</rss>

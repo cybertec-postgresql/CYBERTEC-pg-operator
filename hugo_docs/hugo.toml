@@ -1,0 +1,13 @@
+baseURL = "https://cybertec-postgresql.github.io/CYBERTEC-pg-operator"
+title = "CYBERTEC-PG-Operator"
+
+[module]
+[[module.imports]]
+path = 'github.com/cybertec-postgresql/hugo_documentation'
+
+defaultContentLanguage = "en"
+
+[languages.en]
+languageName = "English"
+contentDir = "content/en"
+weight = 10

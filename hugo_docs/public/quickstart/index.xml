@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Quickstart on CYBERTEC-PG-Operator</title>
+    <link>http://localhost:1313/CYBERTEC-pg-operator/quickstart/</link>
+    <description>Recent content in Quickstart on CYBERTEC-PG-Operator</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 07 Mar 2023 14:26:51 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/CYBERTEC-pg-operator/quickstart/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Quickstart</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/quickstart/quickstart/</link>
+      <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/quickstart/quickstart/</guid>
+      <description>We can tell and document so much about our project but it seems you just want to get started. Let us show you the fastest way to use CPO.&#xA;Preconditions git helm (optional) kubectl or oc Let&amp;rsquo;s start Step 1 - Preparations To get started, you can fork our tutorial repository on Github and then download it. CYBERTEC-operator-tutorials&#xA;GITHUB_USER=&amp;#39;[YOUR_USERNAME]&amp;#39; git clone https://github.com/$GITHUB_USER/CYBERTEC-operator-tutorials.git cd CYBERTEC-operator-tutorials Step 2 - Install the Operator Two options are available for the installation:</description>
+    </item>
+  </channel>
+</rss>

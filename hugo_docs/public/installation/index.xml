@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Installation on CYBERTEC-PG-Operator</title>
+    <link>http://localhost:1313/CYBERTEC-pg-operator/installation/</link>
+    <description>Recent content in Installation on CYBERTEC-PG-Operator</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 07 Mar 2023 14:26:51 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/CYBERTEC-pg-operator/installation/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Setup local Kubernetes</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/installation/playground.md/</link>
+      <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/installation/playground.md/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Install CPO</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/installation/installation/</link>
+      <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/installation/installation/</guid>
+      <description>Prerequisites For the installation you either need our CPO tutorial repository or you install CPO directly from our registry. Exception: Installation via Operatorhub (Openshift only)&#xA;CPO-Tutorial-Repository To get started, you can fork our tutorial repository on Github and then download it. CYBERTEC-operator-tutorials&#xA;GITHUB_USER=&amp;#39;[YOUR_USERNAME]&amp;#39; git clone https://github.com/$GITHUB_USER/CYBERTEC-operator-tutorials.git cd CYBERTEC-operator-tutorials CPO-Registry Create Namespace # kubectl kubectl create namespace cpo # oc oc create namespace cpo Install CPO There are several ways to install CPO:</description>
+    </item>
+    <item>
+      <title>Operator-Configuration</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/installation/configuration_operator/</link>
+      <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/installation/configuration_operator/</guid>
+      <description>Users who are already used to working with PostgreSQL from Baremetal or VMs are already familiar with the need for various files to configure PostgreSQL. These include&#xA;postgresql.conf pg_hba.conf &amp;hellip; Although these files are available in the container, direct modification is not planned. As part of the declarative mode of operation of the operator, these files are defined via the operator. The modifying intervention within the container also represents a contradiction to the immutability of the container.</description>
+    </item>
+  </channel>
+</rss>

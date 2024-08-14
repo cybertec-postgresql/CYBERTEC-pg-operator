@@ -8,13 +8,19 @@
     <loc>http://localhost:1313/CYBERTEC-pg-operator/project/</loc>
     <lastmod>2024-03-11T14:26:51+01:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/project/project/</loc>
+    <lastmod>2024-03-11T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/project/project-copy/</loc>
+    <lastmod>2024-03-11T14:26:51+01:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/architecture/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/quickstart/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/architecture/architecture/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/</loc>
@@ -31,6 +37,12 @@
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/release_notes/</loc>
     <lastmod>2024-03-11T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/quickstart/</loc>
+    <lastmod>2023-03-07T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/quickstart/quickstart/</loc>
+    <lastmod>2023-03-07T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/installation/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>
@@ -73,12 +85,6 @@
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/major-upgrades/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/architecture/architecture/</loc>
-    <lastmod>2023-03-07T14:26:51+01:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/level-1/</loc>
-    <lastmod>2023-03-07T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/release_notes/release_notes/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>

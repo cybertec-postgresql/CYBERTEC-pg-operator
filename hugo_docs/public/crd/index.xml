@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>References on CYBERTEC-PG-Operator</title>
+    <link>http://localhost:1313/CYBERTEC-pg-operator/crd/</link>
+    <description>Recent content in References on CYBERTEC-PG-Operator</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 07 Mar 2023 14:26:51 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/CYBERTEC-pg-operator/crd/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PostgreSQL</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/</link>
+      <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/</guid>
+      <description>postgresql Name Type required Description apiVersion string true acid.zalando.do/v1 kind string true metadata object true spec object true status object false spec Name Type required Description backup object false Enables the definition of a customised backup solution for the cluster teamId string true name of the team the cluster belongs to numberOfInstances Int true Number of nodes of the cluster dockerImages string false Define a custom image to override the default schedulerName string false Define a custom Name to override the default spiloRunAsUser string false Define an User id which should be used for the pods spiloRunAsGroup string false Define an Group id which should be used for the pods spiloFSGroup string false Persistent Volumes for the pods in the StatefulSet will be owned and writable by the group ID specified.</description>
+    </item>
+    <item>
+      <title>Operator-Configuration</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/crd/crd-operator-configurator/</link>
+      <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/crd/crd-operator-configurator/</guid>
+      <description>Name Type default Description enable_crd_registration boolean true crd_categories string all enable_lazy_spilo_upgrade boolean false enable_pgversion_env_var boolean true enable_spilo_wal_path_combat boolean false etcd_host string kubernetes_use_configmaps boolean false docker_image string sidecars list enable_shm_volume boolean true workers int 8 max_instances int -1 min_instances int -1 resync_period string 30m repair_period string 5m set_memory_request_to_limit boolean false debug_logging boolean true enable_db_access boolean true spilo_privileged boolean false spilo_allow_privilege_escalation boolean true watched_namespace string * major-upgrade-specific Name Type default Description major_version_upgrade_mode string off major_version_upgrade_team_allow_list string minimal_major_version string 9.</description>
+    </item>
+  </channel>
+</rss>

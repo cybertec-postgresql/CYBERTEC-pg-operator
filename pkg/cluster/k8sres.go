@@ -1016,11 +1016,12 @@ func (c *Cluster) generateSpiloPodEnvVars(
 	if spec.Monitoring != nil {
 		envVars = append(envVars, v1.EnvVar{Name: "cpo_monitoring_stack", Value: "true"})
 	}
+	envVars = append(envVars, v1.EnvVar{Name: "PVCWALDIR", Value: constants.PostgresPVCWalMount})
+
 	if spec.WalPvc != nil {
-		if spec.WalPvc != nil {
-			envVars = append(envVars, v1.EnvVar{Name: "WALDIR", Value: constants.PostgresPVCWalMount})
-			envVars = append(envVars, v1.EnvVar{Name: "OLD_WALDIR", Value: ""})
-		}
+		envVars = append(envVars, v1.EnvVar{Name: "USE_PVC_WAL", Value: "true"})
+	}else{
+		envVars = append(envVars, v1.EnvVar{Name: "USE_PVC_WAL", Value: "false"})
 	}
 	if c.OpConfig.EnablePgVersionEnvVar {
 		envVars = append(envVars, v1.EnvVar{Name: "PGVERSION", Value: c.GetDesiredMajorVersion()})

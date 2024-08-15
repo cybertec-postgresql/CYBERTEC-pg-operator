@@ -1765,22 +1765,6 @@ func (c *Cluster) syncWalPvc(oldSpec, newSpec *cpov1.Postgresql) error {
 	c.setProcessName("syncing PVC for WAL")
 
 	if newSpec.Spec.WalPvc == nil && oldSpec.Spec.WalPvc != nil {
-		// if the wal_pvc is removed, then
-		// 1. Change log_directory
-		// 2. Remove the PVC
-		// 3. Change env vars
-
-		log_dir := map[string]string{
-			"log_directory": constants.PostgresWalMount,
-		}
-		pods, _ := c.listPodsOfType(TYPE_POSTGRESQL)
-		for _, p := range pods {
-			err := c.patroni.SetPostgresParameters(&p, log_dir)
-			if err != nil {
-				return fmt.Errorf("log_directory with pvc could not be set: %v", err)
-			}
-		}
-
 		pvcs, err := c.listPersistentVolumeClaims()
 		if err != nil {
 			return fmt.Errorf("Could not list PVCs")
@@ -1792,11 +1776,6 @@ func (c *Cluster) syncWalPvc(oldSpec, newSpec *cpov1.Postgresql) error {
 						return fmt.Errorf("could not delete WAL PVC: %v", err)
 					}
 				}
-			}
-			containers := c.Statefulset.Spec.Template.Spec.Containers
-			for _, con := range containers {
-				con.Env = append(con.Env, v1.EnvVar{Name: "WALDIR", Value: constants.PostgresWalMount})
-				con.Env = append(con.Env, v1.EnvVar{Name: "OLD_WALDIR", Value: constants.PostgresPVCWalMount})
 			}
 		}
 	}

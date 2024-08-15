@@ -19,6 +19,5 @@ const (
 	RunVolumeName = "postgresql-run"
 	RunVolumePath = "/var/run/postgresql"
 
-	PostgresWalMount    = "/home/postgres/pgwal"
-	PostgresPVCWalMount = "/home/postgres/pvc/pgwal"
+	PostgresPVCWalMount = "/home/postgres/pvc/"
 )

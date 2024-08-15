@@ -447,20 +447,6 @@ func (c *Cluster) Create() (err error) {
 		}
 	}
 
-	if c.Spec.WalPvc != nil {
-		log_dir := map[string]string{
-			"log_directory": constants.PostgresPVCWalMount,
-		}
-		pods, _ := c.listPodsOfType(TYPE_POSTGRESQL)
-		for _, p := range pods {
-			err := c.patroni.SetPostgresParameters(&p, log_dir)
-			if err != nil {
-				return fmt.Errorf("log_directory with pvc could not be set: %v", err)
-			}
-		}
-
-	}
-
 	// remember slots to detect deletion from manifest
 	for slotName, desiredSlot := range c.Spec.Patroni.Slots {
 		c.replicationSlots[slotName] = desiredSlot
@@ -1037,6 +1023,7 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 
 	//sync WAL-PVC
 	if !reflect.DeepEqual(oldSpec.Spec.WalPvc, newSpec.Spec.WalPvc) {
+		c.logger.Info("####### GOING to Update the pods")
 		if err := c.syncWalPvc(oldSpec, newSpec); err != nil {
 			c.logger.Warningf("could not sync PVC WAL %v", err)
 		}

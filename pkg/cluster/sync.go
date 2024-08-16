@@ -1765,6 +1765,9 @@ func (c *Cluster) syncWalPvc(oldSpec, newSpec *cpov1.Postgresql) error {
 	c.setProcessName("syncing PVC for WAL")
 
 	if newSpec.Spec.WalPvc == nil && oldSpec.Spec.WalPvc != nil {
+		// run the script to move the wal files and then remove the pvc
+		//result, err = c.ExecCommand(podName, "scripts/move_wal_dir.sh" + constants.PostgresPVCWalMount + " " + constants.PostgresWALPath)
+		
 		pvcs, err := c.listPersistentVolumeClaims()
 		if err != nil {
 			return fmt.Errorf("Could not list PVCs")

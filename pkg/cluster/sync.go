@@ -218,6 +218,10 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		return err
 	}
 
+	if err = c.syncWalPvc(&oldSpec, newSpec); err != nil {
+		return fmt.Errorf("could not sync WAL-PVC: %v", err)
+	}
+
 	//sync volume may already transition volumes to gp3, if iops/throughput or type is specified
 	if err = c.syncVolumes(); err != nil {
 		return err
@@ -285,10 +289,6 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	// sync monitoring
 	if err = c.syncMonitoringSecret(&oldSpec, newSpec); err != nil {
 		return fmt.Errorf("could not sync monitoring: %v", err)
-	}
-
-	if err = c.syncWalPvc(&oldSpec, newSpec); err != nil {
-		return fmt.Errorf("could not sync WAL-PVC: %v", err)
 	}
 
 	if len(c.Spec.Streams) > 0 {
@@ -1765,6 +1765,12 @@ func (c *Cluster) syncWalPvc(oldSpec, newSpec *cpov1.Postgresql) error {
 	c.setProcessName("syncing PVC for WAL")
 
 	if newSpec.Spec.WalPvc == nil && oldSpec.Spec.WalPvc != nil {
+
+		containers := c.Statefulset.Spec.Template.Spec.Containers
+		for _, con := range containers {
+			con.Env = append(con.Env, v1.EnvVar{Name: "NEWWALDIR", Value: ""})
+			con.Env = append(con.Env, v1.EnvVar{Name: "OLDWALDIR",Value: constants.PostgresPVCWalMount})
+		}
 		// run the script to move the wal files and then remove the pvc
 		//result, err = c.ExecCommand(podName, "scripts/move_wal_dir.sh" + constants.PostgresPVCWalMount + " " + constants.PostgresWALPath)
 		

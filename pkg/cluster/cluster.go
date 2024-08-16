@@ -1023,7 +1023,6 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 
 	//sync WAL-PVC
 	if !reflect.DeepEqual(oldSpec.Spec.WalPvc, newSpec.Spec.WalPvc) {
-		c.logger.Info("####### GOING to Update the pods")
 		if err := c.syncWalPvc(oldSpec, newSpec); err != nil {
 			c.logger.Warningf("could not sync PVC WAL %v", err)
 		}

@@ -617,7 +617,16 @@ func (c *Cluster) compareStatefulSetWith(oldSts, newSts *appsv1.StatefulSet) *co
 		needsReplace = true
 		reasons = append(reasons, "new statefulset's volumeClaimTemplates contains different number of volumes to the old one")
 	}
-	for i := 0; i < len(oldSts.Spec.VolumeClaimTemplates); i++ {
+
+	//Account for the deleted PVC for wal
+	lenVCT := 0
+	if len(oldSts.Spec.VolumeClaimTemplates) < len(newSts.Spec.VolumeClaimTemplates) {
+		lenVCT = len(oldSts.Spec.VolumeClaimTemplates)
+	} else {
+		lenVCT = len(newSts.Spec.VolumeClaimTemplates)
+	}
+
+	for i := 0; i < lenVCT; i++ {
 		name := oldSts.Spec.VolumeClaimTemplates[i].Name
 		// Some generated fields like creationTimestamp make it not possible to use DeepCompare on ObjectMeta
 		if name != newSts.Spec.VolumeClaimTemplates[i].Name {
@@ -1012,8 +1021,17 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 		c.syncMonitoringSecret(oldSpec, newSpec)
 	}
 
+	//sync WAL-PVC
+	if !reflect.DeepEqual(oldSpec.Spec.WalPvc, newSpec.Spec.WalPvc) {
+		if err := c.syncWalPvc(oldSpec, newSpec); err != nil {
+			c.logger.Warningf("could not sync PVC WAL %v", err)
+		}
+	}
+
 	//sync sts when there is a change in the pgbackrest secret, since we need to mount this
-	if !reflect.DeepEqual(oldSpec.Spec.Backup.Pgbackrest.Configuration, newSpec.Spec.Backup.Pgbackrest.Configuration) {
+	if oldSpec.Spec.Backup != nil && newSpec.Spec.Backup != nil &&
+		oldSpec.Spec.Backup.Pgbackrest != nil && newSpec.Spec.Backup.Pgbackrest != nil &&
+		!reflect.DeepEqual(oldSpec.Spec.Backup.Pgbackrest.Configuration, newSpec.Spec.Backup.Pgbackrest.Configuration) {
 		syncStatefulSet = true
 	}
 
@@ -1067,6 +1085,10 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 			c.logger.Errorf("could not generate new statefulset spec: %v", err)
 			updateFailed = true
 			return
+		}
+		if oldSpec.Spec.WalPvc != nil {
+			//if pvc wal is removed then carry the relevant env vars to the new sts
+
 		}
 
 		if c.restoreInProgress() {

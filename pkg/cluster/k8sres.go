@@ -653,6 +653,10 @@ func isBootstrapOnlyParameter(param string) bool {
 	return result
 }
 
+func getWALPVCName(cluster_name string) string {
+	return "walpvc" + cluster_name
+}
+
 func generateVolumeMounts(volume cpov1.Volume) []v1.VolumeMount {
 	return []v1.VolumeMount{
 		{
@@ -660,6 +664,14 @@ func generateVolumeMounts(volume cpov1.Volume) []v1.VolumeMount {
 			MountPath: constants.PostgresDataMount, //TODO: fetch from manifest
 			SubPath:   volume.SubPath,
 		},
+	}
+}
+
+func generateWalVolumeMounts(volume cpov1.Volume, cluster_name string) v1.VolumeMount {
+	return v1.VolumeMount{
+		Name:      getWALPVCName(cluster_name),
+		MountPath: constants.PostgresPVCWalMount,
+		SubPath:   volume.SubPath,
 	}
 }
 
@@ -1009,6 +1021,10 @@ func (c *Cluster) generateSpiloPodEnvVars(
 		envVars = append(envVars, v1.EnvVar{Name: "cpo_monitoring_stack", Value: "true"})
 	}
 
+	if spec.WalPvc != nil {
+		envVars = append(envVars, v1.EnvVar{Name: "NEWWALDIR", Value: constants.PostgresPVCWalMount})
+		envVars = append(envVars, v1.EnvVar{Name: "OLDWALDIR",Value: ""})
+	}
 	if c.OpConfig.EnablePgVersionEnvVar {
 		envVars = append(envVars, v1.EnvVar{Name: "PGVERSION", Value: c.GetDesiredMajorVersion()})
 	}
@@ -1294,9 +1310,9 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		sidecarContainers   []v1.Container
 		podTemplate         *v1.PodTemplateSpec
 		volumeClaimTemplate *v1.PersistentVolumeClaim
+		WalPvcClaim         *v1.PersistentVolumeClaim
 		additionalVolumes   = spec.AdditionalVolumes
 	)
-
 	defaultResources := makeDefaultResources(&c.OpConfig)
 	resourceRequirements, err := c.generateResourceRequirements(
 		spec.Resources, defaultResources, constants.PostgresContainerName)
@@ -1368,6 +1384,10 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	}
 
 	volumeMounts := generateVolumeMounts(spec.Volume)
+
+	if spec.WalPvc != nil {
+		volumeMounts = append(volumeMounts, generateWalVolumeMounts(*spec.WalPvc, c.Spec.ClusterName))
+	}
 
 	// configure TLS with a custom secret volume
 	if spec.TLS != nil && spec.TLS.SecretName != "" {
@@ -1513,7 +1533,13 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			additionalVolumes = append(additionalVolumes, c.generateCertSecretVolume())
 		}
 	}
-
+	if spec.WalPvc != nil {
+		WalPvcClaim, err = c.generatePersistentVolumeClaimTemplate(spec.WalPvc.Size,
+			spec.WalPvc.StorageClass, spec.WalPvc.Selector, getWALPVCName(spec.ClusterName))
+		if err != nil {
+			c.logger.Errorf("could not generate volume claim template for WAL directory: %v", err)
+		}
+	}
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
@@ -1582,6 +1608,11 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		persistentVolumeClaimRetentionPolicy.WhenScaled = appsv1.RetainPersistentVolumeClaimRetentionPolicyType
 	}
 
+	final_vols := []v1.PersistentVolumeClaim{*volumeClaimTemplate}
+	if spec.WalPvc != nil {
+		final_vols = []v1.PersistentVolumeClaim{*volumeClaimTemplate, *WalPvcClaim}
+	}
+
 	statefulSet := &appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        c.statefulSetName(),
@@ -1594,7 +1625,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			Selector:                             c.labelsSelector(TYPE_POSTGRESQL),
 			ServiceName:                          c.serviceName(Master),
 			Template:                             *podTemplate,
-			VolumeClaimTemplates:                 []v1.PersistentVolumeClaim{*volumeClaimTemplate},
+			VolumeClaimTemplates:                 final_vols,
 			UpdateStrategy:                       updateStrategy,
 			PodManagementPolicy:                  podManagementPolicy,
 			PersistentVolumeClaimRetentionPolicy: &persistentVolumeClaimRetentionPolicy,

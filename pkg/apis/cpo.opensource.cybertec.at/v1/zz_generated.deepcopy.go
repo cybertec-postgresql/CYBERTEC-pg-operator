@@ -965,6 +965,11 @@ func (in *PostgresSpec) DeepCopyInto(out *PostgresSpec) {
 		*out = new(Monitoring)
 		**out = **in
 	}
+	if in.WalPvc != nil {
+		in, out := &in.WalPvc, &out.WalPvc
+		*out = new(Volume)
+		(*in).DeepCopyInto(*out)
+	}
 	return
 }
 

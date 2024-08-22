@@ -2,7 +2,7 @@
 title: "connection pooler"
 date: 2024-05-31T14:26:51+01:00
 draft: false
-weight: 1500
+weight: 1700
 ---
 
 A connection pooler is a tool that acts as a proxy between the application and the database and enables the performance of the application to be improved and the load on the database to be reduced. The reason for this lies in the connection handling of PostgreSQL. 

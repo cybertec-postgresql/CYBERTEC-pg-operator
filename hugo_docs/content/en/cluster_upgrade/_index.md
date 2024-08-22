@@ -2,7 +2,7 @@
 title: "Major-Upgrade"
 date: 2023-12-28T14:26:51+01:00
 draft: false
-weight: 1700
+weight: 2000
 ---
 
 CPO enables the use of the in-place upgrade, which makes it possible to upgrade a cluster to a new PG major. For this purpose, pg_upgrade is used in the background.

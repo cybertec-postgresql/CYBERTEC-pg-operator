@@ -23,20 +23,11 @@
     <loc>http://localhost:1313/CYBERTEC-pg-operator/architecture/architecture/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/crd/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/crd/crd-operator-configurator/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/crd/crd-postgresql/</loc>
-    <lastmod>2023-03-07T14:26:51+01:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/crd/crd-operator-configurator/</loc>
-    <lastmod>2023-03-07T14:26:51+01:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/release_notes/</loc>
-    <lastmod>2024-03-11T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/quickstart/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>
@@ -44,47 +35,59 @@
     <loc>http://localhost:1313/CYBERTEC-pg-operator/quickstart/quickstart/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/installation/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/installation/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/configuration_operator/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/installation/playground.md/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/create-cluster/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/installation/installation/</loc>
+    <lastmod>2023-03-07T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/installation/configuration_operator/</loc>
+    <lastmod>2023-03-07T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/first_cluster/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/ressources/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/resources/</loc>
     <lastmod>2024-04-28T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/storage/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/storage/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/databases_roles/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/db_users/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/modify-cluster/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/edit_cluster/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/ha-cluster/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/ha_cluster/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/configuration_cluster/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/config_cluster/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/backup/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/backup/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/restore/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/restore/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/monitoring/</loc>
-    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/connectionpooler/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/connection_pooler/</loc>
     <lastmod>2024-05-31T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/how-to-use/major-upgrades/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/monitoring/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/cluster_upgrade/</loc>
+    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/crd/</loc>
+    <lastmod>2023-03-07T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/release_notes/</loc>
+    <lastmod>2024-03-11T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/release_notes/release_notes/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>

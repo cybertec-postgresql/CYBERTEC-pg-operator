@@ -6,7 +6,35 @@
     <description>Recent content in Backup on CYBERTEC-PG-Operator</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate></lastBuildDate>
+    <lastBuildDate>Thu, 28 Dec 2023 14:26:51 +0100</lastBuildDate>
     <atom:link href="http://localhost:1313/CYBERTEC-pg-operator/backup/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>via Blockstorage (pvc)</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/backup/pvc/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/pvc/</guid>
+      <description>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&#xA;Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options.</description>
+    </item>
+    <item>
+      <title>via S3</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/backup/aws/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/aws/</guid>
+      <description>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&#xA;Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options.</description>
+    </item>
+    <item>
+      <title>via GCS</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/backup/gcs/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/gcs/</guid>
+      <description>This chapter describes the use of pgBackRest in combination with Google Cloud Storage (gcs). It is not absolutely necessary to operate a Kubernetes on the Google Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.&#xA;Precondition: a gcs-bucket and a priviledged role is needed for this chapter. Create a gcs-bucket on the google cloud console Create a priviledged service-role Modifying the Cluster Backups on PVC (PersistentVolumeClaim) When using block storage, the operator creates an additional pod that acts as a repo host.</description>
+    </item>
+    <item>
+      <title>via Azure-Blob</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/</guid>
+      <description>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&#xA;Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options.</description>
+    </item>
   </channel>
 </rss>

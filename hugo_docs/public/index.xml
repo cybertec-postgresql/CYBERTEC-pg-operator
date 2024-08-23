@@ -9,6 +9,34 @@
     <lastBuildDate>Mon, 11 Mar 2024 14:26:51 +0100</lastBuildDate>
     <atom:link href="http://localhost:1313/CYBERTEC-pg-operator/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>via Blockstorage (pvc)</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/backup/pvc/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/pvc/</guid>
+      <description>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&#xA;Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options.</description>
+    </item>
+    <item>
+      <title>via S3</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/backup/aws/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/aws/</guid>
+      <description>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&#xA;Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options.</description>
+    </item>
+    <item>
+      <title>via GCS</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/backup/gcs/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/gcs/</guid>
+      <description>This chapter describes the use of pgBackRest in combination with Google Cloud Storage (gcs). It is not absolutely necessary to operate a Kubernetes on the Google Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.&#xA;Precondition: a gcs-bucket and a priviledged role is needed for this chapter. Create a gcs-bucket on the google cloud console Create a priviledged service-role Modifying the Cluster Backups on PVC (PersistentVolumeClaim) When using block storage, the operator creates an additional pod that acts as a repo host.</description>
+    </item>
+    <item>
+      <title>via Azure-Blob</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/</guid>
+      <description>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&#xA;Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options.</description>
+    </item>
+    <item>
       <title>The Project</title>
       <link>http://localhost:1313/CYBERTEC-pg-operator/project/project/</link>
       <pubDate>Mon, 11 Mar 2024 14:26:51 +0100</pubDate>
@@ -70,6 +98,13 @@
       <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
       <guid>http://localhost:1313/CYBERTEC-pg-operator/installation/configuration_operator/</guid>
       <description>Users who are already used to working with PostgreSQL from Baremetal or VMs are already familiar with the need for various files to configure PostgreSQL. These include&#xA;postgresql.conf pg_hba.conf &amp;hellip; Although these files are available in the container, direct modification is not planned. As part of the declarative mode of operation of the operator, these files are defined via the operator. The modifying intervention within the container also represents a contradiction to the immutability of the container.</description>
+    </item>
+    <item>
+      <title>PostgreSQL 16</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/extensions/pg16/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/extensions/pg16/</guid>
+      <description>The extensions listed are included in the standard images. This list refers to PostgreSQL 16. Name Default Version Comment adminpack 2.1 Administrative functions for PostgreSQL amcheck 1.3 Functions for verifying relation integrity autoinc 1.0 Functions for autoincrementing fields bloom 1.0 Bloom access method - signature file based index btree_gin 1.3 Support for indexing common datatypes in GIN btree_gist 1.7 Support for indexing common datatypes in GiST citext 1.6 Data type for case-insensitive character strings credcheck 2.</description>
     </item>
     <item>
       <title>Release Notes</title>

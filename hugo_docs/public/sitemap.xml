@@ -74,8 +74,17 @@
     <loc>http://localhost:1313/CYBERTEC-pg-operator/restore/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/tls/</loc>
+    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/connection_pooler/</loc>
     <lastmod>2024-05-31T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/extensions/</loc>
+    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/extensions/pg16/</loc>
+    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/monitoring/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>

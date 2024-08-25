@@ -9,11 +9,18 @@
     <lastBuildDate>Thu, 28 Dec 2023 14:26:51 +0100</lastBuildDate>
     <atom:link href="http://localhost:1313/CYBERTEC-pg-operator/backup/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Introduction</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/backup/introduction/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/introduction/</guid>
+      <description>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&#xA;Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options.</description>
+    </item>
+    <item>
       <title>via Blockstorage (pvc)</title>
       <link>http://localhost:1313/CYBERTEC-pg-operator/backup/pvc/</link>
       <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
       <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/pvc/</guid>
-      <description>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&#xA;Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options.</description>
+      <description>Backups on PVC (PersistentVolumeClaim) When using block storage, the operator creates an additional pod that acts as a repo host. Based on a TLS connection, the repo host obtains the data for the Backup from the current primary of the cluster, which is compressed before being sent. WAL archives are pushed from the primary pod to the repo host.&#xA;apiVersion: cpo.opensource.cybertec.at/v1 kind: postgresql metadata: name: cluster namespace: cpo spec: backup: pgbackrest: image: &amp;#39;docker.</description>
     </item>
     <item>
       <title>via S3</title>
@@ -27,7 +34,7 @@
       <link>http://localhost:1313/CYBERTEC-pg-operator/backup/gcs/</link>
       <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
       <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/gcs/</guid>
-      <description>This chapter describes the use of pgBackRest in combination with Google Cloud Storage (gcs). It is not absolutely necessary to operate a Kubernetes on the Google Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.&#xA;Precondition: a gcs-bucket and a priviledged role is needed for this chapter. Create a gcs-bucket on the google cloud console Create a priviledged service-role Modifying the Cluster Backups on PVC (PersistentVolumeClaim) When using block storage, the operator creates an additional pod that acts as a repo host.</description>
+      <description>This chapter describes the use of pgBackRest in combination with Google Cloud Storage (gcs). It is not absolutely necessary to operate a Kubernetes on the Google Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.&#xA;Precondition: a gcs-bucket and a priviledged role is needed for this chapter. Create a gcs-bucket on the google cloud console Create a priviledged service-role Modifying the Cluster As soon as all requirements are met:</description>
     </item>
     <item>
       <title>via Azure-Blob</title>
@@ -35,6 +42,20 @@
       <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
       <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/</guid>
       <description>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&#xA;Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options.</description>
+    </item>
+    <item>
+      <title>Encrypted Backups</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/backup/encryption/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/encryption/</guid>
+      <description>pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.&#xA;Firstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the spec.backup.pgbackrest.configuration.secret object.&#xA;kind: Secret apiVersion: v1 metadata: name: cluster-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest.</description>
+    </item>
+    <item>
+      <title>Check/Monitor Backups</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/backup/check_backups/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/check_backups/</guid>
+      <description>There are several ways to gain an insight into the current status of pgBackRest. One of these is to use pgBackRest within the container. This can be done both via the repo host and the Postgres pod.&#xA;pgbackrest via terminal (Repo-Host-Pod) kubectl exec cluster-5-pgbackrest-repo-host-0 --stdin --tty -- pgbackrest info stanza: db status: ok cipher: none db (current) wal archive min/max (16): 00000006000000000000005C/000000070000000000000092 full backup: 20240517-125730F timestamp start/stop: 2024-05-17 12:57:30+00 / 2024-05-17 12:57:41+00 wal start/stop: 00000007000000000000005E / 00000007000000000000005E database size: 22.</description>
     </item>
   </channel>
 </rss>

@@ -5,6 +5,18 @@
     <loc>http://localhost:1313/CYBERTEC-pg-operator/</loc>
     <lastmod>2024-03-11T14:26:51+01:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/backup/pvc/</loc>
+    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/backup/aws/</loc>
+    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/backup/gcs/</loc>
+    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/</loc>
+    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/project/</loc>
     <lastmod>2024-03-11T14:26:51+01:00</lastmod>
   </url><url>

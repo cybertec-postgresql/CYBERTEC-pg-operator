@@ -7,7 +7,7 @@ weight: 1400
 
 Restore or recovery is the process of starting a PostgreSQL instance or a cluster based on a defined and existing backup. This can be just a Backup or a combination of a Backup and additional WAL files. The difference is that a Backup represents a fixed point in time, whereas the combination with WAL enables a point-in-time recovery(PITR). 
 
-You can find more information about backups [here](documentation/how-to-use/backup/)
+You can find more information about backups [here](../backup/introduction/)
 
 ### Rescue my cluster
 
@@ -16,7 +16,7 @@ As we have already provided the operator with all the information relating to th
 - `id`: Control variable, must be increased for each restore process 
 - `type`: What type of restore is required
 - `repo`: Which repo the data should come from
-- `set`: Specific Backup to restore - Check [backup](tbd) to see how to get the identifier
+- `set`: Specific Backup to restore - Check [backup](../backup/check_backups/) to see how to get the identifier
 
 > **_HINT:_** To ensure that the operator does not repeat an already done restore, the defined object `id` in the restore section is saved by the operator, so the value of this `id` must be changed for a new restore.
 

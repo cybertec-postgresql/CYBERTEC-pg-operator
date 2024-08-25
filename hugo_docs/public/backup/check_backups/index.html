@@ -12,8 +12,10 @@
 <meta name="generator" content="Hugo 0.133.0">
 
 
+  <meta name="description" content="There are several ways to gain an insight into the current status of pgBackRest. One of these is to use pgBackRest within the container. This can be done both via the repo host and the Postgres pod.
+pgbackrest via terminal (Repo-Host-Pod) kubectl exec cluster-5-pgbackrest-repo-host-0 --stdin --tty -- pgbackrest info stanza: db status: ok cipher: none db (current) wal archive min/max (16): 00000006000000000000005C/000000070000000000000092 full backup: 20240517-125730F timestamp start/stop: 2024-05-17 12:57:30&#43;00 / 2024-05-17 12:57:41&#43;00 wal start/stop: 00000007000000000000005E / 00000007000000000000005E database size: 22." />
 
-    <title>Release-Notes | CYBERTEC-PG-Operator</title>
+    <title>Check/Monitor Backups | CYBERTEC-PG-Operator</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/CYBERTEC-pg-operator/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/CYBERTEC-pg-operator/favicon/favicon-32x32.png">
@@ -31,47 +33,52 @@
     
   <meta
     property="og:title"
-    content="Release-Notes"
+    content="Check/Monitor Backups"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
+  <meta property="og:description" content="There are several ways to gain an insight into the current status of pgBackRest. One of these is to use pgBackRest within the container. This can be done both via the repo host and the Postgres pod.
+pgbackrest via terminal (Repo-Host-Pod) kubectl exec cluster-5-pgbackrest-repo-host-0 --stdin --tty -- pgbackrest info stanza: db status: ok cipher: none db (current) wal archive min/max (16): 00000006000000000000005C/000000070000000000000092 full backup: 20240517-125730F timestamp start/stop: 2024-05-17 12:57:30&#43;00 / 2024-05-17 12:57:41&#43;00 wal start/stop: 00000007000000000000005E / 00000007000000000000005E database size: 22." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/release_notes/" />
+<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/backup/check_backups/" />
 
-<meta property="article:section" content="Release Notes" />
+<meta property="article:section" content="Backup" />
     <meta
       property="article:published_time"
-      content="2024-03-11T14:26:51+01:00"
+      content="2023-12-28T14:26:51+01:00"
     />
     <meta
       property="article:modified_time"
-      content="2024-03-11T14:26:51+01:00"
+      content="2023-12-28T14:26:51+01:00"
     />
 
 
   <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Release-Notes" />
+<meta name="twitter:title" content="Check/Monitor Backups" />
+  <meta name="twitter:description" content="There are several ways to gain an insight into the current status of pgBackRest. One of these is to use pgBackRest within the container. This can be done both via the repo host and the Postgres pod.
+pgbackrest via terminal (Repo-Host-Pod) kubectl exec cluster-5-pgbackrest-repo-host-0 --stdin --tty -- pgbackrest info stanza: db status: ok cipher: none db (current) wal archive min/max (16): 00000006000000000000005C/000000070000000000000092 full backup: 20240517-125730F timestamp start/stop: 2024-05-17 12:57:30&#43;00 / 2024-05-17 12:57:41&#43;00 wal start/stop: 00000007000000000000005E / 00000007000000000000005E database size: 22." />
 
 
   <script type="application/ld+json">
   {
       "@context": "http://schema.org",
       "@type": "TechArticle",
-      "articleSection": "Release Notes",
-      "name": "Release-Notes",
-      "url" : "http://localhost:1313/CYBERTEC-pg-operator/release_notes/",
-      "headline": "Release-Notes",
-      "wordCount" : "0",
+      "articleSection": "Backup",
+      "name": "Check/Monitor Backups",
+      "url" : "http://localhost:1313/CYBERTEC-pg-operator/backup/check_backups/",
+      "headline": "Check/Monitor Backups",
+      "description": "There are several ways to gain an insight into the current status of pgBackRest. One of these is to use pgBackRest within the container. This can be done both via the repo host and the Postgres pod.\npgbackrest via terminal (Repo-Host-Pod) kubectl exec cluster-5-pgbackrest-repo-host-0 --stdin --tty -- pgbackrest info stanza: db status: ok cipher: none db (current) wal archive min\/max (16): 00000006000000000000005C\/000000070000000000000092 full backup: 20240517-125730F timestamp start\/stop: 2024-05-17 12:57:30\u002b00 \/ 2024-05-17 12:57:41\u002b00 wal start\/stop: 00000007000000000000005E \/ 00000007000000000000005E database size: 22.",
+      "wordCount" : "361",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "http://localhost:1313/CYBERTEC-pg-operator/release_notes/"
+          "@id": "http://localhost:1313/CYBERTEC-pg-operator/backup/check_backups/"
       },
       "copyrightHolder" : "CYBERTEC-PG-Operator",
-      "copyrightYear" : "2024",
-      "dateCreated": "2024-03-11T14:26:51.00Z",
-      "datePublished": "2024-03-11T14:26:51.00Z",
-      "dateModified": "2024-03-11T14:26:51.00Z",
+      "copyrightYear" : "2023",
+      "dateCreated": "2023-12-28T14:26:51.00Z",
+      "datePublished": "2023-12-28T14:26:51.00Z",
+      "dateModified": "2023-12-28T14:26:51.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "CYBERTEC-PG-Operator",
@@ -134,7 +141,7 @@
   href="/CYBERTEC-pg-operator/custom.css"
   media="all"
 />
-  <link href="http://localhost:1313/CYBERTEC-pg-operator/release_notes/" rel="canonical" type="text/html" />
+  <link href="http://localhost:1313/CYBERTEC-pg-operator/backup/check_backups/" rel="canonical" type="text/html" />
 
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
@@ -1515,7 +1522,7 @@
               type="checkbox"
               
                 class="gdoc-nav__toggle" id="navtree-1890e70b"
-                
+                checked
               
             />
             <label
@@ -1524,14 +1531,7 @@
               
             >
               
-                <span class="flex">
-                  <a
-                    href="/CYBERTEC-pg-operator/backup/"
-                    class="gdoc-nav__entry"
-                  >
-                    Backup
-                  </a>
-                </span>
+                <span class="flex">Backup</span>
               
               
                 <svg class="gdoc-icon toggle gdoc_keyboard_arrow_left">
@@ -1557,6 +1557,42 @@
         
       
 
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/backup/introduction/"
+                    class="gdoc-nav__entry"
+                  >
+                    Introduction
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
       
         
           
@@ -1716,6 +1752,94 @@
                     class="gdoc-nav__entry"
                   >
                     via Azure-Blob
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/backup/encryption/"
+                    class="gdoc-nav__entry"
+                  >
+                    Encrypted Backups
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/backup/check_backups/"
+                    class="gdoc-nav__entry is-active"
+                  >
+                    Check/Monitor Backups
                   </a>
                 </span>
               
@@ -2221,7 +2345,7 @@
               type="checkbox"
               
                 class="gdoc-nav__toggle" id="navtree-d27c3f52"
-                checked
+                
               
             />
             <label
@@ -2659,7 +2783,15 @@
     
   
   
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Release-Notes</span><meta itemprop='position' content='3' /></li>
+    
+    
+    
+    
+  
+  
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/backup/' href='/CYBERTEC-pg-operator/backup/'><span itemprop='name'>Backup</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Check/Monitor Backups</span><meta itemprop='position' content='4' /></li>
+  
+
   
 
   
@@ -2672,12 +2804,103 @@
 
 
   <section class="gdoc-markdown__title">
-    <h1>Release-Notes</h1>
+    <h1>Check/Monitor Backups</h1>
   </section>
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    
+
+    <p>There are several ways to gain an insight into the current status of pgBackRest.
+One of these is to use pgBackRest within the container. This can be done both via the repo host and the Postgres pod.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="pgbackrest-via-terminal-repo-host-pod"
+    >
+        pgbackrest via terminal (Repo-Host-Pod)
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/check_backups/#pgbackrest-via-terminal-repo-host-pod" class="gdoc-page__anchor clip flex align-center" title="Anchor to: pgbackrest via terminal (Repo-Host-Pod)" aria-label="Anchor to: pgbackrest via terminal (Repo-Host-Pod)" href="#pgbackrest-via-terminal-repo-host-pod">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<pre tabindex="0"><code>kubectl exec cluster-5-pgbackrest-repo-host-0 --stdin --tty -- pgbackrest info 
+stanza: db
+    status: ok
+    cipher: none
+
+    db (current)
+        wal archive min/max (16): 00000006000000000000005C/000000070000000000000092
+
+        full backup: 20240517-125730F
+            timestamp start/stop: 2024-05-17 12:57:30+00 / 2024-05-17 12:57:41+00
+            wal start/stop: 00000007000000000000005E / 00000007000000000000005E
+            database size: 22.9MB, database backup size: 22.9MB
+            repo1: backup set size: 3MB, backup size: 3MB
+
+        incr backup: 20240517-125730F_20240517-130003I
+            timestamp start/stop: 2024-05-17 13:00:03+00 / 2024-05-17 13:00:05+00
+            wal start/stop: 000000070000000000000060 / 000000070000000000000060
+            database size: 22.9MB, database backup size: 904.3KB
+            repo1: backup set size: 3MB, backup size: 149.4KB
+            backup reference list: 20240517-125730F
+
+        incr backup: 20240517-125730F_20240517-131503I
+            timestamp start/stop: 2024-05-17 13:15:03+00 / 2024-05-17 13:15:04+00
+            wal start/stop: 000000070000000000000062 / 000000070000000000000062
+            database size: 22.9MB, database backup size: 24.3KB
+            repo1: backup set size: 3MB, backup size: 2.9KB
+            backup reference list: 20240517-125730F, 20240517-125730F_20240517-130003I
+</code></pre><div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="pgbackrest-via-terminal-postgres-pod"
+    >
+        pgbackrest via terminal (Postgres-Pod)
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/check_backups/#pgbackrest-via-terminal-postgres-pod" class="gdoc-page__anchor clip flex align-center" title="Anchor to: pgbackrest via terminal (Postgres-Pod)" aria-label="Anchor to: pgbackrest via terminal (Postgres-Pod)" href="#pgbackrest-via-terminal-postgres-pod">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<pre tabindex="0"><code>kubectl exec cluster-5-0 --stdin --tty -- pgbackrest info 
+Defaulted container &#34;postgres&#34; out of: postgres, postgres-exporter, pgbackrest-restore (init)
+stanza: db
+    status: ok
+    cipher: none
+
+    db (current)
+        wal archive min/max (16): 00000006000000000000005C/000000070000000000000092
+
+        full backup: 20240517-125730F
+            timestamp start/stop: 2024-05-17 12:57:30+00 / 2024-05-17 12:57:41+00
+            wal start/stop: 00000007000000000000005E / 00000007000000000000005E
+            database size: 22.9MB, database backup size: 22.9MB
+            repo1: backup set size: 3MB, backup size: 3MB
+
+        incr backup: 20240517-125730F_20240517-130003I
+            timestamp start/stop: 2024-05-17 13:00:03+00 / 2024-05-17 13:00:05+00
+            wal start/stop: 000000070000000000000060 / 000000070000000000000060
+            database size: 22.9MB, database backup size: 904.3KB
+            repo1: backup set size: 3MB, backup size: 149.4KB
+            backup reference list: 20240517-125730F
+
+        incr backup: 20240517-125730F_20240517-131503I
+            timestamp start/stop: 2024-05-17 13:15:03+00 / 2024-05-17 13:15:04+00
+            wal start/stop: 000000070000000000000062 / 000000070000000000000062
+            database size: 22.9MB, database backup size: 24.3KB
+            repo1: backup set size: 3MB, backup size: 2.9KB
+            backup reference list: 20240517-125730F, 20240517-125730F_20240517-130003I
+</code></pre><p>There is the &ldquo;normal&rdquo; output, as well as the output format Json, which can be processed directly in the terminal.</p>
+<pre tabindex="0"><code>kubectl exec cluster-5-0 --stdin --tty -- pgbackrest info  --output=json
+</code></pre><div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="check-pgbackrest-via-monitoring"
+    >
+        Check pgBackrest via Monitoring
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/check_backups/#check-pgbackrest-via-monitoring" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Check pgBackrest via Monitoring" aria-label="Anchor to: Check pgBackrest via Monitoring" href="#check-pgbackrest-via-monitoring">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>In addition to reading the status via the containers, pgBackRest can also be analysed and monitored via the monitoring stack. You can find information on setting up the monitoring stack and further information <a
+  class="gdoc-markdown__link"
+  href="documentation/how-to-use/monitoring"
+>here</a>.</p>
+
   </article>
 
 
@@ -3358,8 +3581,6 @@
         
 
         
-          
-        
 
         
         
@@ -3400,15 +3621,6 @@
         
       
     
-
-  
-    
-
-    
-      
-    
-
-    
       
       
 
@@ -3430,78 +3642,6 @@
         
 
         
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
         
       
     
@@ -3630,220 +3770,10 @@
         
 
         
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
           
         
 
         
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
         
       
     
@@ -3876,14 +3806,20 @@
         
 
         
-
-        
-        
           
-  
-  
+        
+
+        
+        
+      
+    
 
   
+
+        
+      
+    
+
   
     
 
@@ -3909,6 +3845,381 @@
             
             
           
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
         
 
         
@@ -3937,11 +4248,11 @@
   
     <a
       class="gdoc-page__nav--prev flex align-center"
-      href="/CYBERTEC-pg-operator/crd/crd-operator-configurator/"
-      title="Operator-Configuration"
+      href="/CYBERTEC-pg-operator/backup/encryption/"
+      title="Encrypted Backups"
     >
       <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-      Operator-Configuration
+      Encrypted Backups
     </a>
   
 </span>
@@ -3950,10 +4261,10 @@
   
     <a
       class="gdoc-page__nav--next flex align-center"
-      href="/CYBERTEC-pg-operator/release_notes/release_notes/"
-      title="Release Notes"
+      href="/CYBERTEC-pg-operator/restore/"
+      title="Restore"
     >
-      Release Notes
+      Restore
       <i class="gdoc-icon">gdoc_arrow_right_alt</i>
     </a>
   

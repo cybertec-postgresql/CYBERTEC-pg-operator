@@ -12,8 +12,10 @@
 <meta name="generator" content="Hugo 0.133.0">
 
 
+  <meta name="description" content="Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.
+Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options." />
 
-    <title>Release-Notes | CYBERTEC-PG-Operator</title>
+    <title>Introduction | CYBERTEC-PG-Operator</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/CYBERTEC-pg-operator/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/CYBERTEC-pg-operator/favicon/favicon-32x32.png">
@@ -31,47 +33,52 @@
     
   <meta
     property="og:title"
-    content="Release-Notes"
+    content="Introduction"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
+  <meta property="og:description" content="Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.
+Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/release_notes/" />
+<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/backup/introduction/" />
 
-<meta property="article:section" content="Release Notes" />
+<meta property="article:section" content="Backup" />
     <meta
       property="article:published_time"
-      content="2024-03-11T14:26:51+01:00"
+      content="2023-12-28T14:26:51+01:00"
     />
     <meta
       property="article:modified_time"
-      content="2024-03-11T14:26:51+01:00"
+      content="2023-12-28T14:26:51+01:00"
     />
 
 
   <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Release-Notes" />
+<meta name="twitter:title" content="Introduction" />
+  <meta name="twitter:description" content="Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.
+Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options." />
 
 
   <script type="application/ld+json">
   {
       "@context": "http://schema.org",
       "@type": "TechArticle",
-      "articleSection": "Release Notes",
-      "name": "Release-Notes",
-      "url" : "http://localhost:1313/CYBERTEC-pg-operator/release_notes/",
-      "headline": "Release-Notes",
-      "wordCount" : "0",
+      "articleSection": "Backup",
+      "name": "Introduction",
+      "url" : "http://localhost:1313/CYBERTEC-pg-operator/backup/introduction/",
+      "headline": "Introduction",
+      "description": "Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 \/ 2005) and pg_basebackup (PostgreSQL 9.0 \/ 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.\nBackups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options.",
+      "wordCount" : "769",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "http://localhost:1313/CYBERTEC-pg-operator/release_notes/"
+          "@id": "http://localhost:1313/CYBERTEC-pg-operator/backup/introduction/"
       },
       "copyrightHolder" : "CYBERTEC-PG-Operator",
-      "copyrightYear" : "2024",
-      "dateCreated": "2024-03-11T14:26:51.00Z",
-      "datePublished": "2024-03-11T14:26:51.00Z",
-      "dateModified": "2024-03-11T14:26:51.00Z",
+      "copyrightYear" : "2023",
+      "dateCreated": "2023-12-28T14:26:51.00Z",
+      "datePublished": "2023-12-28T14:26:51.00Z",
+      "dateModified": "2023-12-28T14:26:51.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "CYBERTEC-PG-Operator",
@@ -134,7 +141,7 @@
   href="/CYBERTEC-pg-operator/custom.css"
   media="all"
 />
-  <link href="http://localhost:1313/CYBERTEC-pg-operator/release_notes/" rel="canonical" type="text/html" />
+  <link href="http://localhost:1313/CYBERTEC-pg-operator/backup/introduction/" rel="canonical" type="text/html" />
 
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
@@ -1515,7 +1522,7 @@
               type="checkbox"
               
                 class="gdoc-nav__toggle" id="navtree-1890e70b"
-                
+                checked
               
             />
             <label
@@ -1524,14 +1531,7 @@
               
             >
               
-                <span class="flex">
-                  <a
-                    href="/CYBERTEC-pg-operator/backup/"
-                    class="gdoc-nav__entry"
-                  >
-                    Backup
-                  </a>
-                </span>
+                <span class="flex">Backup</span>
               
               
                 <svg class="gdoc-icon toggle gdoc_keyboard_arrow_left">
@@ -1557,6 +1557,42 @@
         
       
 
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/backup/introduction/"
+                    class="gdoc-nav__entry is-active"
+                  >
+                    Introduction
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
       
         
           
@@ -1716,6 +1752,94 @@
                     class="gdoc-nav__entry"
                   >
                     via Azure-Blob
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/backup/encryption/"
+                    class="gdoc-nav__entry"
+                  >
+                    Encrypted Backups
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/backup/check_backups/"
+                    class="gdoc-nav__entry"
+                  >
+                    Check/Monitor Backups
                   </a>
                 </span>
               
@@ -2221,7 +2345,7 @@
               type="checkbox"
               
                 class="gdoc-nav__toggle" id="navtree-d27c3f52"
-                checked
+                
               
             />
             <label
@@ -2659,7 +2783,15 @@
     
   
   
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Release-Notes</span><meta itemprop='position' content='3' /></li>
+    
+    
+    
+    
+  
+  
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/backup/' href='/CYBERTEC-pg-operator/backup/'><span itemprop='name'>Backup</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Introduction</span><meta itemprop='position' content='4' /></li>
+  
+
   
 
   
@@ -2672,12 +2804,126 @@
 
 
   <section class="gdoc-markdown__title">
-    <h1>Release-Notes</h1>
+    <h1>Introduction</h1>
   </section>
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    
+
+    <p>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="backups-with-pgbackrest"
+    >
+        Backups with pgBackRest
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/introduction/#backups-with-pgbackrest" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Backups with pgBackRest" aria-label="Anchor to: Backups with pgBackRest" href="#backups-with-pgbackrest">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>CPO relies on <a
+  class="gdoc-markdown__link"
+  href="www.pgbackrest.org"
+>pgBackRest</a> as its backup solution, a tried-and-tested tool with extensive backup and restore options.
+The backup is based on two elements:</p>
+<ul>
+<li>Snapshots in the form of physical backups</li>
+<li>WAL archive: Continuous archiving of the WAL files</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="backups"
+    >
+        Backups
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/introduction/#backups" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Backups" aria-label="Anchor to: Backups" href="#backups">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Backups represent a snapshot of the database in the form of pyhsical files. This contains all relevant information that PostgreSQL holds in its data folder.
+With pgBackRest it is possible to create different types of Backups:</p>
+<ul>
+<li>full Snapshot: This captures and saves all files at the time of the backup</li>
+<li>Differential backup: Only captures all files that have been changed since the last full Backup</li>
+<li>Incremental backup: Only records the files that have been changed since the last backup (of any kind).</li>
+</ul>
+<p>When restoring using differential or incremental Backup, it is necessary to also use the previous Backup that provide the basis for the selected Backup.</p>
+<blockquote>
+<p><strong><em>HINT:</em></strong>  The choice of Backup types depends on factors such as the size of the database, the time available for backups and the restore.</p>
+</blockquote>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="wal-archive"
+    >
+        WAL-Archive
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/introduction/#wal-archive" class="gdoc-page__anchor clip flex align-center" title="Anchor to: WAL-Archive" aria-label="Anchor to: WAL-Archive" href="#wal-archive">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>The WAL (Write-Ahead-Log) refers to log files which record all changes to the database data before they are written to the actual files. The basic idea here is to guarantee the consistency and recoverability of the comitted data even in the event of failures.</p>
+<p>PostgreSQL normally cleans up or recycles the WAL files that are no longer required. By using WAL archiving, the WAL files are saved to a different location before this process so that they can be used for various activities in the future.
+These activities include</p>
+<ul>
+<li>Providing the WAL files for replicas to keep them up to date</li>
+<li>Restoring instances that have lost parts of the WAL files in the event of a failure and cannot return to a consistent state without them without losing data</li>
+<li>Point-In-Time-Recovery (PITR): In contrast to Backups, which map a fixed point in time, WAL files make it possible to jump dynamically to a desired point in time and restore the database to the closest available consistent data point</li>
+</ul>
+<blockquote>
+<p><strong><em>HINT:</em></strong>  WAL archiving is an indispensable tool for data availability, recoverability and the continuous availability of PostgreSQL.</p>
+</blockquote>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="backup-your-cluster"
+    >
+        Backup your Cluster
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/introduction/#backup-your-cluster" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Backup your Cluster" aria-label="Anchor to: Backup your Cluster" href="#backup-your-cluster">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>With pgBackRest, backups can be stored on different types of storage:</p>
+<ul>
+<li>Block storage (PVC)</li>
+<li>S3 / S3-compatible storage</li>
+<li>Azure blob storage</li>
+<li>GCS</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="how-a-backup-works"
+    >
+        How a Backup works
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/introduction/#how-a-backup-works" class="gdoc-page__anchor clip flex align-center" title="Anchor to: How a Backup works" aria-label="Anchor to: How a Backup works" href="#how-a-backup-works">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>The operator creates a cronjob object on Kubernetes based on the defined times for automatic backups. This means that the Kubernetes core (<a
+  class="gdoc-markdown__link"
+  href="https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/"
+>CronJob Controller</a>) will take care of processing the automatic backups and create a job and thus a pod at the appropriate time.
+The pod will send the backup command to the primary or, if block storage is used, to the repo host and monitor it. As soon as the backup is successfully completed, the pod stops with Completed and thus completes the job.</p>
+<pre tabindex="0"><code>kubectl get cronjobs
+---------------------------------------------------------------------------------------
+NAME                          | SCHEDULE     | SUSPEND | ACTIVE | LAST SCHEDULE | AGE
+pgbackrest-cluster-repo1-full | 30 2 * * *   | False   | 0      | 4h46m         | 14h
+pgbackrest-cluster-repo1-incr | */30 * * * * | False   | 1      | 81s           | 106m
+
+kubectl get jobs
+-----------------------------------------------------------------------
+NAME                                   | COMPLETIONS | DURATION | AGE
+pgbackrest-cluster-repo1-full-28597110 | 1/1         | 52s      | 140m
+pgbackrest-cluster-repo1-incr-28597365 | 1/1         | 2m37s    | 32m
+pgbackrest-cluster-repo1-incr-28597380 | 1/1         | 2m38s    | 17m
+pgbackrest-cluster-repo1-incr-28597395 | 0/1         | 2m3s     | 2m3s
+</code></pre><p>If there are problems such as a timeout, the pod will stop with exit code 1 and thus indicate an error. In this case, a new pod will be created which will attempt to complete the backup. The maximum number of attempts is 6, so if the backup fails six times, the job is deemed to have failed and will not be attempted again until the next cronjob execution. The job pod log provides information about the problems.</p>
+<pre tabindex="0"><code>kubectl get pods
+-----------------------------------------------------------------------------------
+NAME                                         | READY | STATUS    | RESTARTS | AGE
+cluster-0                                    | 2/2   | Running   | 2        | 14h
+cluster-pgbackrest-repo-host-0               | 1/1   | Running   | 0        | 107m
+pgbackrest-cluster-repo1-full-28597110-x8zpw | 0/1   | Completed | 0        | 143m
+pgbackrest-cluster-repo1-incr-28597365-7bb5l | 0/1   | Completed | 0        | 34m
+pgbackrest-cluster-repo1-incr-28597380-j76rr | 0/1   | Completed | 0        | 19m
+pgbackrest-cluster-repo1-incr-28597395-rh86t | 0/1   | Completed | 0        | 4m27s
+postgres-operator-66bbff5c54-5sjmk           | 1/1   | Running   | 0        | 47m
+</code></pre>
   </article>
 
 
@@ -3358,8 +3604,6 @@
         
 
         
-          
-        
 
         
         
@@ -3391,38 +3635,8 @@
         
 
         
-
-        
           
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
+          
         
 
         
@@ -3432,465 +3646,6 @@
         
         
       
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-          
-          
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
     
       
       
@@ -3909,6 +3664,585 @@
             
             
           
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
         
 
         
@@ -3937,11 +4271,11 @@
   
     <a
       class="gdoc-page__nav--prev flex align-center"
-      href="/CYBERTEC-pg-operator/crd/crd-operator-configurator/"
-      title="Operator-Configuration"
+      href="/CYBERTEC-pg-operator/config_cluster/"
+      title="PostgreSQL Configuration"
     >
       <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-      Operator-Configuration
+      PostgreSQL Configuration
     </a>
   
 </span>
@@ -3950,10 +4284,10 @@
   
     <a
       class="gdoc-page__nav--next flex align-center"
-      href="/CYBERTEC-pg-operator/release_notes/release_notes/"
-      title="Release Notes"
+      href="/CYBERTEC-pg-operator/backup/pvc/"
+      title="via Blockstorage (pvc)"
     >
-      Release Notes
+      via Blockstorage (pvc)
       <i class="gdoc-icon">gdoc_arrow_right_alt</i>
     </a>
   

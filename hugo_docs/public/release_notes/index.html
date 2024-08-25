@@ -12,6 +12,7 @@
 <meta name="generator" content="Hugo 0.133.0">
 
 
+  <meta name="description" content="0.7.1 Fixes Fixed role creation for monitoring. Fix for the use of gcs with pgBackRest Supported Versions PG: 13 - 16 &amp; 17Beta2 Patroni: 3.3.2 pgBackRest: 2.53 Kubernetes: 1.21 - 1.28 Openshift: 4.8 - 4.13 0.7.0 Features Monitoring-Sidecar integrated via CRD Start with Monitoring Password-Hash per default set to scram-sha-256 pgBackRest with blockstorage using RepoHost Internal Certification-Management for RepoHost-Certificates Compatible with PG17Beta2 Changes API Change acid.zalan.do is replaced by cpo." />
 
     <title>Release-Notes | CYBERTEC-PG-Operator</title>
 
@@ -34,6 +35,7 @@
     content="Release-Notes"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
+  <meta property="og:description" content="0.7.1 Fixes Fixed role creation for monitoring. Fix for the use of gcs with pgBackRest Supported Versions PG: 13 - 16 &amp; 17Beta2 Patroni: 3.3.2 pgBackRest: 2.53 Kubernetes: 1.21 - 1.28 Openshift: 4.8 - 4.13 0.7.0 Features Monitoring-Sidecar integrated via CRD Start with Monitoring Password-Hash per default set to scram-sha-256 pgBackRest with blockstorage using RepoHost Internal Certification-Management for RepoHost-Certificates Compatible with PG17Beta2 Changes API Change acid.zalan.do is replaced by cpo." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/release_notes/" />
 
@@ -50,6 +52,7 @@
 
   <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Release-Notes" />
+  <meta name="twitter:description" content="0.7.1 Fixes Fixed role creation for monitoring. Fix for the use of gcs with pgBackRest Supported Versions PG: 13 - 16 &amp; 17Beta2 Patroni: 3.3.2 pgBackRest: 2.53 Kubernetes: 1.21 - 1.28 Openshift: 4.8 - 4.13 0.7.0 Features Monitoring-Sidecar integrated via CRD Start with Monitoring Password-Hash per default set to scram-sha-256 pgBackRest with blockstorage using RepoHost Internal Certification-Management for RepoHost-Certificates Compatible with PG17Beta2 Changes API Change acid.zalan.do is replaced by cpo." />
 
 
   <script type="application/ld+json">
@@ -60,7 +63,8 @@
       "name": "Release-Notes",
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/release_notes/",
       "headline": "Release-Notes",
-      "wordCount" : "0",
+      "description": "0.7.1 Fixes Fixed role creation for monitoring. Fix for the use of gcs with pgBackRest Supported Versions PG: 13 - 16 \u0026 17Beta2 Patroni: 3.3.2 pgBackRest: 2.53 Kubernetes: 1.21 - 1.28 Openshift: 4.8 - 4.13 0.7.0 Features Monitoring-Sidecar integrated via CRD Start with Monitoring Password-Hash per default set to scram-sha-256 pgBackRest with blockstorage using RepoHost Internal Certification-Management for RepoHost-Certificates Compatible with PG17Beta2 Changes API Change acid.zalan.do is replaced by cpo.",
+      "wordCount" : "368",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -867,6 +871,94 @@
         
       
     
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/architecture/compontens/"
+                    class="gdoc-nav__entry"
+                  >
+                    Software-Components
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/architecture/rolling_update/"
+                    class="gdoc-nav__entry"
+                  >
+                    Rolling-Updates
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
   </ul>
 
             
@@ -1081,7 +1173,14 @@
               
             >
               
-                <span class="flex">Setup local Kubernetes</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/installation/dev-k8s/"
+                    class="gdoc-nav__entry"
+                  >
+                    Setup local Kubernetes
+                  </a>
+                </span>
               
               
             </label>
@@ -1524,14 +1623,7 @@
               
             >
               
-                <span class="flex">
-                  <a
-                    href="/CYBERTEC-pg-operator/backup/"
-                    class="gdoc-nav__entry"
-                  >
-                    Backup
-                  </a>
-                </span>
+                <span class="flex">Backup</span>
               
               
                 <svg class="gdoc-icon toggle gdoc_keyboard_arrow_left">
@@ -1557,6 +1649,42 @@
         
       
 
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/backup/introduction/"
+                    class="gdoc-nav__entry"
+                  >
+                    Introduction
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
       
         
           
@@ -1716,6 +1844,94 @@
                     class="gdoc-nav__entry"
                   >
                     via Azure-Blob
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/backup/encryption/"
+                    class="gdoc-nav__entry"
+                  >
+                    Encrypted Backups
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/backup/check_backups/"
+                    class="gdoc-nav__entry"
+                  >
+                    Check/Monitor Backups
                   </a>
                 </span>
               
@@ -2220,56 +2436,6 @@
             <input
               type="checkbox"
               
-                class="gdoc-nav__toggle" id="navtree-d27c3f52"
-                checked
-              
-            />
-            <label
-              
-                for="navtree-d27c3f52" class="flex justify-between align-center"
-              
-            >
-              
-                <span class="flex">Release-Notes</span>
-              
-              
-                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_left">
-                  <use xlink:href="#gdoc_keyboard_arrow_left"></use>
-                </svg>
-                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_down">
-                  <use xlink:href="#gdoc_keyboard_arrow_down"></use>
-                </svg>
-              
-            </label>
-
-            
-              
-  
-
-
-  <ul class="gdoc-nav__list">
-    
-    
-      
-
-      
-        
-      
-
-      
-        
-          
-          
-          
-          
-          
-          
-
-
-          <li>
-            <input
-              type="checkbox"
-              
                 class="hidden"
               
             />
@@ -2279,22 +2445,15 @@
               
                 <span class="flex">
                   <a
-                    href="/CYBERTEC-pg-operator/release_notes/release_notes/"
-                    class="gdoc-nav__entry"
+                    href="/CYBERTEC-pg-operator/release_notes/"
+                    class="gdoc-nav__entry is-active"
                   >
-                    Release Notes
+                    Release-Notes
                   </a>
                 </span>
               
               
             </label>
-
-            
-          </li>
-        
-      
-    
-  </ul>
 
             
           </li>
@@ -2677,7 +2836,344 @@
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    
+    <div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="071"
+    >
+        0.7.1
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#071" class="gdoc-page__anchor clip flex align-center" title="Anchor to: 0.7.1" aria-label="Anchor to: 0.7.1" href="#071">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="fixes"
+    >
+        Fixes
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#fixes" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Fixes" aria-label="Anchor to: Fixes" href="#fixes">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>Fixed role creation for monitoring.</li>
+<li>Fix for the use of gcs with pgBackRest</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="supported-versions"
+    >
+        Supported Versions
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#supported-versions" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Supported Versions" aria-label="Anchor to: Supported Versions" href="#supported-versions">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>PG: 13 - 16 &amp; 17Beta2</li>
+<li>Patroni: 3.3.2</li>
+<li>pgBackRest: 2.53</li>
+<li>Kubernetes: 1.21 - 1.28</li>
+<li>Openshift: 4.8 - 4.13</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="070"
+    >
+        0.7.0
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#070" class="gdoc-page__anchor clip flex align-center" title="Anchor to: 0.7.0" aria-label="Anchor to: 0.7.0" href="#070">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="features"
+    >
+        Features
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#features" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Features" aria-label="Anchor to: Features" href="#features">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>Monitoring-Sidecar integrated via CRD <a
+  class="gdoc-markdown__link"
+  href="documentation/cluster/monitoring"
+>Start with Monitoring</a></li>
+<li>Password-Hash per default set to scram-sha-256</li>
+<li>pgBackRest with blockstorage using RepoHost</li>
+<li>Internal Certification-Management for RepoHost-Certificates</li>
+<li>Compatible with PG17Beta2</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="changes"
+    >
+        Changes
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#changes" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Changes" aria-label="Anchor to: Changes" href="#changes">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>API Change acid.zalan.do is replaced by cpo.opensource.cybertec.at - If you&rsquo;re updating your Operator from previous Versions, please check this  <a
+  class="gdoc-markdown__link"
+  href="documentation/operator/migrateToNewApi/"
+>HowTo Migrate to new API</a></li>
+<li>Patroni-Compatibility has increased to Version 3.3.2</li>
+<li>pgBackRest-Compatbility has increased to Version 2.52.1</li>
+<li>Revision of the restore process</li>
+<li>Revision of the backup jobs</li>
+<li>Operator now using Rocky9 as Baseimage</li>
+<li>Updates Go-Package to 1.22.5</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="fixes-1"
+    >
+        Fixes
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#fixes-1" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Fixes" aria-label="Anchor to: Fixes" href="#fixes-1">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>PDB Bug fixed - Single-Node Clusters are not creating PDBs anymore which can break Kubernetes-Update</li>
+<li>Wrong Templates inside Cronjobs fixed</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="supported-versions-1"
+    >
+        Supported Versions
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#supported-versions-1" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Supported Versions" aria-label="Anchor to: Supported Versions" href="#supported-versions-1">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>PG: 13 - 16 &amp; 17Beta2</li>
+<li>Patroni: 3.3.2</li>
+<li>pgBackRest: 2.52.1</li>
+<li>Kubernetes: 1.21 - 1.28</li>
+<li>Openshift: 4.8 - 4.13</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="061"
+    >
+        0.6.1
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#061" class="gdoc-page__anchor clip flex align-center" title="Anchor to: 0.6.1" aria-label="Anchor to: 0.6.1" href="#061">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Release with fixes</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="fixes-2"
+    >
+        Fixes
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#fixes-2" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Fixes" aria-label="Anchor to: Fixes" href="#fixes-2">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>Backup-Pod now runs with &ldquo;best-effort&rdquo; resource definition</li>
+<li>Der Init-Container für die Wiederherstellung verwendet nun die gleiche Ressource-Definition wie der Datenbank-Container, wenn es keine spezifische Definition im Cluster-Manifest gibt (spec.backup.pgbackrest.resources)</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="software-versions"
+    >
+        Software-Versions
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#software-versions" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Software-Versions" aria-label="Anchor to: Software-Versions" href="#software-versions">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>PostgreSQL: 15.3 14.8, 13.11, 12.15</li>
+<li>Patroni: 3.0.4</li>
+<li>pgBackRest: 2.47</li>
+<li>OS: Rocky-Linux 9.1 (4.18)
+<!-- raw HTML omitted --><!-- raw HTML omitted --></li>
+</ul>
+<hr>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="060"
+    >
+        0.6.0
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#060" class="gdoc-page__anchor clip flex align-center" title="Anchor to: 0.6.0" aria-label="Anchor to: 0.6.0" href="#060">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Release with some improvements and stabilisation measuresm</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="features-1"
+    >
+        Features
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#features-1" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Features" aria-label="Anchor to: Features" href="#features-1">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>Added <a
+  class="gdoc-markdown__link"
+  href="https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/"
+>Pod Topology Spread Constraints</a></li>
+<li>Added support for TDE based on the CYBERTEC PostgreSQL Enterprise Images (Licensed Container Suite)</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="software-versions-1"
+    >
+        Software-Versions
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#software-versions-1" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Software-Versions" aria-label="Anchor to: Software-Versions" href="#software-versions-1">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>PostgreSQL: 15.3 14.8, 13.11, 12.15</li>
+<li>Patroni: 3.0.4</li>
+<li>pgBackRest: 2.47</li>
+<li>OS: Rocky-Linux 9.1 (4.18)
+<!-- raw HTML omitted --><!-- raw HTML omitted --></li>
+</ul>
+<hr>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="050"
+    >
+        0.5.0
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#050" class="gdoc-page__anchor clip flex align-center" title="Anchor to: 0.5.0" aria-label="Anchor to: 0.5.0" href="#050">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Release with new Software-Updates and some internal Improvements</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="features-2"
+    >
+        Features
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#features-2" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Features" aria-label="Anchor to: Features" href="#features-2">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>Updated to Zalando Operator 1.9</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="fixes-3"
+    >
+        Fixes
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#fixes-3" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Fixes" aria-label="Anchor to: Fixes" href="#fixes-3">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>internal Problems with Cronjobs</li>
+<li>updates for some API-Definitions</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="software-versions-2"
+    >
+        Software-Versions
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#software-versions-2" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Software-Versions" aria-label="Anchor to: Software-Versions" href="#software-versions-2">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>PostgreSQL: 15.2 14.7, 13.10, 12.14</li>
+<li>Patroni: 3.0.2</li>
+<li>pgBackRest: 2.45</li>
+<li>OS: Rocky-Linux 9.1 (4.18)
+<!-- raw HTML omitted --><!-- raw HTML omitted --></li>
+</ul>
+<hr>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="030"
+    >
+        0.3.0
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#030" class="gdoc-page__anchor clip flex align-center" title="Anchor to: 0.3.0" aria-label="Anchor to: 0.3.0" href="#030">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Release with some improvements and stabilisation measuresm</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="fixes-4"
+    >
+        Fixes
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#fixes-4" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Fixes" aria-label="Anchor to: Fixes" href="#fixes-4">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>missing pgbackrest_restore configmap fixed</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="software-versions-3"
+    >
+        Software-Versions
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#software-versions-3" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Software-Versions" aria-label="Anchor to: Software-Versions" href="#software-versions-3">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>PostgreSQL: 15.1 14.7, 13.9, 12.13, 11.18 and 10.23</li>
+<li>Patroni: 3.0.1</li>
+<li>pgBackRest: 2.44</li>
+<li>OS: Rocky-Linux 9.1 (4.18)
+<!-- raw HTML omitted --><!-- raw HTML omitted --></li>
+</ul>
+<hr>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="010"
+    >
+        0.1.0
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#010" class="gdoc-page__anchor clip flex align-center" title="Anchor to: 0.1.0" aria-label="Anchor to: 0.1.0" href="#010">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Initial Release as a Fork of the Zalando-Operator</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="features-3"
+    >
+        Features
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#features-3" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Features" aria-label="Anchor to: Features" href="#features-3">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>Added Support for pgBackRest (PoC-State)
+<ul>
+<li>Stanza-create and Initial-Backup are executed automatically</li>
+<li>Schedule automatic updates (Full/Incremental/Differential-Backup)</li>
+<li>Securely store backups on AWS S3 and S3-compatible storage</li>
+</ul>
+</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="software-versions-4"
+    >
+        Software-Versions
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/release_notes/#software-versions-4" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Software-Versions" aria-label="Anchor to: Software-Versions" href="#software-versions-4">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>PostgreSQL: 14.6, 13.9, 12.13, 11.18 and 10.23</li>
+<li>Patroni: 2.4.1</li>
+<li>pgBackRest: 2.42</li>
+<li>OS: Rocky-Linux 9.0 (4.18)</li>
+</ul>
+
   </article>
 
 
@@ -2867,6 +3363,72 @@
     
 
   
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
 
         
       
@@ -2999,408 +3561,6 @@
   
 
   
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
   
     
 
@@ -3630,6 +3790,498 @@
         
 
         
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
 
         
         
@@ -3876,54 +4528,10 @@
         
 
         
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-          
-            
-            
           
         
 
         
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
         
       
     
@@ -3947,15 +4555,6 @@
 </span>
 <span class="gdoc-page__nav__product">A product of CYBERTEC</span>
 <span class="gdoc-page__nav">
-  
-    <a
-      class="gdoc-page__nav--next flex align-center"
-      href="/CYBERTEC-pg-operator/release_notes/release_notes/"
-      title="Release Notes"
-    >
-      Release Notes
-      <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-    </a>
   
 </span>
 

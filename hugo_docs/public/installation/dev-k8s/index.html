@@ -12,10 +12,10 @@
 <meta name="generator" content="Hugo 0.133.0">
 
 
-  <meta name="description" content="Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.
-The following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster." />
+  <meta name="description" content="There are various options for setting up a local Kubernetes environment. This chapter deals with the following two variants:
+minikube crc (CodeReadyContainers from RedHat) Minikube Minikube is a tool that makes it possible to run Kubernetes locally on a single computer. It sets up a minimal but functional Kubernetes environment suitable for development and testing purposes. Minikube supports most Kubernetes features and provides an easy way to launch and manage Kubernetes clusters on local machines without the need for a complex cloud infrastructure." />
 
-    <title>TLS/SSL connections | CYBERTEC-PG-Operator</title>
+    <title>Setup local Kubernetes | CYBERTEC-PG-Operator</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/CYBERTEC-pg-operator/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/CYBERTEC-pg-operator/favicon/favicon-32x32.png">
@@ -33,52 +33,52 @@ The following chapter deals with the creation of custom certificates and the ste
     
   <meta
     property="og:title"
-    content="TLS/SSL connections"
+    content="Setup local Kubernetes"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
-  <meta property="og:description" content="Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.
-The following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster." />
+  <meta property="og:description" content="There are various options for setting up a local Kubernetes environment. This chapter deals with the following two variants:
+minikube crc (CodeReadyContainers from RedHat) Minikube Minikube is a tool that makes it possible to run Kubernetes locally on a single computer. It sets up a minimal but functional Kubernetes environment suitable for development and testing purposes. Minikube supports most Kubernetes features and provides an easy way to launch and manage Kubernetes clusters on local machines without the need for a complex cloud infrastructure." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/tls/" />
+<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/installation/dev-k8s/" />
 
-<meta property="article:section" content="Tls" />
+<meta property="article:section" content="Installation" />
     <meta
       property="article:published_time"
-      content="2023-12-28T14:26:51+01:00"
+      content="2023-03-07T14:26:51+01:00"
     />
     <meta
       property="article:modified_time"
-      content="2023-12-28T14:26:51+01:00"
+      content="2023-03-07T14:26:51+01:00"
     />
 
 
   <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="TLS/SSL connections" />
-  <meta name="twitter:description" content="Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.
-The following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster." />
+<meta name="twitter:title" content="Setup local Kubernetes" />
+  <meta name="twitter:description" content="There are various options for setting up a local Kubernetes environment. This chapter deals with the following two variants:
+minikube crc (CodeReadyContainers from RedHat) Minikube Minikube is a tool that makes it possible to run Kubernetes locally on a single computer. It sets up a minimal but functional Kubernetes environment suitable for development and testing purposes. Minikube supports most Kubernetes features and provides an easy way to launch and manage Kubernetes clusters on local machines without the need for a complex cloud infrastructure." />
 
 
   <script type="application/ld+json">
   {
       "@context": "http://schema.org",
       "@type": "TechArticle",
-      "articleSection": "Tls",
-      "name": "TLS/SSL connections",
-      "url" : "http://localhost:1313/CYBERTEC-pg-operator/tls/",
-      "headline": "TLS/SSL connections",
-      "description": "Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS\/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.\nThe following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster.",
-      "wordCount" : "586",
+      "articleSection": "Installation",
+      "name": "Setup local Kubernetes",
+      "url" : "http://localhost:1313/CYBERTEC-pg-operator/installation/dev-k8s/",
+      "headline": "Setup local Kubernetes",
+      "description": "There are various options for setting up a local Kubernetes environment. This chapter deals with the following two variants:\nminikube crc (CodeReadyContainers from RedHat) Minikube Minikube is a tool that makes it possible to run Kubernetes locally on a single computer. It sets up a minimal but functional Kubernetes environment suitable for development and testing purposes. Minikube supports most Kubernetes features and provides an easy way to launch and manage Kubernetes clusters on local machines without the need for a complex cloud infrastructure.",
+      "wordCount" : "485",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "http://localhost:1313/CYBERTEC-pg-operator/tls/"
+          "@id": "http://localhost:1313/CYBERTEC-pg-operator/installation/dev-k8s/"
       },
       "copyrightHolder" : "CYBERTEC-PG-Operator",
       "copyrightYear" : "2023",
-      "dateCreated": "2023-12-28T14:26:51.00Z",
-      "datePublished": "2023-12-28T14:26:51.00Z",
-      "dateModified": "2023-12-28T14:26:51.00Z",
+      "dateCreated": "2023-03-07T14:26:51.00Z",
+      "datePublished": "2023-03-07T14:26:51.00Z",
+      "dateModified": "2023-03-07T14:26:51.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "CYBERTEC-PG-Operator",
@@ -141,7 +141,7 @@ The following chapter deals with the creation of custom certificates and the ste
   href="/CYBERTEC-pg-operator/custom.css"
   media="all"
 />
-  <link href="http://localhost:1313/CYBERTEC-pg-operator/tls/" rel="canonical" type="text/html" />
+  <link href="http://localhost:1313/CYBERTEC-pg-operator/installation/dev-k8s/" rel="canonical" type="text/html" />
 
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
@@ -874,6 +874,94 @@ The following chapter deals with the creation of custom certificates and the ste
         
       
     
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/architecture/compontens/"
+                    class="gdoc-nav__entry"
+                  >
+                    Software-Components
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/architecture/rolling_update/"
+                    class="gdoc-nav__entry"
+                  >
+                    Rolling-Updates
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
   </ul>
 
             
@@ -1032,7 +1120,7 @@ The following chapter deals with the creation of custom certificates and the ste
               type="checkbox"
               
                 class="gdoc-nav__toggle" id="navtree-168d7570"
-                
+                checked
               
             />
             <label
@@ -1088,7 +1176,14 @@ The following chapter deals with the creation of custom certificates and the ste
               
             >
               
-                <span class="flex">Setup local Kubernetes</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/installation/dev-k8s/"
+                    class="gdoc-nav__entry is-active"
+                  >
+                    Setup local Kubernetes
+                  </a>
+                </span>
               
               
             </label>
@@ -1932,7 +2027,7 @@ The following chapter deals with the creation of custom certificates and the ste
                 <span class="flex">
                   <a
                     href="/CYBERTEC-pg-operator/tls/"
-                    class="gdoc-nav__entry is-active"
+                    class="gdoc-nav__entry"
                   >
                     TLS/SSL connections
                   </a>
@@ -2344,56 +2439,6 @@ The following chapter deals with the creation of custom certificates and the ste
             <input
               type="checkbox"
               
-                class="gdoc-nav__toggle" id="navtree-d27c3f52"
-                
-              
-            />
-            <label
-              
-                for="navtree-d27c3f52" class="flex justify-between align-center"
-              
-            >
-              
-                <span class="flex">Release-Notes</span>
-              
-              
-                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_left">
-                  <use xlink:href="#gdoc_keyboard_arrow_left"></use>
-                </svg>
-                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_down">
-                  <use xlink:href="#gdoc_keyboard_arrow_down"></use>
-                </svg>
-              
-            </label>
-
-            
-              
-  
-
-
-  <ul class="gdoc-nav__list">
-    
-    
-      
-
-      
-        
-      
-
-      
-        
-          
-          
-          
-          
-          
-          
-
-
-          <li>
-            <input
-              type="checkbox"
-              
                 class="hidden"
               
             />
@@ -2403,22 +2448,15 @@ The following chapter deals with the creation of custom certificates and the ste
               
                 <span class="flex">
                   <a
-                    href="/CYBERTEC-pg-operator/release_notes/release_notes/"
+                    href="/CYBERTEC-pg-operator/release_notes/"
                     class="gdoc-nav__entry"
                   >
-                    Release Notes
+                    Release-Notes
                   </a>
                 </span>
               
               
             </label>
-
-            
-          </li>
-        
-      
-    
-  </ul>
 
             
           </li>
@@ -2783,7 +2821,15 @@ The following chapter deals with the creation of custom certificates and the ste
     
   
   
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>TLS/SSL connections</span><meta itemprop='position' content='3' /></li>
+    
+    
+    
+    
+  
+  
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/installation/' href='/CYBERTEC-pg-operator/installation/'><span itemprop='name'>Installation</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Setup local Kubernetes</span><meta itemprop='position' content='4' /></li>
+  
+
   
 
   
@@ -2796,171 +2842,121 @@ The following chapter deals with the creation of custom certificates and the ste
 
 
   <section class="gdoc-markdown__title">
-    <h1>TLS/SSL connections</h1>
+    <h1>Setup local Kubernetes</h1>
   </section>
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    <p>Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.</p>
-<p>The following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster. In the example, a custom CA is created, on the basis of which the certificates are then generated and signed by this CA. This step can be skipped if certificates have already been obtained from another trusted organisation.</p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="create-a-custom-ca-and-certificates"
-    >
-        Create a custom CA and Certificates
-    </h3>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls/#create-a-custom-ca-and-certificates" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create a custom CA and Certificates" aria-label="Anchor to: Create a custom CA and Certificates" href="#create-a-custom-ca-and-certificates">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
 
-
-
-
-
-<blockquote class="gdoc-hint important">
-  <div class="gdoc-hint__title flex align-center"><i class="fa important" title="Important"></i></div>
-  <div class="gdoc-hint__text">Precondition: This chapter requires openssl</div>
-</blockquote>
-
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h4 id="create-the-ca"
-    >
-        Create the CA
-    </h4>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls/#create-the-ca" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create the CA" aria-label="Anchor to: Create the CA" href="#create-the-ca">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>The first step is to create a custom CA. An organisation name is required for this. You can also add further details about the country, district and location.
-The CA serves as the central authority that signs the certificates and thus guarantees the correctness of the certificate. In order to successfully complete the verification of a certificate, the CA&rsquo;s certificate must be stored on the client system.</p>
-<pre tabindex="0"><code>ORGANIZATION=MyCustomOrganization
-CA=$ORGANIZATION-RootCA
-
-mkdir $CA
-cd $CA
-
-# Creating the CA-Key
-openssl genpkey -algorithm EC -out $CA.key -pkeyopt ec_paramgen_curve:secp384r1 -pkeyopt ec_param_enc:named_curve -aes256
-
-# Creating the CA-Certificate
-openssl req -x509 -new -nodes -key $CA.key -sha512 -days 1826 -out $CA.crt -subj &#34;/CN=${ORGANIZATION} Root-CA/C=AT/ST=Lower Austria/L=Woellersdorf/O=${ORGANIZATION}&#34;
-</code></pre><div class="flex align-center gdoc-page__anchorwrap">
-    <h4 id="create-a-custom-certificate"
-    >
-        Create a custom Certificate
-    </h4>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls/#create-a-custom-certificate" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create a custom Certificate" aria-label="Anchor to: Create a custom Certificate" href="#create-a-custom-certificate">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>The server needs a certificate signed by a CA and a private key so that it can claim to be trustworthy.</p>
-
-
-
-
-
-<blockquote class="gdoc-hint important">
-  <div class="gdoc-hint__title flex align-center"><i class="fa important" title="Important"></i></div>
-  <div class="gdoc-hint__text">It is important that the CA certificate is stored as trustworthy with the client. Otherwise, no certificate check is possible.</div>
-</blockquote>
-
-<pre tabindex="0"><code>CN=cluster-1
-DNS2=&#34;${CN}-repl&#34;
-DNS3=&#34;${CN}-pooler&#34;
-DNS4=&#34;${CN}-pooler-repl&#34;
-
-# Creating the private Key
-openssl genpkey -algorithm EC -out $CN.key -pkeyopt ec_paramgen_curve:secp384r1 -pkeyopt ec_param_enc:named_curve
-
-# Creating Certificate Signing Request (CSR))
-openssl req -new -key $CN.key -out $CN.csr \
-  -subj &#34;/C=AT/ST=Lower Austria/L=Woellersdorf/O=${ORGANIZATION}/OU=OrgUnit/CN=${CN}&#34; \
-  -addext &#34;subjectAltName=DNS:${CN},DNS:${DNS2},DNS:${DNS3},DNS:${DNS4}&#34;
-
-
-# Sign CSR with the CA
-openssl x509 -req -in $CN.csr -CA $CA.crt -CAkey $CA.key -CAcreateserial -out $CN.crt -days 365 \
-  -extfile &lt;(echo -e &#34;[ v3_req ]\nsubjectAltName=DNS:${CN},DNS:${DNS2},DNS:${DNS3},DNS:${DNS4}&#34;) -extensions v3_req
-</code></pre><div class="flex align-center gdoc-page__anchorwrap">
-    <h4 id="add-certicate-to-the-cluster"
-    >
-        Add Certicate to the Cluster
-    </h4>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls/#add-certicate-to-the-cluster" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Add Certicate to the Cluster" aria-label="Anchor to: Add Certicate to the Cluster" href="#add-certicate-to-the-cluster">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>For adding the Certificate to your cluster a secret on kubernetes is needed.
-There are two different options here.
-For the first option, a secret is created that contains all the necessary information. I.e.</p>
+    <p>There are various options for setting up a local Kubernetes environment. This chapter deals with the following two variants:</p>
 <ul>
-<li>Server certificate</li>
-<li>Private server key</li>
-<li>CA certificate
-In the second variant, the CA certificate is separated and written in a separate secret. The advantage of this is that the CA only needs to be saved once and changed in the event of an update.</li>
+<li>minikube</li>
+<li>crc (CodeReadyContainers from RedHat)</li>
 </ul>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h5 id="first-option-using-one-secret-for-all-three-objects"
+    <h3 id="minikube"
     >
-        First Option: Using one secret for all three objects
-    </h5>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls/#first-option-using-one-secret-for-all-three-objects" class="gdoc-page__anchor clip flex align-center" title="Anchor to: First Option: Using one secret for all three objects" aria-label="Anchor to: First Option: Using one secret for all three objects" href="#first-option-using-one-secret-for-all-three-objects">
+        Minikube
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/installation/dev-k8s/#minikube" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Minikube" aria-label="Anchor to: Minikube" href="#minikube">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<pre tabindex="0"><code>kubectl create secret generic cluster-1-tls \
-  --from-file=tls.crt=$CN.crt \
-  --from-file=tls.key=$CN.key \
-  --from-file=ca.crt=$CA.crt
-</code></pre><p>Finally, the definition is made in the cluster manifest so that the operator adapts the cluster.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#e6db74">&#34;cpo.opensource.cybertec.at/v1&#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">postgresql</span>
-</span></span><span style="display:flex;"><span>...
-</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cluster-1</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tls</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">secretName</span>: <span style="color:#e6db74">&#34;cluster-1-tls&#34;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">caFile</span>: <span style="color:#e6db74">&#34;ca.crt&#34;</span>
-</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h5 id="second-option-using-a-separat-secret-for-the-ca"
+<p>Minikube is a tool that makes it possible to run Kubernetes locally on a single computer. It sets up a minimal but functional Kubernetes environment suitable for development and testing purposes. Minikube supports most Kubernetes features and provides an easy way to launch and manage Kubernetes clusters on local machines without the need for a complex cloud infrastructure.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="install-kubectl--minikube"
     >
-        Second Option: Using a separat Secret for the CA
-    </h5>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls/#second-option-using-a-separat-secret-for-the-ca" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Second Option: Using a separat Secret for the CA" aria-label="Anchor to: Second Option: Using a separat Secret for the CA" href="#second-option-using-a-separat-secret-for-the-ca">
+        Install Kubectl &amp; Minikube
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/installation/dev-k8s/#install-kubectl--minikube" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Install Kubectl &amp; Minikube" aria-label="Anchor to: Install Kubectl &amp; Minikube" href="#install-kubectl--minikube">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<pre tabindex="0"><code>kubectl create secret generic cpo-root-ca --from-file=ca.crt=ca.crt
-</code></pre><pre tabindex="0"><code>kubectl create secret generic cluster-1-tls \
-  --from-file=tls.crt=$CN.crt \
-  --from-file=tls.key=$CN.key \
-</code></pre><p>Finally, the definition is made in the cluster manifest so that the operator adapts the cluster.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#e6db74">&#34;cpo.opensource.cybertec.at/v1&#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">postgresql</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cluster-1</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tls</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">secretName</span>: <span style="color:#e6db74">&#34;cluster-1-tls&#34;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">caSecretName</span>: <span style="color:#e6db74">&#34;cpo-root-ca&#34;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">caFile</span>: <span style="color:#e6db74">&#34;ca.crt&#34;</span>
-</span></span></code></pre></div><p>A regular check of the mounted certificates takes place automatically within the container. This check takes place every 5 minutes. If the certificates have been updated, the certificates are loaded automatically.</p>
-
-
-
-
-
-<blockquote class="gdoc-hint important">
-  <div class="gdoc-hint__title flex align-center"><i class="fa important" title="Important"></i></div>
-  <div class="gdoc-hint__text">In addition to generating the certificates independently, <a
+<p>To use Minikube, it is essential to install the Kubectl client.</p>
+<p><a
   class="gdoc-markdown__link"
-  href="https://cert-manager.io/docs/"
->cert-manager</a> can also be used for this purpose.</div>
-</blockquote>
-
-
+  href="https://kubernetes.io/docs/tasks/tools/"
+>Here</a> you will find all the information you need to install kubectl on your Linux, Mac or Windows device.</p>
+<p>You can Install Minikube on your Linux-, Mac- or Windows-Devide using <a
+  class="gdoc-markdown__link"
+  href="https://minikube.sigs.k8s.io/docs/start/?arch=%2Flinux%2Fx86-64%2Fstable%2Fbinary&#43;download"
+>this Documentation</a>.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="use-minikube"
+    >
+        Use Minikube
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/installation/dev-k8s/#use-minikube" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Use Minikube" aria-label="Anchor to: Use Minikube" href="#use-minikube">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Before starting minikube, it is advisable to define a path for the kubeconfig.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export KUBECONFIG<span style="color:#f92672">=</span>/home/USERNAME/kubeconfig_minikube.conf
+</span></span></code></pre></div><p>You can then start minikube and all the necessary data is written directly to the conf. The definition of a user-defined path ensures that other configs are not inadvertently overwritten.
+The path must be defined again via ENV in each new user session. Alternatively, this can also be permanently defined via .bashrc.
+If the default path is not used for any other purpose, the ENV does not need to be set.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Start minikube</span>
+</span></span><span style="display:flex;"><span>minikube start
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># get pods from default namespace</span>
+</span></span><span style="display:flex;"><span>kubectl get pods
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># change default namespace to cpo</span>
+</span></span><span style="display:flex;"><span>kubectl config set-context --namespace<span style="color:#f92672">=</span>cpo
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="crc"
+    >
+        CRC
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/installation/dev-k8s/#crc" class="gdoc-page__anchor clip flex align-center" title="Anchor to: CRC" aria-label="Anchor to: CRC" href="#crc">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>CRC (CodeReady Containers) is a tool from Red Hat that provides a local OpenShift environment. It is specifically designed to run a compact version of OpenShift on a local machine to provide developers and testers with an easy way to develop and test applications optimised for use in OpenShift. CRC includes all the necessary OpenShift components and makes it possible to use Red Hat&rsquo;s container platform locally without building a full cloud infrastructure.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="install-oc-client--crc"
+    >
+        Install oc-client &amp; CRC
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/installation/dev-k8s/#install-oc-client--crc" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Install oc-client &amp; CRC" aria-label="Anchor to: Install oc-client &amp; CRC" href="#install-oc-client--crc">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>To use CRC, it is essential to install the oc-client or the kubectl-client.</p>
+<p><a
+  class="gdoc-markdown__link"
+  href="https://docs.openshift.com/container-platform/latest/cli_reference/openshift_cli/getting-started-cli.html"
+>Here</a> you will find all the information you need to install kubectl on your Linux, Mac or Windows device.</p>
+<p>You can Download and install CRC on your Linux-, Mac- or Windows-Devide using <a
+  class="gdoc-markdown__link"
+  href="https://developers.redhat.com/products/openshift-local/overview"
+>this informations</a>.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="use-crc"
+    >
+        Use CRC
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/installation/dev-k8s/#use-crc" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Use CRC" aria-label="Anchor to: Use CRC" href="#use-crc">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Before installing crc, it is advisable to define a path for the kubeconfig.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export KUBECONFIG<span style="color:#f92672">=</span>/home/USERNAME/kubeconfig_crc.conf
+</span></span></code></pre></div><p>You can then install and start crc and all the necessary data is written directly to the conf. The definition of a user-defined path ensures that other configs are not inadvertently overwritten.
+The path must be defined again via ENV in each new user session. Alternatively, this can also be permanently defined via .bashrc.
+If the default path is not used for any other purpose, the ENV does not need to be set.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Install crc</span>
+</span></span><span style="display:flex;"><span>crc setup
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Start crc</span>
+</span></span><span style="display:flex;"><span>crc start
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># get pods from default namespace</span>
+</span></span><span style="display:flex;"><span>oc get pods
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># change default namespace to cpo</span>
+</span></span><span style="display:flex;"><span>oc project cpo
+</span></span></code></pre></div>
   </article>
 
 
@@ -3150,6 +3146,72 @@ In the second variant, the CA certificate is separated and written in a separate
     
 
   
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
 
         
       
@@ -3282,634 +3344,6 @@ In the second variant, the CA certificate is separated and written in a separate
   
 
   
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
   
     
 
@@ -4009,6 +3443,636 @@ In the second variant, the CA certificate is separated and written in a separate
         
 
         
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
 
         
         
@@ -4252,49 +4316,10 @@ In the second variant, the CA certificate is separated and written in a separate
         
 
         
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
           
         
 
         
-        
-      
-    
-
-  
-
         
       
     
@@ -4308,11 +4333,11 @@ In the second variant, the CA certificate is separated and written in a separate
   
     <a
       class="gdoc-page__nav--prev flex align-center"
-      href="/CYBERTEC-pg-operator/restore/"
-      title="Restore"
+      href="/CYBERTEC-pg-operator/quickstart/quickstart/"
+      title="Quickstart"
     >
       <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-      Restore
+      Quickstart
     </a>
   
 </span>
@@ -4321,10 +4346,10 @@ In the second variant, the CA certificate is separated and written in a separate
   
     <a
       class="gdoc-page__nav--next flex align-center"
-      href="/CYBERTEC-pg-operator/connection_pooler/"
-      title="connection pooler"
+      href="/CYBERTEC-pg-operator/installation/installation/"
+      title="Install CPO"
     >
-      connection pooler
+      Install CPO
       <i class="gdoc-icon">gdoc_arrow_right_alt</i>
     </a>
   

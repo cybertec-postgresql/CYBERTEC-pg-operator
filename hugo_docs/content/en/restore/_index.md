@@ -32,7 +32,7 @@ restore:
   repo: 'repo1'
 ```
 
-> **_HINT:_** Without the specification `--type=immediate`, pgBackRest would then consume the entire WAL that is available and thus restore the last available consistent data point. 
+{{< hint type=info >}} Without the specification `--type=immediate`, pgBackRest would then consume the entire WAL that is available and thus restore the last available consistent data point. {{< /hint >}}
 
 #### Details for a point-in-time recoery (PITR)
 We use this information to define a point-in-time recovery (PITR) and define the end point using a timestamp and the start point using a Backup specification. The latter is optional. Without this information, pgBackRest would automatically start at the last previous full Backup. 
@@ -46,7 +46,7 @@ restore:
 
   repo: '1'
 ```
-> **_HINT:_** `--type=time` indicates that it is a point-in-time recovery (PITR). 
+{{< hint type=info >}}`--type=time` indicates that it is a point-in-time recovery (PITR).  {{< /hint >}}
 
 ## Example in a cluster manifest
 
@@ -81,4 +81,4 @@ spec:
 ```
 An example of this can also be found in our tutorials. For a point-in-time recovery (PITR) you can find it [here](https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials/tree/main/cluster-tutorials/restore_pitr).
 
-> **_ATTENTION:_** Incorrect information for the Backup or the timestamp can result in pgBackRest not being able to complete the restore successfully. In the event of an error, the information must be corrected and another restore must be started. 
+{{< hint type=warning >}} Incorrect information for the Backup or the timestamp can result in pgBackRest not being able to complete the restore successfully. In the event of an error, the information must be corrected and another restore must be started. {{< /hint >}}

@@ -70,7 +70,7 @@ Rescue my cluster CPO enables the restore based on an existing backup using pgBa
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/restore/",
       "headline": "Restore",
       "description": "Restore or recovery is the process of starting a PostgreSQL instance or a cluster based on a defined and existing backup. This can be just a Backup or a combination of a Backup and additional WAL files. The difference is that a Backup represents a fixed point in time, whereas the combination with WAL enables a point-in-time recovery(PITR).\nYou can find more information about backups here\nRescue my cluster CPO enables the restore based on an existing backup using pgBackRest.",
-      "wordCount" : "459",
+      "wordCount" : "456",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -877,6 +877,94 @@ Rescue my cluster CPO enables the restore based on an existing backup using pgBa
         
       
     
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/architecture/compontens/"
+                    class="gdoc-nav__entry"
+                  >
+                    Software-Components
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/architecture/rolling_update/"
+                    class="gdoc-nav__entry"
+                  >
+                    Rolling-Updates
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
   </ul>
 
             
@@ -1091,7 +1179,14 @@ Rescue my cluster CPO enables the restore based on an existing backup using pgBa
               
             >
               
-                <span class="flex">Setup local Kubernetes</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/installation/dev-k8s/"
+                    class="gdoc-nav__entry"
+                  >
+                    Setup local Kubernetes
+                  </a>
+                </span>
               
               
             </label>
@@ -2347,56 +2442,6 @@ Rescue my cluster CPO enables the restore based on an existing backup using pgBa
             <input
               type="checkbox"
               
-                class="gdoc-nav__toggle" id="navtree-d27c3f52"
-                
-              
-            />
-            <label
-              
-                for="navtree-d27c3f52" class="flex justify-between align-center"
-              
-            >
-              
-                <span class="flex">Release-Notes</span>
-              
-              
-                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_left">
-                  <use xlink:href="#gdoc_keyboard_arrow_left"></use>
-                </svg>
-                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_down">
-                  <use xlink:href="#gdoc_keyboard_arrow_down"></use>
-                </svg>
-              
-            </label>
-
-            
-              
-  
-
-
-  <ul class="gdoc-nav__list">
-    
-    
-      
-
-      
-        
-      
-
-      
-        
-          
-          
-          
-          
-          
-          
-
-
-          <li>
-            <input
-              type="checkbox"
-              
                 class="hidden"
               
             />
@@ -2406,22 +2451,15 @@ Rescue my cluster CPO enables the restore based on an existing backup using pgBa
               
                 <span class="flex">
                   <a
-                    href="/CYBERTEC-pg-operator/release_notes/release_notes/"
+                    href="/CYBERTEC-pg-operator/release_notes/"
                     class="gdoc-nav__entry"
                   >
-                    Release Notes
+                    Release-Notes
                   </a>
                 </span>
               
               
             </label>
-
-            
-          </li>
-        
-      
-    
-  </ul>
 
             
           </li>
@@ -2848,9 +2886,16 @@ As we have already provided the operator with all the information relating to th
     type: &#39;immediate&#39;
     set: &#39;20240515-164100F&#39;
   repo: &#39;repo1&#39;
-</code></pre><blockquote>
-<p><strong><em>HINT:</em></strong> Without the specification <code>--type=immediate</code>, pgBackRest would then consume the entire WAL that is available and thus restore the last available consistent data point.</p>
+</code></pre>
+
+
+
+
+<blockquote class="gdoc-hint info">
+  <div class="gdoc-hint__title flex align-center"><i class="fa info" title="Info"></i></div>
+  <div class="gdoc-hint__text">Without the specification <code>--type=immediate</code>, pgBackRest would then consume the entire WAL that is available and thus restore the last available consistent data point.</div>
 </blockquote>
+
 <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="details-for-a-point-in-time-recoery-pitr"
     >
@@ -2869,9 +2914,16 @@ As we have already provided the operator with all the information relating to th
     target: &#39;2024-05-16 07:46:05.506817+00&#39;
 
   repo: &#39;1&#39;
-</code></pre><blockquote>
-<p><strong><em>HINT:</em></strong> <code>--type=time</code> indicates that it is a point-in-time recovery (PITR).</p>
+</code></pre>
+
+
+
+
+<blockquote class="gdoc-hint info">
+  <div class="gdoc-hint__title flex align-center"><i class="fa info" title="Info"></i></div>
+  <div class="gdoc-hint__text"><code>--type=time</code> indicates that it is a point-in-time recovery (PITR).</div>
 </blockquote>
+
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="example-in-a-cluster-manifest"
     >
@@ -2912,9 +2964,16 @@ spec:
   class="gdoc-markdown__link"
   href="https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials/tree/main/cluster-tutorials/restore_pitr"
 >here</a>.</p>
-<blockquote>
-<p><strong><em>ATTENTION:</em></strong> Incorrect information for the Backup or the timestamp can result in pgBackRest not being able to complete the restore successfully. In the event of an error, the information must be corrected and another restore must be started.</p>
+
+
+
+
+
+<blockquote class="gdoc-hint warning">
+  <div class="gdoc-hint__title flex align-center"><i class="fa warning" title="Warning"></i></div>
+  <div class="gdoc-hint__text">Incorrect information for the Backup or the timestamp can result in pgBackRest not being able to complete the restore successfully. In the event of an error, the information must be corrected and another restore must be started.</div>
 </blockquote>
+
 
   </article>
 
@@ -3105,6 +3164,72 @@ spec:
     
 
   
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
 
         
       
@@ -3261,6 +3386,8 @@ spec:
 
         
 
+        
+          
         
 
         
@@ -4207,49 +4334,10 @@ spec:
         
 
         
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
           
         
 
         
-        
-      
-    
-
-  
-
         
       
     

@@ -12,10 +12,11 @@
 <meta name="generator" content="Hugo 0.133.0">
 
 
-  <meta name="description" content="Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.
-The following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster." />
+  <meta name="description" content="Various software components are used to operate CPO. This chapter lists the most important components and their respective purposes.
+Basically, the CPO project focusses on the main tasks of each individual component. This means that each component does what it does best and only that. In addition to reliable operation, this should also ensure efficient development and project management that utilises existing approaches rather than fighting against them.
+1. CYBERTEC-pg-operator The CYBERTEC-pg-operator is a Kubernetes operator that automates the operation and management of PostgreSQL databases on Kubernetes clusters." />
 
-    <title>TLS/SSL connections | CYBERTEC-PG-Operator</title>
+    <title>Software-Components | CYBERTEC-PG-Operator</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/CYBERTEC-pg-operator/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/CYBERTEC-pg-operator/favicon/favicon-32x32.png">
@@ -33,52 +34,54 @@ The following chapter deals with the creation of custom certificates and the ste
     
   <meta
     property="og:title"
-    content="TLS/SSL connections"
+    content="Software-Components"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
-  <meta property="og:description" content="Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.
-The following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster." />
+  <meta property="og:description" content="Various software components are used to operate CPO. This chapter lists the most important components and their respective purposes.
+Basically, the CPO project focusses on the main tasks of each individual component. This means that each component does what it does best and only that. In addition to reliable operation, this should also ensure efficient development and project management that utilises existing approaches rather than fighting against them.
+1. CYBERTEC-pg-operator The CYBERTEC-pg-operator is a Kubernetes operator that automates the operation and management of PostgreSQL databases on Kubernetes clusters." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/tls/" />
+<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/architecture/compontens/" />
 
-<meta property="article:section" content="Tls" />
+<meta property="article:section" content="Architecture" />
     <meta
       property="article:published_time"
-      content="2023-12-28T14:26:51+01:00"
+      content="2023-03-07T14:26:51+01:00"
     />
     <meta
       property="article:modified_time"
-      content="2023-12-28T14:26:51+01:00"
+      content="2023-03-07T14:26:51+01:00"
     />
 
 
   <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="TLS/SSL connections" />
-  <meta name="twitter:description" content="Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.
-The following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster." />
+<meta name="twitter:title" content="Software-Components" />
+  <meta name="twitter:description" content="Various software components are used to operate CPO. This chapter lists the most important components and their respective purposes.
+Basically, the CPO project focusses on the main tasks of each individual component. This means that each component does what it does best and only that. In addition to reliable operation, this should also ensure efficient development and project management that utilises existing approaches rather than fighting against them.
+1. CYBERTEC-pg-operator The CYBERTEC-pg-operator is a Kubernetes operator that automates the operation and management of PostgreSQL databases on Kubernetes clusters." />
 
 
   <script type="application/ld+json">
   {
       "@context": "http://schema.org",
       "@type": "TechArticle",
-      "articleSection": "Tls",
-      "name": "TLS/SSL connections",
-      "url" : "http://localhost:1313/CYBERTEC-pg-operator/tls/",
-      "headline": "TLS/SSL connections",
-      "description": "Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS\/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.\nThe following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster.",
-      "wordCount" : "586",
+      "articleSection": "Architecture",
+      "name": "Software-Components",
+      "url" : "http://localhost:1313/CYBERTEC-pg-operator/architecture/compontens/",
+      "headline": "Software-Components",
+      "description": "Various software components are used to operate CPO. This chapter lists the most important components and their respective purposes.\nBasically, the CPO project focusses on the main tasks of each individual component. This means that each component does what it does best and only that. In addition to reliable operation, this should also ensure efficient development and project management that utilises existing approaches rather than fighting against them.\n1. CYBERTEC-pg-operator The CYBERTEC-pg-operator is a Kubernetes operator that automates the operation and management of PostgreSQL databases on Kubernetes clusters.",
+      "wordCount" : "682",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "http://localhost:1313/CYBERTEC-pg-operator/tls/"
+          "@id": "http://localhost:1313/CYBERTEC-pg-operator/architecture/compontens/"
       },
       "copyrightHolder" : "CYBERTEC-PG-Operator",
       "copyrightYear" : "2023",
-      "dateCreated": "2023-12-28T14:26:51.00Z",
-      "datePublished": "2023-12-28T14:26:51.00Z",
-      "dateModified": "2023-12-28T14:26:51.00Z",
+      "dateCreated": "2023-03-07T14:26:51.00Z",
+      "datePublished": "2023-03-07T14:26:51.00Z",
+      "dateModified": "2023-03-07T14:26:51.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "CYBERTEC-PG-Operator",
@@ -141,7 +144,7 @@ The following chapter deals with the creation of custom certificates and the ste
   href="/CYBERTEC-pg-operator/custom.css"
   media="all"
 />
-  <link href="http://localhost:1313/CYBERTEC-pg-operator/tls/" rel="canonical" type="text/html" />
+  <link href="http://localhost:1313/CYBERTEC-pg-operator/architecture/compontens/" rel="canonical" type="text/html" />
 
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
@@ -801,7 +804,7 @@ The following chapter deals with the creation of custom certificates and the ste
               type="checkbox"
               
                 class="gdoc-nav__toggle" id="navtree-1e1aca91"
-                
+                checked
               
             />
             <label
@@ -863,6 +866,94 @@ The following chapter deals with the creation of custom certificates and the ste
                     class="gdoc-nav__entry"
                   >
                     Architecture
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/architecture/compontens/"
+                    class="gdoc-nav__entry is-active"
+                  >
+                    Software-Components
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/architecture/rolling_update/"
+                    class="gdoc-nav__entry"
+                  >
+                    Rolling-Updates
                   </a>
                 </span>
               
@@ -1088,7 +1179,14 @@ The following chapter deals with the creation of custom certificates and the ste
               
             >
               
-                <span class="flex">Setup local Kubernetes</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/installation/dev-k8s/"
+                    class="gdoc-nav__entry"
+                  >
+                    Setup local Kubernetes
+                  </a>
+                </span>
               
               
             </label>
@@ -1932,7 +2030,7 @@ The following chapter deals with the creation of custom certificates and the ste
                 <span class="flex">
                   <a
                     href="/CYBERTEC-pg-operator/tls/"
-                    class="gdoc-nav__entry is-active"
+                    class="gdoc-nav__entry"
                   >
                     TLS/SSL connections
                   </a>
@@ -2344,56 +2442,6 @@ The following chapter deals with the creation of custom certificates and the ste
             <input
               type="checkbox"
               
-                class="gdoc-nav__toggle" id="navtree-d27c3f52"
-                
-              
-            />
-            <label
-              
-                for="navtree-d27c3f52" class="flex justify-between align-center"
-              
-            >
-              
-                <span class="flex">Release-Notes</span>
-              
-              
-                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_left">
-                  <use xlink:href="#gdoc_keyboard_arrow_left"></use>
-                </svg>
-                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_down">
-                  <use xlink:href="#gdoc_keyboard_arrow_down"></use>
-                </svg>
-              
-            </label>
-
-            
-              
-  
-
-
-  <ul class="gdoc-nav__list">
-    
-    
-      
-
-      
-        
-      
-
-      
-        
-          
-          
-          
-          
-          
-          
-
-
-          <li>
-            <input
-              type="checkbox"
-              
                 class="hidden"
               
             />
@@ -2403,22 +2451,15 @@ The following chapter deals with the creation of custom certificates and the ste
               
                 <span class="flex">
                   <a
-                    href="/CYBERTEC-pg-operator/release_notes/release_notes/"
+                    href="/CYBERTEC-pg-operator/release_notes/"
                     class="gdoc-nav__entry"
                   >
-                    Release Notes
+                    Release-Notes
                   </a>
                 </span>
               
               
             </label>
-
-            
-          </li>
-        
-      
-    
-  </ul>
 
             
           </li>
@@ -2783,7 +2824,15 @@ The following chapter deals with the creation of custom certificates and the ste
     
   
   
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>TLS/SSL connections</span><meta itemprop='position' content='3' /></li>
+    
+    
+    
+    
+  
+  
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/architecture/' href='/CYBERTEC-pg-operator/architecture/'><span itemprop='name'>Architecture</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Software-Components</span><meta itemprop='position' content='4' /></li>
+  
+
   
 
   
@@ -2796,170 +2845,84 @@ The following chapter deals with the creation of custom certificates and the ste
 
 
   <section class="gdoc-markdown__title">
-    <h1>TLS/SSL connections</h1>
+    <h1>Software-Components</h1>
   </section>
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    <p>Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.</p>
-<p>The following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster. In the example, a custom CA is created, on the basis of which the certificates are then generated and signed by this CA. This step can be skipped if certificates have already been obtained from another trusted organisation.</p>
+
+    <p>Various software components are used to operate CPO. This chapter lists the most important components and their respective purposes.</p>
+<p>Basically, the CPO project focusses on the main tasks of each individual component. This means that each component does what it does best and only that.
+In addition to reliable operation, this should also ensure efficient development and project management that utilises existing approaches rather than fighting against them.</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="create-a-custom-ca-and-certificates"
+    <h3 id="1-cybertec-pg-operator"
     >
-        Create a custom CA and Certificates
+        1. CYBERTEC-pg-operator
     </h3>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls/#create-a-custom-ca-and-certificates" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create a custom CA and Certificates" aria-label="Anchor to: Create a custom CA and Certificates" href="#create-a-custom-ca-and-certificates">
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/architecture/compontens/#1-cybertec-pg-operator" class="gdoc-page__anchor clip flex align-center" title="Anchor to: 1. CYBERTEC-pg-operator" aria-label="Anchor to: 1. CYBERTEC-pg-operator" href="#1-cybertec-pg-operator">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-
-
-
-
-
-<blockquote class="gdoc-hint important">
-  <div class="gdoc-hint__title flex align-center"><i class="fa important" title="Important"></i></div>
-  <div class="gdoc-hint__text">Precondition: This chapter requires openssl</div>
-</blockquote>
-
+<p>The CYBERTEC-pg-operator is a Kubernetes operator that automates the operation and management of PostgreSQL databases on Kubernetes clusters. It facilitates the provisioning, scaling, backup and recovery of PostgreSQL clusters and integrates tools such as Patroni and pgBackRest for high availability and backup management.</p>
+<p>The main focus of the operator is the creation of the necessary templates and objects for Kubernetes, the regular check whether the declarative description of the cluster is still up to date and for the implementation of various tasks in the cluster, which were commissioned by the user.</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h4 id="create-the-ca"
+    <h3 id="2-kubernetes"
     >
-        Create the CA
-    </h4>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls/#create-the-ca" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create the CA" aria-label="Anchor to: Create the CA" href="#create-the-ca">
+        2. Kubernetes
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/architecture/compontens/#2-kubernetes" class="gdoc-page__anchor clip flex align-center" title="Anchor to: 2. Kubernetes" aria-label="Anchor to: 2. Kubernetes" href="#2-kubernetes">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>The first step is to create a custom CA. An organisation name is required for this. You can also add further details about the country, district and location.
-The CA serves as the central authority that signs the certificates and thus guarantees the correctness of the certificate. In order to successfully complete the verification of a certificate, the CA&rsquo;s certificate must be stored on the client system.</p>
-<pre tabindex="0"><code>ORGANIZATION=MyCustomOrganization
-CA=$ORGANIZATION-RootCA
-
-mkdir $CA
-cd $CA
-
-# Creating the CA-Key
-openssl genpkey -algorithm EC -out $CA.key -pkeyopt ec_paramgen_curve:secp384r1 -pkeyopt ec_param_enc:named_curve -aes256
-
-# Creating the CA-Certificate
-openssl req -x509 -new -nodes -key $CA.key -sha512 -days 1826 -out $CA.crt -subj &#34;/CN=${ORGANIZATION} Root-CA/C=AT/ST=Lower Austria/L=Woellersdorf/O=${ORGANIZATION}&#34;
-</code></pre><div class="flex align-center gdoc-page__anchorwrap">
-    <h4 id="create-a-custom-certificate"
-    >
-        Create a custom Certificate
-    </h4>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls/#create-a-custom-certificate" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create a custom Certificate" aria-label="Anchor to: Create a custom Certificate" href="#create-a-custom-certificate">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>The server needs a certificate signed by a CA and a private key so that it can claim to be trustworthy.</p>
-
-
-
-
-
-<blockquote class="gdoc-hint important">
-  <div class="gdoc-hint__title flex align-center"><i class="fa important" title="Important"></i></div>
-  <div class="gdoc-hint__text">It is important that the CA certificate is stored as trustworthy with the client. Otherwise, no certificate check is possible.</div>
-</blockquote>
-
-<pre tabindex="0"><code>CN=cluster-1
-DNS2=&#34;${CN}-repl&#34;
-DNS3=&#34;${CN}-pooler&#34;
-DNS4=&#34;${CN}-pooler-repl&#34;
-
-# Creating the private Key
-openssl genpkey -algorithm EC -out $CN.key -pkeyopt ec_paramgen_curve:secp384r1 -pkeyopt ec_param_enc:named_curve
-
-# Creating Certificate Signing Request (CSR))
-openssl req -new -key $CN.key -out $CN.csr \
-  -subj &#34;/C=AT/ST=Lower Austria/L=Woellersdorf/O=${ORGANIZATION}/OU=OrgUnit/CN=${CN}&#34; \
-  -addext &#34;subjectAltName=DNS:${CN},DNS:${DNS2},DNS:${DNS3},DNS:${DNS4}&#34;
-
-
-# Sign CSR with the CA
-openssl x509 -req -in $CN.csr -CA $CA.crt -CAkey $CA.key -CAcreateserial -out $CN.crt -days 365 \
-  -extfile &lt;(echo -e &#34;[ v3_req ]\nsubjectAltName=DNS:${CN},DNS:${DNS2},DNS:${DNS3},DNS:${DNS4}&#34;) -extensions v3_req
-</code></pre><div class="flex align-center gdoc-page__anchorwrap">
-    <h4 id="add-certicate-to-the-cluster"
-    >
-        Add Certicate to the Cluster
-    </h4>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls/#add-certicate-to-the-cluster" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Add Certicate to the Cluster" aria-label="Anchor to: Add Certicate to the Cluster" href="#add-certicate-to-the-cluster">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>For adding the Certificate to your cluster a secret on kubernetes is needed.
-There are two different options here.
-For the first option, a secret is created that contains all the necessary information. I.e.</p>
-<ul>
-<li>Server certificate</li>
-<li>Private server key</li>
-<li>CA certificate
-In the second variant, the CA certificate is separated and written in a separate secret. The advantage of this is that the CA only needs to be saved once and changed in the event of an update.</li>
-</ul>
+<p>Kubernetes is an open source platform for automating the deployment, scaling and management of containerised applications. It enables the management of container clusters in different environments and offers functions such as automatic load balancing, self-healing and rollouts. Kubernetes ensures that applications are always available and scalable and provides a framework for managing infrastructure in a cloud-native environment.</p>
+<p>The focus of Kubernetes in the context of CPO is the use of the operator&rsquo;s templates to create the required objects.
+For example, the statefulset controller creates the desired pods based on the template. Kubernetes or the respective controllers monitor the generated objects independently and react if they are missing or do not correspond to the template.
+This means, for example, that pods that have been removed are automatically regenerated even if the operator is not currently running. This avoids the operator as a single point of failure.</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h5 id="first-option-using-one-secret-for-all-three-objects"
+    <h3 id="3-patroni"
     >
-        First Option: Using one secret for all three objects
-    </h5>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls/#first-option-using-one-secret-for-all-three-objects" class="gdoc-page__anchor clip flex align-center" title="Anchor to: First Option: Using one secret for all three objects" aria-label="Anchor to: First Option: Using one secret for all three objects" href="#first-option-using-one-secret-for-all-three-objects">
+        3. Patroni
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/architecture/compontens/#3-patroni" class="gdoc-page__anchor clip flex align-center" title="Anchor to: 3. Patroni" aria-label="Anchor to: 3. Patroni" href="#3-patroni">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<pre tabindex="0"><code>kubectl create secret generic cluster-1-tls \
-  --from-file=tls.crt=$CN.crt \
-  --from-file=tls.key=$CN.key \
-  --from-file=ca.crt=$CA.crt
-</code></pre><p>Finally, the definition is made in the cluster manifest so that the operator adapts the cluster.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#e6db74">&#34;cpo.opensource.cybertec.at/v1&#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">postgresql</span>
-</span></span><span style="display:flex;"><span>...
-</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cluster-1</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tls</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">secretName</span>: <span style="color:#e6db74">&#34;cluster-1-tls&#34;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">caFile</span>: <span style="color:#e6db74">&#34;ca.crt&#34;</span>
-</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h5 id="second-option-using-a-separat-secret-for-the-ca"
+<p>Patroni is an open source tool for managing PostgreSQL high availability clusters. It uses a distributed consensus mechanism, often based on Etcd, Consul or Zookeeper, to manage the role of the PostgreSQL primary node and perform automatic failovers. Patroni ensures that only one primary database server is active at a time, enabling consistency and availability of PostgreSQL databases in a cluster.</p>
+<p>The focus of Patroni is to build, configure and monitor the PostgreSQL cluster based on the configuration created by the operator. Patroni therefore takes over all tasks such as leader selection, cluster monitoring, auto-failover and much more independently.
+Patroni is included in every PostgreSQL container and therefore pod and focussed on the individual cluster.
+This means that cluster management is guaranteed even without a currently running operator and therefore runs independently of the operator. This avoids the operator as a single point of failure.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="4-postgresql"
     >
-        Second Option: Using a separat Secret for the CA
-    </h5>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls/#second-option-using-a-separat-secret-for-the-ca" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Second Option: Using a separat Secret for the CA" aria-label="Anchor to: Second Option: Using a separat Secret for the CA" href="#second-option-using-a-separat-secret-for-the-ca">
+        4. PostgreSQL
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/architecture/compontens/#4-postgresql" class="gdoc-page__anchor clip flex align-center" title="Anchor to: 4. PostgreSQL" aria-label="Anchor to: 4. PostgreSQL" href="#4-postgresql">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<pre tabindex="0"><code>kubectl create secret generic cpo-root-ca --from-file=ca.crt=ca.crt
-</code></pre><pre tabindex="0"><code>kubectl create secret generic cluster-1-tls \
-  --from-file=tls.crt=$CN.crt \
-  --from-file=tls.key=$CN.key \
-</code></pre><p>Finally, the definition is made in the cluster manifest so that the operator adapts the cluster.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#e6db74">&#34;cpo.opensource.cybertec.at/v1&#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">postgresql</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cluster-1</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tls</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">secretName</span>: <span style="color:#e6db74">&#34;cluster-1-tls&#34;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">caSecretName</span>: <span style="color:#e6db74">&#34;cpo-root-ca&#34;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">caFile</span>: <span style="color:#e6db74">&#34;ca.crt&#34;</span>
-</span></span></code></pre></div><p>A regular check of the mounted certificates takes place automatically within the container. This check takes place every 5 minutes. If the certificates have been updated, the certificates are loaded automatically.</p>
-
-
-
-
-
-<blockquote class="gdoc-hint important">
-  <div class="gdoc-hint__title flex align-center"><i class="fa important" title="Important"></i></div>
-  <div class="gdoc-hint__text">In addition to generating the certificates independently, <a
-  class="gdoc-markdown__link"
-  href="https://cert-manager.io/docs/"
->cert-manager</a> can also be used for this purpose.</div>
-</blockquote>
-
+<p>PostgreSQL is a powerful, open source object-relational database management system (ORDBMS). It is known for its reliability, robustness and compliance with SQL standards. PostgreSQL supports advanced data types, functions and offers extensive customisation options. It is suitable for applications of any size and offers strong support for ACID transactions and Multi-Version Concurrency Control (MVCC).</p>
+<p>The main role of PostgreSQL in the context of CPO is quite clear. Controlled by Patroni, PostgreSQL takes care of its task as a DBMS.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="5-pgbackrest"
+    >
+        5. pgBackRest
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/architecture/compontens/#5-pgbackrest" class="gdoc-page__anchor clip flex align-center" title="Anchor to: 5. pgBackRest" aria-label="Anchor to: 5. pgBackRest" href="#5-pgbackrest">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>pgBackRest is a reliable backup and restore tool for PostgreSQL databases. It offers features such as incremental backups, parallel backup and restore, compression and encryption. pgBackRest is designed for use in large databases and offers both local and remote backup options. It integrates well into Kubernetes environments and enables automated and efficient backup strategies.</p>
+<p>pgBackRest is configured based on the cluster manifest and therefore via the operator. Automatic backups, on the other hand, are based on Kubernetes cron jobs and are therefore independent of the operator, apart from the template generation by the operator.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="6-pgbouncer"
+    >
+        6. pgBouncer
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/architecture/compontens/#6-pgbouncer" class="gdoc-page__anchor clip flex align-center" title="Anchor to: 6. pgBouncer" aria-label="Anchor to: 6. pgBouncer" href="#6-pgbouncer">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>PgBouncer is a lightweight connection pooler for PostgreSQL. It reduces the load on the database server by consolidating and efficiently managing incoming client connections. PgBouncer improves the performance and scalability of PostgreSQL-based applications by reducing the number of active connections while enabling fast switching times between different connections.</p>
 
   </article>
 
@@ -3150,767 +3113,6 @@ In the second variant, the CA certificate is separated and written in a separate
     
 
   
-
-        
-      
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
     
 
     
@@ -3985,6 +3187,835 @@ In the second variant, the CA certificate is separated and written in a separate
     
 
   
+
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
     
 
     
@@ -4252,49 +4283,10 @@ In the second variant, the CA certificate is separated and written in a separate
         
 
         
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
           
         
 
         
-        
-      
-    
-
-  
-
         
       
     
@@ -4308,11 +4300,11 @@ In the second variant, the CA certificate is separated and written in a separate
   
     <a
       class="gdoc-page__nav--prev flex align-center"
-      href="/CYBERTEC-pg-operator/restore/"
-      title="Restore"
+      href="/CYBERTEC-pg-operator/architecture/architecture/"
+      title="Architecture"
     >
       <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-      Restore
+      Architecture
     </a>
   
 </span>
@@ -4321,10 +4313,10 @@ In the second variant, the CA certificate is separated and written in a separate
   
     <a
       class="gdoc-page__nav--next flex align-center"
-      href="/CYBERTEC-pg-operator/connection_pooler/"
-      title="connection pooler"
+      href="/CYBERTEC-pg-operator/architecture/rolling_update/"
+      title="Rolling-Updates"
     >
-      connection pooler
+      Rolling-Updates
       <i class="gdoc-icon">gdoc_arrow_right_alt</i>
     </a>
   

@@ -16,18 +16,18 @@
       <description>This chapter covers all important aspects relating to the architecture of CPO and the associated components. In addition to the underlying Kubertnetes, the various components and their interaction for the operation of a PostgreSQL cluster are analysed.&#xA;Brief overview of the components Network-Traffic PG-Cluster-intern Traffic With internal PG cluster-internal traffic, we are talking about all traffic that is necessary for the operation of the cluster itself. This includes&#xA;Communication for the sync of the replicas: pg_basebackup &amp;amp; streaming replication Communication with pgBackRest (if configured) Backups WAL archiving replica-create for new replicas The figure below shows the internal traffic flows with pgBackRest based on block storage (left) or cloud storage (right)</description>
     </item>
     <item>
-      <title>Architecture</title>
-      <link>http://localhost:1313/CYBERTEC-pg-operator/architecture/rolling_update/</link>
-      <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
-      <guid>http://localhost:1313/CYBERTEC-pg-operator/architecture/rolling_update/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Architecture</title>
+      <title>Software-Components</title>
       <link>http://localhost:1313/CYBERTEC-pg-operator/architecture/compontens/</link>
       <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
       <guid>http://localhost:1313/CYBERTEC-pg-operator/architecture/compontens/</guid>
-      <description></description>
+      <description>Various software components are used to operate CPO. This chapter lists the most important components and their respective purposes.&#xA;Basically, the CPO project focusses on the main tasks of each individual component. This means that each component does what it does best and only that. In addition to reliable operation, this should also ensure efficient development and project management that utilises existing approaches rather than fighting against them.&#xA;1. CYBERTEC-pg-operator The CYBERTEC-pg-operator is a Kubernetes operator that automates the operation and management of PostgreSQL databases on Kubernetes clusters.</description>
+    </item>
+    <item>
+      <title>Rolling-Updates</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/architecture/rolling_update/</link>
+      <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/architecture/rolling_update/</guid>
+      <description>Whether updating the minor version, changing the hardware definitions of the cluster or other adjustments that require a pod restart, CPO ensures that the update is as uninterrupted as possible.&#xA;This means that adjustments are carried out on the various pods of a particular cluster one after the other and in a sensible sequence. This happens as soon as a cluster consists of more than 1 PostgreSQL node.&#xA;In the event of a necessary restart, the operator independently stops the pods and does not leave this to Kubernetes.</description>
     </item>
   </channel>
 </rss>

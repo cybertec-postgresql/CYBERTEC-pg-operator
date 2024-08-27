@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Customize Cluster on CYBERTEC-PG-Operator</title>
+    <link>http://localhost:1313/CYBERTEC-pg-operator/customize_cluster/</link>
+    <description>Recent content in Customize Cluster on CYBERTEC-PG-Operator</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 28 Dec 2023 14:26:51 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/CYBERTEC-pg-operator/customize_cluster/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Sidecars</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/customize_cluster/sidecars/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/customize_cluster/sidecars/</guid>
+      <description>Starting with the Single-Node-Cluster from the previous section, we want to modify the Instance a bit to see.&#xA;CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 500m memory: 500mi Based on the ressources-Definiton we&amp;rsquo;re able to modify the reserved Hardware (requests) and the limits, which allows use to consume more than the reserved definitons if the k8s-worker has this hardware available. There are some Restrictions when modifiying the limits-section.</description>
+    </item>
+    <item>
+      <title>Additional Volumes</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/customize_cluster/additional-volumes/</link>
+      <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/customize_cluster/additional-volumes/</guid>
+      <description> additionalVolumes: - name: empty mountPath: /opt/empty targetContainers: - all volumeSource: emptyDir: {} # - name: data # mountPath: /home/postgres/pgdata/partitions # targetContainers: # - postgres # volumeSource: # PersistentVolumeClaim: # claimName: pvc-postgresql-data-partitions # readyOnly: false # - name: conf # mountPath: /etc/telegraf # subPath: telegraf.conf # targetContainers: # - telegraf-sidecar # volumeSource: # configMap: # name: my-config-map </description>
+    </item>
+  </channel>
+</rss>

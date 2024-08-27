@@ -9,13 +9,13 @@
 <meta name="referrer" content="no-referrer" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="light dark" />
-<meta name="generator" content="Hugo 0.133.0">
+<meta name="generator" content="Hugo 0.131.0">
 
 
   <meta name="description" content="Starting with the Single-Node-Cluster from the previous section, we want to modify the Instance a bit to see.
 CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 500m memory: 500mi Based on the ressources-Definiton we&rsquo;re able to modify the reserved Hardware (requests) and the limits, which allows use to consume more than the reserved definitons if the k8s-worker has this hardware available. There are some Restrictions when modifiying the limits-section." />
 
-    <title>Modify Cluster | CYBERTEC-PG-Operator</title>
+    <title>Customize Cluster | CYBERTEC-PG-Operator</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/CYBERTEC-pg-operator/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/CYBERTEC-pg-operator/favicon/favicon-32x32.png">
@@ -33,7 +33,7 @@ CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 
     
   <meta
     property="og:title"
-    content="Modify Cluster"
+    content="Customize Cluster"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
   <meta property="og:description" content="Starting with the Single-Node-Cluster from the previous section, we want to modify the Instance a bit to see.
@@ -53,7 +53,7 @@ CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 
 
 
   <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Modify Cluster" />
+<meta name="twitter:title" content="Customize Cluster" />
   <meta name="twitter:description" content="Starting with the Single-Node-Cluster from the previous section, we want to modify the Instance a bit to see.
 CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 500m memory: 500mi Based on the ressources-Definiton we’re able to modify the reserved Hardware (requests) and the limits, which allows use to consume more than the reserved definitons if the k8s-worker has this hardware available. There are some Restrictions when modifiying the limits-section." />
 
@@ -63,9 +63,9 @@ CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 
       "@context": "http://schema.org",
       "@type": "TechArticle",
       "articleSection": "Edit Cluster",
-      "name": "Modify Cluster",
+      "name": "Customize Cluster",
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/edit_cluster/",
-      "headline": "Modify Cluster",
+      "headline": "Customize Cluster",
       "description": "Starting with the Single-Node-Cluster from the previous section, we want to modify the Instance a bit to see.\nCPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 500m memory: 500mi Based on the ressources-Definiton we’re able to modify the reserved Hardware (requests) and the limits, which allows use to consume more than the reserved definitons if the k8s-worker has this hardware available. There are some Restrictions when modifiying the limits-section.",
       "wordCount" : "651",
       "inLanguage": "en",
@@ -874,6 +874,94 @@ CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 
         
       
     
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/architecture/compontens/"
+                    class="gdoc-nav__entry"
+                  >
+                    Software-Components
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/architecture/rolling_update/"
+                    class="gdoc-nav__entry"
+                  >
+                    Rolling-Updates
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
   </ul>
 
             
@@ -1088,7 +1176,14 @@ CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 
               
             >
               
-                <span class="flex">Setup local Kubernetes</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/installation/dev-k8s/"
+                    class="gdoc-nav__entry"
+                  >
+                    Setup local Kubernetes
+                  </a>
+                </span>
               
               
             </label>
@@ -1401,7 +1496,7 @@ CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 
                     href="/CYBERTEC-pg-operator/edit_cluster/"
                     class="gdoc-nav__entry is-active"
                   >
-                    Modify Cluster
+                    Customize Cluster
                   </a>
                 </span>
               
@@ -2010,6 +2105,107 @@ CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 
             <input
               type="checkbox"
               
+                class="gdoc-nav__toggle" id="navtree-a10fe3c3"
+                
+              
+            />
+            <label
+              
+                for="navtree-a10fe3c3" class="flex justify-between align-center"
+              
+            >
+              
+                <span class="flex">Postgis</span>
+              
+              
+                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_left">
+                  <use xlink:href="#gdoc_keyboard_arrow_left"></use>
+                </svg>
+                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_down">
+                  <use xlink:href="#gdoc_keyboard_arrow_down"></use>
+                </svg>
+              
+            </label>
+
+            
+              
+  
+
+
+  <ul class="gdoc-nav__list">
+    
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/postgis/introduction/"
+                    class="gdoc-nav__entry"
+                  >
+                    Introduction
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+  </ul>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
                 class="gdoc-nav__toggle" id="navtree-ab8468fb"
                 
               
@@ -2344,56 +2540,6 @@ CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 
             <input
               type="checkbox"
               
-                class="gdoc-nav__toggle" id="navtree-d27c3f52"
-                
-              
-            />
-            <label
-              
-                for="navtree-d27c3f52" class="flex justify-between align-center"
-              
-            >
-              
-                <span class="flex">Release-Notes</span>
-              
-              
-                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_left">
-                  <use xlink:href="#gdoc_keyboard_arrow_left"></use>
-                </svg>
-                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_down">
-                  <use xlink:href="#gdoc_keyboard_arrow_down"></use>
-                </svg>
-              
-            </label>
-
-            
-              
-  
-
-
-  <ul class="gdoc-nav__list">
-    
-    
-      
-
-      
-        
-      
-
-      
-        
-          
-          
-          
-          
-          
-          
-
-
-          <li>
-            <input
-              type="checkbox"
-              
                 class="hidden"
               
             />
@@ -2403,22 +2549,15 @@ CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 
               
                 <span class="flex">
                   <a
-                    href="/CYBERTEC-pg-operator/release_notes/release_notes/"
+                    href="/CYBERTEC-pg-operator/release_notes/"
                     class="gdoc-nav__entry"
                   >
-                    Release Notes
+                    Release-Notes
                   </a>
                 </span>
               
               
             </label>
-
-            
-          </li>
-        
-      
-    
-  </ul>
 
             
           </li>
@@ -2783,7 +2922,7 @@ CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 
     
   
   
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Modify Cluster</span><meta itemprop='position' content='3' /></li>
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Customize Cluster</span><meta itemprop='position' content='3' /></li>
   
 
   
@@ -2796,7 +2935,7 @@ CPU and Memory spec: resources: limits: cpu: 1000m memory: 500Mi requests: cpu: 
 
 
   <section class="gdoc-markdown__title">
-    <h1>Modify Cluster</h1>
+    <h1>Customize Cluster</h1>
   </section>
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
@@ -3137,6 +3276,72 @@ You can check Parameters and allowed Values on this Sources to ensure a correct 
     
 
   
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
 
         
       
@@ -3293,6 +3498,8 @@ You can check Parameters and allowed Values on this Sources to ensure a correct 
 
         
 
+        
+          
         
 
         
@@ -4068,6 +4275,78 @@ You can check Parameters and allowed Values on this Sources to ensure a correct 
         
 
         
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
           
         
 
@@ -4239,49 +4518,10 @@ You can check Parameters and allowed Values on this Sources to ensure a correct 
         
 
         
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
           
         
 
         
-        
-      
-    
-
-  
-
         
       
     

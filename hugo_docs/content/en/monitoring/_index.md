@@ -2,7 +2,7 @@
 title: "Monitoring"
 date: 2023-12-28T14:26:51+01:00
 draft: false
-weight: 1900
+weight: 2000
 ---
 The CPO-Project has prepared severall Tools which allows to setup a Monitoring-Stack including Alerting and Metric-Viewer.
 These Stack is based on: 

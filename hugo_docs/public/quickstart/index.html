@@ -9,7 +9,7 @@
 <meta name="referrer" content="no-referrer" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="light dark" />
-<meta name="generator" content="Hugo 0.131.0">
+<meta name="generator" content="Hugo 0.133.0">
 
 
   <meta name="description" content="We can tell and document so much about our project but it seems you just want to get started. Let us show you the fastest way to use CPO.
@@ -70,7 +70,7 @@ git clone https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials.git
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/quickstart/",
       "headline": "Quickstart",
       "description": "We can tell and document so much about our project but it seems you just want to get started. Let us show you the fastest way to use CPO.\nPreconditions git helm (optional) kubectl or oc Let’s start Step 1 - Preparations To get started, you can fork our tutorial repository on Github and then download it. CYBERTEC-operator-tutorials\ngit clone https:\/\/github.com\/cybertec-postgresql\/CYBERTEC-operator-tutorials.git cd CYBERTEC-operator-tutorials Step 2 - Install the Operator Two options are available for the installation:",
-      "wordCount" : "314",
+      "wordCount" : "328",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -3050,8 +3050,8 @@ cd CYBERTEC-operator-tutorials
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<pre tabindex="0"><code>kubectl apply -k setup/namespace/.
-helm install cpo setup/helm/operator/ -n cpo
+<pre tabindex="0"><code>kubectl apply -n cpo -k setup/namespace/.
+helm install cpo -n cpo setup/helm/operator/
 </code></pre><div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="installation-via-apply"
     >
@@ -3061,8 +3061,8 @@ helm install cpo setup/helm/operator/ -n cpo
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<pre tabindex="0"><code>kubectl apply -k setup/namespace/.
-kubectl apply -k setup/helm/operator/. -n cpo
+<pre tabindex="0"><code>kubectl apply -n cpo -k setup/namespace/.
+kubectl apply -n cpo -k setup/helm/operator/.
 </code></pre><p>You can check if the operator pod is in operation.</p>
 <pre tabindex="0"><code>kubectl get pods -n cpo --selector=cpo.cybertec.at/pod/type=postgres-operator
 </code></pre><p>The result should look like this:</p>
@@ -3079,10 +3079,10 @@ postgres-operator-599688d948-fw8pw   1/1     Running   0          41s
     </a>
 </div>
 <p>To create a simple cluster, the following command is sufficient</p>
-<pre tabindex="0"><code>kubectl apply -f cluster-tutorials/single-cluster
-</code></pre><pre tabindex="0"><code>watch kubectl get pods --selector cluster-name=cluster-1
+<pre tabindex="0"><code>kubectl apply -n cpo -f cluster-tutorials/single-cluster
+</code></pre><pre tabindex="0"><code>watch kubectl get pods -n cpo --selector cluster-name=cluster-1
 </code></pre><p>The result should look like this:</p>
-<pre tabindex="0"><code>Alle 2.0s: kubectl get pods --selector cluster-name=cluster-1                                                                                                            
+<pre tabindex="0"><code>Alle 2.0s: kubectl get pods -n cpo --selector cluster-name=cluster-1                                                                                                            
 
 NAME          READY   STATUS            RESTARTS   AGE
 cluster-1-0   2/2     Running           0          28s
@@ -3097,7 +3097,7 @@ cluster-1-1   0/2     PodInitializing   0          9s
     </a>
 </div>
 <p>Get your login information from the secret.</p>
-<pre tabindex="0"><code>kubectl get secret postgres.cluster-1.credentials.postgresql.cpo.opensource.cybertec.at -o jsonpath=&#39;{.data}&#39; | jq &#39;.|map_values(@base64d)&#39;
+<pre tabindex="0"><code>kubectl get secret -n cpo postgres.cluster-1.credentials.postgresql.cpo.opensource.cybertec.at -o jsonpath=&#39;{.data}&#39; | jq &#39;.|map_values(@base64d)&#39;
 </code></pre><p>The result should look like this:</p>
 <pre tabindex="0"><code>{
   &#34;password&#34;: &#34;2rZG1Kx9asdHscswQGzff4Ru0xW6uasacy3GQ0sjdCH3wWr0kguUXUZek6dkemsf&#34;,
@@ -3112,7 +3112,7 @@ cluster-1-1   0/2     PodInitializing   0          9s
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<pre tabindex="0"><code>kubectl port-forward cluster-1-0 5432:5432
+<pre tabindex="0"><code>kubectl port-forward -n cpo cluster-1-0 5432:5432
 </code></pre><pre tabindex="0"><code># using psql
 PGPASSWORD=2rZG1Kx9asdHscswQGzffjdCH3wWr0kguUXUZek6dkemsf psql -h 127.0.0.1 -p 5432 -U postgres
 

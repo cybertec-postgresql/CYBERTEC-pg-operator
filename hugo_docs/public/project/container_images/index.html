@@ -12,11 +12,12 @@
 <meta name="generator" content="Hugo 0.133.0">
 
 
-  <meta name="description" content="Whether updating the minor version, changing the hardware definitions of the cluster or other adjustments that require a pod restart, CPO ensures that the update is as uninterrupted as possible.
-This means that adjustments are carried out on the various pods of a particular cluster one after the other and in a sensible sequence. This happens as soon as a cluster consists of more than 1 PostgreSQL node.
-In the event of a necessary restart, the operator independently stops the pods and does not leave this to Kubernetes." />
+  <meta name="description" content="For each version of the operator and the required PostgreSQL and other required containers, the corresponding image is provided on Dockerhub.
+Operator container images The operator images are the central components that control the operation and administration of the PostgreSQL databases. These images are available in the following repository on DockerHub:
+Operator Images
+The repository contains all the necessary images for running the Cybertec PG Operator in a Kubernetes environment. These images are updated regularly to ensure the latest features and security updates." />
 
-    <title>Rolling-Updates | CYBERTEC-PG-Operator</title>
+    <title>Container Images | CYBERTEC-PG-Operator</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/CYBERTEC-pg-operator/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/CYBERTEC-pg-operator/favicon/favicon-32x32.png">
@@ -34,54 +35,56 @@ In the event of a necessary restart, the operator independently stops the pods a
     
   <meta
     property="og:title"
-    content="Rolling-Updates"
+    content="Container Images"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
-  <meta property="og:description" content="Whether updating the minor version, changing the hardware definitions of the cluster or other adjustments that require a pod restart, CPO ensures that the update is as uninterrupted as possible.
-This means that adjustments are carried out on the various pods of a particular cluster one after the other and in a sensible sequence. This happens as soon as a cluster consists of more than 1 PostgreSQL node.
-In the event of a necessary restart, the operator independently stops the pods and does not leave this to Kubernetes." />
+  <meta property="og:description" content="For each version of the operator and the required PostgreSQL and other required containers, the corresponding image is provided on Dockerhub.
+Operator container images The operator images are the central components that control the operation and administration of the PostgreSQL databases. These images are available in the following repository on DockerHub:
+Operator Images
+The repository contains all the necessary images for running the Cybertec PG Operator in a Kubernetes environment. These images are updated regularly to ensure the latest features and security updates." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/architecture/rolling_update/" />
+<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/project/container_images/" />
 
-<meta property="article:section" content="Architecture" />
+<meta property="article:section" content="Project" />
     <meta
       property="article:published_time"
-      content="2023-03-07T14:26:51+01:00"
+      content="2024-03-11T14:26:51+01:00"
     />
     <meta
       property="article:modified_time"
-      content="2023-03-07T14:26:51+01:00"
+      content="2024-03-11T14:26:51+01:00"
     />
 
 
   <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Rolling-Updates" />
-  <meta name="twitter:description" content="Whether updating the minor version, changing the hardware definitions of the cluster or other adjustments that require a pod restart, CPO ensures that the update is as uninterrupted as possible.
-This means that adjustments are carried out on the various pods of a particular cluster one after the other and in a sensible sequence. This happens as soon as a cluster consists of more than 1 PostgreSQL node.
-In the event of a necessary restart, the operator independently stops the pods and does not leave this to Kubernetes." />
+<meta name="twitter:title" content="Container Images" />
+  <meta name="twitter:description" content="For each version of the operator and the required PostgreSQL and other required containers, the corresponding image is provided on Dockerhub.
+Operator container images The operator images are the central components that control the operation and administration of the PostgreSQL databases. These images are available in the following repository on DockerHub:
+Operator Images
+The repository contains all the necessary images for running the Cybertec PG Operator in a Kubernetes environment. These images are updated regularly to ensure the latest features and security updates." />
 
 
   <script type="application/ld+json">
   {
       "@context": "http://schema.org",
       "@type": "TechArticle",
-      "articleSection": "Architecture",
-      "name": "Rolling-Updates",
-      "url" : "http://localhost:1313/CYBERTEC-pg-operator/architecture/rolling_update/",
-      "headline": "Rolling-Updates",
-      "description": "Whether updating the minor version, changing the hardware definitions of the cluster or other adjustments that require a pod restart, CPO ensures that the update is as uninterrupted as possible.\nThis means that adjustments are carried out on the various pods of a particular cluster one after the other and in a sensible sequence. This happens as soon as a cluster consists of more than 1 PostgreSQL node.\nIn the event of a necessary restart, the operator independently stops the pods and does not leave this to Kubernetes.",
-      "wordCount" : "182",
+      "articleSection": "Project",
+      "name": "Container Images",
+      "url" : "http://localhost:1313/CYBERTEC-pg-operator/project/container_images/",
+      "headline": "Container Images",
+      "description": "For each version of the operator and the required PostgreSQL and other required containers, the corresponding image is provided on Dockerhub.\nOperator container images The operator images are the central components that control the operation and administration of the PostgreSQL databases. These images are available in the following repository on DockerHub:\nOperator Images\nThe repository contains all the necessary images for running the Cybertec PG Operator in a Kubernetes environment. These images are updated regularly to ensure the latest features and security updates.",
+      "wordCount" : "273",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "http://localhost:1313/CYBERTEC-pg-operator/architecture/rolling_update/"
+          "@id": "http://localhost:1313/CYBERTEC-pg-operator/project/container_images/"
       },
       "copyrightHolder" : "CYBERTEC-PG-Operator",
-      "copyrightYear" : "2023",
-      "dateCreated": "2023-03-07T14:26:51.00Z",
-      "datePublished": "2023-03-07T14:26:51.00Z",
-      "dateModified": "2023-03-07T14:26:51.00Z",
+      "copyrightYear" : "2024",
+      "dateCreated": "2024-03-11T14:26:51.00Z",
+      "datePublished": "2024-03-11T14:26:51.00Z",
+      "dateModified": "2024-03-11T14:26:51.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "CYBERTEC-PG-Operator",
@@ -144,7 +147,7 @@ In the event of a necessary restart, the operator independently stops the pods a
   href="/CYBERTEC-pg-operator/custom.css"
   media="all"
 />
-  <link href="http://localhost:1313/CYBERTEC-pg-operator/architecture/rolling_update/" rel="canonical" type="text/html" />
+  <link href="http://localhost:1313/CYBERTEC-pg-operator/project/container_images/" rel="canonical" type="text/html" />
 
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
@@ -673,7 +676,7 @@ In the event of a necessary restart, the operator independently stops the pods a
               type="checkbox"
               
                 class="gdoc-nav__toggle" id="navtree-141f247f"
-                
+                checked
               
             />
             <label
@@ -769,7 +772,7 @@ In the event of a necessary restart, the operator independently stops the pods a
                 <span class="flex">
                   <a
                     href="/CYBERTEC-pg-operator/project/container_images/"
-                    class="gdoc-nav__entry"
+                    class="gdoc-nav__entry is-active"
                   >
                     Container Images
                   </a>
@@ -811,7 +814,7 @@ In the event of a necessary restart, the operator independently stops the pods a
               type="checkbox"
               
                 class="gdoc-nav__toggle" id="navtree-1e1aca91"
-                checked
+                
               
             />
             <label
@@ -958,7 +961,7 @@ In the event of a necessary restart, the operator independently stops the pods a
                 <span class="flex">
                   <a
                     href="/CYBERTEC-pg-operator/architecture/rolling_update/"
-                    class="gdoc-nav__entry is-active"
+                    class="gdoc-nav__entry"
                   >
                     Rolling-Updates
                   </a>
@@ -2982,7 +2985,7 @@ In the event of a necessary restart, the operator independently stops the pods a
     
   
   
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/architecture/' href='/CYBERTEC-pg-operator/architecture/'><span itemprop='name'>Architecture</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Rolling-Updates</span><meta itemprop='position' content='4' /></li>
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/project/' href='/CYBERTEC-pg-operator/project/'><span itemprop='name'>CPO</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Container Images</span><meta itemprop='position' content='4' /></li>
   
 
   
@@ -2997,27 +3000,67 @@ In the event of a necessary restart, the operator independently stops the pods a
 
 
   <section class="gdoc-markdown__title">
-    <h1>Rolling-Updates</h1>
+    <h1>Container Images</h1>
   </section>
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
 
-    <p>Whether updating the minor version, changing the hardware definitions of the cluster or other adjustments that require a pod restart, CPO ensures that the update is as uninterrupted as possible.</p>
-<p>This means that adjustments are carried out on the various pods of a particular cluster one after the other and in a sensible sequence. This happens as soon as a cluster consists of more than 1 PostgreSQL node.</p>
-<p>In the event of a necessary restart, the operator independently stops the pods and does not leave this to Kubernetes. The idea behind this is that all replica pods are restarted one after the other first. The operator recognises these by the label cpo.opensource.cybertec.at/role=replica set by Patroni</p>
-<p>As soon as all replicas are ready again, the operator checks whether one of the replicas is able to take over cluster operation and performs a switchover. Only then is the former leader pod stopped and restarted.</p>
-<p>This ensures that the only effect on the application is the switchover.
-
-
-
-
-
-<blockquote class="gdoc-hint info">
-  <div class="gdoc-hint__title flex align-center"><i class="fa info" title="Info"></i></div>
-  <div class="gdoc-hint__text">A completely uninterrupted handover of operation is not possible due to the architecture and connection handling of PostgreSQL.</div>
-</blockquote>
-</p>
+    <p>For each version of the operator and the required PostgreSQL and other required containers, the corresponding image is provided on Dockerhub.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="operator-container-images"
+    >
+        Operator container images
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/project/container_images/#operator-container-images" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Operator container images" aria-label="Anchor to: Operator container images" href="#operator-container-images">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>The operator images are the central components that control the operation and administration of the PostgreSQL databases. These images are available in the following repository on DockerHub:</p>
+<p><a
+  class="gdoc-markdown__link"
+  href="https://hub.docker.com/repository/docker/cybertecpostgresql/cybertec-pg-operator"
+>Operator Images</a></p>
+<p>The repository contains all the necessary images for running the Cybertec PG Operator in a Kubernetes environment. These images are updated regularly to ensure the latest features and security updates.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="additional-container-images"
+    >
+        Additional container images
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/project/container_images/#additional-container-images" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Additional container images" aria-label="Anchor to: Additional container images" href="#additional-container-images">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>In addition to the operator images, various container images are required to support a complete PostgreSQL environment. These images are available in the following repository:
+<a
+  class="gdoc-markdown__link"
+  href="https://hub.docker.com/repository/docker/cybertecpostgresql/cybertec-pg-container/general"
+>CYBERTEC-PG-Container Images</a></p>
+<p>This repository contains images for the following components:</p>
+<ul>
+<li>PostgreSQL: The main database image, which contains all supported major versions of PostgreSQL. The name of the tag always reflects the latest release, e.g. currently <code>16.4</code> for PostgreSQL <code>16.4</code>. For the other major versions, the corresponding minor versions released by the PostgreSQL community at the same time are included.</li>
+<li>Postgres-GIS: A specialised image that combines PostgreSQL with the PostGIS extension to support spatial data processing functions. You can find more information about Postgis <a
+  class="gdoc-markdown__link"
+  href="../../postgis"
+>here</a>.<br>
+The tag for Postgis also includes the included version of Postgis. Example: postgres-16.4-34-1 Postgis: <code>3.4.x</code></li>
+<li>PGBackRest: A backup and restore tool developed specifically for PostgreSQL and available as a separate container image.</li>
+<li>Exporter: Images for monitoring PostgreSQL databases that collect metrics and make them available for monitoring tools such as Prometheus.</li>
+<li>PgBouncer: A lightweight connection pooler for PostgreSQL that manages and optimises the number of concurrent connections.</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="extensions"
+    >
+        Extensions
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/project/container_images/#extensions" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Extensions" aria-label="Anchor to: Extensions" href="#extensions">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>You can view the versions included in the <a
+  class="gdoc-markdown__link"
+  href="../../extensions/pg16/"
+>Extensions</a> section.</p>
 
   </article>
 
@@ -3127,144 +3170,6 @@ In the event of a necessary restart, the operator independently stops the pods a
         
 
         
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
           
           
         
@@ -3282,6 +3187,15 @@ In the event of a necessary restart, the operator independently stops the pods a
 
         
       
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       
@@ -3305,9 +3219,11 @@ In the event of a necessary restart, the operator independently stops the pods a
 
         
         
-      
-    
+          
+  
+  
 
+  
   
     
 
@@ -3333,6 +3249,133 @@ In the event of a necessary restart, the operator independently stops the pods a
             
             
           
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
         
 
         
@@ -4501,15 +4544,6 @@ In the event of a necessary restart, the operator independently stops the pods a
 
 
 <span class="gdoc-page__nav">
-  
-    <a
-      class="gdoc-page__nav--prev flex align-center"
-      href="/CYBERTEC-pg-operator/architecture/compontens/"
-      title="Software-Components"
-    >
-      <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-      Software-Components
-    </a>
   
 </span>
 <span class="gdoc-page__nav__product">A product of CYBERTEC</span>
@@ -4517,10 +4551,10 @@ In the event of a necessary restart, the operator independently stops the pods a
   
     <a
       class="gdoc-page__nav--next flex align-center"
-      href="/CYBERTEC-pg-operator/quickstart/"
-      title="Quickstart"
+      href="/CYBERTEC-pg-operator/architecture/architecture/"
+      title="Architecture"
     >
-      Quickstart
+      Architecture
       <i class="gdoc-icon">gdoc_arrow_right_alt</i>
     </a>
   

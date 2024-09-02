@@ -108,10 +108,10 @@
     </item>
     <item>
       <title>Container Images</title>
-      <link>http://localhost:1313/CYBERTEC-pg-operator/project/project-copy/</link>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/project/container_images/</link>
       <pubDate>Mon, 11 Mar 2024 14:26:51 +0100</pubDate>
-      <guid>http://localhost:1313/CYBERTEC-pg-operator/project/project-copy/</guid>
-      <description></description>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/project/container_images/</guid>
+      <description>For each version of the operator and the required PostgreSQL and other required containers, the corresponding image is provided on Dockerhub.&#xA;Operator container images The operator images are the central components that control the operation and administration of the PostgreSQL databases. These images are available in the following repository on DockerHub:&#xA;Operator Images&#xA;The repository contains all the necessary images for running the Cybertec PG Operator in a Kubernetes environment. These images are updated regularly to ensure the latest features and security updates.</description>
     </item>
     <item>
       <title>PostgreSQL</title>

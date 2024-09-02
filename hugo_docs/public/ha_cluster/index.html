@@ -12,9 +12,8 @@
 <meta name="generator" content="Hugo 0.133.0">
 
 
-  <meta name="description" content="To ensure continiues productive usage you can create a HA-Cluster or modify a Single-Node-Cluster to a HA-Cluster. The needed changes are less complicated
-spec: numberOfInstances: 2 # or more The example above will create a HA-Cluster based on two Nodes.
-kubectl get pods ----------------------------------------------------------------------------- NAME | READY | STATUS | RESTARTS | AGE cluster-1-0 | 1/1 | Running | 0 | 54s cluster-1-1 | 1/1 | Running | 0 | 31s " />
+  <meta name="description" content="High availability (HA) is a critical aspect of running database systems, especially in mission-critical applications where downtime is unacceptable. This section explains why high availability is important for PostgreSQL and how Patroni acts as a solution to ensure HA. Why High Availability (HA) for PostgreSQL?
+To minimise downtime: In modern, data-driven applications, downtime can cause significant financial and reputational losses. High availability ensures that the database remains available even in the event of hardware failures or network problems." />
 
     <title>High Availability | CYBERTEC-PG-Operator</title>
 
@@ -37,9 +36,8 @@ kubectl get pods ---------------------------------------------------------------
     content="High Availability"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
-  <meta property="og:description" content="To ensure continiues productive usage you can create a HA-Cluster or modify a Single-Node-Cluster to a HA-Cluster. The needed changes are less complicated
-spec: numberOfInstances: 2 # or more The example above will create a HA-Cluster based on two Nodes.
-kubectl get pods ----------------------------------------------------------------------------- NAME | READY | STATUS | RESTARTS | AGE cluster-1-0 | 1/1 | Running | 0 | 54s cluster-1-1 | 1/1 | Running | 0 | 31s " />
+  <meta property="og:description" content="High availability (HA) is a critical aspect of running database systems, especially in mission-critical applications where downtime is unacceptable. This section explains why high availability is important for PostgreSQL and how Patroni acts as a solution to ensure HA. Why High Availability (HA) for PostgreSQL?
+To minimise downtime: In modern, data-driven applications, downtime can cause significant financial and reputational losses. High availability ensures that the database remains available even in the event of hardware failures or network problems." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/ha_cluster/" />
 
@@ -56,9 +54,8 @@ kubectl get pods ---------------------------------------------------------------
 
   <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="High Availability" />
-  <meta name="twitter:description" content="To ensure continiues productive usage you can create a HA-Cluster or modify a Single-Node-Cluster to a HA-Cluster. The needed changes are less complicated
-spec: numberOfInstances: 2 # or more The example above will create a HA-Cluster based on two Nodes.
-kubectl get pods ----------------------------------------------------------------------------- NAME | READY | STATUS | RESTARTS | AGE cluster-1-0 | 1/1 | Running | 0 | 54s cluster-1-1 | 1/1 | Running | 0 | 31s " />
+  <meta name="twitter:description" content="High availability (HA) is a critical aspect of running database systems, especially in mission-critical applications where downtime is unacceptable. This section explains why high availability is important for PostgreSQL and how Patroni acts as a solution to ensure HA. Why High Availability (HA) for PostgreSQL?
+To minimise downtime: In modern, data-driven applications, downtime can cause significant financial and reputational losses. High availability ensures that the database remains available even in the event of hardware failures or network problems." />
 
 
   <script type="application/ld+json">
@@ -69,8 +66,8 @@ kubectl get pods ---------------------------------------------------------------
       "name": "High Availability",
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/ha_cluster/",
       "headline": "High Availability",
-      "description": "To ensure continiues productive usage you can create a HA-Cluster or modify a Single-Node-Cluster to a HA-Cluster. The needed changes are less complicated\nspec: numberOfInstances: 2 # or more The example above will create a HA-Cluster based on two Nodes.\nkubectl get pods ----------------------------------------------------------------------------- NAME | READY | STATUS | RESTARTS | AGE cluster-1-0 | 1\/1 | Running | 0 | 54s cluster-1-1 | 1\/1 | Running | 0 | 31s ",
-      "wordCount" : "71",
+      "description": "High availability (HA) is a critical aspect of running database systems, especially in mission-critical applications where downtime is unacceptable. This section explains why high availability is important for PostgreSQL and how Patroni acts as a solution to ensure HA. Why High Availability (HA) for PostgreSQL?\nTo minimise downtime: In modern, data-driven applications, downtime can cause significant financial and reputational losses. High availability ensures that the database remains available even in the event of hardware failures or network problems.",
+      "wordCount" : "470",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -766,7 +763,14 @@ kubectl get pods ---------------------------------------------------------------
               
             >
               
-                <span class="flex">Container Images</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/project/container_images/"
+                    class="gdoc-nav__entry"
+                  >
+                    Container Images
+                  </a>
+                </span>
               
               
             </label>
@@ -2987,15 +2991,51 @@ kubectl get pods ---------------------------------------------------------------
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    <p>To ensure continiues productive usage you can create a HA-Cluster or modify a Single-Node-Cluster to a HA-Cluster.
-The needed changes are less complicated</p>
+    <p>High availability (HA) is a critical aspect of running database systems, especially in mission-critical applications where downtime is unacceptable. This section explains why high availability is important for PostgreSQL and how Patroni acts as a solution to ensure HA.
+Why High Availability (HA) for PostgreSQL?</p>
+<ol>
+<li>To minimise downtime: In modern, data-driven applications, downtime can cause significant financial and reputational losses. High availability ensures that the database remains available even in the event of hardware failures or network problems.</li>
+<li>Data integrity and security: A database failure can lead to data loss or data inconsistencies. High-availability solutions protect against such scenarios through continuous data replication and automatic failover.</li>
+<li>Scalability and load balancing: HA setups make it possible to distribute the load across multiple nodes, resulting in better performance and faster response times. This is particularly important in environments with high data traffic.</li>
+<li>Ease of maintenance: By setting up high availability, database maintenance can be performed without interrupting services. Nodes can be maintained incrementally while the database remains available.</li>
+</ol>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="patroni---the-cluster-manager"
+    >
+        Patroni - the cluster manager
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/ha_cluster/#patroni---the-cluster-manager" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Patroni - the cluster manager" aria-label="Anchor to: Patroni - the cluster manager" href="#patroni---the-cluster-manager">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>In our PostgreSQL environment, we use <a
+  class="gdoc-markdown__link"
+  href="../../patroni"
+>Patroni</a> in the PG containers by default. This has the advantage that even single-node instances basically function as Patroni clusters. This configuration offers several important advantages:</p>
+<ul>
+<li>Easy scalability: by using Patroni in all PG containers, scaling pods up and down is possible at any time. You can easily add additional pods as needed to improve performance or increase capacity, or remove pods to free up resources. This flexibility is particularly useful in dynamic environments where requirements can change quickly.</li>
+<li>Automated cluster management: Patroni automatically takes over the management of the cluster. When a new pod is added to an existing cluster, Patroni takes care of setting up the new node itself, including initialising and starting replication. This means you don&rsquo;t have to perform any manual steps to configure or manage new nodes - Patroni does it all for you automatically.</li>
+<li>Seamless integration: As Patroni is active in every PG container by default, you don&rsquo;t have to worry about compatibility or manual configuration. This makes deployment and maintenance much easier, as all the necessary components are already preconfigured.</li>
+<li>Optimisation of resources: Even with a minimal setup (single-node instance), you benefit from the advantages of a Patroni cluster, including the possibility of easy expansion and automatic failover in the event of a failure. This ensures optimal resource utilisation and minimises downtime.</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="upgrade-the-cluster-to-high-availability"
+    >
+        Upgrade the cluster to high availability
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/ha_cluster/#upgrade-the-cluster-to-high-availability" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Upgrade the cluster to high availability" aria-label="Anchor to: Upgrade the cluster to high availability" href="#upgrade-the-cluster-to-high-availability">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>The necessary changes to a high-availability cluster are very limited.
+Only the number of desired instances needs to be increased.</p>
 <pre tabindex="0"><code>spec: 
   numberOfInstances: 2 # or more
 </code></pre><p>The example above will create a HA-Cluster based on two Nodes.</p>
 <pre tabindex="0"><code>kubectl get pods
 -----------------------------------------------------------------------------
 NAME                             | READY  | STATUS           | RESTARTS | AGE
-cluster-1-0                      | 1/1    | Running          | 0        | 54s
+cluster-1-0                      | 1/1    | Running          | 0        | 3d
 cluster-1-1                      | 1/1    | Running          | 0        | 31s
 </code></pre>
   </article>
@@ -3107,6 +3147,8 @@ cluster-1-1                      | 1/1    | Running          | 0        | 31s
 
         
 
+        
+          
         
 
         

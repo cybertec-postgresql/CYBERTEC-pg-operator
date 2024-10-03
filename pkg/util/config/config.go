@@ -160,6 +160,16 @@ type ConnectionPooler struct {
 	ConnectionPoolerDefaultMemoryLimit   string `name:"connection_pooler_default_memory_limit" default:"100Mi"`
 }
 
+type Multisite struct {
+	Enable       *bool  `name:"multisite_enable" default:"false"`
+	Site         string `name:"multisite_site" default:""`
+	EtcdHost     string `name:"multisite_etcd_host" default:""`
+	EtcdUser     string `name:"multisite_etcd_user" default:""`
+	EtcdPassword string `name:"multisite_etcd_password" default:""`
+	TTL          *int32 `name:"multisite_ttl" default:"90"`
+	RetryTimeout *int32 `name:"multisite_retry_timeout" default:"40"`
+}
+
 // Config describes operator config
 type Config struct {
 	CRD
@@ -168,6 +178,7 @@ type Config struct {
 	Scalyr
 	LogicalBackup
 	ConnectionPooler
+	Multisite
 
 	WatchedNamespace        string            `name:"watched_namespace"` // special values: "*" means 'watch all namespaces', the empty string "" means 'watch a namespace where operator is deployed to'
 	KubernetesUseConfigMaps bool              `name:"kubernetes_use_configmaps" default:"false"`

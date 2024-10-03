@@ -312,6 +312,14 @@ func CoalesceDuration(val time.Duration, defaultVal string) time.Duration {
 	return val
 }
 
+// CoalesceStrPtr works like coalesce but for *string
+func CoalesceStrPtr(val *string, defaultVal string) string {
+	if val != nil && *val != "" {
+		return *val
+	}
+	return defaultVal
+}
+
 // Test if any of the values is nil
 func testNil(values ...*int32) bool {
 	for _, v := range values {

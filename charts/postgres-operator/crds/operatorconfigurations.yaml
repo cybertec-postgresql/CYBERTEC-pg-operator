@@ -680,6 +680,23 @@ spec:
                     type: string
                     pattern: '^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$'
                     default: "100Mi"
+              multisite:
+                type: object
+                properties:
+                  enable:
+                    type: boolean
+                  site:
+                    type: string
+                  etcd_host:
+                    type: string
+                  etcd_user:
+                    type: string
+                  etcd_password:
+                    type: string
+                  ttl:
+                    type: integer
+                  retry_timeout:
+                    type: integer
               patroni:
                 type: object
                 properties:

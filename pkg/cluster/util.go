@@ -498,6 +498,40 @@ func (c *Cluster) waitStatefulsetPodsReady() error {
 	return nil
 }
 
+func (c *Cluster) waitForPrimaryLoadBalancerIp() error {
+	return retryutil.Retry(c.OpConfig.ResourceCheckInterval, c.OpConfig.ResourceCheckTimeout,
+		func() (bool, error) {
+			name := c.serviceName(Master)
+			svc, err := c.KubeClient.Services(c.Namespace).Get(context.TODO(), name, metav1.GetOptions{})
+			if err != nil {
+				return false, err
+			}
+
+			if svc == nil {
+				return false, fmt.Errorf("primary loadbalancer service is not found")
+			}
+			return len(svc.Status.LoadBalancer.Ingress) > 0, nil
+		})
+
+	return nil
+}
+
+func (c *Cluster) getPrimaryLoadBalancerIp() (string, error) {
+	name := c.serviceName(Master)
+	svc, err := c.KubeClient.Services(c.Namespace).Get(context.TODO(), name, metav1.GetOptions{})
+	if err != nil {
+		return "", err
+	}
+	if svc == nil {
+		return "", fmt.Errorf("primary loadbalancer service is not found")
+	}
+	if len(svc.Status.LoadBalancer.Ingress) == 0 {
+		return "", fmt.Errorf("IP is not assigned")
+	}
+	ingress := svc.Status.LoadBalancer.Ingress[0]
+	return util.Coalesce(ingress.Hostname, ingress.IP), nil
+}
+
 // Returns labels used to create or list k8s objects such as pods
 // For backward compatibility, shouldAddExtraLabels must be false
 // when listing k8s objects. See operator PR #252
@@ -714,4 +748,14 @@ func parseResourceRequirements(resourcesRequirement v1.ResourceRequirements) (cp
 		return cpov1.Resources{}, fmt.Errorf("could not unmarshal K8s resources requirements into cpov1.Resources struct")
 	}
 	return resources, nil
+}
+
+func (c *Cluster) multisiteEnabled() bool {
+	var enable *bool
+	if c.Spec.Multisite != nil {
+		enable = util.CoalesceBool(c.Spec.Multisite.Enable, c.OpConfig.Multisite.Enable)
+	} else {
+		enable = c.OpConfig.Multisite.Enable
+	}
+	return enable != nil && *enable
 }

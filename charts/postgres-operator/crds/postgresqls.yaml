@@ -334,6 +334,23 @@ spec:
                     type: integer
                   maximum_lag_on_failover:
                     type: integer
+                  multisite:
+                    type: object
+                    properties:
+                      enable:
+                        type: boolean
+                      site:
+                        type: string
+                      etcd_host:
+                        type: string
+                      etcd_user:
+                        type: string
+                      etcd_password:
+                        type: string
+                      ttl:
+                        type: integer
+                      retry_timeout:
+                        type: integer
                   pg_hba:
                     type: array
                     items:

@@ -433,6 +433,21 @@ configConnectionPooler:
   connection_pooler_default_cpu_limit: "1"
   connection_pooler_default_memory_limit: 100Mi
 
+configMultisite:
+  # Turn on multisite operation on all cluster by default
+  enable: false
+  # Name of this site, if missing multisite operation is disabled.
+  # Must be unique for each site.
+  site: ""
+  # IP address or hostname of shared etcd cluster used for multicluster operation.
+  etcd_host: ""
+  etcd_user: ""
+  etcd_password: ""
+  # Timeout for cross site failover, and timeout for demoting to read only when accessing shared etcd cluster fails.
+  # There should be adequate safety margin between the two to allow for demotion to take place.
+  #ttl: 90
+  #retry_timeout: 40
+
 configPatroni:
   # enable Patroni DCS failsafe_mode feature
   enable_patroni_failsafe_mode: false

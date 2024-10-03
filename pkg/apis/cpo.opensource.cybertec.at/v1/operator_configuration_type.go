@@ -276,6 +276,7 @@ type OperatorConfigurationData struct {
 	Scalyr                        ScalyrConfiguration                `json:"scalyr"`
 	LogicalBackup                 OperatorLogicalBackupConfiguration `json:"logical_backup"`
 	ConnectionPooler              ConnectionPoolerConfiguration      `json:"connection_pooler"`
+	Multisite                     Multisite                          `json:"multisite"`
 	Patroni                       PatroniConfiguration               `json:"patroni"`
 
 	MinInstances                      int32  `json:"min_instances,omitempty"`

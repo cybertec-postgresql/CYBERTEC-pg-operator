@@ -572,6 +572,32 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							"maximum_lag_on_failover": {
 								Type: "integer",
 							},
+							"multisite": {
+								Type: "object",
+								Properties: map[string]apiextv1.JSONSchemaProps{
+									"enable": {
+										Type: "boolean",
+									},
+									"site": {
+										Type: "string",
+									},
+									"etcd_host": {
+										Type: "string",
+									},
+									"etcd_user": {
+										Type: "string",
+									},
+									"etcd_password": {
+										Type: "string",
+									},
+									"ttl": {
+										Type: "integer",
+									},
+									"retry_timeour": {
+										Type: "integer",
+									},
+								},
+							},
 							"pg_hba": {
 								Type: "array",
 								Items: &apiextv1.JSONSchemaPropsOrArray{
@@ -2202,6 +2228,32 @@ var OperatorConfigCRDResourceValidation = apiextv1.CustomResourceValidation{
 							},
 							"connection_pooler_user": {
 								Type: "string",
+							},
+						},
+					},
+					"multisite": {
+						Type: "object",
+						Properties: map[string]apiextv1.JSONSchemaProps{
+							"enable": {
+								Type: "boolean",
+							},
+							"site": {
+								Type: "string",
+							},
+							"etcd_host": {
+								Type: "string",
+							},
+							"etcd_user": {
+								Type: "string",
+							},
+							"etcd_password": {
+								Type: "string",
+							},
+							"ttl": {
+								Type: "integer",
+							},
+							"retry_timeout": {
+								Type: "integer",
 							},
 						},
 					},

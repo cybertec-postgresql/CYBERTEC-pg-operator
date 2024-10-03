@@ -282,5 +282,13 @@ func (c *Controller) importConfigurationFromCRD(fromCRD *cpov1.OperatorConfigura
 		fromCRD.ConnectionPooler.MaxDBConnections,
 		k8sutil.Int32ToPointer(constants.ConnectionPoolerMaxDBConnections))
 
+	result.Multisite.Enable = fromCRD.Multisite.Enable
+	result.Multisite.Site = util.CoalesceStrPtr(fromCRD.Multisite.Site, "")
+	result.Multisite.EtcdHost = util.CoalesceStrPtr(fromCRD.Multisite.EtcdHost, "")
+	result.Multisite.EtcdUser = util.CoalesceStrPtr(fromCRD.Multisite.EtcdUser, "")
+	result.Multisite.EtcdPassword = util.CoalesceStrPtr(fromCRD.Multisite.EtcdPassword, "")
+	result.Multisite.TTL = util.CoalesceInt32(fromCRD.Multisite.TTL, k8sutil.Int32ToPointer(90))
+	result.Multisite.RetryTimeout = util.CoalesceInt32(fromCRD.Multisite.RetryTimeout, k8sutil.Int32ToPointer(40))
+
 	return result
 }

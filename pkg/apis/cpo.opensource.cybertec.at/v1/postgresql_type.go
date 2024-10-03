@@ -180,6 +180,7 @@ type Patroni struct {
 	SynchronousMode       bool                         `json:"synchronous_mode,omitempty"`
 	SynchronousModeStrict bool                         `json:"synchronous_mode_strict,omitempty"`
 	SynchronousNodeCount  uint32                       `json:"synchronous_node_count,omitempty" defaults:"1"`
+	Multisite             *Multisite                   `json:"multisite,omitempty"`
 	FailsafeMode          *bool                        `json:"failsafe_mode,omitempty"`
 }
 
@@ -312,4 +313,15 @@ type TDE struct {
 // Monitoring Sidecar defines a container to be run in the same pod as the Postgres container.
 type Monitoring struct {
 	Image string `json:"image,omitempty"`
+}
+
+// Multisite enables cross Kubernetes replication coordinated via etcd
+type Multisite struct {
+	Enable       *bool   `json:"enable,omitempty"`
+	Site         *string `json:"site,omitempty"`
+	EtcdHost     *string `json:"etcd_host,omitempty"`
+	EtcdUser     *string `json:"etcd_user,omitempty"`
+	EtcdPassword *string `json:"etcd_password,omitempty"`
+	TTL          *int32  `json:"ttl,omitempty""`
+	RetryTimeout *int32  `json:"retry_timeout,omitempty""`
 }

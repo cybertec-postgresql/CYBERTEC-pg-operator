@@ -57,6 +57,21 @@ rules:
   - services
   verbs:
   - create
+  # Create events for multisite status changes
+- apiGroups:
+    - ""
+  resources:
+    - events
+  verbs:
+    - create
+  # Update multisite status
+- apiGroups:
+    - cpo.opensource.cybertec.at
+  resources:
+    - postgresqls/status
+  verbs:
+    - patch
+    - update
 {{- if toString .Values.configKubernetes.spilo_privileged | eq "true" }}
 # to run privileged pods
 - apiGroups:

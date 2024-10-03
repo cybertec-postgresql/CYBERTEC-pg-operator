@@ -39,6 +39,10 @@ configuration:
   logging_rest_api:
 {{ toYaml .Values.configLoggingRestApi | indent 4 }}
   connection_pooler:
+{{- if .Values.configMultisite.site }}
+  multisite:
+{{ toYaml .Values.configMultisite | indent 4 }}
+{{- end }}
 {{ toYaml .Values.configConnectionPooler | indent 4 }}
   patroni:
 {{ toYaml .Values.configPatroni | indent 4 }}

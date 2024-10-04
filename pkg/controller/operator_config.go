@@ -205,7 +205,7 @@ func (c *Controller) importConfigurationFromCRD(fromCRD *cpov1.OperatorConfigura
 	result.EnableTeamSuperuser = fromCRD.TeamsAPI.EnableTeamSuperuser
 	result.EnableAdminRoleForUsers = fromCRD.TeamsAPI.EnableAdminRoleForUsers
 	result.TeamAdminRole = fromCRD.TeamsAPI.TeamAdminRole
-	result.PamRoleName = util.Coalesce(fromCRD.TeamsAPI.PamRoleName, "zalandos")
+	result.PamRoleName = util.Coalesce(fromCRD.TeamsAPI.PamRoleName, "humans")
 	result.PamConfiguration = util.Coalesce(fromCRD.TeamsAPI.PamConfiguration, "https://info.example.com/oauth2/tokeninfo?access_token= uid realm=/employees")
 	result.ProtectedRoles = util.CoalesceStrArr(fromCRD.TeamsAPI.ProtectedRoles, []string{"admin", "cron_admin"})
 	result.PostgresSuperuserTeams = fromCRD.TeamsAPI.PostgresSuperuserTeams

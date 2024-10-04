@@ -186,7 +186,7 @@ configuration:
     enable_team_superuser: false
     enable_teams_api: false
     # pam_configuration: ""
-    pam_role_name: zalandos
+    pam_role_name: humans
     # postgres_superuser_teams:
     # - postgres_superusers
     protected_role_names:

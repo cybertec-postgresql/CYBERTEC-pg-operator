@@ -295,7 +295,7 @@ func TestInitHumanUsers(t *testing.T) {
 	cl.OpConfig.EnableTeamSuperuser = true
 	cl.OpConfig.EnableTeamsAPI = true
 	cl.OpConfig.EnableTeamMemberDeprecation = true
-	cl.OpConfig.PamRoleName = "zalandos"
+	cl.OpConfig.PamRoleName = "humans"
 	cl.Spec.TeamID = "test"
 	cl.Spec.Users = map[string]cpov1.UserFlags{"bar": []string{}}
 
@@ -383,7 +383,7 @@ func TestInitHumanUsersWithSuperuserTeams(t *testing.T) {
 	cl.OpConfig.EnableTeamSuperuser = false
 
 	cl.OpConfig.EnableTeamsAPI = true
-	cl.OpConfig.PamRoleName = "zalandos"
+	cl.OpConfig.PamRoleName = "humans"
 
 	teamA := mockTeam{
 		teamID:                  "postgres_superusers",

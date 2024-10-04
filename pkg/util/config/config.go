@@ -97,7 +97,7 @@ type InfrastructureRole struct {
 // Auth describes authentication specific configuration parameters
 type Auth struct {
 	SecretNameTemplate            StringTemplate        `name:"secret_name_template" default:"{username}.{cluster}.credentials.{tprkind}.{tprgroup}"`
-	PamRoleName                   string                `name:"pam_role_name" default:"zalandos"`
+	PamRoleName                   string                `name:"pam_role_name" default:"humans"`
 	PamConfiguration              string                `name:"pam_configuration" default:"https://info.example.com/oauth2/tokeninfo?access_token= uid realm=/employees"`
 	TeamsAPIUrl                   string                `name:"teams_api_url" default:"https://teams.example.com/api/"`
 	OAuthTokenSecretName          spec.NamespacedName   `name:"oauth_token_secret_name" default:"postgresql-operator"`

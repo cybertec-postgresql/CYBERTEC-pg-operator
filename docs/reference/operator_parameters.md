@@ -881,7 +881,7 @@ key.
 * **pam_role_name**
   when set, the operator will add all team member roles to this group and add a
   `pg_hba` line to authenticate members of that role via `pam`. The default is
-  `zalandos`.
+  `humans`.
 
 * **pam_configuration**
   when set, should contain a URL to use for authentication against the username

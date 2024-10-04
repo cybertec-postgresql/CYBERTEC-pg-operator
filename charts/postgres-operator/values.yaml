@@ -44,7 +44,7 @@ configGeneral:
   # ignore_instance_limits_annotation_key: ""
 
   # Select if setup uses endpoints (default), or configmaps to manage leader (DCS=k8s)
-  # kubernetes_use_configmaps: false
+  kubernetes_use_configmaps: true
 
   # min number of instances in Postgres cluster. -1 = no limit
   min_instances: -1

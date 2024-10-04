@@ -456,13 +456,6 @@ PatroniInitDBParams:
 		config.PgLocalConfiguration[patroniPGHBAConfParameterName] = patroni.PgHba
 	}
 
-	config.Bootstrap.Users = map[string]pgUser{
-		opConfig.PamRoleName: {
-			Password: "",
-			Options:  []string{constants.RoleFlagCreateDB, constants.RoleFlagNoLogin},
-		},
-	}
-
 	res, err := json.Marshal(config)
 	return string(res), err
 }

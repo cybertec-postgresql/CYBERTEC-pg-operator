@@ -60,6 +60,7 @@ rules:
   # Create events for multisite status changes
 - apiGroups:
     - ""
+    - "events.k8s.io"
   resources:
     - events
   verbs:

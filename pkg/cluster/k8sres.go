@@ -3230,9 +3230,10 @@ func (c *Cluster) generateMultisiteEnvVars() []v1.EnvVar {
 
 	envVars := []v1.EnvVar{
 		{Name: "MULTISITE_SITE", Value: util.CoalesceStrPtr(clsConf.Site, c.OpConfig.Multisite.Site)},
-		{Name: "MULTISITE_ETCD_HOST", Value: util.CoalesceStrPtr(clsConf.EtcdHost, c.OpConfig.Multisite.EtcdHost)},
-		{Name: "MULTISITE_ETCD_USER", Value: util.CoalesceStrPtr(clsConf.EtcdUser, c.OpConfig.Multisite.EtcdUser)},
-		{Name: "MULTISITE_ETCD_PASSWORD", Value: util.CoalesceStrPtr(clsConf.EtcdPassword, c.OpConfig.Multisite.EtcdPassword)},
+		{Name: "MULTISITE_ETCD_HOST", Value: util.CoalesceStrPtr(clsConf.Etcd.Host, c.OpConfig.Multisite.Etcd.Host)},
+		{Name: "MULTISITE_ETCD_USER", Value: util.CoalesceStrPtr(clsConf.Etcd.User, c.OpConfig.Multisite.Etcd.User)},
+		{Name: "MULTISITE_ETCD_PASSWORD", Value: util.CoalesceStrPtr(clsConf.Etcd.Password, c.OpConfig.Multisite.Etcd.Password)},
+		{Name: "MULTISITE_ETCD_PROTOCOL", Value: util.CoalesceStrPtr(clsConf.Etcd.Protocol, c.OpConfig.Multisite.Etcd.Protocol)},
 		{Name: "MULTISITE_TTL", Value: strconv.Itoa(int(*util.CoalesceInt32(clsConf.TTL, c.OpConfig.Multisite.TTL)))},
 		{Name: "MULTISITE_RETRY_TIMEOUT", Value: strconv.Itoa(int(*util.CoalesceInt32(clsConf.RetryTimeout, c.OpConfig.Multisite.RetryTimeout)))},
 		{Name: "EXTERNAL_HOST", Value: site},

@@ -161,13 +161,19 @@ type ConnectionPooler struct {
 }
 
 type Multisite struct {
+	Etcd
+
 	Enable       *bool  `name:"multisite_enable" default:"false"`
 	Site         string `name:"multisite_site" default:""`
-	EtcdHost     string `name:"multisite_etcd_host" default:""`
-	EtcdUser     string `name:"multisite_etcd_user" default:""`
-	EtcdPassword string `name:"multisite_etcd_password" default:""`
 	TTL          *int32 `name:"multisite_ttl" default:"90"`
 	RetryTimeout *int32 `name:"multisite_retry_timeout" default:"40"`
+}
+
+type Etcd struct {
+	Host     string `name:"multisite_etcd_host" default:""`
+	User     string `name:"multisite_etcd_user" default:""`
+	Password string `name:"multisite_etcd_password" default:""`
+	Protocol string `name:"multisite_etcd_protocol" default:"http"`
 }
 
 // Config describes operator config

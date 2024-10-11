@@ -284,9 +284,10 @@ func (c *Controller) importConfigurationFromCRD(fromCRD *cpov1.OperatorConfigura
 
 	result.Multisite.Enable = fromCRD.Multisite.Enable
 	result.Multisite.Site = util.CoalesceStrPtr(fromCRD.Multisite.Site, "")
-	result.Multisite.EtcdHost = util.CoalesceStrPtr(fromCRD.Multisite.EtcdHost, "")
-	result.Multisite.EtcdUser = util.CoalesceStrPtr(fromCRD.Multisite.EtcdUser, "")
-	result.Multisite.EtcdPassword = util.CoalesceStrPtr(fromCRD.Multisite.EtcdPassword, "")
+	result.Multisite.Etcd.Host = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.Host, "")
+	result.Multisite.Etcd.User = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.User, "")
+	result.Multisite.Etcd.Password = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.Password, "")
+	result.Multisite.Etcd.Protocol = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.Protocol, "")
 	result.Multisite.TTL = util.CoalesceInt32(fromCRD.Multisite.TTL, k8sutil.Int32ToPointer(90))
 	result.Multisite.RetryTimeout = util.CoalesceInt32(fromCRD.Multisite.RetryTimeout, k8sutil.Int32ToPointer(40))
 

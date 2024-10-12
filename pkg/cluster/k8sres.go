@@ -3230,7 +3230,7 @@ func (c *Cluster) generateMultisiteEnvVars() []v1.EnvVar {
 
 	envVars := []v1.EnvVar{
 		{Name: "MULTISITE_SITE", Value: util.CoalesceStrPtr(clsConf.Site, c.OpConfig.Multisite.Site)},
-		{Name: "MULTISITE_ETCD_HOST", Value: util.CoalesceStrPtr(clsConf.Etcd.Host, c.OpConfig.Multisite.Etcd.Host)},
+		{Name: "MULTISITE_ETCD_HOSTS", Value: util.CoalesceStrPtr(clsConf.Etcd.Hosts, c.OpConfig.Multisite.Etcd.Hosts)},
 		{Name: "MULTISITE_ETCD_USER", Value: util.CoalesceStrPtr(clsConf.Etcd.User, c.OpConfig.Multisite.Etcd.User)},
 		{Name: "MULTISITE_ETCD_PASSWORD", Value: util.CoalesceStrPtr(clsConf.Etcd.Password, c.OpConfig.Multisite.Etcd.Password)},
 		{Name: "MULTISITE_ETCD_PROTOCOL", Value: util.CoalesceStrPtr(clsConf.Etcd.Protocol, c.OpConfig.Multisite.Etcd.Protocol)},

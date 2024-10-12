@@ -170,7 +170,7 @@ type Multisite struct {
 }
 
 type Etcd struct {
-	Host     string `name:"multisite_etcd_host" default:""`
+	Hosts    string `name:"multisite_etcd_hosts" default:""`
 	User     string `name:"multisite_etcd_user" default:""`
 	Password string `name:"multisite_etcd_password" default:""`
 	Protocol string `name:"multisite_etcd_protocol" default:"http"`

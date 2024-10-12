@@ -284,7 +284,7 @@ func (c *Controller) importConfigurationFromCRD(fromCRD *cpov1.OperatorConfigura
 
 	result.Multisite.Enable = fromCRD.Multisite.Enable
 	result.Multisite.Site = util.CoalesceStrPtr(fromCRD.Multisite.Site, "")
-	result.Multisite.Etcd.Host = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.Host, "")
+	result.Multisite.Etcd.Hosts = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.Hosts, "")
 	result.Multisite.Etcd.User = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.User, "")
 	result.Multisite.Etcd.Password = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.Password, "")
 	result.Multisite.Etcd.Protocol = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.Protocol, "")

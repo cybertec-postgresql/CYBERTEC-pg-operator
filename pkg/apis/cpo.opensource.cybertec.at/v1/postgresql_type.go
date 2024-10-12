@@ -325,7 +325,7 @@ type Multisite struct {
 }
 
 type EtcdConfig struct {
-	Host     *string `json:"host,omitempty"`
+	Hosts    *string `json:"hosts,omitempty"`
 	User     *string `json:"user,omitempty"`
 	Password *string `json:"password,omitempty"`
 	Protocol *string `json:"protocol,omitempty"`

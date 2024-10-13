@@ -1,7 +1,7 @@
 apiVersion: v2
 name: postgres-operator
-version: 1.10.1
-appVersion: 1.10.1
+version: 0.8.0
+appVersion: 0.8.0
 home: https://github.com/cybertec-postgresql/cybertec-pg-operator
 description: Postgres Operator creates and manages PostgreSQL clusters running in Kubernetes
 keywords:
@@ -11,8 +11,8 @@ keywords:
 - patroni
 - spilo
 maintainers:
-- name: Zalando
-  email: opensource@zalando.de
+- name: CYBERTEC PostgreSQL International GmbH
+  email: info@cybertec.at
 sources:
 - https://github.com/cybertec-postgresql/cybertec-pg-operator
 engine: gotpl

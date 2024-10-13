@@ -1967,6 +1967,26 @@ func (c *Cluster) decryptMultisitePassword(value []byte) (string, error) {
 	return string(result), err
 }
 
+func generateEtcdEndpoints(hosts, protocol string) []string {
+	endpoints := []string{}
+
+	if protocol == "" {
+		protocol = "http"
+	}
+
+	for _, host := range strings.Split(hosts, ",") {
+		hostParts := strings.SplitN(strings.TrimSpace(host), ":", 2)
+		host = hostParts[0]
+		port := "2379"
+		if len(hostParts) == 2 {
+			port = hostParts[1]
+		}
+		endpoints = append(endpoints, fmt.Sprintf("%s://%s:%s", protocol, host, port))
+	}
+
+	return endpoints
+}
+
 func (c *Cluster) getPasswordForUser(username string) (string, error) {
 	if !c.multisiteEnabled() {
 		return util.RandomPassword(constants.PasswordLength), nil
@@ -1977,10 +1997,14 @@ func (c *Cluster) getPasswordForUser(username string) (string, error) {
 		if msSpec == nil {
 			msSpec = &cpov1.Multisite{}
 		}
+		endpoints := generateEtcdEndpoints(
+			util.CoalesceStrPtr(msSpec.Etcd.Hosts, c.OpConfig.Multisite.Etcd.Hosts),
+			util.CoalesceStrPtr(msSpec.Etcd.Protocol, c.OpConfig.Multisite.Etcd.Protocol),
+		)
 		client, err := clientv3.New(clientv3.Config{
-			Endpoints:   []string{fmt.Sprintf("http://%s:2379", util.CoalesceStrPtr(msSpec.EtcdHost, c.OpConfig.Multisite.EtcdHost))},
-			Username:    util.CoalesceStrPtr(msSpec.EtcdUser, c.OpConfig.Multisite.EtcdUser),
-			Password:    util.CoalesceStrPtr(msSpec.EtcdPassword, c.OpConfig.Multisite.EtcdPassword),
+			Endpoints:   endpoints,
+			Username:    util.CoalesceStrPtr(msSpec.Etcd.User, c.OpConfig.Multisite.Etcd.User),
+			Password:    util.CoalesceStrPtr(msSpec.Etcd.Password, c.OpConfig.Multisite.Etcd.Password),
 			DialTimeout: time.Duration(2) * time.Second,
 		})
 		if err != nil {

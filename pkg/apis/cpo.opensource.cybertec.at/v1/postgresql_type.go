@@ -317,11 +317,11 @@ type Monitoring struct {
 
 // Multisite enables cross Kubernetes replication coordinated via etcd
 type Multisite struct {
-	Enable       *bool       `json:"enable,omitempty"`
-	Site         *string     `json:"site,omitempty"`
-	Etcd         *EtcdConfig `json:"etcd"`
-	TTL          *int32      `json:"ttl,omitempty"`
-	RetryTimeout *int32      `json:"retry_timeout,omitempty"`
+	Enable       *bool      `json:"enable,omitempty"`
+	Site         *string    `json:"site,omitempty"`
+	Etcd         EtcdConfig `json:"etcd"`
+	TTL          *int32     `json:"ttl,omitempty"`
+	RetryTimeout *int32     `json:"retry_timeout,omitempty"`
 }
 
 type EtcdConfig struct {

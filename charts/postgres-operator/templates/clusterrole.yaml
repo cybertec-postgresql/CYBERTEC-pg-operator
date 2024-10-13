@@ -232,6 +232,7 @@ rules:
   verbs:
   - get
   - create
+
 # to create role bindings to the postgres-pod service account
 - apiGroups:
   - rbac.authorization.k8s.io
@@ -240,6 +241,24 @@ rules:
   verbs:
   - get
   - create
+# to create configmap with pgbackrest config
+- apiGroups:
+    - ""
+  resources:
+    - configmaps
+  verbs:
+    - get
+    - create
+    - delete
+    - patch
+# to grant permission to create events to the postgres-pod service account
+- apiGroups:
+    - ""
+    - "events.k8s.io"
+  resources:
+    - events
+  verbs:
+    - create
 {{- if toString .Values.configKubernetes.spilo_privileged | eq "true" }}
 # to run privileged pods
 - apiGroups:

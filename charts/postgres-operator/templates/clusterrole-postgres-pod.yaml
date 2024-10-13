@@ -57,7 +57,7 @@ rules:
   - services
   verbs:
   - create
-  # Create events for multisite status changes
+# Create events for multisite status changes
 - apiGroups:
     - ""
     - "events.k8s.io"
@@ -65,7 +65,7 @@ rules:
     - events
   verbs:
     - create
-  # Update multisite status
+# Update multisite status
 - apiGroups:
     - cpo.opensource.cybertec.at
   resources:
@@ -84,4 +84,11 @@ rules:
   verbs:
   - use
 {{- end }}
+# Execute backups
+- apiGroups:
+    - ""
+  resources:
+    - pods/exec
+  verbs:
+    - create
 {{ end }}

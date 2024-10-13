@@ -259,8 +259,8 @@ spec:
                                   type: string
                                 type: array
                             required:
-                            - key
-                            - operator
+                              - key
+                              - operator
                             type: object
                           type: array
                         matchLabels:
@@ -323,9 +323,9 @@ spec:
                         make it *more* imbalanced. It''s a required field.'
                       type: string
                   required:
-                  - maxSkew
-                  - topologyKey
-                  - whenUnsatisfiable
+                    - maxSkew
+                    - topologyKey
+                    - whenUnsatisfiable
                   type: object
                 type: array
               logicalBackupSchedule:
@@ -447,6 +447,28 @@ spec:
                     type: integer
                   maximum_lag_on_failover:
                     type: integer
+                  multisite:
+                    type: object
+                    properties:
+                      enable:
+                        type: boolean
+                      site:
+                        type: string
+                      etcd:
+                        type: object
+                        properties:
+                          hosts:
+                            type: string
+                          user:
+                            type: string
+                          password:
+                            type: string
+                          protocol:
+                            type: string
+                      ttl:
+                        type: integer
+                      retry_timeout:
+                        type: integer
                   pg_hba:
                     type: array
                     items:
@@ -820,13 +842,13 @@ spec:
                             Pvcsize:
                               type: string
                           required:
-                          - name
-                          - storage
-                          - resource
+                            - name
+                            - storage
+                            - resource
                           type: object
                         minItems: 1
                         x-kubernetes-list-map-keys:
-                        - name
+                          - name
                         x-kubernetes-list-type: map
                       restore:
                         type: object

@@ -1,7 +1,7 @@
 image:
-  registry: registry.opensource.zalan.do
-  repository: acid/postgres-operator
-  tag: v1.10.1
+  registry: docker.io
+  repository: cybertecpostgresql/cybertec-pg-operator
+  tag: v0.8.0-1
   pullPolicy: "IfNotPresent"
 
 # Optionally specify an array of imagePullSecrets.
@@ -37,8 +37,8 @@ configGeneral:
   enable_team_id_clustername_prefix: false
   # etcd connection string for Patroni. Empty uses K8s-native DCS.
   etcd_host: ""
-  # Spilo docker image
-  docker_image: ghcr.io/zalando/spilo-15:3.0-p1
+  # Database pod docker image
+  docker_image: docker.io/cybertec-pg-container/postgres:rocky9-16.4-2
 
   # key name for annotation to ignore globally configured instance limits
   # ignore_instance_limits_annotation_key: ""
@@ -420,7 +420,7 @@ configConnectionPooler:
   # db user for pooler to use
   connection_pooler_user: "pooler"
   # docker image
-  connection_pooler_image: "registry.opensource.zalan.do/acid/pgbouncer:master-27"
+  connection_pooler_image: "docker.io/cybertecpostgresql/cybertec-pg-container:pgbouncer-1.23-2"
   # max db connections the pooler should hold
   connection_pooler_max_db_connections: 60
   # default pooling mode

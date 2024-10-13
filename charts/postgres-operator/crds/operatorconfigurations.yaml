@@ -691,7 +691,7 @@ spec:
                     type: object
                     properties:
                       hosts:
-                        type:string
+                        type: string
                       user:
                         type: string
                       password:

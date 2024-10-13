@@ -1313,9 +1313,6 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 															},
 														},
 													},
-													"pvcsize": {
-														Type: "string",
-													},
 												},
 											},
 										},

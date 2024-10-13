@@ -885,8 +885,6 @@ spec:
                                   type: string
                                 throughput:
                                   type: integer
-                            Pvcsize:
-                              type: string
                           required:
                             - name
                             - storage

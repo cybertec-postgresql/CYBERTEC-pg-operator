@@ -40,7 +40,7 @@ configuration:
     # major_version_upgrade_team_allow_list:
     # - acid
     minimal_major_version: "13"
-    target_major_version: "16"
+    target_major_version: "17"
   kubernetes:
     # additional_pod_capabilities:
     # - "SYS_NICE"

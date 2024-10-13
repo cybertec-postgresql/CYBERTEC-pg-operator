@@ -38,7 +38,7 @@ configGeneral:
   # etcd connection string for Patroni. Empty uses K8s-native DCS.
   etcd_host: ""
   # Database pod docker image
-  docker_image: docker.io/cybertec-pg-container/postgres:rocky9-16.4-2
+  docker_image: docker.io/cybertec-pg-container/postgres:rocky9-17.0-2
 
   # key name for annotation to ignore globally configured instance limits
   # ignore_instance_limits_annotation_key: ""
@@ -91,7 +91,7 @@ configMajorVersionUpgrade:
   # minimal Postgres major version that will not automatically be upgraded
   minimal_major_version: "13"
   # target Postgres major version when upgrading clusters automatically
-  target_major_version: "16"
+  target_major_version: "17"
 
 configKubernetes:
   # list of additional capabilities for postgres container

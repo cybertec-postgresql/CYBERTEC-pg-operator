@@ -12,11 +12,11 @@
 #  my-annotation: value
 
 cluster:
-  dockerImage: docker.io/cybertec-pg-container/postgres:rocky9-16.4-2
+  dockerImage: docker.io/cybertec-pg-container/postgres:rocky9-17.0-2
   numberOfInstances: 2
 
   postgresql:
-    version: "16"
+    version: "17"
     #parameters:
     #  work_mem: "40MB"
 

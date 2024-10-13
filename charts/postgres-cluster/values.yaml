@@ -11,7 +11,7 @@
 #extraAnnotations:
 #  my-annotation: value
 
-clusterSpecification:
+cluster:
   dockerImage: docker.io/cybertec-pg-container/postgres:rocky9-16.4-2
   numberOfInstances: 2
 

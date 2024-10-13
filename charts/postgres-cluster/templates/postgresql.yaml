@@ -14,4 +14,4 @@ metadata:
 {{- end}}
 
 spec:
-  {{- toYaml .Values.clusterSpecification | nindent 2 }}
+  {{- toYaml .Values.cluster | nindent 2 }}

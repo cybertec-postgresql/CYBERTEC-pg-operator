@@ -3,9 +3,9 @@ entries:
   postgres-cluster:
   - apiVersion: v2
     appVersion: 0.8.0-1
-    created: "2024-10-14T00:30:44.172646449+03:00"
+    created: "2024-10-14T00:52:56.851410174+03:00"
     description: Deploys a PostgreSQL cluster using the PostgreSQL operator
-    digest: 53c26c4a8737a85670d5e9553ab24149364e14cf4b04ece158a9c70b9170a903
+    digest: f275636dc39a2db215633cc3d7449e86fd18d1cc29aed7f06af5006137bebad5
     maintainers:
     - email: info@cybertec.at
       name: CYBERTEC PostgreSQL International GmbH
@@ -16,4 +16,4 @@ entries:
     urls:
     - postgres-cluster-0.8.0.tgz
     version: 0.8.0
-generated: "2024-10-14T00:30:44.172118016+03:00"
+generated: "2024-10-14T00:52:56.850805082+03:00"

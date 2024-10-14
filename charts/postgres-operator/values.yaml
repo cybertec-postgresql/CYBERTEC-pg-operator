@@ -38,7 +38,7 @@ configGeneral:
   # etcd connection string for Patroni. Empty uses K8s-native DCS.
   etcd_host: ""
   # Database pod docker image
-  docker_image: docker.io/cybertec-pg-container/postgres:rocky9-17.0-2
+  docker_image: docker.io/cybertecpostgresql/cybertec-pg-container:postgres-17.0-2
 
   # key name for annotation to ignore globally configured instance limits
   # ignore_instance_limits_annotation_key: ""

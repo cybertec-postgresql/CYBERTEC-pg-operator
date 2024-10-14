@@ -3,10 +3,10 @@ entries:
   postgres-operator:
   - apiVersion: v2
     appVersion: 0.8.0
-    created: "2024-10-14T00:31:08.306771145+03:00"
+    created: "2024-10-14T11:32:03.852199097+03:00"
     description: Postgres Operator creates and manages PostgreSQL clusters running
       in Kubernetes
-    digest: 028658e08f9057f98205ed337e22409d9caca5531a775d82424991df6abc7ff1
+    digest: 306f56b67445d7be8d5e8d26a8eaaa0fd153ca477b03bbc0c238daf10a531792
     home: https://github.com/cybertec-postgresql/cybertec-pg-operator
     keywords:
     - postgres
@@ -16,11 +16,11 @@ entries:
     - spilo
     maintainers:
     - email: info@cybertec.at
-      name: Cybertec
+      name: CYBERTEC PostgreSQL International GmbH
     name: postgres-operator
     sources:
     - https://github.com/cybertec-postgresql/cybertec-pg-operator
     urls:
     - postgres-operator-0.8.0.tgz
     version: 0.8.0
-generated: "2024-10-14T00:31:08.304420994+03:00"
+generated: "2024-10-14T11:32:03.849675216+03:00"

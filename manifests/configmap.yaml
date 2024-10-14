@@ -34,7 +34,7 @@ data:
   # default_memory_request: 100Mi
   # delete_annotation_date_key: delete-date
   # delete_annotation_name_key: delete-clustername
-  docker_image: ghcr.io/zalando/spilo-15:3.0-p1
+  docker_image: docker.io/cybertecpostgresql/cybertec-pg-container:postgres-17.0-2
   # downscaler_annotations: "deployment-time,downscaler/*"
   # enable_admin_role_for_users: "true"
   # enable_crd_registration: "true"
@@ -111,7 +111,7 @@ data:
   # oauth_token_secret_name: postgresql-operator
   # pam_configuration: |
   #  https://info.example.com/oauth2/tokeninfo?access_token= uid realm=/employees
-  # pam_role_name: zalandos
+  # pam_role_name: humans
   patroni_api_check_interval: "1s"
   patroni_api_check_timeout: "5s"
   # password_rotation_interval: "90"

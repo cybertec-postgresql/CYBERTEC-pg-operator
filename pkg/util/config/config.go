@@ -97,7 +97,7 @@ type InfrastructureRole struct {
 // Auth describes authentication specific configuration parameters
 type Auth struct {
 	SecretNameTemplate            StringTemplate        `name:"secret_name_template" default:"{username}.{cluster}.credentials.{tprkind}.{tprgroup}"`
-	PamRoleName                   string                `name:"pam_role_name" default:"zalandos"`
+	PamRoleName                   string                `name:"pam_role_name" default:"humans"`
 	PamConfiguration              string                `name:"pam_configuration" default:"https://info.example.com/oauth2/tokeninfo?access_token= uid realm=/employees"`
 	TeamsAPIUrl                   string                `name:"teams_api_url" default:"https://teams.example.com/api/"`
 	OAuthTokenSecretName          spec.NamespacedName   `name:"oauth_token_secret_name" default:"postgresql-operator"`
@@ -160,6 +160,22 @@ type ConnectionPooler struct {
 	ConnectionPoolerDefaultMemoryLimit   string `name:"connection_pooler_default_memory_limit" default:"100Mi"`
 }
 
+type Multisite struct {
+	Etcd
+
+	Enable       *bool  `name:"multisite_enable" default:"false"`
+	Site         string `name:"multisite_site" default:""`
+	TTL          *int32 `name:"multisite_ttl" default:"90"`
+	RetryTimeout *int32 `name:"multisite_retry_timeout" default:"40"`
+}
+
+type Etcd struct {
+	Hosts    string `name:"multisite_etcd_hosts" default:""`
+	User     string `name:"multisite_etcd_user" default:""`
+	Password string `name:"multisite_etcd_password" default:""`
+	Protocol string `name:"multisite_etcd_protocol" default:"http"`
+}
+
 // Config describes operator config
 type Config struct {
 	CRD
@@ -168,11 +184,12 @@ type Config struct {
 	Scalyr
 	LogicalBackup
 	ConnectionPooler
+	Multisite
 
 	WatchedNamespace        string            `name:"watched_namespace"` // special values: "*" means 'watch all namespaces', the empty string "" means 'watch a namespace where operator is deployed to'
 	KubernetesUseConfigMaps bool              `name:"kubernetes_use_configmaps" default:"false"`
 	EtcdHost                string            `name:"etcd_host" default:""` // special values: the empty string "" means Patroni will use K8s as a DCS
-	DockerImage             string            `name:"docker_image" default:"ghcr.io/zalando/spilo-15:3.0-p1"`
+	DockerImage             string            `name:"docker_image" default:"docker.io/cybertecpostgresql/cybertec-pg-container:postgres-17.0-2"`
 	SidecarImages           map[string]string `name:"sidecar_docker_images"` // deprecated in favour of SidecarContainers
 	SidecarContainers       []v1.Container    `name:"sidecars"`
 	PodServiceAccountName   string            `name:"pod_service_account_name" default:"postgres-pod"`
@@ -242,7 +259,7 @@ type Config struct {
 	MajorVersionUpgradeMode                  string            `name:"major_version_upgrade_mode" default:"off"`
 	MajorVersionUpgradeTeamAllowList         []string          `name:"major_version_upgrade_team_allow_list" default:""`
 	MinimalMajorVersion                      string            `name:"minimal_major_version" default:"13"`
-	TargetMajorVersion                       string            `name:"target_major_version" default:"16"`
+	TargetMajorVersion                       string            `name:"target_major_version" default:"17"`
 	PatroniAPICheckInterval                  time.Duration     `name:"patroni_api_check_interval" default:"1s"`
 	PatroniAPICheckTimeout                   time.Duration     `name:"patroni_api_check_timeout" default:"5s"`
 	EnablePatroniFailsafeMode                *bool             `name:"enable_patroni_failsafe_mode" default:"false"`

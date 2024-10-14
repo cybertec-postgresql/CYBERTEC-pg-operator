@@ -5,6 +5,7 @@ package cluster
 import (
 	"context"
 	"database/sql"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"reflect"
@@ -27,6 +28,7 @@ import (
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/teams"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/users"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/volumes"
+	clientv3 "go.etcd.io/etcd/client/v3"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	policyv1 "k8s.io/api/policy/v1"
@@ -98,6 +100,8 @@ type Cluster struct {
 	EBSVolumes          map[string]volumes.VolumeProperties
 	VolumeResizer       volumes.VolumeResizer
 	currentMajorVersion int
+
+	multisiteClient *clientv3.Client // etcd client for multisite quorum site
 }
 
 type compareStatefulsetResult struct {
@@ -228,7 +232,9 @@ func (c *Cluster) initUsers() error {
 	c.systemUsers = map[string]spec.PgUser{}
 	c.pgUsers = map[string]spec.PgUser{}
 
-	c.initSystemUsers()
+	if err := c.initSystemUsers(); err != nil {
+		return fmt.Errorf("could not init system roles: %v", err)
+	}
 
 	if err := c.initInfrastructureRoles(); err != nil {
 		return fmt.Errorf("could not init infrastructure roles: %v", err)
@@ -358,6 +364,11 @@ func (c *Cluster) Create() (err error) {
 			return fmt.Errorf("could not create the monitoring secret: %v", err)
 		}
 		c.logger.Info("a monitoring secret was successfully created")
+	}
+
+	if c.multisiteEnabled() {
+		c.logger.Infof("waiting for load balancer IP to be assigned")
+		c.waitForPrimaryLoadBalancerIp()
 	}
 
 	if c.Statefulset != nil {
@@ -1365,24 +1376,34 @@ func (c *Cluster) processPodEventQueue(stopCh <-chan struct{}) {
 	}
 }
 
-func (c *Cluster) initSystemUsers() {
+func (c *Cluster) initSystemUsers() error {
 	// We don't actually use that to create users, delegating this
 	// task to Patroni. Those definitions are only used to create
 	// secrets, therefore, setting flags like SUPERUSER or REPLICATION
 	// is not necessary here
+	password, err := c.getPasswordForUser(c.OpConfig.SuperUsername)
+	if err != nil {
+		return err
+	}
 	c.systemUsers[constants.SuperuserKeyName] = spec.PgUser{
 		Origin:    spec.RoleOriginSystem,
 		Name:      c.OpConfig.SuperUsername,
 		Namespace: c.Namespace,
-		Password:  util.RandomPassword(constants.PasswordLength),
+		Password:  password,
+	}
+	password, err = c.getPasswordForUser(c.OpConfig.ReplicationUsername)
+	if err != nil {
+		return err
 	}
 	c.systemUsers[constants.ReplicationUserKeyName] = spec.PgUser{
 		Origin:    spec.RoleOriginSystem,
 		Name:      c.OpConfig.ReplicationUsername,
 		Namespace: c.Namespace,
 		Flags:     []string{constants.RoleFlagLogin},
-		Password:  util.RandomPassword(constants.PasswordLength),
+		Password:  password,
 	}
+
+	// TODO: Check what to do with connection pooler user in multisite mode
 
 	// Connection pooler user is an exception
 	// if requested it's going to be created by operator
@@ -1419,6 +1440,8 @@ func (c *Cluster) initSystemUsers() {
 			c.systemUsers[constants.EventStreamUserKeyName] = streamUser
 		}
 	}
+
+	return nil
 }
 
 func (c *Cluster) initPreparedDatabaseRoles() error {
@@ -1485,6 +1508,28 @@ func (c *Cluster) initPreparedDatabaseRoles() error {
 	return nil
 }
 
+func (c *Cluster) getPasswordFromSecret(userSecretName spec.NamespacedName) (string, error) {
+	if userSecretName == (spec.NamespacedName{}) {
+		return "", nil
+	}
+
+	userSecret, err := c.KubeClient.
+		Secrets(userSecretName.Namespace).
+		Get(context.TODO(), userSecretName.Name, metav1.GetOptions{})
+	if err != nil {
+		msg := "could not get user role secret %s/%s: %v"
+		return "", fmt.Errorf(msg, userSecretName.Namespace, userSecretName.Name, err)
+	}
+
+	secretData := userSecret.Data
+	if pw, present := secretData["password"]; present {
+		return string(pw), nil
+	} else {
+		msg := "password attribute not present in user role secret %s/%s"
+		return "", fmt.Errorf(msg, userSecretName.Namespace, userSecretName.Name)
+	}
+}
+
 func (c *Cluster) initDefaultRoles(defaultRoles map[string]string, admin, prefix, searchPath, secretNamespace string) error {
 
 	for defaultRole, inherits := range defaultRoles {
@@ -1518,11 +1563,15 @@ func (c *Cluster) initDefaultRoles(defaultRoles map[string]string, admin, prefix
 			adminRole = fmt.Sprintf("%s%s", prefix, constants.OwnerRoleNameSuffix)
 		}
 
+		password, err := c.getPasswordForUser(roleName)
+		if err != nil {
+			return err
+		}
 		newRole := spec.PgUser{
 			Origin:     spec.RoleOriginBootstrap,
 			Name:       roleName,
 			Namespace:  namespace,
-			Password:   util.RandomPassword(constants.PasswordLength),
+			Password:   password,
 			Flags:      flags,
 			MemberOf:   memberOf,
 			Parameters: map[string]string{"search_path": searchPath},
@@ -1906,4 +1955,80 @@ func (c *Cluster) deletePatroniClusterConfigMaps() {
 	}
 
 	deleteClusterObject(get, deleteConfigMapFn, "configmap", c.Name, c.logger)
+}
+
+func (c *Cluster) encryptMultisitePassword(password string) string {
+	//TODO: add encryption
+	return base64.StdEncoding.EncodeToString([]byte(password))
+}
+
+func (c *Cluster) decryptMultisitePassword(value []byte) (string, error) {
+	result, err := base64.StdEncoding.DecodeString(string(value))
+	return string(result), err
+}
+
+func generateEtcdEndpoints(hosts, protocol string) []string {
+	endpoints := []string{}
+
+	if protocol == "" {
+		protocol = "http"
+	}
+
+	for _, host := range strings.Split(hosts, ",") {
+		hostParts := strings.SplitN(strings.TrimSpace(host), ":", 2)
+		host = hostParts[0]
+		port := "2379"
+		if len(hostParts) == 2 {
+			port = hostParts[1]
+		}
+		endpoints = append(endpoints, fmt.Sprintf("%s://%s:%s", protocol, host, port))
+	}
+
+	return endpoints
+}
+
+func (c *Cluster) getPasswordForUser(username string) (string, error) {
+	if !c.multisiteEnabled() {
+		return util.RandomPassword(constants.PasswordLength), nil
+	}
+
+	if c.multisiteClient == nil {
+		msSpec := c.Spec.Multisite
+		if msSpec == nil {
+			msSpec = &cpov1.Multisite{}
+		}
+		endpoints := generateEtcdEndpoints(
+			util.CoalesceStrPtr(msSpec.Etcd.Hosts, c.OpConfig.Multisite.Etcd.Hosts),
+			util.CoalesceStrPtr(msSpec.Etcd.Protocol, c.OpConfig.Multisite.Etcd.Protocol),
+		)
+		client, err := clientv3.New(clientv3.Config{
+			Endpoints:   endpoints,
+			Username:    util.CoalesceStrPtr(msSpec.Etcd.User, c.OpConfig.Multisite.Etcd.User),
+			Password:    util.CoalesceStrPtr(msSpec.Etcd.Password, c.OpConfig.Multisite.Etcd.Password),
+			DialTimeout: time.Duration(2) * time.Second,
+		})
+		if err != nil {
+			return "", fmt.Errorf("unable to access multisite etcd: %s", err)
+		}
+		c.multisiteClient = client
+	}
+	reqTimeoutCtx, _ := context.WithTimeout(context.TODO(), time.Duration(2)*time.Second)
+	credentialsKey := fmt.Sprintf("/multisite/%s/%s/credentials/%s", c.Namespace, c.Name, username)
+	response, err := c.multisiteClient.Get(reqTimeoutCtx, credentialsKey)
+	if err != nil {
+		return "", fmt.Errorf("unable to fetch credentials for %s from multisite etcd: %s", username, err)
+	}
+	if len(response.Kvs) == 0 {
+		password := util.RandomPassword(constants.PasswordLength)
+		_, err := c.multisiteClient.Put(reqTimeoutCtx, credentialsKey, c.encryptMultisitePassword(password))
+		if err != nil {
+			return "", fmt.Errorf("unable to store credentials for %s from multisite etcd: %s", username, err)
+		}
+		return password, nil
+	}
+	password, err := c.decryptMultisitePassword(response.Kvs[0].Value)
+	if err != nil {
+		return "", fmt.Errorf("error decoding credentials for %s: %s", username, err)
+	}
+	return password, nil
 }

@@ -56,8 +56,7 @@ The Operator project is being driven forward by CYBERTEC and is currently in pro
 
 | Release   | Postgres versions | pgBackRest versions   | Patroni versions | K8s versions      | Golang  |
 | :-------- | :---------------: | :-------------------: | :--------------: | :----------------:| :-----: |
-| 0.7.0     | 12 &rarr; 16      | 2.52.1                | 3.3.1            | 1.21+             | 1.21.7  |
-| next rc   | 13 &rarr; 16      | 2.51                  | 3.3.1            | 1.21+             | 1.21.7  |
+| 0.8.0     | 13 &rarr; 17      | 2.53                  | 4.0.2            | 1.21+             | 1.21.7  |
 
 ## Getting started
 

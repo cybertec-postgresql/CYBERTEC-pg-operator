@@ -456,13 +456,6 @@ PatroniInitDBParams:
 		config.PgLocalConfiguration[patroniPGHBAConfParameterName] = patroni.PgHba
 	}
 
-	config.Bootstrap.Users = map[string]pgUser{
-		opConfig.PamRoleName: {
-			Password: "",
-			Options:  []string{constants.RoleFlagCreateDB, constants.RoleFlagNoLogin},
-		},
-	}
-
 	res, err := json.Marshal(config)
 	return string(res), err
 }
@@ -1437,6 +1430,10 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		})
 	}
 
+	if c.multisiteEnabled() {
+		spiloEnvVars = appendEnvVars(spiloEnvVars, c.generateMultisiteEnvVars()...)
+	}
+
 	// generate the spilo container
 	spiloContainer := generateContainer(constants.PostgresContainerName,
 		&effectiveDockerImage,
@@ -2336,6 +2333,11 @@ func (c *Cluster) shouldCreateLoadBalancerForService(role PostgresRole, spec *cp
 		return c.OpConfig.EnableReplicaLoadBalancer
 
 	case Master:
+		// If multisite is enabled at manifest or operator configuration we always
+		// need a load balancer
+		if c.multisiteEnabled() {
+			return true
+		}
 
 		if spec.EnableMasterLoadBalancer != nil {
 			return *spec.EnableMasterLoadBalancer
@@ -3213,4 +3215,30 @@ func repoNumberFromName(repoName string) int {
 // getLogicalBackupJobName returns the name; the job itself may not exists
 func (c *Cluster) getPgbackrestJobName(repoName string, backupType string) (jobName string) {
 	return trimCronjobName(fmt.Sprintf("%s-%s-%s-%s", "pgbackrest", c.clusterName().Name, repoName, backupType))
+}
+
+func (c *Cluster) generateMultisiteEnvVars() []v1.EnvVar {
+	site, err := c.getPrimaryLoadBalancerIp()
+	if err != nil {
+		c.logger.Errorf("Error getting primary load balancer IP for %s: %s", c.Name, err)
+		site = ""
+	}
+	clsConf := c.Spec.Multisite
+	if clsConf == nil {
+		clsConf = new(cpov1.Multisite)
+	}
+
+	envVars := []v1.EnvVar{
+		{Name: "MULTISITE_SITE", Value: util.CoalesceStrPtr(clsConf.Site, c.OpConfig.Multisite.Site)},
+		{Name: "MULTISITE_ETCD_HOSTS", Value: util.CoalesceStrPtr(clsConf.Etcd.Hosts, c.OpConfig.Multisite.Etcd.Hosts)},
+		{Name: "MULTISITE_ETCD_USER", Value: util.CoalesceStrPtr(clsConf.Etcd.User, c.OpConfig.Multisite.Etcd.User)},
+		{Name: "MULTISITE_ETCD_PASSWORD", Value: util.CoalesceStrPtr(clsConf.Etcd.Password, c.OpConfig.Multisite.Etcd.Password)},
+		{Name: "MULTISITE_ETCD_PROTOCOL", Value: util.CoalesceStrPtr(clsConf.Etcd.Protocol, c.OpConfig.Multisite.Etcd.Protocol)},
+		{Name: "MULTISITE_TTL", Value: strconv.Itoa(int(*util.CoalesceInt32(clsConf.TTL, c.OpConfig.Multisite.TTL)))},
+		{Name: "MULTISITE_RETRY_TIMEOUT", Value: strconv.Itoa(int(*util.CoalesceInt32(clsConf.RetryTimeout, c.OpConfig.Multisite.RetryTimeout)))},
+		{Name: "EXTERNAL_HOST", Value: site},
+		{Name: "UPDATE_CRD", Value: c.Namespace + "." + c.Name},
+		{Name: "CRD_UID", Value: string(c.UID)},
+	}
+	return envVars
 }

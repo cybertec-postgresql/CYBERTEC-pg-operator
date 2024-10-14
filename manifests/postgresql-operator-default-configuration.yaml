@@ -40,7 +40,7 @@ configuration:
     # major_version_upgrade_team_allow_list:
     # - acid
     minimal_major_version: "13"
-    target_major_version: "16"
+    target_major_version: "17"
   kubernetes:
     # additional_pod_capabilities:
     # - "SYS_NICE"
@@ -186,7 +186,7 @@ configuration:
     enable_team_superuser: false
     enable_teams_api: false
     # pam_configuration: ""
-    pam_role_name: zalandos
+    pam_role_name: humans
     # postgres_superuser_teams:
     # - postgres_superusers
     protected_role_names:

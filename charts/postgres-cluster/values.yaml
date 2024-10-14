@@ -1,0 +1,225 @@
+# Name of the cluster, if not specified taken to be Release.Name
+#clusterName:
+
+# Add labels to be set on the cluster resource. If you want to have these labels be set on all resources created
+# by the operator, include the name of the label in `configKubernetes.inherited_labels` operator configuration.
+#commonLabels:
+#  my-label: value
+
+# Include extra annotations on the cluster resource. For setting on all operator created resources include the
+# name of the annotation in `configKubernetes.inherited_annotations` operator configuration
+#extraAnnotations:
+#  my-annotation: value
+
+cluster:
+  dockerImage: docker.io/cybertecpostgresql/cybertec-pg-container:postgres-17.0-2
+  numberOfInstances: 2
+
+  postgresql:
+    version: "17"
+    #parameters:
+    #  work_mem: "40MB"
+
+  #env:
+  #- name: MY_ENV_VARIABLE
+  #  value: custom
+
+  volume:
+    size: 1Gi
+    #storageClass: my-storage
+    #selector:
+    #  matchExpressions:
+    #    - { key: flavour, operator: In, values: [ "banana", "chocolate" ] }
+    #  matchLabels:
+    #    environment: dev
+    #    service: postgres
+
+  #additionalVolumes:
+  #- name: empty
+  #  mountPath: /opt/empty
+  #  targetContainers:
+  #  - all
+  #  volumeSource:
+  #    emptyDir: {}
+  #  subPath:
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 100Mi
+    limits:
+      cpu: 500m
+      memory: 500Mi
+
+  # Custom TLS certificate. Disabled unless tls.secretName has a value.
+  tls:
+    secretName: ""  # should correspond to a Kubernetes Secret resource to load
+    certificateFile: "tls.crt"
+    privateKeyFile: "tls.key"
+    caFile: ""  # optionally configure Postgres with a CA certificate
+    caSecretName: "" # optionally the ca.crt can come from this secret instead.
+
+  patroni:
+    failsafe_mode: false
+    initdb:
+      encoding: "UTF8"
+      locale: "C.UTF-8"
+      data-checksums: "true"
+    pg_hba:
+    - local   all         all               trust
+    - local   replication standby           trust
+    - host    replication standby all       scram-sha-256
+    - host    all         all     all       scram-sha-256
+    #slots:
+    #  permanent_physical_1:
+    #    type: physical
+    #  permanent_logical_1:
+    #    type: logical
+    #    database: foo
+    #    plugin: pgoutput
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    #multisite:
+    #  enable: false
+    #  site: dc1
+    #  etcd:
+    #    hosts: etcd.default.svc.cluster.local,etcd.other.cluster
+    #    user: etcduser
+    #    password: etcdpassword
+    #    protocol: http
+    #  ttl: 90
+    #  retry_timeout: 40
+    synchronous_mode: false
+    synchronous_mode_strict: false
+    synchronous_node_count: 1
+    maximum_lag_on_failover: 33554432
+
+  #backup:
+  #  pgbackrest:
+  #    image: "docker.io/cybertecpostgresql/cybertec-pg-container:pgbackrest-17.0-1"
+  #    configuration:
+  #      secret: "xyz"
+  #      protection:
+  #        restore: true
+  #    global:
+  #      repo1-retention-full: '7'
+  #      repo1-retention-full-type: count
+  #    repos:
+  #      - name: repo1
+  #        storage: pvc
+  #        volume:
+  #          size: "10Gi"
+  #          storageClass: myclass
+  #        schedule:
+  #          full: ""
+  #          incr: ""
+  #          diff: ""
+  #      - name: repo1
+  #        storage: "s3"
+  #        endpoint: ...
+  #        region: ...
+  #    restore:
+  #      id: "unique restore identifier"
+  #      repo: repo1
+  #      options:
+  #        target-time: "2023-01-02 03:04:05+06"
+
+  #users:  # Application/Robot users
+  #  appadmin:
+  #  - superuser
+  #  - createdb
+  #  flyway: []
+  #usersWithSecretRotation:
+  #- foo_user
+  #usersWithInPlaceSecretRotation:
+  #- flyway
+  #- bar_owner_user
+
+  enableMasterLoadBalancer: false
+  enableReplicaLoadBalancer: false
+  enableConnectionPooler: false # enable/disable connection pooler deployment
+  enableReplicaConnectionPooler: false # set to enable connectionPooler for replica service
+  enableMasterPoolerLoadBalancer: false
+  enableReplicaPoolerLoadBalancer: false
+
+  # IP ranges that are allowed to connect to LoadBalancer services
+  #allowedSourceRanges: 127.0.0.1/32
+
+  #databases:
+  #  dbname: owner
+
+  #preparedDatabases:
+  #  bar:
+  #    defaultUsers: true
+  #    extensions:
+  #      pg_partman: public
+  #    schemas:
+  #      data: {}
+  #      history:
+  #        defaultRoles: true
+  #        defaultUsers: false
+
+  enableShmVolume: true
+  #  spiloRunAsUser: 101
+  #  spiloRunAsGroup: 103
+  #  spiloFSGroup: 103
+  #  podAnnotations:
+  #    annotation.key: value
+  #  serviceAnnotations:
+  #    annotation.key: value
+  #  podPriorityClassName: "spilo-pod-priority"
+  #  tolerations:
+  #  - key: postgres
+  #    operator: Exists
+  #    effect: NoSchedule
+
+  # Clone existing cluster
+  #clone:
+  #  cluster: name-of-cluster-to-clone
+
+  #connectionPooler:
+  #  dockerImage: docker.io/cybertecpostgresql/cybertec-pg-container:pgbouncer-1.23-2
+  #  numberOfInstances: 2
+  #  mode: transaction # session/transaction mode pooling
+  #  schema: "pooler"
+  #  user: "pooler"
+  #  maxDBConnections: 60
+  #  resources:
+  #    limits:
+  #      cpu:  "1"
+  #      memory: 100Mi
+  #    requests:
+  #      cpu:  300m
+  #      memory: 100Mi
+
+  #sidecars:
+  # - name: "telegraf-sidecar"
+  #   image: "telegraf:latest"
+  #   ports:
+  #   - name: metrics
+  #     containerPort: 8094
+  #     protocol: TCP
+  #   resources:
+  #     limits:
+  #       cpu: 500m
+  #       memory: 500Mi
+  #     requests:
+  #       cpu: 100m
+  #       memory: 100Mi
+  #   env:
+  #     - name: "USEFUL_VAR"
+  #       value: "perhaps-true"
+
+  # Add node affinity support by allowing postgres pods to schedule only on nodes that
+  # have label: "postgres-operator:enabled" set.
+  #nodeAffinity:
+  #  requiredDuringSchedulingIgnoredDuringExecution:
+  #    nodeSelectorTerms:
+  #      - matchExpressions:
+  #          - key: postgres-operator
+  #            operator: In
+  #            values:
+  #              - enabled
+
+  teamId: default

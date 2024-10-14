@@ -18,6 +18,7 @@ var VersionMap = map[string]int{
 	"14": 140000,
 	"15": 150000,
 	"16": 160000,
+	"17": 170000,
 }
 
 // IsBiggerPostgresVersion Compare two Postgres version numbers

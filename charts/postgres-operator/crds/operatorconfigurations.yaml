@@ -68,7 +68,7 @@ spec:
                   type: string
               docker_image:
                 type: string
-                default: "docker.io/cybertecpostgresql/cybertec-pg-container:postgres-16.2-1"
+                default: "docker.io/cybertecpostgresql/cybertec-pg-container:postgres-17.0-2"
               enable_crd_registration:
                 type: boolean
                 default: true
@@ -170,7 +170,7 @@ spec:
                     default: "13"
                   target_major_version:
                     type: string
-                    default: "16"
+                    default: "17"
               kubernetes:
                 type: object
                 properties:
@@ -680,6 +680,28 @@ spec:
                     type: string
                     pattern: '^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$'
                     default: "100Mi"
+              multisite:
+                type: object
+                properties:
+                  enable:
+                    type: boolean
+                  site:
+                    type: string
+                  etcd:
+                    type: object
+                    properties:
+                      hosts:
+                        type: string
+                      user:
+                        type: string
+                      password:
+                        type: string
+                      protocol:
+                        type: string
+                  ttl:
+                    type: integer
+                  retry_timeout:
+                    type: integer
               patroni:
                 type: object
                 properties:

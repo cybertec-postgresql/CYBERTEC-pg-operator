@@ -66,7 +66,7 @@ spec:
                   type: string
               docker_image:
                 type: string
-                default: "ghcr.io/zalando/spilo-15:3.0-p1"
+                default: "docker.io/cybertecpostgresql/cybertec-pg-container:postgres-17.0-2"
               enable_crd_registration:
                 type: boolean
                 default: true
@@ -149,7 +149,7 @@ spec:
                     default: 180
                   replication_username:
                      type: string
-                     default: standby
+                     default: cpo_replication
                   super_username:
                      type: string
                      default: postgres
@@ -168,7 +168,7 @@ spec:
                     default: "13"
                   target_major_version:
                     type: string
-                    default: "16"
+                    default: "17"
               kubernetes:
                 type: object
                 properties:
@@ -572,7 +572,7 @@ spec:
                     default: "https://info.example.com/oauth2/tokeninfo?access_token= uid realm=/employees"
                   pam_role_name:
                     type: string
-                    default: "zalandos"
+                    default: "cpo_pam"
                   postgres_superuser_teams:
                     type: array
                     items:
@@ -678,6 +678,28 @@ spec:
                     type: string
                     pattern: '^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$'
                     default: "100Mi"
+              multisite:
+                type: object
+                properties:
+                  enable:
+                    type: boolean
+                  site:
+                    type: string
+                  etcd:
+                    type: object
+                    properties:
+                      hosts:
+                        type: string
+                      user:
+                        type: string
+                      password:
+                        type: string
+                      protocol:
+                        type: string
+                  ttl:
+                    type: integer
+                  retry_timeout:
+                    type: integer
               patroni:
                 type: object
                 properties:

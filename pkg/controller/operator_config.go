@@ -63,7 +63,7 @@ func (c *Controller) importConfigurationFromCRD(fromCRD *cpov1.OperatorConfigura
 	result.MajorVersionUpgradeMode = util.Coalesce(fromCRD.MajorVersionUpgrade.MajorVersionUpgradeMode, "off")
 	result.MajorVersionUpgradeTeamAllowList = fromCRD.MajorVersionUpgrade.MajorVersionUpgradeTeamAllowList
 	result.MinimalMajorVersion = util.Coalesce(fromCRD.MajorVersionUpgrade.MinimalMajorVersion, "13")
-	result.TargetMajorVersion = util.Coalesce(fromCRD.MajorVersionUpgrade.TargetMajorVersion, "16")
+	result.TargetMajorVersion = util.Coalesce(fromCRD.MajorVersionUpgrade.TargetMajorVersion, "17")
 
 	// kubernetes config
 	result.CustomPodAnnotations = fromCRD.Kubernetes.CustomPodAnnotations
@@ -205,7 +205,7 @@ func (c *Controller) importConfigurationFromCRD(fromCRD *cpov1.OperatorConfigura
 	result.EnableTeamSuperuser = fromCRD.TeamsAPI.EnableTeamSuperuser
 	result.EnableAdminRoleForUsers = fromCRD.TeamsAPI.EnableAdminRoleForUsers
 	result.TeamAdminRole = fromCRD.TeamsAPI.TeamAdminRole
-	result.PamRoleName = util.Coalesce(fromCRD.TeamsAPI.PamRoleName, "zalandos")
+	result.PamRoleName = util.Coalesce(fromCRD.TeamsAPI.PamRoleName, "humans")
 	result.PamConfiguration = util.Coalesce(fromCRD.TeamsAPI.PamConfiguration, "https://info.example.com/oauth2/tokeninfo?access_token= uid realm=/employees")
 	result.ProtectedRoles = util.CoalesceStrArr(fromCRD.TeamsAPI.ProtectedRoles, []string{"admin", "cron_admin"})
 	result.PostgresSuperuserTeams = fromCRD.TeamsAPI.PostgresSuperuserTeams
@@ -281,6 +281,15 @@ func (c *Controller) importConfigurationFromCRD(fromCRD *cpov1.OperatorConfigura
 	result.ConnectionPooler.MaxDBConnections = util.CoalesceInt32(
 		fromCRD.ConnectionPooler.MaxDBConnections,
 		k8sutil.Int32ToPointer(constants.ConnectionPoolerMaxDBConnections))
+
+	result.Multisite.Enable = fromCRD.Multisite.Enable
+	result.Multisite.Site = util.CoalesceStrPtr(fromCRD.Multisite.Site, "")
+	result.Multisite.Etcd.Hosts = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.Hosts, "")
+	result.Multisite.Etcd.User = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.User, "")
+	result.Multisite.Etcd.Password = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.Password, "")
+	result.Multisite.Etcd.Protocol = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.Protocol, "")
+	result.Multisite.TTL = util.CoalesceInt32(fromCRD.Multisite.TTL, k8sutil.Int32ToPointer(90))
+	result.Multisite.RetryTimeout = util.CoalesceInt32(fromCRD.Multisite.RetryTimeout, k8sutil.Int32ToPointer(40))
 
 	return result
 }

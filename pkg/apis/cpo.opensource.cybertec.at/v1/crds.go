@@ -572,6 +572,40 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							"maximum_lag_on_failover": {
 								Type: "integer",
 							},
+							"multisite": {
+								Type: "object",
+								Properties: map[string]apiextv1.JSONSchemaProps{
+									"enable": {
+										Type: "boolean",
+									},
+									"site": {
+										Type: "string",
+									},
+									"etcd": {
+										Type: "object",
+										Properties: map[string]apiextv1.JSONSchemaProps{
+											"hosts": {
+												Type: "string",
+											},
+											"user": {
+												Type: "string",
+											},
+											"password": {
+												Type: "string",
+											},
+											"protocol": {
+												Type: "string",
+											},
+										},
+									},
+									"ttl": {
+										Type: "integer",
+									},
+									"retry_timeout": {
+										Type: "integer",
+									},
+								},
+							},
 							"pg_hba": {
 								Type: "array",
 								Items: &apiextv1.JSONSchemaPropsOrArray{
@@ -1278,9 +1312,6 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 																Type: "integer",
 															},
 														},
-													},
-													"pvcsize": {
-														Type: "string",
 													},
 												},
 											},
@@ -2202,6 +2233,32 @@ var OperatorConfigCRDResourceValidation = apiextv1.CustomResourceValidation{
 							},
 							"connection_pooler_user": {
 								Type: "string",
+							},
+						},
+					},
+					"multisite": {
+						Type: "object",
+						Properties: map[string]apiextv1.JSONSchemaProps{
+							"enable": {
+								Type: "boolean",
+							},
+							"site": {
+								Type: "string",
+							},
+							"etcd_host": {
+								Type: "string",
+							},
+							"etcd_user": {
+								Type: "string",
+							},
+							"etcd_password": {
+								Type: "string",
+							},
+							"ttl": {
+								Type: "integer",
+							},
+							"retry_timeout": {
+								Type: "integer",
 							},
 						},
 					},

@@ -19,7 +19,7 @@ metadata:
 spec:
   backup:
     pgbackrest:
-      image: 'docker.io/cybertecpostgresql/cybertec-pg-container-dev:pgbackrest-16.3-1'
+      image: 'docker.io/cybertecpostgresql/cybertec-pg-container:pgbackrest-16.4-1'
       repos:
         - name: repo1
           schedule:
@@ -33,8 +33,8 @@ spec:
         repo1-retention-full-type: count
 ```
 
-This example creates backups based on a repo host with a daily full Backup at 2:30 am. In addition, pgBackRest is instructed to keep a maximum of 7 full Backups. The oldest one is always removed when a new Backup is created. 
+This example creates backups based on a repo host with a daily full Backup at 2:30 am. In addition, pgBackRest is instructed to keep a maximum of 7 full Backups. The oldest one is always removed when a new Backup is created. You can increase the pvc-size all time if needed. Therefore you just need to update the `size` value to a higher amount of Gi. Please be aware that shrinking the volume is not possible. 
 
-> **_HINT:_**  In addition, further configurations for pgBackRest can be defined in the global object. Information on possible configurations can be found in the [pgBackRest documentation](https://pgbackrest.org/configuration.html)
+{{< hint type=info >}} In addition, further configurations for pgBackRest can be defined in the global object. Information on possible configurations can be found in the [pgBackRest documentation](https://pgbackrest.org/configuration.html) {{< /hint >}}
 
 

@@ -27,7 +27,7 @@
       <link>http://localhost:1313/CYBERTEC-pg-operator/backup/aws/</link>
       <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
       <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/aws/</guid>
-      <description>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&#xA;Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options.</description>
+      <description>This chapter describes the use of pgBackRest in combination with with AWS S3 or S3-compatible storage such as MinIO, Cloudian HyperStore or SwiftStack. It is not absolutely necessary to operate a Kubernetes on the AWS Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.&#xA;This Chapter will use AWS S3 for the example, the usage of different s3-compatible Storage is similiar.</description>
     </item>
     <item>
       <title>via GCS</title>
@@ -41,14 +41,14 @@
       <link>http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/</link>
       <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
       <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/</guid>
-      <description>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&#xA;Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options.</description>
+      <description>This chapter describes the use of pgBackRest in combination with Azure Blob Storage. It is not absolutely necessary to operate a Kubernetes on the Azure Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.&#xA;Precondition: a blob-storage-volume and a priviledged role is needed for this chapter. Create a blob-storage-volume on the Azure console Create a priviledged service-role Modifying the Cluster As soon as all requirements are met:</description>
     </item>
     <item>
       <title>Encrypted Backups</title>
       <link>http://localhost:1313/CYBERTEC-pg-operator/backup/encryption/</link>
       <pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate>
       <guid>http://localhost:1313/CYBERTEC-pg-operator/backup/encryption/</guid>
-      <description>pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.&#xA;Firstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the spec.backup.pgbackrest.configuration.secret object.&#xA;kind: Secret apiVersion: v1 metadata: name: cluster-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest.</description>
+      <description>pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.&#xA;Firstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the spec.backup.pgbackrest.configuration.secret object.&#xA;kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest.</description>
     </item>
     <item>
       <title>Check/Monitor Backups</title>

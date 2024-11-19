@@ -11,7 +11,7 @@ Firstly, we need to define an encryption key. This must be specified separately 
 kind: Secret
 apiVersion: v1
 metadata:
-  name: cluster-s3-credential
+  name: cluster-1-s3-credential
   namespace: cpo
 stringData:
   s3.conf |
@@ -33,13 +33,13 @@ spec:
   backup:
     pgbackrest:
       configuration:
-        secret: cluster-s3-credential
+        secret: cluster-1-s3-credential
       global:
         repo1-path: /cluster/repo1/
         repo1-retention-full: '7'
         repo1-retention-full-type: count
         repo1-cipher-type: aes-256-cbc
-      image: 'docker.io/cybertecpostgresql/cybertec-pg-container-dev:pgbackrest-16.3-1'
+      image: 'docker.io/cybertecpostgresql/cybertec-pg-container:pgbackrest-16.4-1'
       repos:
         - endpoint: 'https://s3-zurich.cyberlink.cloud:443'
           name: repo1

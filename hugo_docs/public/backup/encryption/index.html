@@ -14,7 +14,7 @@
 
   <meta name="description" content="pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.
 Firstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the spec.backup.pgbackrest.configuration.secret object.
-kind: Secret apiVersion: v1 metadata: name: cluster-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest." />
+kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest." />
 
     <title>Encrypted Backups | CYBERTEC-PG-Operator</title>
 
@@ -39,7 +39,7 @@ kind: Secret apiVersion: v1 metadata: name: cluster-s3-credential namespace: cpo
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
   <meta property="og:description" content="pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.
 Firstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the spec.backup.pgbackrest.configuration.secret object.
-kind: Secret apiVersion: v1 metadata: name: cluster-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest." />
+kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/backup/encryption/" />
 
@@ -58,7 +58,7 @@ kind: Secret apiVersion: v1 metadata: name: cluster-s3-credential namespace: cpo
 <meta name="twitter:title" content="Encrypted Backups" />
   <meta name="twitter:description" content="pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.
 Firstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the spec.backup.pgbackrest.configuration.secret object.
-kind: Secret apiVersion: v1 metadata: name: cluster-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest." />
+kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest." />
 
 
   <script type="application/ld+json">
@@ -69,7 +69,7 @@ kind: Secret apiVersion: v1 metadata: name: cluster-s3-credential namespace: cpo
       "name": "Encrypted Backups",
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/backup/encryption/",
       "headline": "Encrypted Backups",
-      "description": "pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.\nFirstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the spec.backup.pgbackrest.configuration.secret object.\nkind: Secret apiVersion: v1 metadata: name: cluster-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest.",
+      "description": "pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.\nFirstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the spec.backup.pgbackrest.configuration.secret object.\nkind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest.",
       "wordCount" : "161",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
@@ -766,7 +766,14 @@ kind: Secret apiVersion: v1 metadata: name: cluster-s3-credential namespace: cpo
               
             >
               
-                <span class="flex">Container Images</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/project/container_images/"
+                    class="gdoc-nav__entry"
+                  >
+                    Container Images
+                  </a>
+                </span>
               
               
             </label>
@@ -2442,6 +2449,43 @@ kind: Secret apiVersion: v1 metadata: name: cluster-s3-credential namespace: cpo
             <input
               type="checkbox"
               
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">Tutorials</span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
                 class="gdoc-nav__toggle" id="navtree-681e2023"
                 
               
@@ -3001,7 +3045,7 @@ kind: Secret apiVersion: v1 metadata: name: cluster-s3-credential namespace: cpo
 <pre tabindex="0"><code>kind: Secret
 apiVersion: v1
 metadata:
-  name: cluster-s3-credential
+  name: cluster-1-s3-credential
   namespace: cpo
 stringData:
   s3.conf |
@@ -3022,13 +3066,13 @@ spec:
   backup:
     pgbackrest:
       configuration:
-        secret: cluster-s3-credential
+        secret: cluster-1-s3-credential
       global:
         repo1-path: /cluster/repo1/
         repo1-retention-full: &#39;7&#39;
         repo1-retention-full-type: count
         repo1-cipher-type: aes-256-cbc
-      image: &#39;docker.io/cybertecpostgresql/cybertec-pg-container-dev:pgbackrest-16.3-1&#39;
+      image: &#39;docker.io/cybertecpostgresql/cybertec-pg-container:pgbackrest-16.4-1&#39;
       repos:
         - endpoint: &#39;https://s3-zurich.cyberlink.cloud:443&#39;
           name: repo1
@@ -3149,6 +3193,8 @@ spec:
         
 
         
+          
+        
 
         
         
@@ -4366,6 +4412,37 @@ spec:
 
         
           
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
         
 
         

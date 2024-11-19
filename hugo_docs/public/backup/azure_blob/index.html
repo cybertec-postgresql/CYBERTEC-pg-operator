@@ -12,8 +12,8 @@
 <meta name="generator" content="Hugo 0.133.0">
 
 
-  <meta name="description" content="Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.
-Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options." />
+  <meta name="description" content="This chapter describes the use of pgBackRest in combination with Azure Blob Storage. It is not absolutely necessary to operate a Kubernetes on the Azure Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.
+Precondition: a blob-storage-volume and a priviledged role is needed for this chapter. Create a blob-storage-volume on the Azure console Create a priviledged service-role Modifying the Cluster As soon as all requirements are met:" />
 
     <title>via Azure-Blob | CYBERTEC-PG-Operator</title>
 
@@ -36,8 +36,8 @@ Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried
     content="via Azure-Blob"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
-  <meta property="og:description" content="Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.
-Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options." />
+  <meta property="og:description" content="This chapter describes the use of pgBackRest in combination with Azure Blob Storage. It is not absolutely necessary to operate a Kubernetes on the Azure Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.
+Precondition: a blob-storage-volume and a priviledged role is needed for this chapter. Create a blob-storage-volume on the Azure console Create a priviledged service-role Modifying the Cluster As soon as all requirements are met:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/" />
 
@@ -54,8 +54,8 @@ Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried
 
   <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="via Azure-Blob" />
-  <meta name="twitter:description" content="Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.
-Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options." />
+  <meta name="twitter:description" content="This chapter describes the use of pgBackRest in combination with Azure Blob Storage. It is not absolutely necessary to operate a Kubernetes on the Azure Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.
+Precondition: a blob-storage-volume and a priviledged role is needed for this chapter. Create a blob-storage-volume on the Azure console Create a priviledged service-role Modifying the Cluster As soon as all requirements are met:" />
 
 
   <script type="application/ld+json">
@@ -66,8 +66,8 @@ Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried
       "name": "via Azure-Blob",
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/",
       "headline": "via Azure-Blob",
-      "description": "Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 \/ 2005) and pg_basebackup (PostgreSQL 9.0 \/ 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.\nBackups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options.",
-      "wordCount" : "1668",
+      "description": "This chapter describes the use of pgBackRest in combination with Azure Blob Storage. It is not absolutely necessary to operate a Kubernetes on the Azure Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.\nPrecondition: a blob-storage-volume and a priviledged role is needed for this chapter. Create a blob-storage-volume on the Azure console Create a priviledged service-role Modifying the Cluster As soon as all requirements are met:",
+      "wordCount" : "260",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -763,7 +763,14 @@ Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried
               
             >
               
-                <span class="flex">Container Images</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/project/container_images/"
+                    class="gdoc-nav__entry"
+                  >
+                    Container Images
+                  </a>
+                </span>
               
               
             </label>
@@ -2439,6 +2446,43 @@ Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried
             <input
               type="checkbox"
               
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">Tutorials</span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
                 class="gdoc-nav__toggle" id="navtree-681e2023"
                 
               
@@ -2993,364 +3037,76 @@ Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried
     class="gdoc-markdown gdoc-markdown__align--left"
   >
 
-    <p>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.</p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="backups-with-pgbackrest"
-    >
-        Backups with pgBackRest
-    </h2>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#backups-with-pgbackrest" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Backups with pgBackRest" aria-label="Anchor to: Backups with pgBackRest" href="#backups-with-pgbackrest">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>CPO relies on <a
-  class="gdoc-markdown__link"
-  href="www.pgbackrest.org"
->pgBackRest</a> as its backup solution, a tried-and-tested tool with extensive backup and restore options.
-The backup is based on two elements:</p>
-<ul>
-<li>Snapshots in the form of physical backups</li>
-<li>WAL archive: Continuous archiving of the WAL files</li>
-</ul>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="backups"
-    >
-        Backups
-    </h3>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#backups" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Backups" aria-label="Anchor to: Backups" href="#backups">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>Backups represent a snapshot of the database in the form of pyhsical files. This contains all relevant information that PostgreSQL holds in its data folder.
-With pgBackRest it is possible to create different types of Backups:</p>
-<ul>
-<li>full Snapshot: This captures and saves all files at the time of the backup</li>
-<li>Differential backup: Only captures all files that have been changed since the last full Backup</li>
-<li>Incremental backup: Only records the files that have been changed since the last backup (of any kind).</li>
-</ul>
-<p>When restoring using differential or incremental Backup, it is necessary to also use the previous Backup that provide the basis for the selected Backup.</p>
-<blockquote>
-<p><strong><em>HINT:</em></strong>  The choice of Backup types depends on factors such as the size of the database, the time available for backups and the restore.</p>
+    <p>This chapter describes the use of pgBackRest in combination with Azure Blob Storage. It is not absolutely necessary to operate a Kubernetes on the Azure Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.</p>
+
+
+
+
+
+<blockquote class="gdoc-hint important">
+  <div class="gdoc-hint__title flex align-center"><i class="fa important" title="Important"></i></div>
+  <div class="gdoc-hint__text">Precondition: a blob-storage-volume and a priviledged role is needed for this chapter.</div>
 </blockquote>
+
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="wal-archive"
+    <h3 id="create-a-blob-storage-volume-on-the-azure-console"
     >
-        WAL-Archive
+        Create a blob-storage-volume on the Azure console
     </h3>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#wal-archive" class="gdoc-page__anchor clip flex align-center" title="Anchor to: WAL-Archive" aria-label="Anchor to: WAL-Archive" href="#wal-archive">
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#create-a-blob-storage-volume-on-the-azure-console" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create a blob-storage-volume on the Azure console" aria-label="Anchor to: Create a blob-storage-volume on the Azure console" href="#create-a-blob-storage-volume-on-the-azure-console">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>The WAL (Write-Ahead-Log) refers to log files which record all changes to the database data before they are written to the actual files. The basic idea here is to guarantee the consistency and recoverability of the comitted data even in the event of failures.</p>
-<p>PostgreSQL normally cleans up or recycles the WAL files that are no longer required. By using WAL archiving, the WAL files are saved to a different location before this process so that they can be used for various activities in the future.
-These activities include</p>
-<ul>
-<li>Providing the WAL files for replicas to keep them up to date</li>
-<li>Restoring instances that have lost parts of the WAL files in the event of a failure and cannot return to a consistent state without them without losing data</li>
-<li>Point-In-Time-Recovery (PITR): In contrast to Backups, which map a fixed point in time, WAL files make it possible to jump dynamically to a desired point in time and restore the database to the closest available consistent data point</li>
-</ul>
-<blockquote>
-<p><strong><em>HINT:</em></strong>  WAL archiving is an indispensable tool for data availability, recoverability and the continuous availability of PostgreSQL.</p>
-</blockquote>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="backup-your-cluster"
+    <h3 id="create-a-priviledged-service-role"
     >
-        Backup your Cluster
-    </h2>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#backup-your-cluster" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Backup your Cluster" aria-label="Anchor to: Backup your Cluster" href="#backup-your-cluster">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>With pgBackRest, backups can be stored on different types of storage:</p>
-<ul>
-<li>Block storage (PVC)</li>
-<li>S3 / S3-compatible storage</li>
-<li>Azure blob storage</li>
-<li>GCS</li>
-</ul>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="backups-on-pvc-persistentvolumeclaim"
-    >
-        Backups on PVC (PersistentVolumeClaim)
+        Create a priviledged service-role
     </h3>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#backups-on-pvc-persistentvolumeclaim" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Backups on PVC (PersistentVolumeClaim)" aria-label="Anchor to: Backups on PVC (PersistentVolumeClaim)" href="#backups-on-pvc-persistentvolumeclaim">
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#create-a-priviledged-service-role" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create a priviledged service-role" aria-label="Anchor to: Create a priviledged service-role" href="#create-a-priviledged-service-role">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>When using block storage, the operator creates an additional pod that acts as a repo host. Based on a TLS connection, the repo host obtains the data for the Backup from the current primary of the cluster, which is compressed before being sent.
-WAL archives are pushed from the primary pod to the repo host.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="modifying-the-cluster"
+    >
+        Modifying the Cluster
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#modifying-the-cluster" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Modifying the Cluster" aria-label="Anchor to: Modifying the Cluster" href="#modifying-the-cluster">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>As soon as all requirements are met:</p>
+<ul>
+<li>An Azure-Blob-Storage-Volume</li>
+<li>A JSON token for the service role with the required authorisations for the Volume</li>
+</ul>
+<p>the cluster can be modified. Firstly, a secret containing the JSON token is created and the cluster manifest is adapted accordingly.</p>
+<p>The first step is to create the required secret. This is most easily done using a <code>kubectl</code> command.</p>
+<pre tabindex="0"><code>kubectl create secret generic cluster-1-gcs-credentials --from-file=gcs.json=fluent.json
+</code></pre><p>In the next step, both the secret name and the file name of the JSON token are stored in the secret in the cluster manifest. In addition, global settings, such as the retention time of the backups in the global object, are defined, the image for <code>pgBackRest</code> is specified and the necessary information for the repository is added. This includes both the desired storage path in the bucket and the times for automatic backups based on the cron syntax.</p>
 <pre tabindex="0"><code>apiVersion: cpo.opensource.cybertec.at/v1
 kind: postgresql
 metadata:
-  name: cluster
-  namespace: cpo
+  name: cluster-1
 spec:
   backup:
     pgbackrest:
-      image: &#39;docker.io/cybertecpostgresql/cybertec-pg-container-dev:pgbackrest-16.3-1&#39;
+      configuration:
+        secret: cluster-1-gcs-credentials
+      global:
+        repo1-path: /cluster-1/repo1/
+        repo1-retention-full: &#39;7&#39;
+        repo1-retention-full-type: count
+      image: docker.io/cybertecpostgresql/cybertec-pg-container:pgbackrest-16.4-1&#39;
       repos:
         - name: repo1
+          resource: postgresql-backup-bucket
+          key: gcs.json
+          keyType: service
           schedule:
             full: 30 2 * * *
-          storage: pvc
-          volume:
-            size: 15Gi
-            storageClass: default
-      global:
-        repo1-retention-full: &#39;7&#39;
-        repo1-retention-full-type: count
-</code></pre><p>This example creates backups based on a repo host with a daily full Backup at 2:30 am. In addition, pgBackRest is instructed to keep a maximum of 7 full Backups. The oldest one is always removed when a new Backup is created.</p>
-<blockquote>
-<p><strong><em>HINT:</em></strong>  In addition, further configurations for pgBackRest can be defined in the global object. Information on possible configurations can be found in the <a
-  class="gdoc-markdown__link"
-  href="https://pgbackrest.org/configuration.html"
->pgBackRest documentation</a></p>
-</blockquote>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="backups-on-s3"
-    >
-        Backups on S3
-    </h3>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#backups-on-s3" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Backups on S3" aria-label="Anchor to: Backups on S3" href="#backups-on-s3">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>pgBackRest can be used directly with AWS S3 or S3-compatible storage such as MinIO, Cloduian HyperStore or SwiftStack.</p>
-<pre tabindex="0"><code>apiVersion: cpo.opensource.cybertec.at/v1
-kind: postgresql
-metadata:
-  name: cluster
-  namespace: cpo
-spec:
-  backup:
-    pgbackrest:
-      image: &#39;docker.io/cybertecpostgresql/cybertec-pg-container-dev:pgbackrest-16.3-1&#39;
-      repos:
-        - endpoint: &#39;https://s3-zurich.cyberlink.cloud:443&#39;
-          name: repo1
-          region: zurich
-          resource: cpo-cluster-bucket
-          schedule:
-            full: 30 2 * * *
-            incr: &#39;*/30 * * * *&#39;
-          storage: s3
-      configuration:
-        secret: cluster-s3-credential
-      global:
-        repo1-path: /cluster/repo1/
-        repo1-retention-full: &#39;7&#39;
-        repo1-retention-full-type: count
-</code></pre><p>This example creates a backup in an S3 bucket. In addition to the above configurations, a secret is also required which contains the access data for the S3 storage. The name of the secret must be stored in the <code>spec.backup.pgbackrest.configuration.secret</code> object and the secret must be located in the same namespace as the cluster.
-Information required to address the S3 bucket:</p>
-<ul>
-<li><code>Endpoint</code>: S3 api endpoint</li>
-<li><code>Region</code>: Region of the bucket</li>
-<li><code>resource</code>: Name of the bucket</li>
-</ul>
-<p>The secret must be defined as follows for the use of S3 storage:</p>
-<pre tabindex="0"><code>kind: Secret
-apiVersion: v1
-metadata:
-  name: cluster-s3-credential
-  namespace: cpo
-stringData:
-  s3.conf |
-    [global]
-    repo1-s3-key=YOUR_S3_KEY
-    repo1-s3-key-secret=YOUR_S3_KEY_SECRET
-</code></pre><p>An <a
-  class="gdoc-markdown__link"
-  href="https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials/tree/main/cluster-tutorials/pgbackrest_with_s3"
->example</a> with a sercret generator is also available in the tutorials. Enter your access data in the s3.conf file and transfer the tutorial to your Kubernetes with kubectl apply -k cluster-tutorials/pgbackrest_with_s3/.</p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="encrypt-your-backup-client-side"
-    >
-        Encrypt your backup client-side
-    </h2>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#encrypt-your-backup-client-side" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Encrypt your backup client-side" aria-label="Anchor to: Encrypt your backup client-side" href="#encrypt-your-backup-client-side">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.</p>
-<p>Firstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the <code>spec.backup.pgbackrest.configuration.secret</code> object.</p>
-<pre tabindex="0"><code>kind: Secret
-apiVersion: v1
-metadata:
-  name: cluster-s3-credential
-  namespace: cpo
-stringData:
-  s3.conf |
-    [global]
-    repo1-s3-key=YOUR_S3_KEY
-    repo1-s3-key-secret=YOUR_S3_KEY_SECRET
-    repo1-cipher-pass=YOUR_ENCRYPTION_KEY
-</code></pre><p>We also need to configure the type of encryption for pgBackRest. This is done via the cipher-type parameter, which must also be specified for each repo.  You can find the available values for the parameter <a
-  class="gdoc-markdown__link"
-  href="https://pgbackrest.org/configuration.html#section-repository/option-repo-cipher-type"
->here</a></p>
-<pre tabindex="0"><code>apiVersion: cpo.opensource.cybertec.at/v1
-kind: postgresql
-metadata:
-  name: cluster
-  namespace: cpo
-spec:
-  backup:
-    pgbackrest:
-      configuration:
-        secret: cluster-s3-credential
-      global:
-        repo1-path: /cluster/repo1/
-        repo1-retention-full: &#39;7&#39;
-        repo1-retention-full-type: count
-        repo1-cipher-type: aes-256-cbc
-      image: &#39;docker.io/cybertecpostgresql/cybertec-pg-container-dev:pgbackrest-16.3-1&#39;
-      repos:
-        - endpoint: &#39;https://s3-zurich.cyberlink.cloud:443&#39;
-          name: repo1
-          region: zurich
-          resource: cpo-cluster-bucket
-          schedule:
-            full: 30 2 * * *
-            incr: &#39;*/30 * * * *&#39;
-          storage: s3
-</code></pre><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="how-a-backup-works"
-    >
-        How a Backup works
-    </h2>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#how-a-backup-works" class="gdoc-page__anchor clip flex align-center" title="Anchor to: How a Backup works" aria-label="Anchor to: How a Backup works" href="#how-a-backup-works">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>The operator creates a cronjob object on Kubernetes based on the defined times for automatic backups. This means that the Kubernetes core (<a
-  class="gdoc-markdown__link"
-  href="https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/"
->CronJob Controller</a>) will take care of processing the automatic backups and create a job and thus a pod at the appropriate time.
-The pod will send the backup command to the primary or, if block storage is used, to the repo host and monitor it. As soon as the backup is successfully completed, the pod stops with Completed and thus completes the job.</p>
-<pre tabindex="0"><code>kubectl get cronjobs
----------------------------------------------------------------------------------------
-NAME                          | SCHEDULE     | SUSPEND | ACTIVE | LAST SCHEDULE | AGE
-pgbackrest-cluster-repo1-full | 30 2 * * *   | False   | 0      | 4h46m         | 14h
-pgbackrest-cluster-repo1-incr | */30 * * * * | False   | 1      | 81s           | 106m
-
-kubectl get jobs
------------------------------------------------------------------------
-NAME                                   | COMPLETIONS | DURATION | AGE
-pgbackrest-cluster-repo1-full-28597110 | 1/1         | 52s      | 140m
-pgbackrest-cluster-repo1-incr-28597365 | 1/1         | 2m37s    | 32m
-pgbackrest-cluster-repo1-incr-28597380 | 1/1         | 2m38s    | 17m
-pgbackrest-cluster-repo1-incr-28597395 | 0/1         | 2m3s     | 2m3s
-</code></pre><p>If there are problems such as a timeout, the pod will stop with exit code 1 and thus indicate an error. In this case, a new pod will be created which will attempt to complete the backup. The maximum number of attempts is 6, so if the backup fails six times, the job is deemed to have failed and will not be attempted again until the next cronjob execution. The job pod log provides information about the problems.</p>
-<pre tabindex="0"><code>kubectl get pods
------------------------------------------------------------------------------------
-NAME                                         | READY | STATUS    | RESTARTS | AGE
-cluster-0                                    | 2/2   | Running   | 2        | 14h
-cluster-pgbackrest-repo-host-0               | 1/1   | Running   | 0        | 107m
-pgbackrest-cluster-repo1-full-28597110-x8zpw | 0/1   | Completed | 0        | 143m
-pgbackrest-cluster-repo1-incr-28597365-7bb5l | 0/1   | Completed | 0        | 34m
-pgbackrest-cluster-repo1-incr-28597380-j76rr | 0/1   | Completed | 0        | 19m
-pgbackrest-cluster-repo1-incr-28597395-rh86t | 0/1   | Completed | 0        | 4m27s
-postgres-operator-66bbff5c54-5sjmk           | 1/1   | Running   | 0        | 47m
-</code></pre><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="how-to-check-existing-backups"
-    >
-        How to check existing backups
-    </h2>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#how-to-check-existing-backups" class="gdoc-page__anchor clip flex align-center" title="Anchor to: How to check existing backups" aria-label="Anchor to: How to check existing backups" href="#how-to-check-existing-backups">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>There are several ways to gain an insight into the current status of pgBackRest.
-One of these is to use pgBackRest within the container. This can be done both via the repo host and the Postgres pod.</p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="pgbackrest-via-terminal-repo-host-pod"
-    >
-        pgbackrest via terminal (Repo-Host-Pod)
-    </h3>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#pgbackrest-via-terminal-repo-host-pod" class="gdoc-page__anchor clip flex align-center" title="Anchor to: pgbackrest via terminal (Repo-Host-Pod)" aria-label="Anchor to: pgbackrest via terminal (Repo-Host-Pod)" href="#pgbackrest-via-terminal-repo-host-pod">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<pre tabindex="0"><code>kubectl exec cluster-5-pgbackrest-repo-host-0 --stdin --tty -- pgbackrest info 
-stanza: db
-    status: ok
-    cipher: none
-
-    db (current)
-        wal archive min/max (16): 00000006000000000000005C/000000070000000000000092
-
-        full backup: 20240517-125730F
-            timestamp start/stop: 2024-05-17 12:57:30+00 / 2024-05-17 12:57:41+00
-            wal start/stop: 00000007000000000000005E / 00000007000000000000005E
-            database size: 22.9MB, database backup size: 22.9MB
-            repo1: backup set size: 3MB, backup size: 3MB
-
-        incr backup: 20240517-125730F_20240517-130003I
-            timestamp start/stop: 2024-05-17 13:00:03+00 / 2024-05-17 13:00:05+00
-            wal start/stop: 000000070000000000000060 / 000000070000000000000060
-            database size: 22.9MB, database backup size: 904.3KB
-            repo1: backup set size: 3MB, backup size: 149.4KB
-            backup reference list: 20240517-125730F
-
-        incr backup: 20240517-125730F_20240517-131503I
-            timestamp start/stop: 2024-05-17 13:15:03+00 / 2024-05-17 13:15:04+00
-            wal start/stop: 000000070000000000000062 / 000000070000000000000062
-            database size: 22.9MB, database backup size: 24.3KB
-            repo1: backup set size: 3MB, backup size: 2.9KB
-            backup reference list: 20240517-125730F, 20240517-125730F_20240517-130003I
-</code></pre><div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="pgbackrest-via-terminal-postgres-pod"
-    >
-        pgbackrest via terminal (Postgres-Pod)
-    </h3>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#pgbackrest-via-terminal-postgres-pod" class="gdoc-page__anchor clip flex align-center" title="Anchor to: pgbackrest via terminal (Postgres-Pod)" aria-label="Anchor to: pgbackrest via terminal (Postgres-Pod)" href="#pgbackrest-via-terminal-postgres-pod">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<pre tabindex="0"><code>kubectl exec cluster-5-0 --stdin --tty -- pgbackrest info 
-Defaulted container &#34;postgres&#34; out of: postgres, postgres-exporter, pgbackrest-restore (init)
-stanza: db
-    status: ok
-    cipher: none
-
-    db (current)
-        wal archive min/max (16): 00000006000000000000005C/000000070000000000000092
-
-        full backup: 20240517-125730F
-            timestamp start/stop: 2024-05-17 12:57:30+00 / 2024-05-17 12:57:41+00
-            wal start/stop: 00000007000000000000005E / 00000007000000000000005E
-            database size: 22.9MB, database backup size: 22.9MB
-            repo1: backup set size: 3MB, backup size: 3MB
-
-        incr backup: 20240517-125730F_20240517-130003I
-            timestamp start/stop: 2024-05-17 13:00:03+00 / 2024-05-17 13:00:05+00
-            wal start/stop: 000000070000000000000060 / 000000070000000000000060
-            database size: 22.9MB, database backup size: 904.3KB
-            repo1: backup set size: 3MB, backup size: 149.4KB
-            backup reference list: 20240517-125730F
-
-        incr backup: 20240517-125730F_20240517-131503I
-            timestamp start/stop: 2024-05-17 13:15:03+00 / 2024-05-17 13:15:04+00
-            wal start/stop: 000000070000000000000062 / 000000070000000000000062
-            database size: 22.9MB, database backup size: 24.3KB
-            repo1: backup set size: 3MB, backup size: 2.9KB
-            backup reference list: 20240517-125730F, 20240517-125730F_20240517-130003I
-</code></pre><p>There is the &ldquo;normal&rdquo; output, as well as the output format Json, which can be processed directly in the terminal.</p>
-<pre tabindex="0"><code>kubectl exec cluster-5-0 --stdin --tty -- pgbackrest info  --output=json
-</code></pre><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="check-pgbackrest-via-monitoring"
-    >
-        Check pgBackrest via Monitoring
-    </h2>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/backup/azure_blob/#check-pgbackrest-via-monitoring" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Check pgBackrest via Monitoring" aria-label="Anchor to: Check pgBackrest via Monitoring" href="#check-pgbackrest-via-monitoring">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>In addition to reading the status via the containers, pgBackRest can also be analysed and monitored via the monitoring stack. You can find information on setting up the monitoring stack and further information <a
-  class="gdoc-markdown__link"
-  href="documentation/how-to-use/monitoring"
->here</a>.</p>
-
+          storage: gcs
+</code></pre>
   </article>
 
 
@@ -3461,6 +3217,8 @@ stanza: db
         
 
         
+          
+        
 
         
         
@@ -4678,6 +4436,37 @@ stanza: db
 
         
           
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
         
 
         

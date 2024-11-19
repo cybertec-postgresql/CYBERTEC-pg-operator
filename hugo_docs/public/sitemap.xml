@@ -50,7 +50,7 @@
     <loc>http://localhost:1313/CYBERTEC-pg-operator/project/project/</loc>
     <lastmod>2024-03-11T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/project/project-copy/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/project/container_images/</loc>
     <lastmod>2024-03-11T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/architecture/</loc>
@@ -126,6 +126,9 @@
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/cluster_upgrade/</loc>
+    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/tutorials/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/crd/</loc>

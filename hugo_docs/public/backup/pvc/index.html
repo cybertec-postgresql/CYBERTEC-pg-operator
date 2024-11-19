@@ -67,7 +67,7 @@ apiVersion: cpo.opensource.cybertec.at/v1 kind: postgresql metadata: name: clust
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/backup/pvc/",
       "headline": "via Blockstorage (pvc)",
       "description": "Backups on PVC (PersistentVolumeClaim) When using block storage, the operator creates an additional pod that acts as a repo host. Based on a TLS connection, the repo host obtains the data for the Backup from the current primary of the cluster, which is compressed before being sent. WAL archives are pushed from the primary pod to the repo host.\napiVersion: cpo.opensource.cybertec.at\/v1 kind: postgresql metadata: name: cluster namespace: cpo spec: backup: pgbackrest: image: \u0027docker.",
-      "wordCount" : "163",
+      "wordCount" : "196",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -763,7 +763,14 @@ apiVersion: cpo.opensource.cybertec.at/v1 kind: postgresql metadata: name: clust
               
             >
               
-                <span class="flex">Container Images</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/project/container_images/"
+                    class="gdoc-nav__entry"
+                  >
+                    Container Images
+                  </a>
+                </span>
               
               
             </label>
@@ -2439,6 +2446,43 @@ apiVersion: cpo.opensource.cybertec.at/v1 kind: postgresql metadata: name: clust
             <input
               type="checkbox"
               
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">Tutorials</span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
                 class="gdoc-nav__toggle" id="navtree-681e2023"
                 
               
@@ -3012,7 +3056,7 @@ metadata:
 spec:
   backup:
     pgbackrest:
-      image: &#39;docker.io/cybertecpostgresql/cybertec-pg-container-dev:pgbackrest-16.3-1&#39;
+      image: &#39;docker.io/cybertecpostgresql/cybertec-pg-container:pgbackrest-16.4-1&#39;
       repos:
         - name: repo1
           schedule:
@@ -3024,13 +3068,20 @@ spec:
       global:
         repo1-retention-full: &#39;7&#39;
         repo1-retention-full-type: count
-</code></pre><p>This example creates backups based on a repo host with a daily full Backup at 2:30 am. In addition, pgBackRest is instructed to keep a maximum of 7 full Backups. The oldest one is always removed when a new Backup is created.</p>
-<blockquote>
-<p><strong><em>HINT:</em></strong>  In addition, further configurations for pgBackRest can be defined in the global object. Information on possible configurations can be found in the <a
+</code></pre><p>This example creates backups based on a repo host with a daily full Backup at 2:30 am. In addition, pgBackRest is instructed to keep a maximum of 7 full Backups. The oldest one is always removed when a new Backup is created. You can increase the pvc-size all time if needed. Therefore you just need to update the <code>size</code> value to a higher amount of Gi. Please be aware that shrinking the volume is not possible.</p>
+
+
+
+
+
+<blockquote class="gdoc-hint info">
+  <div class="gdoc-hint__title flex align-center"><i class="fa info" title="Info"></i></div>
+  <div class="gdoc-hint__text">In addition, further configurations for pgBackRest can be defined in the global object. Information on possible configurations can be found in the <a
   class="gdoc-markdown__link"
   href="https://pgbackrest.org/configuration.html"
->pgBackRest documentation</a></p>
+>pgBackRest documentation</a></div>
 </blockquote>
+
 
   </article>
 
@@ -3142,6 +3193,8 @@ spec:
         
 
         
+          
+        
 
         
         
@@ -4359,6 +4412,37 @@ spec:
 
         
           
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
         
 
         

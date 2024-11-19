@@ -60,11 +60,11 @@ spec:
   backup:
     pgbackrest:
       configuration:
-        secret: cluster-pvc-credentials
+        secret: cluster-1-pvc-credentials
       global:
         repo1-retention-full: '7'
         repo1-retention-full-type: count
-      image: 'docker.io/cybertecpostgresql/cybertec-pg-container-dev:pgbackrest-16.2-8-dev'
+      image: 'docker.io/cybertecpostgresql/cybertec-pg-container:pgbackrest-16.4-1'
       repos:
         - name: repo1
           schedule:

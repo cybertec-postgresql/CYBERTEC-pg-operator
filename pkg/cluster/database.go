@@ -98,12 +98,40 @@ const (
 		CREATE EXTENSION IF NOT EXISTS pgnodemx with SCHEMA exporter;
 		alter extension pgnodemx UPDATE;
 		CREATE TABLE  IF NOT EXISTS exporter.pgbackrestbackupinfo (
-			name text NOT NULL,
 			data jsonb NOT NULL,
 			data_time timestamp with time zone DEFAULT now() NOT NULL
 		)
 		WITH (autovacuum_analyze_scale_factor='0', autovacuum_vacuum_scale_factor='0', autovacuum_vacuum_threshold='2', autovacuum_analyze_threshold='2');
 		ALTER TABLE exporter.pgbackrestbackupinfo OWNER TO cpo_exporter;
+
+		CREATE OR REPLACE FUNCTION exporter.update_pgbackrest_info()
+			RETURNS VOID AS $$
+			DECLARE
+				last_entry_timestamp TIMESTAMP;
+				record_count INT;
+			BEGIN
+				SELECT COUNT(*) INTO record_count
+				FROM exporter.pgbackrestbackupinfo;
+
+				IF record_count > 0 THEN
+					SELECT data_time INTO last_entry_timestamp
+					FROM exporter.pgbackrestbackupinfo
+					ORDER BY data_time DESC
+					LIMIT 1;
+
+					IF last_entry_timestamp < NOW() - INTERVAL '5 minutes' THEN
+						DELETE FROM exporter.pgbackrestbackupinfo;
+					ELSE
+						RETURN;
+					END IF;
+				END IF;
+
+				EXECUTE format(
+					'COPY exporter.pgbackrestbackupinfo (data) FROM program ''pgbackrest info --output=json'' WITH (FORMAT text, DELIMITER ''|'')'
+				);
+			END;
+			$$ LANGUAGE plpgsql;
+
 	`
 )
 

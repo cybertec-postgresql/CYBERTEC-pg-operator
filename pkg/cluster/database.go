@@ -97,12 +97,14 @@ const (
 		ALTER SCHEMA exporter OWNER TO cpo_exporter;
 		CREATE EXTENSION IF NOT EXISTS pgnodemx with SCHEMA exporter;
 		alter extension pgnodemx UPDATE;
-		CREATE TABLE  IF NOT EXISTS exporter.pgbackrestbackupinfo (
+		CREATE TABLE IF NOT EXISTS exporter.pgbackrestbackupinfo (
 			data jsonb NOT NULL,
 			data_time timestamp with time zone DEFAULT now() NOT NULL
 		)
 		WITH (autovacuum_analyze_scale_factor='0', autovacuum_vacuum_scale_factor='0', autovacuum_vacuum_threshold='2', autovacuum_analyze_threshold='2');
 		ALTER TABLE exporter.pgbackrestbackupinfo OWNER TO cpo_exporter;
+
+		GRANT pg_execute_server_program TO cpo_exorter;
 
 		CREATE OR REPLACE FUNCTION exporter.update_pgbackrest_info()
 			RETURNS VOID AS $$
@@ -131,7 +133,6 @@ const (
 				);
 			END;
 			$$ LANGUAGE plpgsql;
-
 	`
 )
 

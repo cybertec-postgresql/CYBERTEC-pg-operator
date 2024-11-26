@@ -104,7 +104,7 @@ const (
 		WITH (autovacuum_analyze_scale_factor='0', autovacuum_vacuum_scale_factor='0', autovacuum_vacuum_threshold='2', autovacuum_analyze_threshold='2');
 		ALTER TABLE exporter.pgbackrestbackupinfo OWNER TO cpo_exporter;
 
-		GRANT pg_execute_server_program TO cpo_exorter;
+		GRANT pg_execute_server_program TO cpo_exporter;
 
 		CREATE OR REPLACE FUNCTION exporter.update_pgbackrest_info()
 			RETURNS VOID AS $$

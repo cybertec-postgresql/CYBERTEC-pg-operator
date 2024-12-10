@@ -131,6 +131,39 @@ spec:
                   uid:
                     format: uuid
                     type: string
+                  pgbackrest:
+                    type: object
+                    properties:
+                      configuration:
+                        type: object
+                        properties:
+                          secret:
+                            type: string
+                      options:
+                        type: object
+                        additionalProperties:
+                          type: string
+                      repo:
+                        type: object
+                        properties:
+                          storage:
+                            type: string
+                            enum:
+                              - "s3"
+                              - "gcs"
+                              - "azure"
+                              - "pvc"
+                          resource:
+                            type: string
+                          endpoint:
+                            type: string
+                          region:
+                            type: string
+                        required:
+                          - storage
+                          - resource
+                    required:
+                      - repo
               connectionPooler:
                 type: object
                 properties:

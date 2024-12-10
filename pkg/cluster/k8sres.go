@@ -1,6 +1,7 @@
 package cluster
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -9,6 +10,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"text/template"
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -1043,7 +1045,7 @@ func (c *Cluster) generateSpiloPodEnvVars(
 		envVars = appendEnvVars(envVars, spec.Env...)
 	}
 
-	if spec.Clone != nil && spec.Clone.ClusterName != "" {
+	if spec.Clone != nil && (spec.Clone.ClusterName != "" || spec.Clone.Pgbackrest != nil) {
 		envVars = append(envVars, c.generateCloneEnvironment(spec.Clone)...)
 	}
 
@@ -1522,6 +1524,10 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		}
 	}
 
+	if specHasPgbackrestClone(spec) {
+		additionalVolumes = append(additionalVolumes, c.generatePgbackrestCloneConfigVolumes(spec.Clone)...)
+	}
+
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
@@ -1949,6 +1955,40 @@ func (c *Cluster) generatePgbackrestConfigVolume(backrestSpec *cpov1.Pgbackrest,
 			},
 		},
 	}
+}
+
+func (c *Cluster) generatePgbackrestCloneConfigVolumes(description *cpov1.CloneDescription) []cpov1.AdditionalVolume {
+	defaultMode := int32(0640)
+
+	volumes := []cpov1.AdditionalVolume{
+		{
+			Name:      "pgbackrest-clone",
+			MountPath: "/etc/pgbackrest/clone-conf.d",
+			VolumeSource: v1.VolumeSource{
+				ConfigMap: &v1.ConfigMapVolumeSource{
+					LocalObjectReference: v1.LocalObjectReference{
+						Name: c.getPgbackrestCloneConfigmapName(),
+					},
+				},
+			},
+		},
+	}
+
+	if description.Pgbackrest.Repo.Storage == "pvc" && description.ClusterName != "" {
+		// Cloning from another cluster, mount that clusters certs
+		volumes = append(volumes, cpov1.AdditionalVolume{
+			Name:      "pgbackrest-clone-certs",
+			MountPath: "/etc/pgbackrest/clone-certs",
+			VolumeSource: v1.VolumeSource{
+				Secret: &v1.SecretVolumeSource{
+					SecretName:  description.ClusterName + "-pgbackrest-cert", // TODO: refactor name generation
+					DefaultMode: &defaultMode,
+				},
+			},
+		})
+	}
+
+	return volumes
 }
 
 func (c *Cluster) generateCertSecretVolume() cpov1.AdditionalVolume {
@@ -2468,6 +2508,16 @@ func (c *Cluster) generateEndpoint(role PostgresRole, subsets []v1.EndpointSubse
 func (c *Cluster) generateCloneEnvironment(description *cpov1.CloneDescription) []v1.EnvVar {
 	result := make([]v1.EnvVar, 0)
 
+	if description.Pgbackrest != nil {
+		result = append(result, v1.EnvVar{Name: "CLONE_METHOD", Value: "CLONE_WITH_PGBACKREST"})
+		result = append(result, v1.EnvVar{Name: "CLONE_PGBACKREST_CONFIG", Value: "/etc/pgbackrest/clone-conf.d"})
+		if description.EndTimestamp != "" {
+			result = append(result, v1.EnvVar{Name: "CLONE_TARGET_TIME", Value: description.EndTimestamp})
+		}
+
+		return result
+	}
+
 	if description.ClusterName == "" {
 		return result
 	}
@@ -2869,6 +2919,10 @@ func (c *Cluster) getPgbackrestRepoHostConfigmapName() (jobName string) {
 	return fmt.Sprintf("%s-pgbackrest-repohost-config", c.Name)
 }
 
+func (c *Cluster) getPgbackrestCloneConfigmapName() (jobName string) {
+	return fmt.Sprintf("%s-pgbackrest-clone-config", c.Name)
+}
+
 func (c *Cluster) getTDESecretName() string {
 	return fmt.Sprintf("%s-tde", c.Name)
 }
@@ -3055,6 +3109,103 @@ func (c *Cluster) generatePgbackrestRepoHostConfigmap() (*v1.ConfigMap, error) {
 		Data: data,
 	}
 	return configmap, nil
+}
+
+func (c *Cluster) generatePgbackrestCloneConfigmap(clone *cpov1.CloneDescription) (*v1.ConfigMap, error) {
+	config := map[string]map[string]string{
+		"db": {
+			"pg1-path":        "/home/postgres/pgdata/pgroot/data",
+			"pg1-port":        "5432",
+			"pg1-socket-path": "/var/run/postgresql/",
+		},
+		"global": {
+			"log-path":   "/home/postgres/pgdata/pgbackrest/log",
+			"spool-path": "/home/postgres/pgdata/pgbackrest/spool-path",
+		},
+	}
+
+	if clone.Pgbackrest.Options != nil {
+		maps.Copy(config["global"], clone.Pgbackrest.Options)
+	}
+
+	repo := clone.Pgbackrest.Repo
+	repoName := "repo1"
+	repoConf := func(conf map[string]string) {
+		for k, v := range conf {
+			config["global"][repoName+"-"+k] = v
+		}
+	}
+
+	switch repo.Storage {
+	case "pvc":
+		// TODO: enable Cluster.serviceName to ask for other clusters services
+		serviceName := fmt.Sprintf("%s-%s", clone.ClusterName, "clusterpods")
+		// TODO: allow for cross namespace cloning
+		repoConf(map[string]string{
+			"host":           clone.ClusterName + "-pgbackrest-repo-host-0." + serviceName + "." + c.Namespace + ".svc." + c.OpConfig.ClusterDomain,
+			"host-ca-file":   "/etc/pgbackrest/clone-certs/pgbackrest.ca-roots",
+			"host-cert-file": "/etc/pgbackrest/clone-certs/pgbackrest-client.crt",
+			"host-key-file":  "/etc/pgbackrest/clone-certs/pgbackrest-client.key",
+			"host-type":      "tls",
+			"host-user":      "postgres",
+		})
+	case "s3":
+		repoConf(map[string]string{
+			"type":        "s3",
+			"s3-bucket":   repo.Resource,
+			"s3-endpoint": repo.Endpoint,
+			"s3-region":   repo.Region,
+		})
+	case "gcs":
+		repoConf(map[string]string{
+			"type":         "gcs",
+			"gcs-bucket":   repo.Resource,
+			"gcs-key":      fmt.Sprintf("/etc/pgbackrest/conf.d/%s", repo.Key),
+			"gcs-key-type": repo.KeyType,
+		})
+	case "azure":
+		repoConf(map[string]string{
+			"type":            "azure",
+			"azure-container": repo.Resource,
+			"azure-endpoint":  repo.Endpoint,
+			"azure-key":       repo.Key,
+			"azure-account":   repo.Account,
+		})
+	default:
+		return nil, fmt.Errorf("Invalid repository storage %s", repo.Storage)
+	}
+
+	confStr, err := renderPgbackrestConfig(config)
+	if err != nil {
+		return nil, fmt.Errorf("Error rendering pgbackrest config: %v", err)
+	}
+	configmap := &v1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: c.Namespace,
+			Name:      c.getPgbackrestCloneConfigmapName(),
+		},
+		Data: map[string]string{
+			"pgbackrest_clone.conf": confStr,
+		},
+	}
+	return configmap, nil
+}
+
+func renderPgbackrestConfig(config map[string]map[string]string) (string, error) {
+	var out bytes.Buffer
+	tpl := template.Must(template.New("pgbackrest_instance.conf").Parse(`
+{{- range $section, $config := . }}
+[{{ $section }}]
+
+{{- range $key, $value := . }}
+{{ $key }} = {{ $value }}
+{{ end -}}
+{{ end -}}
+`))
+	if err := tpl.Execute(&out, config); err != nil {
+		return "", err
+	}
+	return out.String(), nil
 }
 
 func (c *Cluster) generatePgbackrestJob(backup *cpov1.Pgbackrest, repo *cpov1.Repo, backupType string, schedule string) (*batchv1.CronJob, error) {

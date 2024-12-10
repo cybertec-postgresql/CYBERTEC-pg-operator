@@ -213,6 +213,68 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 								Type:   "string",
 								Format: "uuid",
 							},
+							"pgbackrest": {
+								Type: "object",
+								Properties: map[string]apiextv1.JSONSchemaProps{
+									"configuration": {
+										Type: "object",
+										Properties: map[string]apiextv1.JSONSchemaProps{
+											"secret": {
+												Type: "string",
+											},
+										},
+									},
+									"options": {
+										Type: "object",
+										AdditionalProperties: &apiextv1.JSONSchemaPropsOrBool{
+											Schema: &apiextv1.JSONSchemaProps{
+												Type:                   "string",
+												XPreserveUnknownFields: util.True(),
+											},
+										},
+									},
+									"repo": {
+										Type: "object",
+										Properties: map[string]apiextv1.JSONSchemaProps{
+											"storage": {
+												Type: "string",
+												Enum: []apiextv1.JSON{
+													{
+														Raw: []byte(`"s3"`),
+													},
+													{
+														Raw: []byte(`"gcs"`),
+													},
+													{
+														Raw: []byte(`"azure"`),
+													},
+													{
+														Raw: []byte(`"pvc"`),
+													},
+												},
+											},
+											"resource": {
+												Type: "string",
+											},
+											"endpoint": {
+												Type: "string",
+											},
+											"region": {
+												Type: "string",
+											},
+											"account": {
+												Type: "string",
+											},
+											"key": {
+												Type: "string",
+											},
+											"keyType": {
+												Type: "string",
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"connectionPooler": {

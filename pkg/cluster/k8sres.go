@@ -1973,6 +1973,12 @@ func (c *Cluster) generatePgbackrestCloneConfigVolumes(description *cpov1.CloneD
 			},
 		},
 	}
+	if description.Pgbackrest.Configuration.Secret != "" {
+		volumes[0].VolumeSource.Secret = &v1.SecretVolumeSource{
+			SecretName:  description.Pgbackrest.Configuration.Secret,
+			DefaultMode: &defaultMode,
+		}
+	}
 
 	if description.Pgbackrest.Repo.Storage == "pvc" && description.ClusterName != "" {
 		// Cloning from another cluster, mount that clusters certs

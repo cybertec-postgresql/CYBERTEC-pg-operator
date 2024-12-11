@@ -1960,24 +1960,31 @@ func (c *Cluster) generatePgbackrestConfigVolume(backrestSpec *cpov1.Pgbackrest,
 func (c *Cluster) generatePgbackrestCloneConfigVolumes(description *cpov1.CloneDescription) []cpov1.AdditionalVolume {
 	defaultMode := int32(0640)
 
+	projections := []v1.VolumeProjection{{
+		ConfigMap: &v1.ConfigMapProjection{
+			LocalObjectReference: v1.LocalObjectReference{Name: c.getPgbackrestCloneConfigmapName()},
+		},
+	}}
+
+	if description.Pgbackrest.Configuration.Secret != "" {
+		projections = append(projections, v1.VolumeProjection{
+			Secret: &v1.SecretProjection{
+				LocalObjectReference: v1.LocalObjectReference{Name: description.Pgbackrest.Configuration.Secret},
+			},
+		})
+	}
+
 	volumes := []cpov1.AdditionalVolume{
 		{
 			Name:      "pgbackrest-clone",
 			MountPath: "/etc/pgbackrest/clone-conf.d",
 			VolumeSource: v1.VolumeSource{
-				ConfigMap: &v1.ConfigMapVolumeSource{
-					LocalObjectReference: v1.LocalObjectReference{
-						Name: c.getPgbackrestCloneConfigmapName(),
-					},
+				Projected: &v1.ProjectedVolumeSource{
+					DefaultMode: &defaultMode,
+					Sources:     projections,
 				},
 			},
 		},
-	}
-	if description.Pgbackrest.Configuration.Secret != "" {
-		volumes[0].VolumeSource.Secret = &v1.SecretVolumeSource{
-			SecretName:  description.Pgbackrest.Configuration.Secret,
-			DefaultMode: &defaultMode,
-		}
 	}
 
 	if description.Pgbackrest.Repo.Storage == "pvc" && description.ClusterName != "" {

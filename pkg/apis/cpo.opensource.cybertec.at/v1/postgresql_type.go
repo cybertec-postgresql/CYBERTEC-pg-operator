@@ -203,14 +203,15 @@ type TLSDescription struct {
 
 // CloneDescription describes which cluster the new should clone and up to which point in time
 type CloneDescription struct {
-	ClusterName       string `json:"cluster,omitempty"`
-	UID               string `json:"uid,omitempty"`
-	EndTimestamp      string `json:"timestamp,omitempty"`
-	S3WalPath         string `json:"s3_wal_path,omitempty"`
-	S3Endpoint        string `json:"s3_endpoint,omitempty"`
-	S3AccessKeyId     string `json:"s3_access_key_id,omitempty"`
-	S3SecretAccessKey string `json:"s3_secret_access_key,omitempty"`
-	S3ForcePathStyle  *bool  `json:"s3_force_path_style,omitempty" defaults:"false"`
+	ClusterName       string           `json:"cluster,omitempty"`
+	UID               string           `json:"uid,omitempty"`
+	EndTimestamp      string           `json:"timestamp,omitempty"`
+	S3WalPath         string           `json:"s3_wal_path,omitempty"`
+	S3Endpoint        string           `json:"s3_endpoint,omitempty"`
+	S3AccessKeyId     string           `json:"s3_access_key_id,omitempty"`
+	S3SecretAccessKey string           `json:"s3_secret_access_key,omitempty"`
+	S3ForcePathStyle  *bool            `json:"s3_force_path_style,omitempty" defaults:"false"`
+	Pgbackrest        *PgbackrestClone `json:"pgbackrest,omitempty"`
 }
 
 // Sidecar defines a container to be run in the same pod as the Postgres container.
@@ -281,6 +282,12 @@ type Pgbackrest struct {
 	Restore       Restore           `json:"restore"`
 	Configuration Configuration     `json:"configuration"`
 	Resources     *Resources        `json:"resources,omitempty"`
+}
+
+type PgbackrestClone struct {
+	Repo          Repo              `json:"repo"`
+	Options       map[string]string `json:"options"`
+	Configuration Configuration     `json:"configuration"`
 }
 
 type Repo struct {

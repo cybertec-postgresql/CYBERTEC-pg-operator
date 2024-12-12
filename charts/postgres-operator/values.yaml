@@ -440,9 +440,11 @@ configMultisite:
   # Must be unique for each site.
   site: ""
   # IP address or hostname of shared etcd cluster used for multicluster operation.
-  etcd_host: ""
-  etcd_user: ""
-  etcd_password: ""
+  etcd:
+    hosts:
+    user: ""
+    password: ""
+    protocol: http
   # Timeout for cross site failover, and timeout for demoting to read only when accessing shared etcd cluster fails.
   # There should be adequate safety margin between the two to allow for demotion to take place.
   #ttl: 90

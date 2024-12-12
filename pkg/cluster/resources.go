@@ -786,6 +786,66 @@ func (c *Cluster) updatePgbackrestRepoHostConfig() (err error) {
 	return nil
 }
 
+func (c *Cluster) createPgbackrestCloneConfig() (err error) {
+
+	c.setProcessName("creating a configmap for pgbackrest clone")
+
+	pgbackrestCloneConfigmapSpec, err := c.generatePgbackrestCloneConfigmap(c.Spec.Clone)
+	if err != nil {
+		return fmt.Errorf("could not generate pgbackrest clone configmap spec: %v", err)
+	}
+	c.logger.Debugf("Generated clone configmapSpec: %v", pgbackrestCloneConfigmapSpec)
+
+	_, err = c.KubeClient.ConfigMaps(c.Namespace).Create(context.TODO(), pgbackrestCloneConfigmapSpec, metav1.CreateOptions{})
+	if err != nil {
+		return fmt.Errorf("could not create pgbackrest clone config: %v", err)
+	}
+
+	return nil
+}
+
+func (c *Cluster) deletePgbackrestCloneConfig() error {
+	c.setProcessName("deleting pgbackrest configmap clone")
+	c.logger.Debugln("deleting pgbackrest configmap clone")
+
+	err := c.KubeClient.ConfigMaps(c.Namespace).Delete(context.TODO(), c.getPgbackrestCloneConfigmapName(), c.deleteOptions)
+	if err != nil {
+		return err
+	}
+	c.logger.Infof("configmap %q has been deleted", c.getPgbackrestCloneConfigmapName())
+
+	return nil
+}
+
+func (c *Cluster) updatePgbackrestCloneConfig() (err error) {
+
+	c.setProcessName("patching configmap for pgbackrest clone")
+
+	pgbackrestCloneConfigmapSpec, err := c.generatePgbackrestCloneConfigmap(c.Spec.Clone)
+	if err != nil {
+		return fmt.Errorf("could not generate pgbackrest clone configmap spec: %v", err)
+	}
+	c.logger.Debugf("Generated pgbackrest repo-host configmapSpec: %v", pgbackrestCloneConfigmapSpec)
+	patchData, err := dataPatch(pgbackrestCloneConfigmapSpec.Data)
+	if err != nil {
+		return fmt.Errorf("could not form patch for the pgbackrest clone configmap: %v", err)
+	}
+
+	// update the pgbackrest repo-host configmap
+	_, err = c.KubeClient.ConfigMaps(c.Namespace).Patch(
+		context.TODO(),
+		c.getPgbackrestCloneConfigmapName(),
+		types.MergePatchType,
+		patchData,
+		metav1.PatchOptions{},
+		"")
+	if err != nil {
+		return fmt.Errorf("could not patch pgbackrest config: %v", err)
+	}
+
+	return nil
+}
+
 func (c *Cluster) createPgbackrestJob(pgbackrestJobSpec *batchv1.CronJob) (err error) {
 
 	c.setProcessName("creating a k8s cron job for pgbackrest backups")

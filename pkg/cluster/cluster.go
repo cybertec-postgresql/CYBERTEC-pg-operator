@@ -366,6 +366,12 @@ func (c *Cluster) Create() (err error) {
 		c.logger.Info("a monitoring secret was successfully created")
 	}
 
+	if specHasPgbackrestClone(&c.Postgresql.Spec) {
+		if err := c.createPgbackrestCloneConfig(); err != nil {
+			return fmt.Errorf("could not create pgbackrest clone config: %v", err)
+		}
+	}
+
 	if c.multisiteEnabled() {
 		c.logger.Infof("waiting for load balancer IP to be assigned")
 		c.waitForPrimaryLoadBalancerIp()
@@ -1067,6 +1073,28 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 		}
 	}()
 
+	// Clone configmap for pgbackrest
+	func() {
+		if specHasPgbackrestClone(&oldSpec.Spec) {
+			if specHasPgbackrestClone(&newSpec.Spec) {
+				// TODO: if we know cluster state and it has been initialized, then should ignore this
+				if err := c.updatePgbackrestCloneConfig(); err != nil {
+					c.logger.Warningf("could not update pgbackrest clone config: %v", err)
+					updateFailed = true
+				}
+			} else {
+				if err := c.deletePgbackrestCloneConfig(); err != nil {
+					c.logger.Warningf("could not delete pgbackrest clone config: %v", err)
+				}
+			}
+		} else if specHasPgbackrestClone(&newSpec.Spec) {
+			c.logger.Warningf("Can't add a clone specification after cluster has been initialized")
+			updateFailed = true
+		} else {
+			// TODO: try to delete just in case?
+		}
+	}()
+
 	// Statefulset
 	func() {
 		oldSs, err := c.generateStatefulSet(&oldSpec.Spec)
@@ -1225,6 +1253,10 @@ func specHasPgbackrestPVCRepo(newSpec *cpov1.PostgresSpec) bool {
 	return false
 }
 
+func specHasPgbackrestClone(newSpec *cpov1.PostgresSpec) bool {
+	return newSpec.Clone != nil && newSpec.Clone.Pgbackrest != nil
+}
+
 func syncResources(a, b *v1.ResourceRequirements) bool {
 	for _, res := range []v1.ResourceName{
 		v1.ResourceCPU,
@@ -1289,6 +1321,10 @@ func (c *Cluster) Delete() {
 
 	if err := c.deletePodDisruptionBudget(); err != nil {
 		c.logger.Warningf("could not delete pod disruption budget: %v", err)
+	}
+
+	if err := c.deletePgbackrestCloneConfig(); err != nil {
+		c.logger.Warningf("could not delete pgbackrest clone config: %v", err)
 	}
 
 	for _, role := range []PostgresRole{Master, Replica, ClusterPods} {

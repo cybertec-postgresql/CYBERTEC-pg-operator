@@ -9,11 +9,11 @@
 <meta name="referrer" content="no-referrer" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="light dark" />
-<meta name="generator" content="Hugo 0.133.0">
+<meta name="generator" content="Hugo 0.143.1">
 
 
   <meta name="description" content="High availability (HA) is a critical aspect of running database systems, especially in mission-critical applications where downtime is unacceptable. This section explains why high availability is important for PostgreSQL and how Patroni acts as a solution to ensure HA. Why High Availability (HA) for PostgreSQL?
-To minimise downtime: In modern, data-driven applications, downtime can cause significant financial and reputational losses. High availability ensures that the database remains available even in the event of hardware failures or network problems." />
+To minimise downtime: In modern, data-driven applications, downtime can cause significant financial and reputational losses. High availability ensures that the database remains available even in the event of hardware failures or network problems. Data integrity and security: A database failure can lead to data loss or data inconsistencies. High-availability solutions protect against such scenarios through continuous data replication and automatic failover. Scalability and load balancing: HA setups make it possible to distribute the load across multiple nodes, resulting in better performance and faster response times. This is particularly important in environments with high data traffic. Ease of maintenance: By setting up high availability, database maintenance can be performed without interrupting services. Nodes can be maintained incrementally while the database remains available. Patroni - the cluster manager In our PostgreSQL environment, we use Patroni in the PG containers by default. This has the advantage that even single-node instances basically function as Patroni clusters. This configuration offers several important advantages:" />
 
     <title>High Availability | CYBERTEC-PG-Operator</title>
 
@@ -27,7 +27,6 @@ To minimise downtime: In modern, data-driven applications, downtime can cause si
 <meta name="msapplication-config" content="/favicon/browserconfig.xml">
 <meta name="theme-color" content="#ffffff">
 
-
     
 
     
@@ -37,7 +36,7 @@ To minimise downtime: In modern, data-driven applications, downtime can cause si
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
   <meta property="og:description" content="High availability (HA) is a critical aspect of running database systems, especially in mission-critical applications where downtime is unacceptable. This section explains why high availability is important for PostgreSQL and how Patroni acts as a solution to ensure HA. Why High Availability (HA) for PostgreSQL?
-To minimise downtime: In modern, data-driven applications, downtime can cause significant financial and reputational losses. High availability ensures that the database remains available even in the event of hardware failures or network problems." />
+To minimise downtime: In modern, data-driven applications, downtime can cause significant financial and reputational losses. High availability ensures that the database remains available even in the event of hardware failures or network problems. Data integrity and security: A database failure can lead to data loss or data inconsistencies. High-availability solutions protect against such scenarios through continuous data replication and automatic failover. Scalability and load balancing: HA setups make it possible to distribute the load across multiple nodes, resulting in better performance and faster response times. This is particularly important in environments with high data traffic. Ease of maintenance: By setting up high availability, database maintenance can be performed without interrupting services. Nodes can be maintained incrementally while the database remains available. Patroni - the cluster manager In our PostgreSQL environment, we use Patroni in the PG containers by default. This has the advantage that even single-node instances basically function as Patroni clusters. This configuration offers several important advantages:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/ha_cluster/" />
 
@@ -55,7 +54,7 @@ To minimise downtime: In modern, data-driven applications, downtime can cause si
   <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="High Availability" />
   <meta name="twitter:description" content="High availability (HA) is a critical aspect of running database systems, especially in mission-critical applications where downtime is unacceptable. This section explains why high availability is important for PostgreSQL and how Patroni acts as a solution to ensure HA. Why High Availability (HA) for PostgreSQL?
-To minimise downtime: In modern, data-driven applications, downtime can cause significant financial and reputational losses. High availability ensures that the database remains available even in the event of hardware failures or network problems." />
+To minimise downtime: In modern, data-driven applications, downtime can cause significant financial and reputational losses. High availability ensures that the database remains available even in the event of hardware failures or network problems. Data integrity and security: A database failure can lead to data loss or data inconsistencies. High-availability solutions protect against such scenarios through continuous data replication and automatic failover. Scalability and load balancing: HA setups make it possible to distribute the load across multiple nodes, resulting in better performance and faster response times. This is particularly important in environments with high data traffic. Ease of maintenance: By setting up high availability, database maintenance can be performed without interrupting services. Nodes can be maintained incrementally while the database remains available. Patroni - the cluster manager In our PostgreSQL environment, we use Patroni in the PG containers by default. This has the advantage that even single-node instances basically function as Patroni clusters. This configuration offers several important advantages:" />
 
 
   <script type="application/ld+json">
@@ -66,8 +65,8 @@ To minimise downtime: In modern, data-driven applications, downtime can cause si
       "name": "High Availability",
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/ha_cluster/",
       "headline": "High Availability",
-      "description": "High availability (HA) is a critical aspect of running database systems, especially in mission-critical applications where downtime is unacceptable. This section explains why high availability is important for PostgreSQL and how Patroni acts as a solution to ensure HA. Why High Availability (HA) for PostgreSQL?\nTo minimise downtime: In modern, data-driven applications, downtime can cause significant financial and reputational losses. High availability ensures that the database remains available even in the event of hardware failures or network problems.",
-      "wordCount" : "470",
+      "description": "High availability (HA) is a critical aspect of running database systems, especially in mission-critical applications where downtime is unacceptable. This section explains why high availability is important for PostgreSQL and how Patroni acts as a solution to ensure HA. Why High Availability (HA) for PostgreSQL?\nTo minimise downtime: In modern, data-driven applications, downtime can cause significant financial and reputational losses. High availability ensures that the database remains available even in the event of hardware failures or network problems. Data integrity and security: A database failure can lead to data loss or data inconsistencies. High-availability solutions protect against such scenarios through continuous data replication and automatic failover. Scalability and load balancing: HA setups make it possible to distribute the load across multiple nodes, resulting in better performance and faster response times. This is particularly important in environments with high data traffic. Ease of maintenance: By setting up high availability, database maintenance can be performed without interrupting services. Nodes can be maintained incrementally while the database remains available. Patroni - the cluster manager In our PostgreSQL environment, we use Patroni in the PG containers by default. This has the advantage that even single-node instances basically function as Patroni clusters. This configuration offers several important advantages:",
+      "wordCount" : "523",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -95,17 +94,17 @@ To minimise downtime: In modern, data-driven applications, downtime can cause si
 
 
     
-  <script src="/CYBERTEC-pg-operator/js/colortheme-5cd55a83.bundle.min.js"></script>
-<script src="/CYBERTEC-pg-operator/js/main-09678822.bundle.min.js"></script>
+  <script src="/CYBERTEC-pg-operator/js/colortheme-01ea3db1.bundle.min.js"></script>
+<script src="/CYBERTEC-pg-operator/js/main-2e274343.bundle.min.js"></script>
 
 <link
   rel="preload"
-  href="/CYBERTEC-pg-operator/main-c93819e1.min.css"
+  href="/CYBERTEC-pg-operator/main-4434ec39.min.css"
   as="style"
 />
 <link
   rel="stylesheet"
-  href="/CYBERTEC-pg-operator/main-c93819e1.min.css"
+  href="/CYBERTEC-pg-operator/main-4434ec39.min.css"
   media="all"
 />
 
@@ -726,7 +725,14 @@ To minimise downtime: In modern, data-driven applications, downtime can cause si
               
             >
               
-                <span class="flex">The Project</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/project/project/"
+                    class="gdoc-nav__entry"
+                  >
+                    The Project
+                  </a>
+                </span>
               
               
             </label>
@@ -975,35 +981,6 @@ To minimise downtime: In modern, data-driven applications, downtime can cause si
           </li>
         
       
-        
-          
-          
-          
-          
-          
-          
-
-
-          <li>
-            <input
-              type="checkbox"
-              
-                class="hidden"
-              
-            />
-            <label
-              
-            >
-              
-                <span class="flex">Documentation</span>
-              
-              
-            </label>
-
-            
-          </li>
-        
-      
     
       
 
@@ -1172,7 +1149,7 @@ To minimise downtime: In modern, data-driven applications, downtime can cause si
               
                 <span class="flex">
                   <a
-                    href="/CYBERTEC-pg-operator/installation/installation/"
+                    href="/CYBERTEC-pg-operator/installation/install_operator/"
                     class="gdoc-nav__entry"
                   >
                     Install CPO
@@ -2077,6 +2054,50 @@ To minimise downtime: In modern, data-driven applications, downtime can cause si
               
                 <span class="flex">
                   <a
+                    href="/CYBERTEC-pg-operator/certs/"
+                    class="gdoc-nav__entry"
+                  >
+                    Certificates
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
                     href="/CYBERTEC-pg-operator/tls/"
                     class="gdoc-nav__entry"
                   >
@@ -2316,10 +2337,186 @@ To minimise downtime: In modern, data-driven applications, downtime can cause si
               
                 <span class="flex">
                   <a
+                    href="/CYBERTEC-pg-operator/extensions/pg13/"
+                    class="gdoc-nav__entry"
+                  >
+                    PostgreSQL 13
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/extensions/pg14/"
+                    class="gdoc-nav__entry"
+                  >
+                    PostgreSQL 14
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/extensions/pg15/"
+                    class="gdoc-nav__entry"
+                  >
+                    PostgreSQL 15
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
                     href="/CYBERTEC-pg-operator/extensions/pg16/"
                     class="gdoc-nav__entry"
                   >
                     PostgreSQL 16
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/extensions/pg17/"
+                    class="gdoc-nav__entry"
+                  >
+                    PostgreSQL 17
                   </a>
                 </span>
               
@@ -3025,6 +3222,7 @@ To minimise downtime: In modern, data-driven applications, downtime can cause si
   <section class="gdoc-markdown__title">
     <h1>High Availability</h1>
   </section>
+
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
@@ -3066,9 +3264,27 @@ Why High Availability (HA) for PostgreSQL?</p>
 </div>
 <p>The necessary changes to a high-availability cluster are very limited.
 Only the number of desired instances needs to be increased.</p>
-<pre tabindex="0"><code>spec: 
-  numberOfInstances: 2 # or more
-</code></pre><p>The example above will create a HA-Cluster based on two Nodes.</p>
+<pre tabindex="0"><code>apiVersion: cpo.opensource.cybertec.at/v1
+kind: postgresql
+metadata:
+  name: cluster-1
+spec:
+  dockerImage: &#34;docker.io/cybertecpostgresql/cybertec-pg-container:postgres-16.4-1&#34;
+  numberOfInstances: 2
+  postgresql:
+    version: &#34;16&#34;
+  resources:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 500m
+      memory: 500Mi
+  volume:
+    size: 5Gi 
+</code></pre><p>You can either create a new cluster with the document or update an existing cluster with it.
+This makes it possible to scale the cluster up and down during operation.</p>
+<p>The example above will create a HA-Cluster based on two Nodes.</p>
 <pre tabindex="0"><code>kubectl get pods
 -----------------------------------------------------------------------------
 NAME                             | READY  | STATUS           | RESTARTS | AGE
@@ -3154,6 +3370,8 @@ cluster-1-1                      | 1/1    | Running          | 0        | 31s
         
 
         
+          
+        
 
         
         
@@ -3232,39 +3450,6 @@ cluster-1-1                      | 1/1    | Running          | 0        | 31s
   
 
   
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
   
     
 
@@ -3332,9 +3517,12 @@ cluster-1-1                      | 1/1    | Running          | 0        | 31s
     
 
   
+    
 
-        
+    
       
+    
+
     
       
       
@@ -3353,8 +3541,16 @@ cluster-1-1                      | 1/1    | Running          | 0        | 31s
         
 
         
+          
+        
 
         
+        
+      
+    
+
+  
+
         
       
     
@@ -4226,6 +4422,39 @@ cluster-1-1                      | 1/1    | Running          | 0        | 31s
         
 
         
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
 
         
         
@@ -4306,6 +4535,138 @@ cluster-1-1                      | 1/1    | Running          | 0        | 31s
   
 
   
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
   
     
 
@@ -4618,65 +4979,28 @@ cluster-1-1                      | 1/1    | Running          | 0        | 31s
       </main>
 
       <footer class="gdoc-footer">
-    <div class="gdoc-footer__wrapper">
-        <div class="gdoc-footer__line">
-            <div class="gdoc-footer__item">
-                <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg>
-                <a href="tel:+43 (0) 2622 93022-0" class="gdoc-footer__link no-wrap">+43 (0) 2622 93022-0</a>
-            </div>
-            <div class="gdoc-footer__item">
-                <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
-                <a href="mailto:office@cybertec-postgresql.com" class="gdoc-footer__link no-wrap">office@cybertec-postgresql.com</a>
-            </div>
-            <div class="gdoc-footer__item">
-                <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
-                <a href="https://www.cybertec-postgresql.com" class="gdoc-footer__link no-wrap" target="_blank" rel="noopener noreferrer">www.cybertec-postgresql.com</a>
-            </div>
-        </div>
+  <div class="gdoc-footer__wrapper">
+    <div class="gdoc-footer__line">
+      <div class="gdoc-footer__item">
+        <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg>
+        <a href="tel:+43 (0) 2622 93022-0" class="gdoc-footer__link no-wrap">+43 (0) 2622 93022-0</a>
+      </div>
+      <div class="gdoc-footer__item">
+        <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
+        <a href="mailto:office@cybertec-postgresql.com" class="gdoc-footer__link no-wrap">office@cybertec-postgresql.com</a>
+      </div>
+      <div class="gdoc-footer__item">
+        <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
+        <a href="https://www.cybertec-postgresql.com" class="gdoc-footer__link no-wrap" target="_blank" rel="noopener noreferrer">www.cybertec-postgresql.com</a>
+      </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  </div>
 </footer>
 
     </div>
 
     
-  <script defer src="/CYBERTEC-pg-operator/js/search-49cf88d4.bundle.min.js"></script>
+  <script defer src="/CYBERTEC-pg-operator/js/search-7db5e115.bundle.min.js"></script>
 
   </body>
 </html>

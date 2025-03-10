@@ -9,10 +9,10 @@
 <meta name="referrer" content="no-referrer" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="light dark" />
-<meta name="generator" content="Hugo 0.133.0">
+<meta name="generator" content="Hugo 0.143.1">
 
 
-  <meta name="description" content="postgresql Name Type required Description apiVersion string true acid.zalando.do/v1 kind string true metadata object true spec object true status object false spec Name Type required Description backup object false Enables the definition of a customised backup solution for the cluster teamId string true name of the team the cluster belongs to numberOfInstances Int true Number of nodes of the cluster dockerImages string false Define a custom image to override the default schedulerName string false Define a custom Name to override the default spiloRunAsUser string false Define an User id which should be used for the pods spiloRunAsGroup string false Define an Group id which should be used for the pods spiloFSGroup string false Persistent Volumes for the pods in the StatefulSet will be owned and writable by the group ID specified." />
+  <meta name="description" content=" postgresql Name Type required Description apiVersion string true acid.zalando.do/v1 kind string true metadata object true spec object true status object false spec Name Type required Description backup object false Enables the definition of a customised backup solution for the cluster teamId string true name of the team the cluster belongs to numberOfInstances Int true Number of nodes of the cluster dockerImages string false Define a custom image to override the default schedulerName string false Define a custom Name to override the default spiloRunAsUser string false Define an User id which should be used for the pods spiloRunAsGroup string false Define an Group id which should be used for the pods spiloFSGroup string false Persistent Volumes for the pods in the StatefulSet will be owned and writable by the group ID specified. enableMasterLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres primary enableMasterPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the primary ConnectionPooler enableReplicaLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres replicas enableReplicaPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the Replica-ConnectionPooler allowedSourceRange string false Defines the range of IP networks (in CIDR-notation). The corresponding load balancer is accessible only to the networks defined by this parameter. users map false a map of usernames to user flags for the users that should be created in the cluster by the operator usersWithSecretRotation list false list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally. usersWithInPlaceSecretRotation list false list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally. databases map false a map of databases that should be created in the cluster by the operator tolerations list false a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields: key, operator, value, effect and tolerationSeconds podPriorityClassName string false a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance podAnnotations map false A map of key value pairs that gets attached as annotations to each pod created for the database. ServiceAnnotations map false A map of key value pairs that gets attached as annotations to each Service created for the database. enableShmVolume boolean false Start a database pod without limitations on shm memory. By default Docker limit /dev/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation. enableConnectionPooler boolean false creates a ConnectionPooler for the primary Database enableReplicaConnectionPooler boolean false creates a ConnectionPooler for the replica Databases enableLogicalBackup boolean false Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest) logicalBackupSchedule string false Schedule for the logical backup K8s cron job. (Not for pgBackRest) additionalVolumes list false List of additional volumes to mount in each container of the statefulset pod. Each item must contain a name, mountPath, and volumeSource which is a kubernetes volumeSource. It allows you to mount existing PersistentVolumeClaims, ConfigMaps and Secrets inside the StatefulSet. back to parent" />
 
     <title>PostgreSQL | CYBERTEC-PG-Operator</title>
 
@@ -26,7 +26,6 @@
 <meta name="msapplication-config" content="/favicon/browserconfig.xml">
 <meta name="theme-color" content="#ffffff">
 
-
     
 
     
@@ -35,7 +34,7 @@
     content="PostgreSQL"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
-  <meta property="og:description" content="postgresql Name Type required Description apiVersion string true acid.zalando.do/v1 kind string true metadata object true spec object true status object false spec Name Type required Description backup object false Enables the definition of a customised backup solution for the cluster teamId string true name of the team the cluster belongs to numberOfInstances Int true Number of nodes of the cluster dockerImages string false Define a custom image to override the default schedulerName string false Define a custom Name to override the default spiloRunAsUser string false Define an User id which should be used for the pods spiloRunAsGroup string false Define an Group id which should be used for the pods spiloFSGroup string false Persistent Volumes for the pods in the StatefulSet will be owned and writable by the group ID specified." />
+  <meta property="og:description" content=" postgresql Name Type required Description apiVersion string true acid.zalando.do/v1 kind string true metadata object true spec object true status object false spec Name Type required Description backup object false Enables the definition of a customised backup solution for the cluster teamId string true name of the team the cluster belongs to numberOfInstances Int true Number of nodes of the cluster dockerImages string false Define a custom image to override the default schedulerName string false Define a custom Name to override the default spiloRunAsUser string false Define an User id which should be used for the pods spiloRunAsGroup string false Define an Group id which should be used for the pods spiloFSGroup string false Persistent Volumes for the pods in the StatefulSet will be owned and writable by the group ID specified. enableMasterLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres primary enableMasterPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the primary ConnectionPooler enableReplicaLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres replicas enableReplicaPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the Replica-ConnectionPooler allowedSourceRange string false Defines the range of IP networks (in CIDR-notation). The corresponding load balancer is accessible only to the networks defined by this parameter. users map false a map of usernames to user flags for the users that should be created in the cluster by the operator usersWithSecretRotation list false list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally. usersWithInPlaceSecretRotation list false list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally. databases map false a map of databases that should be created in the cluster by the operator tolerations list false a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields: key, operator, value, effect and tolerationSeconds podPriorityClassName string false a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance podAnnotations map false A map of key value pairs that gets attached as annotations to each pod created for the database. ServiceAnnotations map false A map of key value pairs that gets attached as annotations to each Service created for the database. enableShmVolume boolean false Start a database pod without limitations on shm memory. By default Docker limit /dev/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation. enableConnectionPooler boolean false creates a ConnectionPooler for the primary Database enableReplicaConnectionPooler boolean false creates a ConnectionPooler for the replica Databases enableLogicalBackup boolean false Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest) logicalBackupSchedule string false Schedule for the logical backup K8s cron job. (Not for pgBackRest) additionalVolumes list false List of additional volumes to mount in each container of the statefulset pod. Each item must contain a name, mountPath, and volumeSource which is a kubernetes volumeSource. It allows you to mount existing PersistentVolumeClaims, ConfigMaps and Secrets inside the StatefulSet. back to parent" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/" />
 
@@ -52,7 +51,7 @@
 
   <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="PostgreSQL" />
-  <meta name="twitter:description" content="postgresql Name Type required Description apiVersion string true acid.zalando.do/v1 kind string true metadata object true spec object true status object false spec Name Type required Description backup object false Enables the definition of a customised backup solution for the cluster teamId string true name of the team the cluster belongs to numberOfInstances Int true Number of nodes of the cluster dockerImages string false Define a custom image to override the default schedulerName string false Define a custom Name to override the default spiloRunAsUser string false Define an User id which should be used for the pods spiloRunAsGroup string false Define an Group id which should be used for the pods spiloFSGroup string false Persistent Volumes for the pods in the StatefulSet will be owned and writable by the group ID specified." />
+  <meta name="twitter:description" content=" postgresql Name Type required Description apiVersion string true acid.zalando.do/v1 kind string true metadata object true spec object true status object false spec Name Type required Description backup object false Enables the definition of a customised backup solution for the cluster teamId string true name of the team the cluster belongs to numberOfInstances Int true Number of nodes of the cluster dockerImages string false Define a custom image to override the default schedulerName string false Define a custom Name to override the default spiloRunAsUser string false Define an User id which should be used for the pods spiloRunAsGroup string false Define an Group id which should be used for the pods spiloFSGroup string false Persistent Volumes for the pods in the StatefulSet will be owned and writable by the group ID specified. enableMasterLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres primary enableMasterPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the primary ConnectionPooler enableReplicaLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres replicas enableReplicaPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the Replica-ConnectionPooler allowedSourceRange string false Defines the range of IP networks (in CIDR-notation). The corresponding load balancer is accessible only to the networks defined by this parameter. users map false a map of usernames to user flags for the users that should be created in the cluster by the operator usersWithSecretRotation list false list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally. usersWithInPlaceSecretRotation list false list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally. databases map false a map of databases that should be created in the cluster by the operator tolerations list false a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields: key, operator, value, effect and tolerationSeconds podPriorityClassName string false a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance podAnnotations map false A map of key value pairs that gets attached as annotations to each pod created for the database. ServiceAnnotations map false A map of key value pairs that gets attached as annotations to each Service created for the database. enableShmVolume boolean false Start a database pod without limitations on shm memory. By default Docker limit /dev/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation. enableConnectionPooler boolean false creates a ConnectionPooler for the primary Database enableReplicaConnectionPooler boolean false creates a ConnectionPooler for the replica Databases enableLogicalBackup boolean false Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest) logicalBackupSchedule string false Schedule for the logical backup K8s cron job. (Not for pgBackRest) additionalVolumes list false List of additional volumes to mount in each container of the statefulset pod. Each item must contain a name, mountPath, and volumeSource which is a kubernetes volumeSource. It allows you to mount existing PersistentVolumeClaims, ConfigMaps and Secrets inside the StatefulSet. back to parent" />
 
 
   <script type="application/ld+json">
@@ -63,7 +62,7 @@
       "name": "PostgreSQL",
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/",
       "headline": "PostgreSQL",
-      "description": "postgresql Name Type required Description apiVersion string true acid.zalando.do\/v1 kind string true metadata object true spec object true status object false spec Name Type required Description backup object false Enables the definition of a customised backup solution for the cluster teamId string true name of the team the cluster belongs to numberOfInstances Int true Number of nodes of the cluster dockerImages string false Define a custom image to override the default schedulerName string false Define a custom Name to override the default spiloRunAsUser string false Define an User id which should be used for the pods spiloRunAsGroup string false Define an Group id which should be used for the pods spiloFSGroup string false Persistent Volumes for the pods in the StatefulSet will be owned and writable by the group ID specified.",
+      "description": " postgresql Name Type required Description apiVersion string true acid.zalando.do\/v1 kind string true metadata object true spec object true status object false spec Name Type required Description backup object false Enables the definition of a customised backup solution for the cluster teamId string true name of the team the cluster belongs to numberOfInstances Int true Number of nodes of the cluster dockerImages string false Define a custom image to override the default schedulerName string false Define a custom Name to override the default spiloRunAsUser string false Define an User id which should be used for the pods spiloRunAsGroup string false Define an Group id which should be used for the pods spiloFSGroup string false Persistent Volumes for the pods in the StatefulSet will be owned and writable by the group ID specified. enableMasterLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres primary enableMasterPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the primary ConnectionPooler enableReplicaLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres replicas enableReplicaPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the Replica-ConnectionPooler allowedSourceRange string false Defines the range of IP networks (in CIDR-notation). The corresponding load balancer is accessible only to the networks defined by this parameter. users map false a map of usernames to user flags for the users that should be created in the cluster by the operator usersWithSecretRotation list false list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally. usersWithInPlaceSecretRotation list false list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally. databases map false a map of databases that should be created in the cluster by the operator tolerations list false a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields: key, operator, value, effect and tolerationSeconds podPriorityClassName string false a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance podAnnotations map false A map of key value pairs that gets attached as annotations to each pod created for the database. ServiceAnnotations map false A map of key value pairs that gets attached as annotations to each Service created for the database. enableShmVolume boolean false Start a database pod without limitations on shm memory. By default Docker limit \/dev\/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation. enableConnectionPooler boolean false creates a ConnectionPooler for the primary Database enableReplicaConnectionPooler boolean false creates a ConnectionPooler for the replica Databases enableLogicalBackup boolean false Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest) logicalBackupSchedule string false Schedule for the logical backup K8s cron job. (Not for pgBackRest) additionalVolumes list false List of additional volumes to mount in each container of the statefulset pod. Each item must contain a name, mountPath, and volumeSource which is a kubernetes volumeSource. It allows you to mount existing PersistentVolumeClaims, ConfigMaps and Secrets inside the StatefulSet. back to parent",
       "wordCount" : "801",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
@@ -92,17 +91,17 @@
 
 
     
-  <script src="/CYBERTEC-pg-operator/js/colortheme-5cd55a83.bundle.min.js"></script>
-<script src="/CYBERTEC-pg-operator/js/main-09678822.bundle.min.js"></script>
+  <script src="/CYBERTEC-pg-operator/js/colortheme-01ea3db1.bundle.min.js"></script>
+<script src="/CYBERTEC-pg-operator/js/main-2e274343.bundle.min.js"></script>
 
 <link
   rel="preload"
-  href="/CYBERTEC-pg-operator/main-c93819e1.min.css"
+  href="/CYBERTEC-pg-operator/main-4434ec39.min.css"
   as="style"
 />
 <link
   rel="stylesheet"
-  href="/CYBERTEC-pg-operator/main-c93819e1.min.css"
+  href="/CYBERTEC-pg-operator/main-4434ec39.min.css"
   media="all"
 />
 
@@ -723,7 +722,14 @@
               
             >
               
-                <span class="flex">The Project</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/project/project/"
+                    class="gdoc-nav__entry"
+                  >
+                    The Project
+                  </a>
+                </span>
               
               
             </label>
@@ -985,6 +991,56 @@
             <input
               type="checkbox"
               
+                class="gdoc-nav__toggle" id="navtree-53022c09"
+                
+              
+            />
+            <label
+              
+                for="navtree-53022c09" class="flex justify-between align-center"
+              
+            >
+              
+                <span class="flex">Documentation</span>
+              
+              
+                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_left">
+                  <use xlink:href="#gdoc_keyboard_arrow_left"></use>
+                </svg>
+                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_down">
+                  <use xlink:href="#gdoc_keyboard_arrow_down"></use>
+                </svg>
+              
+            </label>
+
+            
+              
+  
+
+
+  <ul class="gdoc-nav__list">
+    
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
                 class="hidden"
               
             />
@@ -992,10 +1048,68 @@
               
             >
               
-                <span class="flex">Documentation</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/documentation/operator/migratetonewapi/"
+                    class="gdoc-nav__entry"
+                  >
+                    Update to new API from previous Operator-Version
+                  </a>
+                </span>
               
               
             </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/documentation/examples/"
+                    class="gdoc-nav__entry"
+                  >
+                    Single Cluster
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+  </ul>
 
             
           </li>
@@ -1169,7 +1283,7 @@
               
                 <span class="flex">
                   <a
-                    href="/CYBERTEC-pg-operator/installation/installation/"
+                    href="/CYBERTEC-pg-operator/installation/install_operator/"
                     class="gdoc-nav__entry"
                   >
                     Install CPO
@@ -2074,6 +2188,50 @@
               
                 <span class="flex">
                   <a
+                    href="/CYBERTEC-pg-operator/certs/"
+                    class="gdoc-nav__entry"
+                  >
+                    Certificates
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
                     href="/CYBERTEC-pg-operator/tls/"
                     class="gdoc-nav__entry"
                   >
@@ -2313,10 +2471,186 @@
               
                 <span class="flex">
                   <a
+                    href="/CYBERTEC-pg-operator/extensions/pg13/"
+                    class="gdoc-nav__entry"
+                  >
+                    PostgreSQL 13
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/extensions/pg14/"
+                    class="gdoc-nav__entry"
+                  >
+                    PostgreSQL 14
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/extensions/pg15/"
+                    class="gdoc-nav__entry"
+                  >
+                    PostgreSQL 15
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
                     href="/CYBERTEC-pg-operator/extensions/pg16/"
                     class="gdoc-nav__entry"
                   >
                     PostgreSQL 16
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/extensions/pg17/"
+                    class="gdoc-nav__entry"
+                  >
+                    PostgreSQL 17
                   </a>
                 </span>
               
@@ -3033,7 +3367,7 @@
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-
+    
     <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="postgresql"
     >
@@ -3044,52 +3378,52 @@
     </a>
 </div>
 <div class="table-wrap"> <table>
-<thead>
-<tr>
-<th>Name</th>
-<th style="text-align:center">Type</th>
-<th style="text-align:right">required</th>
-<th style="text-align:right">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>apiVersion</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">true</td>
-<td style="text-align:right">acid.zalando.do/v1</td>
-</tr>
-<tr>
-<td>kind</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">true</td>
-<td style="text-align:right"></td>
-</tr>
-<tr>
-<td>metadata</td>
-<td style="text-align:center">object</td>
-<td style="text-align:right">true</td>
-<td style="text-align:right"></td>
-</tr>
-<tr>
-<td><a
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>apiVersion</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">acid.zalando.do/v1</td>
+      </tr>
+      <tr>
+          <td>kind</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right"></td>
+      </tr>
+      <tr>
+          <td>metadata</td>
+          <td style="text-align: center">object</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right"></td>
+      </tr>
+      <tr>
+          <td><a
   class="gdoc-markdown__link"
   href="#spec"
 >spec</a></td>
-<td style="text-align:center">object</td>
-<td style="text-align:right">true</td>
-<td style="text-align:right"></td>
-</tr>
-<tr>
-<td><a
+          <td style="text-align: center">object</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right"></td>
+      </tr>
+      <tr>
+          <td><a
   class="gdoc-markdown__link"
   href="#status"
 >status</a></td>
-<td style="text-align:center">object</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right"></td>
-</tr>
-</tbody>
+          <td style="text-align: center">object</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right"></td>
+      </tr>
+  </tbody>
 </table> </div>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
@@ -3102,187 +3436,187 @@
     </a>
 </div>
 <div class="table-wrap"> <table>
-<thead>
-<tr>
-<th>Name</th>
-<th style="text-align:center">Type</th>
-<th style="text-align:right">required</th>
-<th style="text-align:right">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a
   class="gdoc-markdown__link"
   href="#backup"
 >backup</a></td>
-<td style="text-align:center">object</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Enables the definition of a customised backup solution for the cluster</td>
-</tr>
-<tr>
-<td>teamId</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">true</td>
-<td style="text-align:right">name of the team the cluster belongs to</td>
-</tr>
-<tr>
-<td>numberOfInstances</td>
-<td style="text-align:center">Int</td>
-<td style="text-align:right">true</td>
-<td style="text-align:right">Number of nodes of the cluster</td>
-</tr>
-<tr>
-<td>dockerImages</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Define a custom image to override the default</td>
-</tr>
-<tr>
-<td>schedulerName</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Define a custom Name to override the default</td>
-</tr>
-<tr>
-<td>spiloRunAsUser</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Define an User id which should be used for the pods</td>
-</tr>
-<tr>
-<td>spiloRunAsGroup</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Define an Group id which should be used for the pods</td>
-</tr>
-<tr>
-<td>spiloFSGroup</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Persistent Volumes for the pods in the StatefulSet will be owned and writable by the group ID specified.</td>
-</tr>
-<tr>
-<td>enableMasterLoadBalancer</td>
-<td style="text-align:center">boolean</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Define whether to enable the load balancer pointing to the Postgres primary</td>
-</tr>
-<tr>
-<td>enableMasterPoolerLoadBalancer</td>
-<td style="text-align:center">boolean</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Define whether to enable the load balancer pointing to the primary ConnectionPooler</td>
-</tr>
-<tr>
-<td>enableReplicaLoadBalancer</td>
-<td style="text-align:center">boolean</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Define whether to enable the load balancer pointing to the Postgres replicas</td>
-</tr>
-<tr>
-<td>enableReplicaPoolerLoadBalancer</td>
-<td style="text-align:center">boolean</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Define whether to enable the load balancer pointing to the Replica-ConnectionPooler</td>
-</tr>
-<tr>
-<td>allowedSourceRange</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Defines the range of IP networks (in CIDR-notation). The corresponding load balancer is accessible only to the networks defined by this parameter.</td>
-</tr>
-<tr>
-<td>users</td>
-<td style="text-align:center">map</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">a map of usernames to user flags for the users that should be created in the cluster by the operator</td>
-</tr>
-<tr>
-<td>usersWithSecretRotation</td>
-<td style="text-align:center">list</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally.</td>
-</tr>
-<tr>
-<td>usersWithInPlaceSecretRotation</td>
-<td style="text-align:center">list</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally.</td>
-</tr>
-<tr>
-<td>databases</td>
-<td style="text-align:center">map</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">a map of databases that should be created in the cluster by the operator</td>
-</tr>
-<tr>
-<td>tolerations</td>
-<td style="text-align:center">list</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields:</td>
-</tr>
-<tr>
-<td>key, operator, value, effect and tolerationSeconds</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>podPriorityClassName</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance</td>
-</tr>
-<tr>
-<td>podAnnotations</td>
-<td style="text-align:center">map</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">A map of key value pairs that gets attached as annotations to each pod created for the database.</td>
-</tr>
-<tr>
-<td>ServiceAnnotations</td>
-<td style="text-align:center">map</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">A map of key value pairs that gets attached as annotations to each Service created for the database.</td>
-</tr>
-<tr>
-<td>enableShmVolume</td>
-<td style="text-align:center">boolean</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Start a database pod without limitations on shm memory. By default Docker limit /dev/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation.</td>
-</tr>
-<tr>
-<td>enableConnectionPooler</td>
-<td style="text-align:center">boolean</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">creates a ConnectionPooler for the primary Database</td>
-</tr>
-<tr>
-<td>enableReplicaConnectionPooler</td>
-<td style="text-align:center">boolean</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">creates a ConnectionPooler for the replica Databases</td>
-</tr>
-<tr>
-<td>enableLogicalBackup</td>
-<td style="text-align:center">boolean</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest)</td>
-</tr>
-<tr>
-<td>logicalBackupSchedule</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Schedule for the logical backup K8s cron job.  (Not for pgBackRest)</td>
-</tr>
-<tr>
-<td>additionalVolumes</td>
-<td style="text-align:center">list</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">List of additional volumes to mount in each container of the statefulset pod. Each item must contain a name, mountPath, and volumeSource which is a kubernetes volumeSource. It allows you to mount existing PersistentVolumeClaims, ConfigMaps and Secrets inside the StatefulSet.</td>
-</tr>
-</tbody>
+          <td style="text-align: center">object</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Enables the definition of a customised backup solution for the cluster</td>
+      </tr>
+      <tr>
+          <td>teamId</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">name of the team the cluster belongs to</td>
+      </tr>
+      <tr>
+          <td>numberOfInstances</td>
+          <td style="text-align: center">Int</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Number of nodes of the cluster</td>
+      </tr>
+      <tr>
+          <td>dockerImages</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Define a custom image to override the default</td>
+      </tr>
+      <tr>
+          <td>schedulerName</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Define a custom Name to override the default</td>
+      </tr>
+      <tr>
+          <td>spiloRunAsUser</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Define an User id which should be used for the pods</td>
+      </tr>
+      <tr>
+          <td>spiloRunAsGroup</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Define an Group id which should be used for the pods</td>
+      </tr>
+      <tr>
+          <td>spiloFSGroup</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Persistent Volumes for the pods in the StatefulSet will be owned and writable by the group ID specified.</td>
+      </tr>
+      <tr>
+          <td>enableMasterLoadBalancer</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Define whether to enable the load balancer pointing to the Postgres primary</td>
+      </tr>
+      <tr>
+          <td>enableMasterPoolerLoadBalancer</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Define whether to enable the load balancer pointing to the primary ConnectionPooler</td>
+      </tr>
+      <tr>
+          <td>enableReplicaLoadBalancer</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Define whether to enable the load balancer pointing to the Postgres replicas</td>
+      </tr>
+      <tr>
+          <td>enableReplicaPoolerLoadBalancer</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Define whether to enable the load balancer pointing to the Replica-ConnectionPooler</td>
+      </tr>
+      <tr>
+          <td>allowedSourceRange</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Defines the range of IP networks (in CIDR-notation). The corresponding load balancer is accessible only to the networks defined by this parameter.</td>
+      </tr>
+      <tr>
+          <td>users</td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">a map of usernames to user flags for the users that should be created in the cluster by the operator</td>
+      </tr>
+      <tr>
+          <td>usersWithSecretRotation</td>
+          <td style="text-align: center">list</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally.</td>
+      </tr>
+      <tr>
+          <td>usersWithInPlaceSecretRotation</td>
+          <td style="text-align: center">list</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally.</td>
+      </tr>
+      <tr>
+          <td>databases</td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">a map of databases that should be created in the cluster by the operator</td>
+      </tr>
+      <tr>
+          <td>tolerations</td>
+          <td style="text-align: center">list</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields:</td>
+      </tr>
+      <tr>
+          <td>key, operator, value, effect and tolerationSeconds</td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>podPriorityClassName</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance</td>
+      </tr>
+      <tr>
+          <td>podAnnotations</td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">A map of key value pairs that gets attached as annotations to each pod created for the database.</td>
+      </tr>
+      <tr>
+          <td>ServiceAnnotations</td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">A map of key value pairs that gets attached as annotations to each Service created for the database.</td>
+      </tr>
+      <tr>
+          <td>enableShmVolume</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Start a database pod without limitations on shm memory. By default Docker limit /dev/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation.</td>
+      </tr>
+      <tr>
+          <td>enableConnectionPooler</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">creates a ConnectionPooler for the primary Database</td>
+      </tr>
+      <tr>
+          <td>enableReplicaConnectionPooler</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">creates a ConnectionPooler for the replica Databases</td>
+      </tr>
+      <tr>
+          <td>enableLogicalBackup</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest)</td>
+      </tr>
+      <tr>
+          <td>logicalBackupSchedule</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Schedule for the logical backup K8s cron job.  (Not for pgBackRest)</td>
+      </tr>
+      <tr>
+          <td>additionalVolumes</td>
+          <td style="text-align: center">list</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">List of additional volumes to mount in each container of the statefulset pod. Each item must contain a name, mountPath, and volumeSource which is a kubernetes volumeSource. It allows you to mount existing PersistentVolumeClaims, ConfigMaps and Secrets inside the StatefulSet.</td>
+      </tr>
+  </tbody>
 </table> </div>
 <p><a
   class="gdoc-markdown__link"
@@ -3299,25 +3633,25 @@
     </a>
 </div>
 <div class="table-wrap"> <table>
-<thead>
-<tr>
-<th>Name</th>
-<th style="text-align:center">Type</th>
-<th style="text-align:right">required</th>
-<th style="text-align:right">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a
   class="gdoc-markdown__link"
   href="#pgbackrest"
 >pgbackrest</a></td>
-<td style="text-align:center">object</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Enables the definition of a pgbackrest-setup for the cluster</td>
-</tr>
-</tbody>
+          <td style="text-align: center">object</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster</td>
+      </tr>
+  </tbody>
 </table> </div>
 <p><a
   class="gdoc-markdown__link"
@@ -3334,52 +3668,52 @@
     </a>
 </div>
 <div class="table-wrap"> <table>
-<thead>
-<tr>
-<th>Name</th>
-<th style="text-align:center">Type</th>
-<th style="text-align:right">required</th>
-<th style="text-align:right">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a
   class="gdoc-markdown__link"
   href="#configuration"
 >configuration</a></td>
-<td style="text-align:center">object</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Enables the definition of a pgbackrest-setup for the cluster</td>
-</tr>
-<tr>
-<td>global</td>
-<td style="text-align:center">object</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right"></td>
-</tr>
-<tr>
-<td>image</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">true</td>
-<td style="text-align:right"></td>
-</tr>
-<tr>
-<td><a
+          <td style="text-align: center">object</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster</td>
+      </tr>
+      <tr>
+          <td>global</td>
+          <td style="text-align: center">object</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right"></td>
+      </tr>
+      <tr>
+          <td>image</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right"></td>
+      </tr>
+      <tr>
+          <td><a
   class="gdoc-markdown__link"
   href="#repos"
 >repos</a></td>
-<td style="text-align:center">array</td>
-<td style="text-align:right">true</td>
-<td style="text-align:right"></td>
-</tr>
-<tr>
-<td>resources:</td>
-<td style="text-align:center">object</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Resource definition (limits.cpu, limits.memory &amp; requests.cpu &amp; requests.memory)</td>
-</tr>
-</tbody>
+          <td style="text-align: center">array</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right"></td>
+      </tr>
+      <tr>
+          <td>resources:</td>
+          <td style="text-align: center">object</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Resource definition (limits.cpu, limits.memory &amp; requests.cpu &amp; requests.memory)</td>
+      </tr>
+  </tbody>
 </table> </div>
 <p><a
   class="gdoc-markdown__link"
@@ -3396,31 +3730,31 @@
     </a>
 </div>
 <div class="table-wrap"> <table>
-<thead>
-<tr>
-<th>Name</th>
-<th style="text-align:center">Type</th>
-<th style="text-align:right">required</th>
-<th style="text-align:right">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>secret</td>
-<td style="text-align:center">object</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Secretname with the contained S3 credentials (AccessKey &amp; SecretAccessKey) (Note: must be placed in the same namespace as the cluster)</td>
-</tr>
-<tr>
-<td><a
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>secret</td>
+          <td style="text-align: center">object</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Secretname with the contained S3 credentials (AccessKey &amp; SecretAccessKey) (Note: must be placed in the same namespace as the cluster)</td>
+      </tr>
+      <tr>
+          <td><a
   class="gdoc-markdown__link"
   href="#protection"
 >protection</a></td>
-<td style="text-align:center">object</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Enable Protection-Options</td>
-</tr>
-</tbody>
+          <td style="text-align: center">object</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Enable Protection-Options</td>
+      </tr>
+  </tbody>
 </table> </div>
 <p><a
   class="gdoc-markdown__link"
@@ -3437,22 +3771,22 @@
     </a>
 </div>
 <div class="table-wrap"> <table>
-<thead>
-<tr>
-<th>Name</th>
-<th style="text-align:center">Type</th>
-<th style="text-align:right">required</th>
-<th style="text-align:right">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>restore</td>
-<td style="text-align:center">boolean</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">A restore is ignored as long as this option is set to true.</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>restore</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">A restore is ignored as long as this option is set to true.</td>
+      </tr>
+  </tbody>
 </table> </div>
 <p><a
   class="gdoc-markdown__link"
@@ -3469,55 +3803,55 @@
     </a>
 </div>
 <div class="table-wrap"> <table>
-<thead>
-<tr>
-<th>Name</th>
-<th style="text-align:center">Type</th>
-<th style="text-align:right">required</th>
-<th style="text-align:right">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>name</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">true</td>
-<td style="text-align:right">Name of the repository Required:Repo[1-4]</td>
-</tr>
-<tr>
-<td>storage</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">true</td>
-<td style="text-align:right">Defines the used backup-storage (Choose from List: pvc,s3,blob,gcs)</td>
-</tr>
-<tr>
-<td>resource</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">true</td>
-<td style="text-align:right">Bucket-/Instance-/Storage- or PVC-Name</td>
-</tr>
-<tr>
-<td>endpoint</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">The Endpoint for the choosen Storage (Not required for local storage)</td>
-</tr>
-<tr>
-<td>region</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Region for the choosen Storage (S3 only)</td>
-</tr>
-<tr>
-<td><a
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>name</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Name of the repository Required:Repo[1-4]</td>
+      </tr>
+      <tr>
+          <td>storage</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Defines the used backup-storage (Choose from List: pvc,s3,blob,gcs)</td>
+      </tr>
+      <tr>
+          <td>resource</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Bucket-/Instance-/Storage- or PVC-Name</td>
+      </tr>
+      <tr>
+          <td>endpoint</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">The Endpoint for the choosen Storage (Not required for local storage)</td>
+      </tr>
+      <tr>
+          <td>region</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Region for the choosen Storage (S3 only)</td>
+      </tr>
+      <tr>
+          <td><a
   class="gdoc-markdown__link"
   href="#schedule"
 >schedule</a></td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Object for defining automatic backups</td>
-</tr>
-</tbody>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Object for defining automatic backups</td>
+      </tr>
+  </tbody>
 </table> </div>
 <p><a
   class="gdoc-markdown__link"
@@ -3534,34 +3868,34 @@
     </a>
 </div>
 <div class="table-wrap"> <table>
-<thead>
-<tr>
-<th>Name</th>
-<th style="text-align:center">Type</th>
-<th style="text-align:right">required</th>
-<th style="text-align:right">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>full</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">(Cron-Syntax) 	Define full backup</td>
-</tr>
-<tr>
-<td>incr</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">(Cron-Syntax) 	Define incremental backup</td>
-</tr>
-<tr>
-<td>diff</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">(Cron-Syntax) 	Define differential backup</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>full</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">(Cron-Syntax) 	Define full backup</td>
+      </tr>
+      <tr>
+          <td>incr</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">(Cron-Syntax) 	Define incremental backup</td>
+      </tr>
+      <tr>
+          <td>diff</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">(Cron-Syntax) 	Define differential backup</td>
+      </tr>
+  </tbody>
 </table> </div>
 <p><a
   class="gdoc-markdown__link"
@@ -3578,22 +3912,22 @@
     </a>
 </div>
 <div class="table-wrap"> <table>
-<thead>
-<tr>
-<th>Name</th>
-<th style="text-align:center">Type</th>
-<th style="text-align:right">required</th>
-<th style="text-align:right">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PostgresClusterStatus</td>
-<td style="text-align:center">string</td>
-<td style="text-align:right">false</td>
-<td style="text-align:right">Shows the cluster status. Filled by the Operator</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>PostgresClusterStatus</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Shows the cluster status. Filled by the Operator</td>
+      </tr>
+  </tbody>
 </table> </div>
 <p><a
   class="gdoc-markdown__link"
@@ -3679,142 +4013,6 @@
         
 
         
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
           
         
 
@@ -3858,61 +4056,6 @@
 
   
 
-        
-      
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
         
       
     
@@ -4053,147 +4196,6 @@
 
         
       
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
     
       
       
@@ -4350,39 +4352,6 @@
         
 
         
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
 
         
         
@@ -4391,129 +4360,6 @@
   
 
   
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
   
     
 
@@ -4743,6 +4589,603 @@
         
 
         
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
 
         
         
@@ -4823,6 +5266,138 @@
   
 
   
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
   
     
 
@@ -5143,65 +5718,28 @@
       </main>
 
       <footer class="gdoc-footer">
-    <div class="gdoc-footer__wrapper">
-        <div class="gdoc-footer__line">
-            <div class="gdoc-footer__item">
-                <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg>
-                <a href="tel:+43 (0) 2622 93022-0" class="gdoc-footer__link no-wrap">+43 (0) 2622 93022-0</a>
-            </div>
-            <div class="gdoc-footer__item">
-                <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
-                <a href="mailto:office@cybertec-postgresql.com" class="gdoc-footer__link no-wrap">office@cybertec-postgresql.com</a>
-            </div>
-            <div class="gdoc-footer__item">
-                <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
-                <a href="https://www.cybertec-postgresql.com" class="gdoc-footer__link no-wrap" target="_blank" rel="noopener noreferrer">www.cybertec-postgresql.com</a>
-            </div>
-        </div>
+  <div class="gdoc-footer__wrapper">
+    <div class="gdoc-footer__line">
+      <div class="gdoc-footer__item">
+        <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg>
+        <a href="tel:+43 (0) 2622 93022-0" class="gdoc-footer__link no-wrap">+43 (0) 2622 93022-0</a>
+      </div>
+      <div class="gdoc-footer__item">
+        <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
+        <a href="mailto:office@cybertec-postgresql.com" class="gdoc-footer__link no-wrap">office@cybertec-postgresql.com</a>
+      </div>
+      <div class="gdoc-footer__item">
+        <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
+        <a href="https://www.cybertec-postgresql.com" class="gdoc-footer__link no-wrap" target="_blank" rel="noopener noreferrer">www.cybertec-postgresql.com</a>
+      </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  </div>
 </footer>
 
     </div>
 
     
-  <script defer src="/CYBERTEC-pg-operator/js/search-49cf88d4.bundle.min.js"></script>
+  <script defer src="/CYBERTEC-pg-operator/js/search-7db5e115.bundle.min.js"></script>
 
   </body>
 </html>

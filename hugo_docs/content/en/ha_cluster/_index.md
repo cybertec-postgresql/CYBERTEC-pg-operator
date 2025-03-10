@@ -25,9 +25,28 @@ The necessary changes to a high-availability cluster are very limited.
 Only the number of desired instances needs to be increased. 
 
 ```
-spec: 
-  numberOfInstances: 2 # or more
+apiVersion: cpo.opensource.cybertec.at/v1
+kind: postgresql
+metadata:
+  name: cluster-1
+spec:
+  dockerImage: "docker.io/cybertecpostgresql/cybertec-pg-container:postgres-16.4-1"
+  numberOfInstances: 2
+  postgresql:
+    version: "16"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 500m
+      memory: 500Mi
+  volume:
+    size: 5Gi 
 ```
+
+You can either create a new cluster with the document or update an existing cluster with it. 
+This makes it possible to scale the cluster up and down during operation.
 
 The example above will create a HA-Cluster based on two Nodes.
 ```

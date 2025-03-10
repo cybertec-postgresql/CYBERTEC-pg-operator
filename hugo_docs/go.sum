@@ -1,2 +1,2 @@
-github.com/cybertec-postgresql/hugo_documentation v0.0.0-20240820094526-f80a0f588162 h1:bxIK7LsYGZ8OiZT2gXN/g4eYA/2Yojm1iGUvs5OCGpw=
-github.com/cybertec-postgresql/hugo_documentation v0.0.0-20240820094526-f80a0f588162/go.mod h1:lsngyShfzG2j8HGWCrLPiPDKsFAWP1bjXheMUTu+IfU=
+github.com/cybertec-postgresql/hugo-geekdoc v0.0.0-20250130133505-d46e0dcc47c7 h1:l2xJB771iUIMN0zU1NKfFVqgnS0bQRFdCkVJhxVX7r4=
+github.com/cybertec-postgresql/hugo-geekdoc v0.0.0-20250130133505-d46e0dcc47c7/go.mod h1:y+YYT9rdvbhqlFG8MvkmuP8A8Z2+WkraYEdLghEZLbs=

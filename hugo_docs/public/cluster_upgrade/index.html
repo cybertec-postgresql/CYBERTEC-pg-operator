@@ -9,12 +9,12 @@
 <meta name="referrer" content="no-referrer" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="light dark" />
-<meta name="generator" content="Hugo 0.133.0">
+<meta name="generator" content="Hugo 0.143.1">
 
 
   <meta name="description" content="CPO enables the use of the in-place upgrade, which makes it possible to upgrade a cluster to a new PG major. For this purpose, pg_upgrade is used in the background.
 PAY ATTENTION: Note that an in-place upgrade generates both a pod restore in the form of a rolling update and an operational interruption of the cluster during the actual execution of the restore.
-How does the upgrade work? Preconditions: Pod restart - Use the rolling update strategy to replace all pods based on the new ENV PGVERSION with the version you want to update to." />
+How does the upgrade work? Preconditions: Pod restart - Use the rolling update strategy to replace all pods based on the new ENV PGVERSION with the version you want to update to. Check - Check that the new PGVERSION is larger than the previously used one. Check whether the new PGVERSION is larger than the previously used one and the maintenance mode of the cluster must be deactivated. In addition, the replicas should not have a high lag. Preliminary checks use initdb to prepare a new data_dir (data_new) based on the new PGVERSION. check the upgrade possibility with pg_upgrade --check HINT: If one of the steps is aborted, a cleanup is performed" />
 
     <title>Major-Upgrade | CYBERTEC-PG-Operator</title>
 
@@ -28,7 +28,6 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
 <meta name="msapplication-config" content="/favicon/browserconfig.xml">
 <meta name="theme-color" content="#ffffff">
 
-
     
 
     
@@ -39,7 +38,7 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
   <meta property="og:description" content="CPO enables the use of the in-place upgrade, which makes it possible to upgrade a cluster to a new PG major. For this purpose, pg_upgrade is used in the background.
 PAY ATTENTION: Note that an in-place upgrade generates both a pod restore in the form of a rolling update and an operational interruption of the cluster during the actual execution of the restore.
-How does the upgrade work? Preconditions: Pod restart - Use the rolling update strategy to replace all pods based on the new ENV PGVERSION with the version you want to update to." />
+How does the upgrade work? Preconditions: Pod restart - Use the rolling update strategy to replace all pods based on the new ENV PGVERSION with the version you want to update to. Check - Check that the new PGVERSION is larger than the previously used one. Check whether the new PGVERSION is larger than the previously used one and the maintenance mode of the cluster must be deactivated. In addition, the replicas should not have a high lag. Preliminary checks use initdb to prepare a new data_dir (data_new) based on the new PGVERSION. check the upgrade possibility with pg_upgrade --check HINT: If one of the steps is aborted, a cleanup is performed" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/cluster_upgrade/" />
 
@@ -58,7 +57,7 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
 <meta name="twitter:title" content="Major-Upgrade" />
   <meta name="twitter:description" content="CPO enables the use of the in-place upgrade, which makes it possible to upgrade a cluster to a new PG major. For this purpose, pg_upgrade is used in the background.
 PAY ATTENTION: Note that an in-place upgrade generates both a pod restore in the form of a rolling update and an operational interruption of the cluster during the actual execution of the restore.
-How does the upgrade work? Preconditions: Pod restart - Use the rolling update strategy to replace all pods based on the new ENV PGVERSION with the version you want to update to." />
+How does the upgrade work? Preconditions: Pod restart - Use the rolling update strategy to replace all pods based on the new ENV PGVERSION with the version you want to update to. Check - Check that the new PGVERSION is larger than the previously used one. Check whether the new PGVERSION is larger than the previously used one and the maintenance mode of the cluster must be deactivated. In addition, the replicas should not have a high lag. Preliminary checks use initdb to prepare a new data_dir (data_new) based on the new PGVERSION. check the upgrade possibility with pg_upgrade --check HINT: If one of the steps is aborted, a cleanup is performed" />
 
 
   <script type="application/ld+json">
@@ -69,7 +68,7 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
       "name": "Major-Upgrade",
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/cluster_upgrade/",
       "headline": "Major-Upgrade",
-      "description": "CPO enables the use of the in-place upgrade, which makes it possible to upgrade a cluster to a new PG major. For this purpose, pg_upgrade is used in the background.\nPAY ATTENTION: Note that an in-place upgrade generates both a pod restore in the form of a rolling update and an operational interruption of the cluster during the actual execution of the restore.\nHow does the upgrade work? Preconditions: Pod restart - Use the rolling update strategy to replace all pods based on the new ENV PGVERSION with the version you want to update to.",
+      "description": "CPO enables the use of the in-place upgrade, which makes it possible to upgrade a cluster to a new PG major. For this purpose, pg_upgrade is used in the background.\nPAY ATTENTION: Note that an in-place upgrade generates both a pod restore in the form of a rolling update and an operational interruption of the cluster during the actual execution of the restore.\nHow does the upgrade work? Preconditions: Pod restart - Use the rolling update strategy to replace all pods based on the new ENV PGVERSION with the version you want to update to. Check - Check that the new PGVERSION is larger than the previously used one. Check whether the new PGVERSION is larger than the previously used one and the maintenance mode of the cluster must be deactivated. In addition, the replicas should not have a high lag. Preliminary checks use initdb to prepare a new data_dir (data_new) based on the new PGVERSION. check the upgrade possibility with pg_upgrade --check HINT: If one of the steps is aborted, a cleanup is performed",
       "wordCount" : "457",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
@@ -98,17 +97,17 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
 
 
     
-  <script src="/CYBERTEC-pg-operator/js/colortheme-5cd55a83.bundle.min.js"></script>
-<script src="/CYBERTEC-pg-operator/js/main-09678822.bundle.min.js"></script>
+  <script src="/CYBERTEC-pg-operator/js/colortheme-01ea3db1.bundle.min.js"></script>
+<script src="/CYBERTEC-pg-operator/js/main-2e274343.bundle.min.js"></script>
 
 <link
   rel="preload"
-  href="/CYBERTEC-pg-operator/main-c93819e1.min.css"
+  href="/CYBERTEC-pg-operator/main-4434ec39.min.css"
   as="style"
 />
 <link
   rel="stylesheet"
-  href="/CYBERTEC-pg-operator/main-c93819e1.min.css"
+  href="/CYBERTEC-pg-operator/main-4434ec39.min.css"
   media="all"
 />
 
@@ -729,7 +728,14 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
               
             >
               
-                <span class="flex">The Project</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/project/project/"
+                    class="gdoc-nav__entry"
+                  >
+                    The Project
+                  </a>
+                </span>
               
               
             </label>
@@ -991,6 +997,56 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
             <input
               type="checkbox"
               
+                class="gdoc-nav__toggle" id="navtree-53022c09"
+                
+              
+            />
+            <label
+              
+                for="navtree-53022c09" class="flex justify-between align-center"
+              
+            >
+              
+                <span class="flex">Documentation</span>
+              
+              
+                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_left">
+                  <use xlink:href="#gdoc_keyboard_arrow_left"></use>
+                </svg>
+                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_down">
+                  <use xlink:href="#gdoc_keyboard_arrow_down"></use>
+                </svg>
+              
+            </label>
+
+            
+              
+  
+
+
+  <ul class="gdoc-nav__list">
+    
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
                 class="hidden"
               
             />
@@ -998,10 +1054,68 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
               
             >
               
-                <span class="flex">Documentation</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/documentation/operator/migratetonewapi/"
+                    class="gdoc-nav__entry"
+                  >
+                    Update to new API from previous Operator-Version
+                  </a>
+                </span>
               
               
             </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/documentation/examples/"
+                    class="gdoc-nav__entry"
+                  >
+                    Single Cluster
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+  </ul>
 
             
           </li>
@@ -1175,7 +1289,7 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
               
                 <span class="flex">
                   <a
-                    href="/CYBERTEC-pg-operator/installation/installation/"
+                    href="/CYBERTEC-pg-operator/installation/install_operator/"
                     class="gdoc-nav__entry"
                   >
                     Install CPO
@@ -2080,6 +2194,50 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
               
                 <span class="flex">
                   <a
+                    href="/CYBERTEC-pg-operator/certs/"
+                    class="gdoc-nav__entry"
+                  >
+                    Certificates
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
                     href="/CYBERTEC-pg-operator/tls/"
                     class="gdoc-nav__entry"
                   >
@@ -2319,10 +2477,186 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
               
                 <span class="flex">
                   <a
+                    href="/CYBERTEC-pg-operator/extensions/pg13/"
+                    class="gdoc-nav__entry"
+                  >
+                    PostgreSQL 13
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/extensions/pg14/"
+                    class="gdoc-nav__entry"
+                  >
+                    PostgreSQL 14
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/extensions/pg15/"
+                    class="gdoc-nav__entry"
+                  >
+                    PostgreSQL 15
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
                     href="/CYBERTEC-pg-operator/extensions/pg16/"
                     class="gdoc-nav__entry"
                   >
                     PostgreSQL 16
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/extensions/pg17/"
+                    class="gdoc-nav__entry"
+                  >
+                    PostgreSQL 17
                   </a>
                 </span>
               
@@ -3028,13 +3362,13 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
   <section class="gdoc-markdown__title">
     <h1>Major-Upgrade</h1>
   </section>
+
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
     <p>CPO enables the use of the in-place upgrade, which makes it possible to upgrade a cluster to a new PG major. For this purpose, pg_upgrade is used in the background.</p>
 <blockquote>
-<p><strong><em>PAY ATTENTION:</em></strong>  Note that an in-place upgrade generates both a pod restore in the form of a rolling update and an operational interruption of the cluster during the actual execution of the restore.</p>
-</blockquote>
+<p><strong><em>PAY ATTENTION:</em></strong>  Note that an in-place upgrade generates both a pod restore in the form of a rolling update and an operational interruption of the cluster during the actual execution of the restore.</p></blockquote>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="how-does-the-upgrade-work"
     >
@@ -3072,8 +3406,7 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
 <li>check the upgrade possibility with <code>pg_upgrade --check</code></li>
 </ol>
 <blockquote>
-<p><strong><em>HINT:</em></strong>  If one of the steps is aborted, a cleanup is performed</p>
-</blockquote>
+<p><strong><em>HINT:</em></strong>  If one of the steps is aborted, a cleanup is performed</p></blockquote>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h3 id="prepare-the-upgrade"
     >
@@ -3103,8 +3436,7 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
 <li>Call pg_upgrade -k to start the Upgrade</li>
 </ol>
 <blockquote>
-<p><strong><em>ATTENTION</em></strong> if the process failed, we need to rollback, if it was sucessful we&rsquo;re reaching the point of no return</p>
-</blockquote>
+<p><strong><em>ATTENTION</em></strong> if the process failed, we need to rollback, if it was sucessful we&rsquo;re reaching the point of no return</p></blockquote>
 <ol start="2">
 <li>Rename the directories. <code>data -&gt; data_old</code> and <code>data_new -&gt; data</code></li>
 <li>Update the Patroni.config (<code>postgres.yml</code>)</li>
@@ -3239,142 +3571,6 @@ If you choosse a not allowed value, you will give an error and if you decrease t
         
 
         
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
           
         
 
@@ -3418,61 +3614,6 @@ If you choosse a not allowed value, you will give an error and if you decrease t
 
   
 
-        
-      
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
         
       
     
@@ -3613,147 +3754,6 @@ If you choosse a not allowed value, you will give an error and if you decrease t
 
         
       
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
     
       
       
@@ -3910,39 +3910,6 @@ If you choosse a not allowed value, you will give an error and if you decrease t
         
 
         
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
 
         
         
@@ -3951,129 +3918,6 @@ If you choosse a not allowed value, you will give an error and if you decrease t
   
 
   
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
   
     
 
@@ -4303,6 +4147,603 @@ If you choosse a not allowed value, you will give an error and if you decrease t
         
 
         
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
 
         
         
@@ -4383,6 +4824,138 @@ If you choosse a not allowed value, you will give an error and if you decrease t
   
 
   
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
   
     
 
@@ -4707,65 +5280,28 @@ If you choosse a not allowed value, you will give an error and if you decrease t
       </main>
 
       <footer class="gdoc-footer">
-    <div class="gdoc-footer__wrapper">
-        <div class="gdoc-footer__line">
-            <div class="gdoc-footer__item">
-                <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg>
-                <a href="tel:+43 (0) 2622 93022-0" class="gdoc-footer__link no-wrap">+43 (0) 2622 93022-0</a>
-            </div>
-            <div class="gdoc-footer__item">
-                <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
-                <a href="mailto:office@cybertec-postgresql.com" class="gdoc-footer__link no-wrap">office@cybertec-postgresql.com</a>
-            </div>
-            <div class="gdoc-footer__item">
-                <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
-                <a href="https://www.cybertec-postgresql.com" class="gdoc-footer__link no-wrap" target="_blank" rel="noopener noreferrer">www.cybertec-postgresql.com</a>
-            </div>
-        </div>
+  <div class="gdoc-footer__wrapper">
+    <div class="gdoc-footer__line">
+      <div class="gdoc-footer__item">
+        <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg>
+        <a href="tel:+43 (0) 2622 93022-0" class="gdoc-footer__link no-wrap">+43 (0) 2622 93022-0</a>
+      </div>
+      <div class="gdoc-footer__item">
+        <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
+        <a href="mailto:office@cybertec-postgresql.com" class="gdoc-footer__link no-wrap">office@cybertec-postgresql.com</a>
+      </div>
+      <div class="gdoc-footer__item">
+        <svg class="gdoc-footer__item__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
+        <a href="https://www.cybertec-postgresql.com" class="gdoc-footer__link no-wrap" target="_blank" rel="noopener noreferrer">www.cybertec-postgresql.com</a>
+      </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  </div>
 </footer>
 
     </div>
 
     
-  <script defer src="/CYBERTEC-pg-operator/js/search-49cf88d4.bundle.min.js"></script>
+  <script defer src="/CYBERTEC-pg-operator/js/search-7db5e115.bundle.min.js"></script>
 
   </body>
 </html>

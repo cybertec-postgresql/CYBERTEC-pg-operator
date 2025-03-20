@@ -21,9 +21,9 @@ git clone https://github.com/$GITHUB_USER/CYBERTEC-operator-tutorials.git
 cd CYBERTEC-operator-tutorials
 ```
 
-### CPO-Registry
+### Helm-Registry
 
-
+helm repo add cpo https://cybertec-postgresql.github.io/CYBERTEC-operator-tutorials
 ### Create Namespace
 
 ```

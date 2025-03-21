@@ -128,14 +128,7 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec cpov1.Postgresq
 		passwordEncryption = "scram-sha-256"
 	}
 	if pgSpec.Spec.Monitoring != nil {
-		flg := cpov1.UserFlags{constants.RoleFlagLogin}
-		if pgSpec.Spec.Users != nil {
-			pgSpec.Spec.Users[monitorUsername] = flg
-		} else {
-			users := make(map[string]cpov1.UserFlags)
-			pgSpec.Spec.Users = users
-			pgSpec.Spec.Users[monitorUsername] = flg
-		}
+		pgSpec.AddMonitoringUser(monitorUsername)
 	}
 	cluster := &Cluster{
 		Config:         cfg,
@@ -961,22 +954,12 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 			updateFailed = true
 		}
 	}
-	//Add monitoring user if required
-	if newSpec.Spec.Monitoring != nil {
-		flags := []string{constants.RoleFlagLogin}
-		monitorUser := map[string]spec.PgUser{
-			monitorUsername: {
-				Origin:    spec.RoleOriginInfrastructure,
-				Name:      monitorUsername,
-				Namespace: c.Namespace,
-				Flags:     flags,
-			},
-		}
-		c.pgUsers[monitorUsername] = monitorUser[monitorUsername]
-	}
 	//Check if monitoring user is added in manifest
 	if _, ok := newSpec.Spec.Users["cpo-exporter"]; ok {
 		c.logger.Error("creating user of name cpo-exporter is not allowed as it is reserved for monitoring")
+		updateFailed = true
+	} else if newSpec.Spec.Monitoring != nil {
+		newSpec.AddMonitoringUser(monitorUsername)
 	}
 
 	// Users

@@ -12,9 +12,9 @@
 <meta name="generator" content="Hugo 0.145.0">
 
 
-  <meta name="description" content=" additionalVolumes: - name: empty mountPath: /opt/empty targetContainers: - all volumeSource: emptyDir: {} # - name: data # mountPath: /home/postgres/pgdata/partitions # targetContainers: # - postgres # volumeSource: # PersistentVolumeClaim: # claimName: pvc-postgresql-data-partitions # readyOnly: false # - name: conf # mountPath: /etc/telegraf # subPath: telegraf.conf # targetContainers: # - telegraf-sidecar # volumeSource: # configMap: # name: my-config-map " />
+  <meta name="description" content="Multisite is a function specially developed for Patroni that makes it possible to combine two separate Patroni clusters into a common cluster unit. ‘Separate’ in this context means that the clusters run independently of each other and can even be located on different Kubernetes clusters. With Multisite, both clusters benefit from the well-known Patroni features such as automatic failover and demotion of members, resulting in a significant extension compared to a conventional standby cluster. This feature significantly improves high availability and redundancy by managing multiple geographically or infrastructurally separated clusters as one logical unit. This allows one cluster to seamlessly transition to another in the event of a failure without having to rely on manual switchovers or third-party replication solutions." />
 
-    <title>Additional Volumes | CYBERTEC-PG-Operator</title>
+    <title>Multisite | CYBERTEC-PG-Operator</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/CYBERTEC-pg-operator/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/CYBERTEC-pg-operator/favicon/favicon-32x32.png">
@@ -31,14 +31,14 @@
     
   <meta
     property="og:title"
-    content="Additional Volumes"
+    content="Multisite"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
-  <meta property="og:description" content=" additionalVolumes: - name: empty mountPath: /opt/empty targetContainers: - all volumeSource: emptyDir: {} # - name: data # mountPath: /home/postgres/pgdata/partitions # targetContainers: # - postgres # volumeSource: # PersistentVolumeClaim: # claimName: pvc-postgresql-data-partitions # readyOnly: false # - name: conf # mountPath: /etc/telegraf # subPath: telegraf.conf # targetContainers: # - telegraf-sidecar # volumeSource: # configMap: # name: my-config-map " />
+  <meta property="og:description" content="Multisite is a function specially developed for Patroni that makes it possible to combine two separate Patroni clusters into a common cluster unit. ‘Separate’ in this context means that the clusters run independently of each other and can even be located on different Kubernetes clusters. With Multisite, both clusters benefit from the well-known Patroni features such as automatic failover and demotion of members, resulting in a significant extension compared to a conventional standby cluster. This feature significantly improves high availability and redundancy by managing multiple geographically or infrastructurally separated clusters as one logical unit. This allows one cluster to seamlessly transition to another in the event of a failure without having to rely on manual switchovers or third-party replication solutions." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/customize_cluster/additional-volumes/" />
+<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/multisite/" />
 
-<meta property="article:section" content="Customize Cluster" />
+<meta property="article:section" content="Multisite" />
     <meta
       property="article:published_time"
       content="2023-12-28T14:26:51+01:00"
@@ -50,25 +50,25 @@
 
 
   <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Additional Volumes" />
-  <meta name="twitter:description" content=" additionalVolumes: - name: empty mountPath: /opt/empty targetContainers: - all volumeSource: emptyDir: {} # - name: data # mountPath: /home/postgres/pgdata/partitions # targetContainers: # - postgres # volumeSource: # PersistentVolumeClaim: # claimName: pvc-postgresql-data-partitions # readyOnly: false # - name: conf # mountPath: /etc/telegraf # subPath: telegraf.conf # targetContainers: # - telegraf-sidecar # volumeSource: # configMap: # name: my-config-map " />
+<meta name="twitter:title" content="Multisite" />
+  <meta name="twitter:description" content="Multisite is a function specially developed for Patroni that makes it possible to combine two separate Patroni clusters into a common cluster unit. ‘Separate’ in this context means that the clusters run independently of each other and can even be located on different Kubernetes clusters. With Multisite, both clusters benefit from the well-known Patroni features such as automatic failover and demotion of members, resulting in a significant extension compared to a conventional standby cluster. This feature significantly improves high availability and redundancy by managing multiple geographically or infrastructurally separated clusters as one logical unit. This allows one cluster to seamlessly transition to another in the event of a failure without having to rely on manual switchovers or third-party replication solutions." />
 
 
   <script type="application/ld+json">
   {
       "@context": "http://schema.org",
       "@type": "TechArticle",
-      "articleSection": "Customize Cluster",
-      "name": "Additional Volumes",
-      "url" : "http://localhost:1313/CYBERTEC-pg-operator/customize_cluster/additional-volumes/",
-      "headline": "Additional Volumes",
-      "description": " additionalVolumes: - name: empty mountPath: \/opt\/empty targetContainers: - all volumeSource: emptyDir: {} # - name: data # mountPath: \/home\/postgres\/pgdata\/partitions # targetContainers: # - postgres # volumeSource: # PersistentVolumeClaim: # claimName: pvc-postgresql-data-partitions # readyOnly: false # - name: conf # mountPath: \/etc\/telegraf # subPath: telegraf.conf # targetContainers: # - telegraf-sidecar # volumeSource: # configMap: # name: my-config-map ",
-      "wordCount" : "56",
+      "articleSection": "Multisite",
+      "name": "Multisite",
+      "url" : "http://localhost:1313/CYBERTEC-pg-operator/multisite/",
+      "headline": "Multisite",
+      "description": "Multisite is a function specially developed for Patroni that makes it possible to combine two separate Patroni clusters into a common cluster unit. ‘Separate’ in this context means that the clusters run independently of each other and can even be located on different Kubernetes clusters. With Multisite, both clusters benefit from the well-known Patroni features such as automatic failover and demotion of members, resulting in a significant extension compared to a conventional standby cluster. This feature significantly improves high availability and redundancy by managing multiple geographically or infrastructurally separated clusters as one logical unit. This allows one cluster to seamlessly transition to another in the event of a failure without having to rely on manual switchovers or third-party replication solutions.",
+      "wordCount" : "3649",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "http://localhost:1313/CYBERTEC-pg-operator/customize_cluster/additional-volumes/"
+          "@id": "http://localhost:1313/CYBERTEC-pg-operator/multisite/"
       },
       "copyrightHolder" : "CYBERTEC-PG-Operator",
       "copyrightYear" : "2023",
@@ -137,7 +137,7 @@
   href="/CYBERTEC-pg-operator/custom.css"
   media="all"
 />
-  <link href="http://localhost:1313/CYBERTEC-pg-operator/customize_cluster/additional-volumes/" rel="canonical" type="text/html" />
+  <link href="http://localhost:1313/CYBERTEC-pg-operator/multisite/" rel="canonical" type="text/html" />
 
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
@@ -1409,7 +1409,7 @@
               type="checkbox"
               
                 class="gdoc-nav__toggle" id="navtree-64ca4a20"
-                checked
+                
               
             />
             <label
@@ -1512,7 +1512,7 @@
                 <span class="flex">
                   <a
                     href="/CYBERTEC-pg-operator/customize_cluster/additional-volumes/"
-                    class="gdoc-nav__entry is-active"
+                    class="gdoc-nav__entry"
                   >
                     Additional Volumes
                   </a>
@@ -2461,7 +2461,7 @@
                 <span class="flex">
                   <a
                     href="/CYBERTEC-pg-operator/multisite/"
-                    class="gdoc-nav__entry"
+                    class="gdoc-nav__entry is-active"
                   >
                     Multisite
                   </a>
@@ -3059,15 +3059,7 @@
     
   
   
-    
-    
-    
-    
-  
-  
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/customize_cluster/' href='/CYBERTEC-pg-operator/customize_cluster/'><span itemprop='name'>Customize Cluster</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Additional Volumes</span><meta itemprop='position' content='4' /></li>
-  
-
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Multisite</span><meta itemprop='position' content='3' /></li>
   
 
   
@@ -3080,36 +3072,609 @@
 
 
   <section class="gdoc-markdown__title">
-    <h1>Additional Volumes</h1>
+    <h1>Multisite</h1>
   </section>
+
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    
-    <pre tabindex="0"><code>  additionalVolumes:
-    - name: empty
-      mountPath: /opt/empty
-      targetContainers:
-        - all
-      volumeSource:
-        emptyDir: {}
-#    - name: data
-#      mountPath: /home/postgres/pgdata/partitions
-#      targetContainers:
-#        - postgres
-#      volumeSource:
-#        PersistentVolumeClaim:
-#          claimName: pvc-postgresql-data-partitions
-#          readyOnly: false
-#    - name: conf
-#      mountPath: /etc/telegraf
-#      subPath: telegraf.conf
-#      targetContainers:
-#        - telegraf-sidecar
-#      volumeSource:
-#        configMap:
-#          name: my-config-map
-</code></pre>
+    <p>Multisite is a function specially developed for Patroni that makes it possible to combine two separate Patroni clusters into a common cluster unit. ‘Separate’ in this context means that the clusters run independently of each other and can even be located on different Kubernetes clusters.
+With Multisite, both clusters benefit from the well-known Patroni features such as automatic failover and demotion of members, resulting in a significant extension compared to a conventional standby cluster.
+This feature significantly improves high availability and redundancy by managing multiple geographically or infrastructurally separated clusters as one logical unit. This allows one cluster to seamlessly transition to another in the event of a failure without having to rely on manual switchovers or third-party replication solutions.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="prerequisites"
+    >
+        Prerequisites
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/multisite/#prerequisites" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Prerequisites" aria-label="Anchor to: Prerequisites" href="#prerequisites">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>In order to set up the multisite PostgreSQL operator you will need the following:</p>
+<ul>
+<li>Two or more Kubernetes or OpenShift clusters (also possible with bare metal or VMs)
+<ul>
+<li>Kubernetes version 1.25+, OpenShift version 4.12+.</li>
+<li>Support for defining LoadBalancer services with external IP addresses that are accessible from the other cluster(s).</li>
+<li>Persistent volumes with must be available (only ReadWriteOnce capability is needed).</li>
+</ul>
+</li>
+<li>A separate VM or Kubernetes/OpenShift cluster to provide quorum (if using less then three Kubernetes or OpenShift clusters).
+<ul>
+<li>For high availability there should not be a shared point of failure between the quorum and the two Kubernetes clusters.</li>
+<li>VM or a LoadBalancer IP must be accessible on ports 2379/2380 to the two other clusters.</li>
+<li>2 vCPU and 2 GB of memory and 20GB of persistent storage is needed for the quorum site.</li>
+</ul>
+</li>
+<li>Set up etcd cluster with 3 sites accessible from each of the sites. etcd needs to support API version 3.</li>
+<li>For backups an object storage system with S3 compatible API is needed. Minio, Ceph and major cloud provider object storages are known to work.</li>
+</ul>
+
+
+
+
+
+<blockquote class="gdoc-hint important">
+  <div class="gdoc-hint__title flex align-center"><i class="fa important" title="Important"></i></div>
+  <div class="gdoc-hint__text">An additional etcd is set up for Multisite, which spans the Kubernetes or Openshift clusters and must contain the quorum.</div>
+</blockquote>
+
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="architecture"
+    >
+        Architecture
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/multisite/#architecture" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Architecture" aria-label="Anchor to: Architecture" href="#architecture">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Helm based deployment of the multisite operator contains two helm charts, postgres-operator and postgres-cluster. The first is used to deploy the operator and associated objects to a single Kubernetes cluster. The operator is responsible for managing PostgreSQL clusters based on Custom Resource Definitions (CRDs) of type postgresqls/pg.</p>
+<p><img
+  src="/images/k8s-entities.png"
+  alt="Kubernetes entities"
+  
+/></p>
+<p>The diagram contains in green the Helm charts that are used to deploy operator and clusters, in blue the objects
+deployed by the operator helm chart and in gold the objects deployed by the cluster chart.</p>
+<p>Operator helm chart deployed objects have the following purposes:</p>
+<ul>
+<li><code>deployments/postgres-operator</code> - Deployment for the operator itself.</li>
+<li><code>opconfig/postgres-operator</code> - Operator configuration parameters that are read on operator startup. These apply to
+all clusters managed by this operator.</li>
+<li><code>crd/operatorconfigurations.cpo.opensource.cybertec.at</code> - Schema for the operator configuration.</li>
+<li><code>clusterrole/postgres-operator</code> - Defines the Kubernetes API resource access used by the operator. Assigned to
+postgres-operator service account.</li>
+<li><code>clusterrole/postgres-pod</code> - The Kubernetes API access needed by database pods. Access is needed to access leader
+status, config and other things. This is assigned to postgres-pod service account used by database pods.</li>
+<li><code>crd/postgresqls.cpo.opensource.cybertec.at</code> - Schema for PostgreSQL cluster definitions.</li>
+<li><code>clusterrole/postgres-operator:users:{admin,edit,view}</code> - If <code>rbac.createAggregateClusterRoles</code> is set then user
+facing roles are added for accessing the postgresqls CRDs.</li>
+</ul>
+<p>The cluster chart creates an instance of postgresqls CRD, which will be called cluster manifest from here on. When this
+cluster manifest is created operator will create the needed resources for the cluster. These include:</p>
+<ul>
+<li>
+<p><code>statefulset/$clustername</code> - StatefulSet is responsible for creating and managing database pods and their associated
+PersistentVolumeClaims for storing the databases. Each database pod will run internally an instance of Patroni
+process, which will coordinate over the Kubernetes API initialization of the database, startup, leader election
+and other control plane actions.</p>
+</li>
+<li>
+<p><code>service/$clustername</code>,<code>endpoints/$clustername</code> - The main access point for users accessing the database. When load
+balancer is enabled in the CRD or multisite mode is enabled, this service will be set to be a LoadBalancer service and
+accessible from outside the Kubernetes cluster. The service is created without a selector. Instead, for leader
+elections database pods will update the IP address of this endpoint to point to the current leader.</p>
+<p>The endpoint also holds annotations that determine the duration of the leader lease.</p>
+<p>In multicluster operation mode the standby site leader will be in read-only mode.</p>
+</li>
+<li>
+<p><code>service/$clustername-repl</code> - Service that points to non-leader (read-only) instances of the database cluster.</p>
+</li>
+<li>
+<p><code>service/$clustername-config</code> - A headless service with an endpoint that holds Patroni configuration in annotations.</p>
+</li>
+<li>
+<p><code>poddisruptionbudget/postgres-$clustername-pdb</code> - A pod disruption budget that does not allow Kubernetes to shut
+down pods in leader role. On some Kubernetes clusters <code>kubernetes.enable_pod_disruption_budgets</code> may need to be
+turned off to allow nodes to be drained for upgrades.</p>
+</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="multisite-mode"
+    >
+        Multisite mode
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/multisite/#multisite-mode" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Multisite mode" aria-label="Anchor to: Multisite mode" href="#multisite-mode">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>In multisite operation mode there are multiple independent Kubernetes clusters with operators capable of independent
+operation. To coordinate which site has the current leader process the database pods use a shared etcd cluster to
+store a leader lease.</p>
+<p><img
+  src="multisite-interaction.png"
+  alt="Multisite interactions"
+  
+/></p>
+<p>During bootstrap the first site to acquire the leader lease gets to initialize the database contents. Secondary
+sites are configured to replicate from primary site using Patroni&rsquo;s standby_cluster mechanism.</p>
+<p>To be able to communicate between Kubernetes clusters a LoadBalancer service is needed. For this the operator
+automatically turns the primary service of the cluster to be of kind LoadBalancer. Operator will wait for an
+external IP address to be assigned to this service and passes this information to the database pod. The leader of
+each site, whether primary or standby site, will periodically advertise the externally visible IP address for their
+site in etcd. Based on this the standby site can configure the standby cluster mechanism to replicate from primary
+site.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="deployment"
+    >
+        Deployment
+    </h2>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/multisite/#deployment" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Deployment" aria-label="Anchor to: Deployment" href="#deployment">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>In multisite mode postgres-operator can manage a replicated PostgreSQL cluster that is deployed across multiple
+Kubernetes clusters. Multisite operation can be turned on on a cluster by cluster basis, or can be configured to
+default to on for all cluster managed by a single operator.</p>
+<p>Setting up a GR deployment consists of the following steps:</p>
+<ol>
+<li>Creating a shared etcd cluster.</li>
+<li>Configuring multisite operation parameters for the postgres-operator.</li>
+<li>Creating a multisite enabled cluster.</li>
+</ol>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="etcd-deployment"
+    >
+        Etcd deployment
+    </h2>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/multisite/#etcd-deployment" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Etcd deployment" aria-label="Anchor to: Etcd deployment" href="#etcd-deployment">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Multisite operation mode requires an etcd cluster to achieve consensus on which site gets to accept write
+transactions. This functionality is critical to avoid situations where multiple site accept incompatible writes that
+cannot be reconciliated, also known as a split brain scenario.</p>
+<p>A highly available etcd cluster consists of an odd number of nodes, at least 3. It is very important that a quorum
+of etcd instances (for 3 node clusters, any two instances) do not share a single point of failure. Otherwise the
+write availability of database clusters is limited to this single point of failure. Effectively this means that to
+protect 3 node etcd clusters from whole site failure, any site can only contain 1 etcd node and there needs to be
+at least 3 sites.</p>
+<p>Postgres-operator is agnostic to the exact method of etcd setup, but for ease of use there is a
+<a
+  class="gdoc-markdown__link"
+  href="https://github.com/cybertec-postgresql/ansible-hpe/tree/main/etcd-helm"
+>Helm chart packaged</a> that demonstrates the
+setup.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="example-etcd-setup"
+    >
+        Example etcd setup
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/multisite/#example-etcd-setup" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Example etcd setup" aria-label="Anchor to: Example etcd setup" href="#example-etcd-setup">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>This example uses one etcd instance deployed outside Kubernetes cluster as quorum. This etcd needs to be started
+with the following configuration. Note that IP address that is advertised must be routed to the host that runs this
+etcd.</p>
+<pre tabindex="0"><code>ETCD_NAME=quorum
+ETCD_INITIAL_CLUSTER=quorum=http://10.100.1.100:2380
+ETCD_INITIAL_ADVERTISE_PEER_URLS=http://10.100.1.100:2380
+ETCD_INITIAL_CLUSTER_TOKEN=hpe_etcd
+ETCD_ADVERTISE_CLIENT_URLS=http://10.100.1.100:2379
+ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+</code></pre><p>Kubernetes clusters can then be joined to this node. This needs to be a two step process as typically the externally
+visible IP address or port is not known before creating the LoadBalancer service. For this first create a free standing
+loadbalancer service that will be overwritten by the Helm chart.</p>
+<pre tabindex="0"><code>helm template global-etcd ./etcd-helm/ -f etcd-helm/site_a.yaml \
+| awk &#39;/service.yaml/{flag=1;next}/---/{flag=0}flag&#39; \
+| kubectl apply -f -
+</code></pre><p>Then check what external IP address the load balancer service got assigned to it.</p>
+<pre tabindex="0"><code>$ kubectl get svc -l app.kubernetes.io/instance=global-etcd
+NAME                    TYPE           CLUSTER-IP       EXTERNAL-IP      PORT(S)                         AGE
+global-etcd-etcd-helm   LoadBalancer   10.109.171.146   10.200.1.101     2379:32488/TCP,2380:30336/TCP   17h
+</code></pre><p>And set in the values for the helm chart:</p>
+<ol>
+<li>Unique name of the site.</li>
+<li>Externally visible IP address of this service</li>
+<li>IP address of existing etcd service.</li>
+<li>Peer list that includes both existing and to be added etcd instance.</li>
+</ol>
+<p>Example:</p>
+<pre tabindex="0"><code>site:
+  name: site_a
+  host: 10.100.2.101
+
+etcd:
+  existing_etcd_cluster_hostname: 10.100.1.100
+  token: hpe_etcd
+  state: existing
+  peers:
+  #Peers should only include working peers and the current one
+  - quorum=http://10.100.1.100:2380
+  - site_a_etcd0=http://10.100.2.101:2380
+  client_port: 2379
+  peer_port: 2380
+</code></pre><p>Then install the helm chart:</p>
+<pre tabindex="0"><code>helm install global-etcd ./etcd-helm/ -f etcd-helm/site_a.yaml
+</code></pre><p>This then needs to be repeated for the other site.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="configuring-operator-for-multisite-operations"
+    >
+        Configuring operator for multisite operations
+    </h2>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/multisite/#configuring-operator-for-multisite-operations" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Configuring operator for multisite operations" aria-label="Anchor to: Configuring operator for multisite operations" href="#configuring-operator-for-multisite-operations">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Multisite operation needs at a minimum the configuration options <code>multisite.etcd_host</code>, <code>multisite.site</code>
+and <code>multisite.enabled</code>. All of them can be configured either in operator configuration or per cluster.</p>
+<p><code>multisite.etcd_host</code> needs to point at the global etcd. The port is currently assumed to be 2379. Normally
+all clusters under one operator would be using the same etcd clusters, so it makes sense to configure it
+in the operator configuration. At runtime database pods will discover the whole etcd cluster member list
+and will also take notice of any membership changes. It is enough to use local etcd instance service name
+here.</p>
+<p><code>multisite.site</code> is a unique identifier for this site. It will be prefixed to globally advertised database pod names
+to distinguish them from pods in other sites. This also makes sense in the operator configuration.</p>
+<p><code>multisite.enabled</code> turns of the multisite behavior. Typically it would make sense to control this at the
+cluster level, but the default could be turned on globally.</p>
+<p>These parameters are exposed in Helm chart values file as <code>configMultisite.*</code>.</p>
+<p>Example config:</p>
+<pre tabindex="0"><code>$ kubectl get opconfig/postgres-operator -o yaml | grep multisite -B1 -A3
+  min_instances: -1
+  multisite:
+    etcd_host: global-etcd-etcd-helm.default.svc.cluster.local
+    site: s1
+  postgres_pod_resources:
+</code></pre><p>This needs to be repeated with a different site name in the second Kubernetes cluster.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="creating-a-multisite-enabled-postgres-cluster"
+    >
+        Creating a multisite enabled postgres cluster
+    </h2>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/multisite/#creating-a-multisite-enabled-postgres-cluster" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Creating a multisite enabled postgres cluster" aria-label="Anchor to: Creating a multisite enabled postgres cluster" href="#creating-a-multisite-enabled-postgres-cluster">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>If the operator is configured for multisite operation then creating a multisite cluster only needs
+enabling of the multisite mode.</p>
+<p>Here is an example values file to use for creating multisite enabled clusters:</p>
+<pre tabindex="0"><code>apiVersion: cpo.opensource.cybertec.at/v1
+kind: postgresql
+metadata:
+  name: multisite-cluster
+  namespace: cpo
+  labels:
+    app.kubernetes.io/name: postgres-cluster
+    app.kubernetes.io/instance: multisite-cluster 
+spec:
+  dockerImage: docker.io/cybertecpostgresql/cybertec-pg-container:postgres-multisite-17.4-1
+  numberOfInstances: 1
+  postgresql:
+    version: &#39;17&#39;
+  resources:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 500m
+      memory: 500Mi
+  teamId: acid
+  volume:
+    size: 5Gi
+  patroni:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    multisite:
+      enable: true
+</code></pre><p>There is no coordination needed between creating the two or more sites and they can use identical
+configuration. The clusters need to be in the same namespace and have the same name to be considered
+the same cluster. The first cluster to boot up will acquire multisite leader status and will bootstrap
+the database. The other clusters will automatically fetch a copy from the leader cluster and start
+replicating.</p>
+<p>Multisite operation needs that the database cluster are capable of communicating with each other.
+To do this a load balancer service is created in each cluster for the cluster leader. The operator
+then waits for an external IP to be assigned and injects it into the database pods to be used for
+advertising their identity.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="observing-operations"
+    >
+        Observing operations
+    </h2>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/multisite/#observing-operations" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Observing operations" aria-label="Anchor to: Observing operations" href="#observing-operations">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>If database pods have not been created, the first place to check for information is operator logs. Operator logs can
+be checked with the following command (add &ndash;follow if you want to observe in real-time):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl logs <span style="color:#66d9ef">$(</span>kubectl get po -l <span style="color:#e6db74">&#39;app.kubernetes.io/name=postgres-operator&#39;</span> -o name<span style="color:#66d9ef">)</span>
+</span></span></code></pre></div><p>The logs for a successful cluster creation look like this</p>
+<pre tabindex="0"><code>time=&#34;2023-02-22T15:24:12Z&#34; level=info msg=&#34;ADD event has been queued&#34; cluster-name=cpo/multisite-cluster pkg=controller worker=1
+time=&#34;2023-02-22T15:24:12Z&#34; level=info msg=&#34;creating a new Postgres cluster&#34; cluster-name=cpo/multisite-cluster pkg=controller worker=1
+time=&#34;2023-02-22T15:24:12Z&#34; level=warning msg=&#34;master is not running, generated master endpoint does not contain any addresses&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:12Z&#34; level=info msg=&#34;endpoint \&#34;cpo/multisite-cluster\&#34; has been successfully created&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:12Z&#34; level=debug msg=&#34;final load balancer source ranges as seen in a service spec (not necessarily applied): [\&#34;0.0.0.0/0\&#34;]&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:12Z&#34; level=info msg=&#34;master service \&#34;cpo/multisite-cluster\&#34; has been successfully created&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:12Z&#34; level=info msg=&#34;replica service \&#34;cpo/multisite-cluster-repl\&#34; has been successfully created&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:12Z&#34; level=debug msg=&#34;team API is disabled&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:12Z&#34; level=debug msg=&#34;team API is disabled&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:12Z&#34; level=info msg=&#34;users have been initialized&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:12Z&#34; level=info msg=&#34;syncing secrets&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:12Z&#34; level=debug msg=&#34;created new secret cpo/postgres.multisite-cluster.credentials.postgresql.cpo.opensource.cybertec.at, namespace: default, uid: 75ded2eb-a2c9-4968-a1d7-50d2996baeb3&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:13Z&#34; level=debug msg=&#34;created new secret cpo/standby.multisite-cluster.credentials.postgresql.cpo.opensource.cybertec.at, namespace: default, uid: 45a2560a-65a8-4bd5-954f-34d80d8a1894&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:13Z&#34; level=info msg=&#34;secrets have been successfully created&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:13Z&#34; level=info msg=&#34;pod disruption budget \&#34;cpo/postgres-multisite-cluster-pdb\&#34; has been successfully created&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:13Z&#34; level=info msg=&#34;waiting for load balancer IP to be assigned&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:13Z&#34; level=debug msg=&#34;created new statefulset \&#34;cpo/multisite-cluster\&#34;, uid: \&#34;b83647ea-17f6-40aa-aa0c-b1111e76cdc0\&#34;&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:13Z&#34; level=info msg=&#34;statefulset \&#34;cpo/multisite-cluster\&#34; has been successfully created&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:13Z&#34; level=info msg=&#34;waiting for the cluster being ready&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:16Z&#34; level=debug msg=&#34;Waiting for 1 pods to become ready&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=info msg=&#34;pods are ready&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=info msg=&#34;Create roles&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=debug msg=&#34;closing database connection&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=info msg=&#34;users have been successfully created&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=debug msg=&#34;closing database connection&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=info msg=&#34;databases have been successfully created&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=info msg=&#34;found pod disruption budget: \&#34;cpo/postgres-multisite-cluster-pdb\&#34; (uid: \&#34;986a0118-83e7-4736-9843-ec80c0ea9270\&#34;)&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=info msg=&#34;found statefulset: \&#34;cpo/multisite-cluster\&#34; (uid: \&#34;b83647ea-17f6-40aa-aa0c-b1111e76cdc0\&#34;)&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=info msg=&#34;found secret: \&#34;cpo/postgres.multisite-cluster.credentials.postgresql.cpo.opensource.cybertec.at\&#34; (uid: \&#34;75ded2eb-a2c9-4968-a1d7-50d2996baeb3\&#34;) namesapce: default&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=info msg=&#34;found secret: \&#34;cpo/standby.multisite-cluster.credentials.postgresql.cpo.opensource.cybertec.at\&#34; (uid: \&#34;45a2560a-65a8-4bd5-954f-34d80d8a1894\&#34;) namesapce: default&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=info msg=&#34;found master endpoint: \&#34;cpo/multisite-cluster\&#34; (uid: \&#34;d9f7870e-dd51-4a88-a36a-1c2eb258a31c\&#34;)&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=info msg=&#34;found master service: \&#34;cpo/multisite-cluster\&#34; (uid: \&#34;4b30df50-ca53-4def-8171-b792c4eefc17\&#34;)&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=info msg=&#34;found replica service: \&#34;cpo/multisite-cluster-repl\&#34; (uid: \&#34;a77c3a49-3eea-4b6b-92b1-032e13d78f02\&#34;)&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=info msg=&#34;found pod: \&#34;cpo/multisite-cluster-0\&#34; (uid: \&#34;9b31d378-c9eb-4c1a-8637-e78933187ed7\&#34;)&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=info msg=&#34;found PVC: \&#34;cpo/pgdata-multisite-cluster-0\&#34; (uid: \&#34;03e66572-27ed-42b4-87bd-825d32131d36\&#34;)&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=debug msg=&#34;syncing connection pooler (master, replica) from (false, nil) to (false, false)&#34; cluster-name=cpo/multisite-cluster pkg=cluster worker=1
+time=&#34;2023-02-22T15:24:28Z&#34; level=info msg=&#34;cluster has been created&#34; cluster-name=cpo/multisite-cluster pkg=controller worker=1
+</code></pre><p>When database pods have been created, then Patroni logs can be checked from the pod logs:</p>
+<pre tabindex="0"><code>kubectl logs multisite-cluster-0
+</code></pre><p>Successful start of first database pod will have amongst other output the following lines:</p>
+<pre tabindex="0"><code>. . .
+# Kubernetes API access
+2023-02-22 15:24:21,061 INFO: Selected new K8s API server endpoint https://192.168.49.2:8443
+. . .
+# Set ourselves as multisite leader
+2023-02-22 15:24:21,218 INFO: Selected new etcd server http://192.168.50.101:2379
+2023-02-22 15:24:21,348 INFO: Running multisite consensus.
+2023-02-22 15:24:21,349 INFO: Touching member s1-multisite-cluster with {&#39;host&#39;: &#39;192.168.49.103&#39;, &#39;port&#39;: 5432}
+2023-02-22 15:24:21,447 INFO: Became multisite leader
+. . .
+# Initializing a new empty database
+2023-02-22 15:24:21,563 INFO: trying to bootstrap a new cluster
+. . .
+Success. You can now start the database server using:
+. . .
+# Database started
+2023-02-22 15:24:23,934 INFO: postmaster pid=73
+. . .
+# Running global database intitialization script
+2023-02-22 15:24:25,061 INFO: running post_bootstrap
+. . .
+# Bootstrap done 
+2023-02-22 15:24:26,310 INFO: initialized a new cluster
+. . .
+# Repeated information about health every 10s
+2023-02-22 15:24:26,313 INFO: Lock owner: multisite-cluster-0; I am multisite-cluster-0
+2023-02-22 15:24:26,361 INFO: Triggering multisite hearbeat
+2023-02-22 15:24:26,364 INFO: Running multisite consensus.
+2023-02-22 15:24:26,364 INFO: Multisite has leader and it is us
+2023-02-22 15:24:26,409 INFO: Updated multisite leader lease
+2023-02-22 15:24:26,409 INFO: Touching member s1-multisite-cluster with {&#39;host&#39;: &#39;192.168.49.103&#39;, &#39;port&#39;: 5432}
+2023-02-22 15:24:26,422 INFO: no action. I am (multisite-cluster-0), the leader with the lock
+. . .
+</code></pre><p>Bootstrap of standby on primary site will have these lines:</p>
+<pre tabindex="0"><code>. . .
+# Determine leader
+2023-02-22 15:47:04,552 INFO: Lock owner: multisite-cluster-0; I am multisite-cluster-1
+2023-02-22 15:47:04,677 INFO: trying to bootstrap from leader &#39;multisite-cluster-0&#39;
+. . .
+# Data copied to replica successfully
+2023-02-22 15:47:06,805 INFO: replica has been created using basebackup_fast_xlog
+2023-02-22 15:47:06,807 INFO: bootstrapped from leader &#39;multisite-cluster-0&#39;
+# Postgres up
+2023-02-22 15:47:07,205 INFO: postmaster pid=73
+. . .
+# Normal operation
+2023-02-22 15:47:08,380 INFO: no action. I am (multisite-cluster-1), a secondary, and following a leader (multisite-cluster-0)
+</code></pre><p>Standby cluster will have the following information:</p>
+<pre tabindex="0"><code>. . .
+# Discovering multisite status
+2023-02-22 15:49:58,406 INFO: Running multisite consensus.
+2023-02-22 15:49:58,407 INFO: Touching member s2-multisite-cluster with {&#39;host&#39;: &#39;192.168.50.103&#39;, &#39;port&#39;: 5432}
+2023-02-22 15:49:58,454 INFO: Multisite has leader and it is s1-multisite-cluster
+2023-02-22 15:49:58,454 INFO: Multisite replicate from Member(index=&#39;118&#39;, name=&#39;s1-multisite-cluster&#39;, session=&#39;4113060022582527194&#39;, data={&#39;host&#39;: &#39;192.168.49.103&#39;, &#39;port&#39;: 5432})
+2023-02-22 15:49:58,454 INFO: Setting standby configuration to: {&#39;host&#39;: &#39;192.168.49.103&#39;, &#39;port&#39;: 5432}
+2023-02-22 15:49:58,455 INFO: Touching member s2-multisite-cluster with {&#39;host&#39;: &#39;192.168.50.103&#39;, &#39;port&#39;: 5432}
+. . .
+# Acquiring standby site leader status and starting copy from primary site
+2023-02-22 15:49:58,290 INFO: Lock owner: None; I am multisite-cluster-0
+2023-02-22 15:49:58,566 INFO: trying to bootstrap a new standby leader
+. . .
+# Replica creation successful
+2023-02-22 15:50:00,326 INFO: replica has been created using basebackup
+2023-02-22 15:50:00,327 INFO: bootstrapped clone from remote master postgresql://192.168.49.103:5432
+# Postgres started
+2023-02-22 15:50:00,577 INFO: postmaster pid=58
+. . .
+# Normal operation output of standby leader
+2023-02-22 15:50:01,835 INFO: Lock owner: multisite-cluster-0; I am multisite-cluster-0
+2023-02-22 15:50:01,886 INFO: Triggering multisite hearbeat
+2023-02-22 15:50:01,888 INFO: Running multisite consensus.
+2023-02-22 15:50:01,888 INFO: Multisite has leader and it is s1-multisite-cluster
+2023-02-22 15:50:01,888 INFO: Multisite replicate from Member(index=&#39;118&#39;, name=&#39;s1-multisite-cluster&#39;, session=&#39;4113060022582527194&#39;, data={&#39;host&#39;: &#39;192.168.49.103&#39;, &#39;port&#39;: 5432})
+2023-02-22 15:50:01,888 INFO: Touching member s2-multisite-cluster with {&#39;host&#39;: &#39;192.168.50.103&#39;, &#39;port&#39;: 5432}
+2023-02-22 15:50:01,899 INFO: no action. I am (multisite-cluster-0), the standby leader with the lock
+</code></pre><p>In case access to PostgreSQL logs is needed, the easiest way is to exec into a running database pod
+with <code>kubectl exec -it multisite-cluster-0 -- bash</code> and view the files there. Logs are stored
+as <code>/home/postgres/pgdata/pgroot/pg_log/postgresql-*.csv</code>, with one file per weekday.</p>
+<p>Replication state can be queried from PostgreSQL:</p>
+<pre tabindex="0"><code>kubectl exec -it $(kubectl get -o name po -l &#39;spilo-role=master,cluster-name=multisite-cluster&#39;) -- su postgres -c \
+   &#39;psql -xc &#34;SELECT application_name, client_addr, backend_start, write_lag FROM pg_stat_replication&#34;&#39;
+</code></pre><p>To check how multisite mode is doing one option is to check the etcd state. For example by executing
+in any one of your database pods:</p>
+<pre tabindex="0"><code>kubectl exec multisite-cluster-0 -- bash -c \
+&#39;ETCDCTL_API=3 etcdctl --endpoints=http://${MULTISITE_ETCD_HOST}:2379 \
+ get /multisite/${POD_NAMESPACE}/${SCOPE}/{leader,members0}&#39;
+</code></pre><p>This will output state stored in etcd. Example:</p>
+<pre tabindex="0"><code>/multisite/cpo/multisite-cluster/leader
+s1-multisite-cluster
+/multisite/cpo/multisite-cluster/members/s1-multisite-cluster
+{&#34;host&#34;:&#34;192.168.49.102&#34;,&#34;port&#34;:5432}
+/multisite/cpo/multisite-cluster/members/s2-multisite-cluster
+{&#34;host&#34;:&#34;192.168.50.102&#34;,&#34;port&#34;:5432}
+</code></pre><p>Each cluster state is stored with the prefix <code>/multisite/$NAMESPACE/$CLUSTER_NAME</code>. In this state
+there is <code>/leader</code> key storing current leader of the cluster and <code>/members/$SITE_$CLUSTER_NAME</code> for
+each sites externally visible service.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="triggering-switchover-manually"
+    >
+        Triggering switchover manually
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/multisite/#triggering-switchover-manually" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Triggering switchover manually" aria-label="Anchor to: Triggering switchover manually" href="#triggering-switchover-manually">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Sometimes it is necessary to move leader role from one site to another. For this the operator REST API has an endpoint
+named <code>/clusters/$namespace/$cluster/multisite/</code>. This accepts a POST request with a request JSON. The document has the
+following attributes:</p>
+<ul>
+<li><strong>switchover_to</strong>: name of the site that should become the new multisite leader.</li>
+</ul>
+<p>Example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl --data-raw <span style="color:#e6db74">&#39;{&#34;switchover_to&#34;: &#34;s1&#34;}&#39;</span> -H <span style="color:#e6db74">&#34;Content-type: application/json&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    http://postgres-operator.default.svc.cluster.local:8080/clusters/cpo/multisite-cluster/multisite/
+</span></span></code></pre></div><p>The POST request to this endpoint will return immediately when the switchover request has been registered. The
+actual switchover process will take some time to coordinate.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="observing-multisite-status"
+    >
+        Observing multisite status
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/multisite/#observing-multisite-status" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Observing multisite status" aria-label="Anchor to: Observing multisite status" href="#observing-multisite-status">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Current multisite status is published to cluster CRD status subresource in <code>Multisite</code> field. The possible values
+are <code>Leader</code> and <code>Standby</code>. When the role changes there will also be an event published.</p>
+<p>Example output from a kubectl describe on the cluster CRD resource:</p>
+<pre tabindex="0"><code>Status:
+  Multisite:                Leader
+  Postgres Cluster Status:  Running
+Events:
+  Type    Reason   Age   From     Message
+  ----    ------   ----  ----     -------
+  Normal  Promote  13s   patroni  Acquired multisite leader status
+</code></pre><p>Ouptut from the standby side:</p>
+<pre tabindex="0"><code>Status:
+Multisite:                Standby
+Postgres Cluster Status:  Running
+Events:
+Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+Normal  Demote     62s   patroni            Lost leader lock to s1-multisite-cluster
+Normal  Multisite  97s   postgres-operator  Multisite switching over to &#34;multisite-cluster&#34; at site &#34;s1&#34;
+Normal  Multisite  97s   postgres-operator  Successfully started switchover to &#34;multisite-cluster&#34; at &#34;s1&#34;
+</code></pre><div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="development-environment-tips"
+    >
+        Development environment tips
+    </h2>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/multisite/#development-environment-tips" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Development environment tips" aria-label="Anchor to: Development environment tips" href="#development-environment-tips">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="metallb-based-cross-cluster-communication-with-minikube"
+    >
+        MetalLB based cross cluster communication with minikube
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/multisite/#metallb-based-cross-cluster-communication-with-minikube" class="gdoc-page__anchor clip flex align-center" title="Anchor to: MetalLB based cross cluster communication with minikube" aria-label="Anchor to: MetalLB based cross cluster communication with minikube" href="#metallb-based-cross-cluster-communication-with-minikube">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Minikube is a useful distribution for deploying development Kubernetes clusters. With a bit of configuration it is
+possible to set up 2 Minikube clusters with MetalLB deployed so that MetalLB assigned IP addresses are accessible
+from the other cluster.</p>
+<p>Pre-requisite is to have 2 virtual machines that either are in the same L2 network, or that have a subnet routed to
+them.</p>
+<p>This example is based on docker based deployment, same approach might work with other deployment options (e.g.
+Virtualbox), but may require some extra configuration tuning.</p>
+<p>Start minikube&rsquo;s on the two hosts using different internal subnets, and configure and enable the metallb addon to
+assign IP addresses from this subnet. The subnets chosen should not be in use for services needed by these two VMs,
+but other hosts are not affected by the choice of the subnets.</p>
+<pre tabindex="0"><code># Host A
+minikube start --subnet=192.168.49.2
+minikube addons configure metallb
+-- Enter Load Balancer Start IP: 192.168.49.100
+-- Enter Load Balancer End IP: 192.168.49.200
+    ▪ Using image docker.io/metallb/speaker:v0.9.6
+    ▪ Using image docker.io/metallb/controller:v0.9.6
+✅  metallb was successfully configured
+minikube addons enable metallb
+
+# Host B
+minikube start --subnet=192.168.50.2
+minikube addons configure metallb
+-- Enter Load Balancer Start IP: 192.168.50.100
+-- Enter Load Balancer End IP: 192.168.50.200
+    ▪ Using image docker.io/metallb/speaker:v0.9.6
+    ▪ Using image docker.io/metallb/controller:v0.9.6
+✅  metallb was successfully configured
+minikube addons enable metallb
+</code></pre><p>On both hosts turn on ip forwarding in sysctl.conf and reload it with <code>sysctl -p</code></p>
+<pre tabindex="0"><code>net.ipv4.ip_forward=1
+</code></pre><p>In IP tables allow forwarding:</p>
+<pre tabindex="0"><code>sudo iptables -A FORWARD -j ACCEPT
+</code></pre><p>Configure on each host routing to access the other clusters metallb IP range via the other VMs IP address (need to
+replace IP addresses and network interfaces with actual ones from the VMs):</p>
+<pre tabindex="0"><code># Host A
+sudo ip route add 192.168.50.0/24 via 192.168.2.12 dev eth1
+# Host B
+sudo ip route add 192.168.49.0/24 via 192.168.2.11 dev eth1
+</code></pre><p>To check if load balancer works, here&rsquo;s an example HTTP service:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">hello-blue-whale</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">matchLabels</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">hello-blue-whale-app</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">hello-blue-whale-pod</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">hello-blue-whale-app</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">hello-blue-whale-container</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">vamsijakkula/hello-blue-whale:v1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">hello-blue-whale-svc</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">hello-blue-whale-app</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">hello-blue-whale-app</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">LoadBalancer</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">port</span>: <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">80</span>
+</span></span></code></pre></div><p>Then check what external ip got assigned to the service (should be the first IP from the range given above).</p>
+<pre tabindex="0"><code>kubectl get svc/hello-blue-whale-svc
+</code></pre><p>And then from the other host use curl to see if the service can be accessed.</p>
+<pre tabindex="0"><code>curl -v http://192.168.49.100/
+</code></pre><p>Other hosts on the same network can have the same routes added to access services in the clusters. If access from
+other networks is needed, then the chosen subnets need to be routed to these VMs across your network.</p>
+
   </article>
 
 
@@ -3766,8 +4331,332 @@
         
 
         
+
+        
           
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
           
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
         
 
         
@@ -3785,6 +4674,446 @@
       
     
 
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+          
+          
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+          
+        
+
+        
+
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+          
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
   
     
 
@@ -3810,766 +5139,6 @@
             
             
           
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
         
 
         
@@ -4664,11 +5233,11 @@
   
     <a
       class="gdoc-page__nav--prev flex align-center"
-      href="/CYBERTEC-pg-operator/customize_cluster/sidecars/"
-      title="Sidecars"
+      href="/CYBERTEC-pg-operator/cluster_upgrade/"
+      title="Major-Upgrade"
     >
       <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-      Sidecars
+      Major-Upgrade
     </a>
   
 </span>
@@ -4677,10 +5246,10 @@
   
     <a
       class="gdoc-page__nav--next flex align-center"
-      href="/CYBERTEC-pg-operator/ha_cluster/"
-      title="High Availability"
+      href="/CYBERTEC-pg-operator/crd/crd-postgresql/"
+      title="PostgreSQL"
     >
-      High Availability
+      PostgreSQL
       <i class="gdoc-icon">gdoc_arrow_right_alt</i>
     </a>
   

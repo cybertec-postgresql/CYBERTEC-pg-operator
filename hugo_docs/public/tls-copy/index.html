@@ -12,9 +12,10 @@
 <meta name="generator" content="Hugo 0.145.0">
 
 
-  <meta name="description" content=" additionalVolumes: - name: empty mountPath: /opt/empty targetContainers: - all volumeSource: emptyDir: {} # - name: data # mountPath: /home/postgres/pgdata/partitions # targetContainers: # - postgres # volumeSource: # PersistentVolumeClaim: # claimName: pvc-postgresql-data-partitions # readyOnly: false # - name: conf # mountPath: /etc/telegraf # subPath: telegraf.conf # targetContainers: # - telegraf-sidecar # volumeSource: # configMap: # name: my-config-map " />
+  <meta name="description" content="Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.
+The following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster. In the example, a custom CA is created, on the basis of which the certificates are then generated and signed by this CA. This step can be skipped if certificates have already been obtained from another trusted organisation." />
 
-    <title>Additional Volumes | CYBERTEC-PG-Operator</title>
+    <title>TLS/SSL connections | CYBERTEC-PG-Operator</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/CYBERTEC-pg-operator/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/CYBERTEC-pg-operator/favicon/favicon-32x32.png">
@@ -31,14 +32,15 @@
     
   <meta
     property="og:title"
-    content="Additional Volumes"
+    content="TLS/SSL connections"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
-  <meta property="og:description" content=" additionalVolumes: - name: empty mountPath: /opt/empty targetContainers: - all volumeSource: emptyDir: {} # - name: data # mountPath: /home/postgres/pgdata/partitions # targetContainers: # - postgres # volumeSource: # PersistentVolumeClaim: # claimName: pvc-postgresql-data-partitions # readyOnly: false # - name: conf # mountPath: /etc/telegraf # subPath: telegraf.conf # targetContainers: # - telegraf-sidecar # volumeSource: # configMap: # name: my-config-map " />
+  <meta property="og:description" content="Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.
+The following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster. In the example, a custom CA is created, on the basis of which the certificates are then generated and signed by this CA. This step can be skipped if certificates have already been obtained from another trusted organisation." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/customize_cluster/additional-volumes/" />
+<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/tls-copy/" />
 
-<meta property="article:section" content="Customize Cluster" />
+<meta property="article:section" content="Tls Copy" />
     <meta
       property="article:published_time"
       content="2023-12-28T14:26:51+01:00"
@@ -50,25 +52,26 @@
 
 
   <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Additional Volumes" />
-  <meta name="twitter:description" content=" additionalVolumes: - name: empty mountPath: /opt/empty targetContainers: - all volumeSource: emptyDir: {} # - name: data # mountPath: /home/postgres/pgdata/partitions # targetContainers: # - postgres # volumeSource: # PersistentVolumeClaim: # claimName: pvc-postgresql-data-partitions # readyOnly: false # - name: conf # mountPath: /etc/telegraf # subPath: telegraf.conf # targetContainers: # - telegraf-sidecar # volumeSource: # configMap: # name: my-config-map " />
+<meta name="twitter:title" content="TLS/SSL connections" />
+  <meta name="twitter:description" content="Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.
+The following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster. In the example, a custom CA is created, on the basis of which the certificates are then generated and signed by this CA. This step can be skipped if certificates have already been obtained from another trusted organisation." />
 
 
   <script type="application/ld+json">
   {
       "@context": "http://schema.org",
       "@type": "TechArticle",
-      "articleSection": "Customize Cluster",
-      "name": "Additional Volumes",
-      "url" : "http://localhost:1313/CYBERTEC-pg-operator/customize_cluster/additional-volumes/",
-      "headline": "Additional Volumes",
-      "description": " additionalVolumes: - name: empty mountPath: \/opt\/empty targetContainers: - all volumeSource: emptyDir: {} # - name: data # mountPath: \/home\/postgres\/pgdata\/partitions # targetContainers: # - postgres # volumeSource: # PersistentVolumeClaim: # claimName: pvc-postgresql-data-partitions # readyOnly: false # - name: conf # mountPath: \/etc\/telegraf # subPath: telegraf.conf # targetContainers: # - telegraf-sidecar # volumeSource: # configMap: # name: my-config-map ",
-      "wordCount" : "56",
+      "articleSection": "Tls Copy",
+      "name": "TLS/SSL connections",
+      "url" : "http://localhost:1313/CYBERTEC-pg-operator/tls-copy/",
+      "headline": "TLS/SSL connections",
+      "description": "Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS\/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.\nThe following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster. In the example, a custom CA is created, on the basis of which the certificates are then generated and signed by this CA. This step can be skipped if certificates have already been obtained from another trusted organisation.",
+      "wordCount" : "586",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "http://localhost:1313/CYBERTEC-pg-operator/customize_cluster/additional-volumes/"
+          "@id": "http://localhost:1313/CYBERTEC-pg-operator/tls-copy/"
       },
       "copyrightHolder" : "CYBERTEC-PG-Operator",
       "copyrightYear" : "2023",
@@ -137,7 +140,7 @@
   href="/CYBERTEC-pg-operator/custom.css"
   media="all"
 />
-  <link href="http://localhost:1313/CYBERTEC-pg-operator/customize_cluster/additional-volumes/" rel="canonical" type="text/html" />
+  <link href="http://localhost:1313/CYBERTEC-pg-operator/tls-copy/" rel="canonical" type="text/html" />
 
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
@@ -1409,7 +1412,7 @@
               type="checkbox"
               
                 class="gdoc-nav__toggle" id="navtree-64ca4a20"
-                checked
+                
               
             />
             <label
@@ -1512,7 +1515,7 @@
                 <span class="flex">
                   <a
                     href="/CYBERTEC-pg-operator/customize_cluster/additional-volumes/"
-                    class="gdoc-nav__entry is-active"
+                    class="gdoc-nav__entry"
                   >
                     Additional Volumes
                   </a>
@@ -2051,6 +2054,42 @@
               
                 <span class="flex">
                   <a
+                    href="/CYBERTEC-pg-operator/tls-copy/"
+                    class="gdoc-nav__entry is-active"
+                  >
+                    TLS/SSL connections
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
                     href="/CYBERTEC-pg-operator/tls/"
                     class="gdoc-nav__entry"
                   >
@@ -2420,50 +2459,6 @@
                     class="gdoc-nav__entry"
                   >
                     Major-Upgrade
-                  </a>
-                </span>
-              
-              
-            </label>
-
-            
-          </li>
-        
-      
-    
-      
-
-      
-        
-      
-
-      
-        
-          
-          
-          
-          
-          
-          
-
-
-          <li>
-            <input
-              type="checkbox"
-              
-                class="hidden"
-              
-            />
-            <label
-              
-            >
-              
-                <span class="flex">
-                  <a
-                    href="/CYBERTEC-pg-operator/multisite/"
-                    class="gdoc-nav__entry"
-                  >
-                    Multisite
                   </a>
                 </span>
               
@@ -3059,15 +3054,7 @@
     
   
   
-    
-    
-    
-    
-  
-  
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/customize_cluster/' href='/CYBERTEC-pg-operator/customize_cluster/'><span itemprop='name'>Customize Cluster</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Additional Volumes</span><meta itemprop='position' content='4' /></li>
-  
-
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>TLS/SSL connections</span><meta itemprop='position' content='3' /></li>
   
 
   
@@ -3080,36 +3067,172 @@
 
 
   <section class="gdoc-markdown__title">
-    <h1>Additional Volumes</h1>
+    <h1>TLS/SSL connections</h1>
   </section>
+
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    
-    <pre tabindex="0"><code>  additionalVolumes:
-    - name: empty
-      mountPath: /opt/empty
-      targetContainers:
-        - all
-      volumeSource:
-        emptyDir: {}
-#    - name: data
-#      mountPath: /home/postgres/pgdata/partitions
-#      targetContainers:
-#        - postgres
-#      volumeSource:
-#        PersistentVolumeClaim:
-#          claimName: pvc-postgresql-data-partitions
-#          readyOnly: false
-#    - name: conf
-#      mountPath: /etc/telegraf
-#      subPath: telegraf.conf
-#      targetContainers:
-#        - telegraf-sidecar
-#      volumeSource:
-#        configMap:
-#          name: my-config-map
-</code></pre>
+    <p>Each cluster created is automatically equipped with a self-generated TLS certificate and is preconfigured for the use of TLS/SSL. However, this certificate is not based on a Certificate Authority (CA) that is known to the clients. This means that although communication between the client and server is encrypted, the certificate cannot be verified by the client.</p>
+<p>The following chapter deals with the creation of custom certificates and the steps required to integrate these certificates into the PostgreSQL cluster. In the example, a custom CA is created, on the basis of which the certificates are then generated and signed by this CA. This step can be skipped if certificates have already been obtained from another trusted organisation.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="create-a-custom-ca-and-certificates"
+    >
+        Create a custom CA and Certificates
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls-copy/#create-a-custom-ca-and-certificates" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create a custom CA and Certificates" aria-label="Anchor to: Create a custom CA and Certificates" href="#create-a-custom-ca-and-certificates">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+
+
+
+
+
+<blockquote class="gdoc-hint important">
+  <div class="gdoc-hint__title flex align-center"><i class="fa important" title="Important"></i></div>
+  <div class="gdoc-hint__text">Precondition: This chapter requires openssl</div>
+</blockquote>
+
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="create-the-ca"
+    >
+        Create the CA
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls-copy/#create-the-ca" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create the CA" aria-label="Anchor to: Create the CA" href="#create-the-ca">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>The first step is to create a custom CA. An organisation name is required for this. You can also add further details about the country, district and location.
+The CA serves as the central authority that signs the certificates and thus guarantees the correctness of the certificate. In order to successfully complete the verification of a certificate, the CA&rsquo;s certificate must be stored on the client system.</p>
+<pre tabindex="0"><code>ORGANIZATION=MyCustomOrganization
+CA=$ORGANIZATION-RootCA
+
+mkdir $CA
+cd $CA
+
+# Creating the CA-Key
+openssl genpkey -algorithm EC -out $CA.key -pkeyopt ec_paramgen_curve:secp384r1 -pkeyopt ec_param_enc:named_curve -aes256
+
+# Creating the CA-Certificate
+openssl req -x509 -new -nodes -key $CA.key -sha512 -days 1826 -out $CA.crt -subj &#34;/CN=${ORGANIZATION} Root-CA/C=AT/ST=Lower Austria/L=Woellersdorf/O=${ORGANIZATION}&#34;
+</code></pre><div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="create-a-custom-certificate"
+    >
+        Create a custom Certificate
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls-copy/#create-a-custom-certificate" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create a custom Certificate" aria-label="Anchor to: Create a custom Certificate" href="#create-a-custom-certificate">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>The server needs a certificate signed by a CA and a private key so that it can claim to be trustworthy.</p>
+
+
+
+
+
+<blockquote class="gdoc-hint important">
+  <div class="gdoc-hint__title flex align-center"><i class="fa important" title="Important"></i></div>
+  <div class="gdoc-hint__text">It is important that the CA certificate is stored as trustworthy with the client. Otherwise, no certificate check is possible.</div>
+</blockquote>
+
+<pre tabindex="0"><code>CN=cluster-1
+DNS2=&#34;${CN}-repl&#34;
+DNS3=&#34;${CN}-pooler&#34;
+DNS4=&#34;${CN}-pooler-repl&#34;
+
+# Creating the private Key
+openssl genpkey -algorithm EC -out $CN.key -pkeyopt ec_paramgen_curve:secp384r1 -pkeyopt ec_param_enc:named_curve
+
+# Creating Certificate Signing Request (CSR))
+openssl req -new -key $CN.key -out $CN.csr \
+  -subj &#34;/C=AT/ST=Lower Austria/L=Woellersdorf/O=${ORGANIZATION}/OU=OrgUnit/CN=${CN}&#34; \
+  -addext &#34;subjectAltName=DNS:${CN},DNS:${DNS2},DNS:${DNS3},DNS:${DNS4}&#34;
+
+
+# Sign CSR with the CA
+openssl x509 -req -in $CN.csr -CA $CA.crt -CAkey $CA.key -CAcreateserial -out $CN.crt -days 365 \
+  -extfile &lt;(echo -e &#34;[ v3_req ]\nsubjectAltName=DNS:${CN},DNS:${DNS2},DNS:${DNS3},DNS:${DNS4}&#34;) -extensions v3_req
+</code></pre><div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="add-certicate-to-the-cluster"
+    >
+        Add Certicate to the Cluster
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls-copy/#add-certicate-to-the-cluster" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Add Certicate to the Cluster" aria-label="Anchor to: Add Certicate to the Cluster" href="#add-certicate-to-the-cluster">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>For adding the Certificate to your cluster a secret on kubernetes is needed.
+There are two different options here.
+For the first option, a secret is created that contains all the necessary information. I.e.</p>
+<ul>
+<li>Server certificate</li>
+<li>Private server key</li>
+<li>CA certificate
+In the second variant, the CA certificate is separated and written in a separate secret. The advantage of this is that the CA only needs to be saved once and changed in the event of an update.</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h5 id="first-option-using-one-secret-for-all-three-objects"
+    >
+        First Option: Using one secret for all three objects
+    </h5>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls-copy/#first-option-using-one-secret-for-all-three-objects" class="gdoc-page__anchor clip flex align-center" title="Anchor to: First Option: Using one secret for all three objects" aria-label="Anchor to: First Option: Using one secret for all three objects" href="#first-option-using-one-secret-for-all-three-objects">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<pre tabindex="0"><code>kubectl create secret generic cluster-1-tls \
+  --from-file=tls.crt=$CN.crt \
+  --from-file=tls.key=$CN.key \
+  --from-file=ca.crt=$CA.crt
+</code></pre><p>Finally, the definition is made in the cluster manifest so that the operator adapts the cluster.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#e6db74">&#34;cpo.opensource.cybertec.at/v1&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">postgresql</span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cluster-1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tls</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">secretName</span>: <span style="color:#e6db74">&#34;cluster-1-tls&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">caFile</span>: <span style="color:#e6db74">&#34;ca.crt&#34;</span>
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
+    <h5 id="second-option-using-a-separat-secret-for-the-ca"
+    >
+        Second Option: Using a separat Secret for the CA
+    </h5>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tls-copy/#second-option-using-a-separat-secret-for-the-ca" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Second Option: Using a separat Secret for the CA" aria-label="Anchor to: Second Option: Using a separat Secret for the CA" href="#second-option-using-a-separat-secret-for-the-ca">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<pre tabindex="0"><code>kubectl create secret generic cpo-root-ca --from-file=ca.crt=ca.crt
+</code></pre><pre tabindex="0"><code>kubectl create secret generic cluster-1-tls \
+  --from-file=tls.crt=$CN.crt \
+  --from-file=tls.key=$CN.key \
+</code></pre><p>Finally, the definition is made in the cluster manifest so that the operator adapts the cluster.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#e6db74">&#34;cpo.opensource.cybertec.at/v1&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">postgresql</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cluster-1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tls</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">secretName</span>: <span style="color:#e6db74">&#34;cluster-1-tls&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">caSecretName</span>: <span style="color:#e6db74">&#34;cpo-root-ca&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">caFile</span>: <span style="color:#e6db74">&#34;ca.crt&#34;</span>
+</span></span></code></pre></div><p>A regular check of the mounted certificates takes place automatically within the container. This check takes place every 5 minutes. If the certificates have been updated, the certificates are loaded automatically.</p>
+
+
+
+
+
+<blockquote class="gdoc-hint important">
+  <div class="gdoc-hint__title flex align-center"><i class="fa important" title="Important"></i></div>
+  <div class="gdoc-hint__text">In addition to generating the certificates independently, <a
+  class="gdoc-markdown__link"
+  href="https://cert-manager.io/docs/"
+>cert-manager</a> can also be used for this purpose.</div>
+</blockquote>
+
+
   </article>
 
 
@@ -3766,8 +3889,332 @@
         
 
         
+
+        
           
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
           
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
         
 
         
@@ -3792,6 +4239,66 @@
       
     
 
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+          
+          
+        
+
+        
+          
+        
+
+        
+        
+      
     
       
       
@@ -3921,30 +4428,6 @@
         
       
     
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
 
   
     
@@ -4046,376 +4529,7 @@
     
 
   
-    
 
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
         
       
     
@@ -4664,11 +4778,11 @@
   
     <a
       class="gdoc-page__nav--prev flex align-center"
-      href="/CYBERTEC-pg-operator/customize_cluster/sidecars/"
-      title="Sidecars"
+      href="/CYBERTEC-pg-operator/restore/"
+      title="Restore"
     >
       <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-      Sidecars
+      Restore
     </a>
   
 </span>
@@ -4677,10 +4791,10 @@
   
     <a
       class="gdoc-page__nav--next flex align-center"
-      href="/CYBERTEC-pg-operator/ha_cluster/"
-      title="High Availability"
+      href="/CYBERTEC-pg-operator/tls/"
+      title="TLS/SSL connections"
     >
-      High Availability
+      TLS/SSL connections
       <i class="gdoc-icon">gdoc_arrow_right_alt</i>
     </a>
   

@@ -2,8 +2,64 @@
 title: "Release-Notes"
 date: 2024-03-11T14:26:51+01:00
 draft: false
-weight: 2400
+weight: 2500
 ---
+
+### 0.8.3
+
+#### Fixes
+- Majorupgrade updated for Patroni 4.x.x
+
+#### Supported Versions
+
+- PG: 13 - 17
+- Patroni: 4.0.5
+- pgBackRest: 2.54.2
+- Kubernetes: 1.21 - 1.28
+- Openshift: 4.8 - 4.13
+
+### 0.8.2
+
+#### Features
+- Added Clone-Functionality with pgBackRest
+
+#### Supported Versions
+
+- PG: 13 - 17
+- Patroni: 3.3.2
+- pgBackRest: 2.54.0
+- Kubernetes: 1.21 - 1.28
+- Openshift: 4.8 - 4.13
+
+### 0.8.1
+
+#### Features
+- Added pgbackrest to Monitoring
+
+#### Fixes
+- Fixed role creation for monitoring
+
+#### Supported Versions
+
+- PG: 13 - 17
+- Patroni: 3.3.2
+- pgBackRest: 2.53
+- Kubernetes: 1.21 - 1.28
+- Openshift: 4.8 - 4.13
+
+### 0.8.0
+
+#### Fixes
+- Fixed role creation for monitoring.
+- Fix for the use of gcs with pgBackRest
+
+#### Supported Versions
+
+- PG: 13 - 16 & 17Beta2
+- Patroni: 3.3.2
+- pgBackRest: 2.53
+- Kubernetes: 1.21 - 1.28
+- Openshift: 4.8 - 4.13
 
 ### 0.7.1
 

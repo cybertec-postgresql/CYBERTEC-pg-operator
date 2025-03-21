@@ -5,9 +5,6 @@
     <loc>http://localhost:1313/CYBERTEC-pg-operator/</loc>
     <lastmod>2024-03-11T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/postgis/introduction/</loc>
-    <lastmod>2024-03-11T14:26:51+01:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/backup/introduction/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
@@ -54,9 +51,6 @@
     <lastmod>2024-03-11T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/architecture/</loc>
-    <lastmod>2023-03-07T14:26:51+01:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/</loc>
     <lastmod>2023-03-07T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/</loc>
@@ -107,17 +101,11 @@
     <loc>http://localhost:1313/CYBERTEC-pg-operator/restore/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/certs/</loc>
-    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/tls/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/connection_pooler/</loc>
     <lastmod>2024-05-31T14:26:51+01:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/postgis/</loc>
-    <lastmod>2024-03-11T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/extensions/pg13/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
@@ -129,9 +117,6 @@
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/extensions/pg16/</loc>
-    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/extensions/pg17/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/extensions/</loc>
@@ -151,12 +136,6 @@
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/release_notes/</loc>
     <lastmod>2024-03-11T14:26:51+01:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/examples/</loc>
-    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/documentation/operator/migratetonewapi/</loc>
-    <lastmod>2023-03-07T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/categories/</loc>
   </url><url>

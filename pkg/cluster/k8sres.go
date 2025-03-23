@@ -3014,6 +3014,9 @@ func ensurePath(file string, defaultDir string, defaultFile string) string {
 
 func (c *Cluster) generatePgbackrestConfigmap() (*v1.ConfigMap, error) {
 	config := "[db]\npg1-path = /home/postgres/pgdata/pgroot/data\npg1-port = 5432\npg1-socket-path = /var/run/postgresql/\n"
+	if c.Postgresql.Spec.TDE != nil && c.Postgresql.Spec.TDE.Enable {
+		config += "pg-version-force=" + c.Spec.PgVersion + "\narchive-header-check=n\n"
+	}
 	config += "\n[global]\nlog-path = /home/postgres/pgdata/pgbackrest/log\nspool-path = /home/postgres/pgdata/pgbackrest/spool-path"
 
 	if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
@@ -3109,6 +3112,9 @@ func (c *Cluster) generatePgbackrestRepoHostConfigmap() (*v1.ConfigMap, error) {
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-key-file = /etc/pgbackrest/certs/pgbackrest-repo-host.key"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-type = tls"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-path = /home/postgres/pgdata/pgroot/data"
+			}
+			if c.Postgresql.Spec.TDE != nil && c.Postgresql.Spec.TDE.Enable {
+				config += "\npg-version-force=" + c.Spec.PgVersion + "\narchive-header-check=n\n"
 			}
 		}
 	}

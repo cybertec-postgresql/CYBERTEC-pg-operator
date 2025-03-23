@@ -973,11 +973,14 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 		// only when disabled in oldSpec and enabled in newSpec
 		needPoolerUser := c.needConnectionPoolerUser(&oldSpec.Spec, &newSpec.Spec)
 
+		// Check if Monitor-User needs to be created
+		needMonitoring := newSpec.Spec.Monitoring != nil && oldSpec.Spec.Monitoring == nil
+
 		// streams new replication user created who is initialized in initUsers
 		// only when streams were not specified in oldSpec but in newSpec
 		needStreamUser := len(oldSpec.Spec.Streams) == 0 && len(newSpec.Spec.Streams) > 0
 
-		if !sameUsers || !sameRotatedUsers || needPoolerUser || needStreamUser {
+		if !sameUsers || !sameRotatedUsers || needPoolerUser || needMonitoring || needStreamUser {
 			c.logger.Debugf("initialize users")
 			if err := c.initUsers(); err != nil {
 				c.logger.Errorf("could not init users - skipping sync of secrets and databases: %v", err)
@@ -1439,6 +1442,22 @@ func (c *Cluster) initSystemUsers() error {
 		}
 
 		if _, exists := c.systemUsers[constants.ConnectionPoolerUserKeyName]; !exists {
+			c.systemUsers[constants.ConnectionPoolerUserKeyName] = connectionPoolerUser
+		}
+	}
+
+	// if the monitor object has been created, a monitoring user is required.
+	if c.Spec.Monitoring != nil {
+		c.logger.Debugf("MONITOR: Create cpo_monitoring user")
+		connectionPoolerUser := spec.PgUser{
+			Origin:    spec.RoleMonitoring,
+			Name:      constants.MonitoringUserKeyName,
+			Namespace: c.Namespace,
+			Flags:     []string{constants.RoleFlagLogin},
+			Password:  util.RandomPassword(constants.PasswordLength),
+		}
+
+		if _, exists := c.systemUsers[constants.MonitoringUserKeyName]; !exists {
 			c.systemUsers[constants.ConnectionPoolerUserKeyName] = connectionPoolerUser
 		}
 	}

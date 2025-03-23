@@ -26,13 +26,24 @@ cd CYBERTEC-operator-tutorials
 
 ### Step 2 - Install the Operator
 Two options are available for the installation: 
-- Installation via Helm-Chart
+- Installation via Helm-Chart (local or via helmn-repo)
 - Installation via apply
 
 #### Installation via Helm-Chart
+
+If you want to use the helm-chart, YOU can decide for yourself whether you want to use the helm-cahrt from the operator-tutorials on github or directly connect the helm-repo for the cpo-project and install the helm-chart over it.
+
 ```
-kubectl apply -n cpo -k setup/namespace/.
-helm install cpo -n cpo setup/helm/operator/
+#add helm-repo (optional)
+  helm repo add cpo https://cybertec-postgresql.github.io/CYBERTEC-operator-tutorials
+  kubectl apply -n cpo -k setup/namespace/.
+  helm install -n cpo cpo cpo/postgres-operator
+
+or
+
+# use local helm-chart from git
+  kubectl apply -n cpo -k setup/namespace/.
+  helm install cpo -n cpo setup/helm/operator/
 ```
 
 #### Installation via apply

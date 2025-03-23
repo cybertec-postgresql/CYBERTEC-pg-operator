@@ -66,7 +66,7 @@ Preconditions git helm (optional) kubectl or oc Let’s start Step 1 - Preparati
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/quickstart/",
       "headline": "Quickstart",
       "description": "We can tell and document so much about our project but it seems you just want to get started. Let us show you the fastest way to use CPO.\nPreconditions git helm (optional) kubectl or oc Let’s start Step 1 - Preparations To get started, you can fork our tutorial repository on Github and then download it. CYBERTEC-operator-tutorials",
-      "wordCount" : "328",
+      "wordCount" : "397",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -2339,6 +2339,50 @@ Preconditions git helm (optional) kubectl or oc Let’s start Step 1 - Preparati
         
       
     
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/extensions/pg17/"
+                    class="gdoc-nav__entry"
+                  >
+                    PostgreSQL 17
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
   </ul>
 
             
@@ -3132,7 +3176,7 @@ cd CYBERTEC-operator-tutorials
 </div>
 <p>Two options are available for the installation:</p>
 <ul>
-<li>Installation via Helm-Chart</li>
+<li>Installation via Helm-Chart (local or via helmn-repo)</li>
 <li>Installation via apply</li>
 </ul>
 <div class="flex align-center gdoc-page__anchorwrap">
@@ -3144,8 +3188,17 @@ cd CYBERTEC-operator-tutorials
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<pre tabindex="0"><code>kubectl apply -n cpo -k setup/namespace/.
-helm install cpo -n cpo setup/helm/operator/
+<p>If you want to use the helm-chart, YOU can decide for yourself whether you want to use the helm-cahrt from the operator-tutorials on github or directly connect the helm-repo for the cpo-project and install the helm-chart over it.</p>
+<pre tabindex="0"><code>#add helm-repo (optional)
+  helm repo add cpo https://cybertec-postgresql.github.io/CYBERTEC-operator-tutorials
+  kubectl apply -n cpo -k setup/namespace/.
+  helm install -n cpo cpo cpo/postgres-operator
+
+or
+
+# use local helm-chart from git
+  kubectl apply -n cpo -k setup/namespace/.
+  helm install cpo -n cpo setup/helm/operator/
 </code></pre><div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="installation-via-apply"
     >
@@ -4364,6 +4417,39 @@ PGPASSWORD=2rZG1Kx9asdHscswQGzffjdCH3wWr0kguUXUZek6dkemsf usql postgresql://post
   
 
   
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
   
     
 

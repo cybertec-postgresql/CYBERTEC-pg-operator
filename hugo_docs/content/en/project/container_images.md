@@ -20,13 +20,13 @@ In addition to the operator images, various container images are required to sup
 
 This repository contains images for the following components:
 
-- PostgreSQL: The main database image, which contains all supported major versions of PostgreSQL. The name of the tag always reflects the latest release, e.g. currently `16.4` for PostgreSQL `16.4`. For the other major versions, the corresponding minor versions released by the PostgreSQL community at the same time are included.
+- PostgreSQL: The main database image, which contains all supported major versions of PostgreSQL. The name of the tag always reflects the latest release, e.g. currently `17.4` for PostgreSQL `17.4`. For the other major versions, the corresponding minor versions released by the PostgreSQL community at the same time are included.
 - Postgres-GIS: A specialised image that combines PostgreSQL with the PostGIS extension to support spatial data processing functions. You can find more information about Postgis [here](../../postgis).  
-The tag for Postgis also includes the included version of Postgis. Example: postgres-16.4-34-1 Postgis: `3.4.x`
+The tag for Postgis also includes the included version of Postgis. Example: postgres-gis-17.4-34-1 Postgis: `3.4.x`
 - PGBackRest: A backup and restore tool developed specifically for PostgreSQL and available as a separate container image.
 - Exporter: Images for monitoring PostgreSQL databases that collect metrics and make them available for monitoring tools such as Prometheus.
 - PgBouncer: A lightweight connection pooler for PostgreSQL that manages and optimises the number of concurrent connections.
 
 
 #### Extensions
-You can view the versions included in the [Extensions](../../extensions/pg16/) section.
+You can view the versions included in the [Extensions](../../extensions/pg17/) section.

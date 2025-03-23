@@ -2342,6 +2342,50 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
         
       
     
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/extensions/pg17/"
+                    class="gdoc-nav__entry"
+                  >
+                    PostgreSQL 17
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
   </ul>
 
             
@@ -3205,7 +3249,7 @@ How does the upgrade work? Preconditions: Pod restart - Use the rolling update s
 </div>
 <pre tabindex="0"><code>spec:
   postgresql:
-    version: &#34;16&#34;
+    version: &#34;17&#34;
 </code></pre><p>To trigger an In-Place-Upgrade you have just to increase the parameter <code>spec.postgresql.version</code>. If you choose a valid number the Operator will start with the prozedure, described above.
 If you choosse a not allowed value, you will give an error and if you decrease the value, the operator will just ignore it with the following log-Entry.</p>
 <pre tabindex="0"><code>Operator-Log
@@ -4341,6 +4385,39 @@ If you choosse a not allowed value, you will give an error and if you decrease t
   
 
   
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
   
     
 

@@ -60,7 +60,7 @@ CPO enables the use of the in-place upgrade, which makes it possible to upgrade 
 ```
 spec:
   postgresql:
-    version: "16"
+    version: "17"
 ```
 To trigger an In-Place-Upgrade you have just to increase the parameter `spec.postgresql.version`. If you choose a valid number the Operator will start with the prozedure, described above. 
 If you choosse a not allowed value, you will give an error and if you decrease the value, the operator will just ignore it with the following log-Entry.

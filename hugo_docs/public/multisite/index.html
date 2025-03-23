@@ -3130,7 +3130,7 @@ This feature significantly improves high availability and redundancy by managing
 </div>
 <p>Helm based deployment of the multisite operator contains two helm charts, postgres-operator and postgres-cluster. The first is used to deploy the operator and associated objects to a single Kubernetes cluster. The operator is responsible for managing PostgreSQL clusters based on Custom Resource Definitions (CRDs) of type postgresqls/pg.</p>
 <p><img
-  src="/images/k8s-entities.png"
+  src="/CYBERTEC-pg-operator/images/k8s-entities.png"
   alt="Kubernetes entities"
   
 /></p>
@@ -3192,7 +3192,7 @@ turned off to allow nodes to be drained for upgrades.</p>
 operation. To coordinate which site has the current leader process the database pods use a shared etcd cluster to
 store a leader lease.</p>
 <p><img
-  src="multisite-interaction.png"
+  src="/CYBERTEC-pg-operator/images/multisite-interaction.png"
   alt="Multisite interactions"
   
 /></p>

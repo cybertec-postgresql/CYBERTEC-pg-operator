@@ -29,7 +29,7 @@ In order to set up the multisite PostgreSQL operator you will need the following
 ### Architecture
 Helm based deployment of the multisite operator contains two helm charts, postgres-operator and postgres-cluster. The first is used to deploy the operator and associated objects to a single Kubernetes cluster. The operator is responsible for managing PostgreSQL clusters based on Custom Resource Definitions (CRDs) of type postgresqls/pg.
 
-![Kubernetes entities](/images/k8s-entities.png)
+![Kubernetes entities](/CYBERTEC-pg-operator/images/k8s-entities.png)
 
 The diagram contains in green the Helm charts that are used to deploy operator and clusters, in blue the objects
 deployed by the operator helm chart and in gold the objects deployed by the cluster chart.
@@ -75,7 +75,8 @@ In multisite operation mode there are multiple independent Kubernetes clusters w
 operation. To coordinate which site has the current leader process the database pods use a shared etcd cluster to 
 store a leader lease.
 
-![Multisite interactions](multisite-interaction.png)
+![Multisite interactions](/CYBERTEC-pg-operator/images/multisite-interaction.png)
+
 
 During bootstrap the first site to acquire the leader lease gets to initialize the database contents. Secondary 
 sites are configured to replicate from primary site using Patroni's standby_cluster mechanism.

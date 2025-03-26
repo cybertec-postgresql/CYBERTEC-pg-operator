@@ -433,7 +433,7 @@ func (c *Cluster) Create() (err error) {
 	// something fails, report warning
 	c.createConnectionPooler(c.installLookupFunction)
 
-	if c.Spec.Monitoring != nil { #Hinzufügen und in database.go die function von pooler nachbauen und dann den unteren teil (alt) komplett entfernen
+	if c.Spec.Monitoring != nil {
 		c.addMonitoringPermissions()
 	}
 
@@ -1203,8 +1203,8 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 		updateFailed = true
 	}
 
-	// Check if we need to call addMonitoringPermissions-func 
-	if c.Spec.Monitoring != nil && needMonitoring){
+	// Check if we need to call addMonitoringPermissions-func
+	if c.Spec.Monitoring != nil && newSpec.Spec.Monitoring != nil && oldSpec.Spec.Monitoring == nil {
 		c.addMonitoringPermissions()
 	}
 

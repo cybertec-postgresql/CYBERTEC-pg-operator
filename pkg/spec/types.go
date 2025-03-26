@@ -199,7 +199,7 @@ func (r RoleOrigin) String() string {
 		return "bootstrapped role"
 	case RoleOriginConnectionPooler:
 		return "connection pooler role"
-	case RoleMonitor:
+	case RoleMonitoring:
 		return "Monitoring role"
 	default:
 		panic(fmt.Sprintf("bogus role origin value %d", r))

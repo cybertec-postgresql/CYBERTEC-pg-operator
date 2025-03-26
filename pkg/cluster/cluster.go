@@ -127,9 +127,9 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec cpov1.Postgresq
 	if !ok {
 		passwordEncryption = "scram-sha-256"
 	}
-	if pgSpec.Spec.Monitoring != nil {
-		pgSpec.AddMonitoringUser(monitorUsername)
-	}
+	// if pgSpec.Spec.Monitoring != nil {
+	// 	pgSpec.AddMonitoringUser(monitorUsername)
+	// }
 	cluster := &Cluster{
 		Config:         cfg,
 		Postgresql:     pgSpec,
@@ -352,12 +352,12 @@ func (c *Cluster) Create() (err error) {
 		}
 		c.logger.Info("a TDE secret was successfully created")
 	}
-	if c.Postgresql.Spec.Monitoring != nil {
-		if err := c.createMonitoringSecret(); err != nil {
-			return fmt.Errorf("could not create the monitoring secret: %v", err)
-		}
-		c.logger.Info("a monitoring secret was successfully created")
-	}
+	// if c.Postgresql.Spec.Monitoring != nil {
+	// 	if err := c.createMonitoringSecret(); err != nil {
+	// 		return fmt.Errorf("could not create the monitoring secret: %v", err)
+	// 	}
+	// 	c.logger.Info("a monitoring secret was successfully created")
+	// }
 
 	if specHasPgbackrestClone(&c.Postgresql.Spec) {
 		if err := c.createPgbackrestCloneConfig(); err != nil {
@@ -433,28 +433,32 @@ func (c *Cluster) Create() (err error) {
 	// something fails, report warning
 	c.createConnectionPooler(c.installLookupFunction)
 
-	//Setup cpo monitoring related sql statements
-	if c.Spec.Monitoring != nil {
-		c.logger.Info("setting up CPO monitoring")
-
-		// Open a new connection to the postgres db tp setup monitoring struc and permissions
-		if err := c.initDbConnWithName("postgres"); err != nil {
-			return fmt.Errorf("could not init database connection")
-		}
-		defer func() {
-			if c.connectionIsClosed() {
-				return
-			}
-
-			if err := c.closeDbConn(); err != nil {
-				c.logger.Errorf("could not close database connection: %v", err)
-			}
-		}()
-		_, err := c.pgDb.Exec(CPOmonitoring)
-		if err != nil {
-			return fmt.Errorf("CPO monitoring could not be setup: %v", err)
-		}
+	if c.Spec.Monitoring != nil { #Hinzufügen und in database.go die function von pooler nachbauen und dann den unteren teil (alt) komplett entfernen
+		c.addMonitoringPermissions()
 	}
+
+	//Setup cpo monitoring related sql statements
+	// if c.Spec.Monitoring != nil {
+	// 	c.logger.Info("setting up CPO monitoring")
+
+	// 	// Open a new connection to the postgres db tp setup monitoring struc and permissions
+	// 	if err := c.initDbConnWithName("postgres"); err != nil {
+	// 		return fmt.Errorf("could not init database connection")
+	// 	}
+	// 	defer func() {
+	// 		if c.connectionIsClosed() {
+	// 			return
+	// 		}
+
+	// 		if err := c.closeDbConn(); err != nil {
+	// 			c.logger.Errorf("could not close database connection: %v", err)
+	// 		}
+	// 	}()
+	// 	_, err := c.pgDb.Exec(CPOmonitoring)
+	// 	if err != nil {
+	// 		return fmt.Errorf("CPO monitoring could not be setup: %v", err)
+	// 	}
+	// }
 
 	// remember slots to detect deletion from manifest
 	for slotName, desiredSlot := range c.Spec.Patroni.Slots {
@@ -1197,6 +1201,11 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	if _, err := c.syncConnectionPooler(oldSpec, newSpec, c.installLookupFunction); err != nil {
 		c.logger.Errorf("could not sync connection pooler: %v", err)
 		updateFailed = true
+	}
+
+	// Check if we need to call addMonitoringPermissions-func 
+	if c.Spec.Monitoring != nil && needMonitoring){
+		c.addMonitoringPermissions()
 	}
 
 	// streams

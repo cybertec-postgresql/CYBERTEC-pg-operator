@@ -962,8 +962,6 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	if _, ok := newSpec.Spec.Users["cpo-exporter"]; ok {
 		c.logger.Error("creating user of name cpo-exporter is not allowed as it is reserved for monitoring")
 		updateFailed = true
-	} else if newSpec.Spec.Monitoring != nil {
-		newSpec.AddMonitoringUser(monitorUsername)
 	}
 
 	// Users

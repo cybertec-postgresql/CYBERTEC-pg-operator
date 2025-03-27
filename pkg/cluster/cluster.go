@@ -1455,6 +1455,7 @@ func (c *Cluster) initSystemUsers() error {
 
 	// if the monitor object has been created, a monitoring user is required.
 	if c.Spec.Monitoring != nil {
+
 		MonitoringUser := spec.PgUser{
 			Origin:    spec.RoleMonitoring,
 			Name:      constants.MonitoringUserKeyName,
@@ -1462,6 +1463,8 @@ func (c *Cluster) initSystemUsers() error {
 			Flags:     []string{constants.RoleFlagLogin},
 			Password:  util.RandomPassword(constants.PasswordLength),
 		}
+		c.logger.Debugf("Create cpo_monitoring user with password: %s",
+			MonitoringUser.Password)
 
 		if _, exists := c.systemUsers[constants.MonitoringUserKeyName]; !exists {
 			c.systemUsers[constants.MonitoringUserKeyName] = MonitoringUser

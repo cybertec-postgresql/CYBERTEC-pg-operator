@@ -1032,6 +1032,13 @@ func (c *Cluster) updateSecret(
 			userMap = c.systemUsers
 		}
 	}
+	// use system user when Monitoring is enabled and Monitoring user is specfied in manifest
+	if _, exists := c.systemUsers[constants.MonitoringUserKeyName]; exists {
+		if secretUsername == c.systemUsers[constants.MonitoringUserKeyName].Name {
+			userKey = constants.MonitoringUserKeyName
+			userMap = c.systemUsers
+		}
+	}
 	// use system user when streams are defined and fes_user is specfied in manifest
 	if _, exists := c.systemUsers[constants.EventStreamUserKeyName]; exists {
 		if secretUsername == c.systemUsers[constants.EventStreamUserKeyName].Name {

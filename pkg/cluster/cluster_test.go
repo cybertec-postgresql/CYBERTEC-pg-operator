@@ -7,8 +7,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/sirupsen/logrus"
-	"github.com/stretchr/testify/assert"
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	fakecpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/generated/clientset/versioned/fake"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
@@ -17,6 +15,8 @@ import (
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/teams"
+	"github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"
@@ -944,15 +944,19 @@ func TestServiceAnnotations(t *testing.T) {
 }
 
 func TestInitSystemUsers(t *testing.T) {
-	// reset system users, pooler and stream section
+	// reset system users, pooler, monitoring and stream section
 	cl.systemUsers = make(map[string]spec.PgUser)
 	cl.Spec.EnableConnectionPooler = boolToPointer(false)
+	cl.Spec.Monitoring = nil
 	cl.Spec.Streams = []cpov1.Stream{}
 
-	// default cluster without connection pooler and event streams
+	// default cluster without connection pooler, monitoring and event streams
 	cl.initSystemUsers()
 	if _, exist := cl.systemUsers[constants.ConnectionPoolerUserKeyName]; exist {
 		t.Errorf("%s, connection pooler user is present", t.Name())
+	}
+	if _, exist := cl.systemUsers[constants.MonitoringUserKeyName]; exist {
+		t.Errorf("%s, Monitoring user is present", t.Name())
 	}
 	if _, exist := cl.systemUsers[constants.EventStreamUserKeyName]; exist {
 		t.Errorf("%s, stream user is present", t.Name())

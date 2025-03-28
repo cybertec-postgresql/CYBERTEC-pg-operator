@@ -352,12 +352,6 @@ func (c *Cluster) Create() (err error) {
 		}
 		c.logger.Info("a TDE secret was successfully created")
 	}
-	// if c.Postgresql.Spec.Monitoring != nil {
-	// 	if err := c.createMonitoringSecret(); err != nil {
-	// 		return fmt.Errorf("could not create the monitoring secret: %v", err)
-	// 	}
-	// 	c.logger.Info("a monitoring secret was successfully created")
-	// }
 
 	if specHasPgbackrestClone(&c.Postgresql.Spec) {
 		if err := c.createPgbackrestCloneConfig(); err != nil {
@@ -1010,12 +1004,6 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	// streams configuration
 	if len(oldSpec.Spec.Streams) == 0 && len(newSpec.Spec.Streams) > 0 {
 		syncStatefulSet = true
-	}
-
-	//sync monitoring container
-	if !reflect.DeepEqual(oldSpec.Spec.Monitoring, newSpec.Spec.Monitoring) {
-		syncStatefulSet = true
-		c.syncMonitoringSecret(oldSpec, newSpec)
 	}
 
 	//sync sts when there is a change in the pgbackrest secret, since we need to mount this

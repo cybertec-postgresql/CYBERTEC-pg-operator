@@ -89,7 +89,8 @@ const (
 			TO {{.pooler_user}};
 		GRANT USAGE ON SCHEMA {{.pooler_schema}} TO {{.pooler_user}};
 	`
-	CPOmonitoring = `
+
+	cpoMonitoring = `
 		GRANT pg_monitor TO cpo_exporter;
 		GRANT SELECT ON TABLE pg_authid TO cpo_exporter;
 
@@ -791,5 +792,29 @@ func (c *Cluster) installLookupFunction(poolerSchema, poolerUser string) error {
 		return fmt.Errorf("could not install pooler lookup function in every specified databases")
 	}
 
+	return nil
+}
+
+// Creates the needes structure and grant needed permissions for the Monitoring
+func (c *Cluster) addMonitoringPermissions() error {
+	c.logger.Info("setting up CPO monitoring")
+
+	// Open a new connection to the postgres db tp setup monitoring struc and permissions
+	if err := c.initDbConnWithName("postgres"); err != nil {
+		return fmt.Errorf("could not init database connection")
+	}
+	defer func() {
+		if c.connectionIsClosed() {
+			return
+		}
+
+		if err := c.closeDbConn(); err != nil {
+			c.logger.Errorf("could not close database connection: %v", err)
+		}
+	}()
+	_, err := c.pgDb.Exec(cpoMonitoring)
+	if err != nil {
+		return fmt.Errorf("CPO monitoring could not be setup: %v", err)
+	}
 	return nil
 }

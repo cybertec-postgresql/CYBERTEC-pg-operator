@@ -6,6 +6,7 @@ const (
 	SuperuserKeyName            = "superuser"
 	ReplicationUserKeyName      = "replication"
 	ConnectionPoolerUserKeyName = "pooler"
+	MonitoringUserKeyName       = "cpo_exporter"
 	EventStreamUserKeyName      = "streamer"
 	RoleFlagSuperuser           = "SUPERUSER"
 	RoleFlagInherit             = "INHERIT"

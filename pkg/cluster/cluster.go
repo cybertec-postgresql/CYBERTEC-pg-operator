@@ -1169,7 +1169,7 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 		c.addMonitoringPermissions()
 	}
 	// Check if Monitoring-Secret needs to be removed
-	if c.Spec.Monitoring != nil && newSpec.Spec.Monitoring == nil && oldSpec.Spec.Monitoring != nil {
+	if newSpec.Spec.Monitoring == nil && oldSpec.Spec.Monitoring != nil {
 		if err := c.deleteMonitoringSecret(); err != nil {
 			return fmt.Errorf("could not remove the Monitoring secret: %v", err)
 		}

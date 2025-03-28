@@ -94,16 +94,6 @@ func (c *Cluster) createStatefulSet() (*appsv1.StatefulSet, error) {
 			Env: c.generateMonitoringEnvVars(),
 		}
 		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
-
-		// //Add monitoring user
-		// flg := cpov1.UserFlags{constants.RoleFlagLogin}
-		// if c.Spec.Users != nil {
-		// 	c.Spec.Users[monitorUsername] = flg
-		// } else {
-		// 	users := make(map[string]cpov1.UserFlags)
-		// 	c.Spec.Users = users
-		// 	c.Spec.Users[monitorUsername] = flg
-		// }
 	}
 
 	statefulSetSpec, err := c.generateStatefulSet(&c.Spec)

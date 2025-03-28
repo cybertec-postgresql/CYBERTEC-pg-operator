@@ -1684,6 +1684,25 @@ func (c *Cluster) createTDESecret() error {
 	return nil
 }
 
+// delete monitoring secret
+func (c *Cluster) deleteMonitoringSecret() (err error) {
+	// Repeat the same for the secret object
+	secretName := c.getMonitoringSecretName()
+
+	secret, err := c.KubeClient.
+		Secrets(c.Namespace).
+		Get(context.TODO(), secretName, metav1.GetOptions{})
+
+	if err != nil {
+		c.logger.Debugf("could not get monitoring secret %s: %v", secretName, err)
+	} else {
+		if err = c.deleteSecret(secret.UID, *secret); err != nil {
+			return fmt.Errorf("could not delete monitoring secret: %v", err)
+		}
+	}
+	return nil
+}
+
 func generateRootCertificate(
 	privateKey *ecdsa.PrivateKey, serialNumber *big.Int,
 ) (*x509.Certificate, error) {

@@ -2,7 +2,6 @@ package v1
 
 import (
 	"fmt"
-	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
 	"regexp"
 	"strings"
 	"time"
@@ -120,11 +119,4 @@ func (b *Backup) GetRestoreID() string {
 		return ""
 	}
 	return b.Pgbackrest.Restore.ID
-}
-
-func (p *Postgresql) AddMonitoringUser(monitorUsername string) {
-	if p.Spec.Users == nil {
-		p.Spec.Users = make(map[string]UserFlags)
-	}
-	p.Spec.Users[monitorUsername] = UserFlags{constants.RoleFlagLogin}
 }

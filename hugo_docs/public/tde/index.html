@@ -12,11 +12,9 @@
 <meta name="generator" content="Hugo 0.145.0">
 
 
-  <meta name="description" content="pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.
-Firstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the spec.backup.pgbackrest.configuration.secret object.
-kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest. This is done via the cipher-type parameter, which must also be specified for each repo. You can find the available values for the parameter here" />
+  <meta name="description" content=" What is Transparent Data Encryption (TDE)? Transparent Data Encryption (TDE) is a technology for encrypting databases at file level. The data is automatically encrypted before it is stored on the storage medium and decrypted transparently for authorised applications and users if required. This ensures that the data is protected at rest without the need for changes to existing applications. TDE is used by various database vendors such as Microsoft, Oracle and IBM to increase the security of database files." />
 
-    <title>Encrypted Backups | CYBERTEC-PG-Operator</title>
+    <title>TDE | CYBERTEC-PG-Operator</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/CYBERTEC-pg-operator/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/CYBERTEC-pg-operator/favicon/favicon-32x32.png">
@@ -33,16 +31,14 @@ kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: c
     
   <meta
     property="og:title"
-    content="Encrypted Backups"
+    content="TDE"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
-  <meta property="og:description" content="pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.
-Firstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the spec.backup.pgbackrest.configuration.secret object.
-kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest. This is done via the cipher-type parameter, which must also be specified for each repo. You can find the available values for the parameter here" />
+  <meta property="og:description" content=" What is Transparent Data Encryption (TDE)? Transparent Data Encryption (TDE) is a technology for encrypting databases at file level. The data is automatically encrypted before it is stored on the storage medium and decrypted transparently for authorised applications and users if required. This ensures that the data is protected at rest without the need for changes to existing applications. TDE is used by various database vendors such as Microsoft, Oracle and IBM to increase the security of database files." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/backup/encryption/" />
+<meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/tde/" />
 
-<meta property="article:section" content="Backup" />
+<meta property="article:section" content="Tde" />
     <meta
       property="article:published_time"
       content="2023-12-28T14:26:51+01:00"
@@ -54,27 +50,25 @@ kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: c
 
 
   <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Encrypted Backups" />
-  <meta name="twitter:description" content="pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.
-Firstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the spec.backup.pgbackrest.configuration.secret object.
-kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest. This is done via the cipher-type parameter, which must also be specified for each repo. You can find the available values for the parameter here" />
+<meta name="twitter:title" content="TDE" />
+  <meta name="twitter:description" content=" What is Transparent Data Encryption (TDE)? Transparent Data Encryption (TDE) is a technology for encrypting databases at file level. The data is automatically encrypted before it is stored on the storage medium and decrypted transparently for authorised applications and users if required. This ensures that the data is protected at rest without the need for changes to existing applications. TDE is used by various database vendors such as Microsoft, Oracle and IBM to increase the security of database files." />
 
 
   <script type="application/ld+json">
   {
       "@context": "http://schema.org",
       "@type": "TechArticle",
-      "articleSection": "Backup",
-      "name": "Encrypted Backups",
-      "url" : "http://localhost:1313/CYBERTEC-pg-operator/backup/encryption/",
-      "headline": "Encrypted Backups",
-      "description": "pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.\nFirstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the spec.backup.pgbackrest.configuration.secret object.\nkind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: cpo stringData: s3.conf | [global] repo1-s3-key=YOUR_S3_KEY repo1-s3-key-secret=YOUR_S3_KEY_SECRET repo1-cipher-pass=YOUR_ENCRYPTION_KEY We also need to configure the type of encryption for pgBackRest. This is done via the cipher-type parameter, which must also be specified for each repo. You can find the available values for the parameter here",
-      "wordCount" : "161",
+      "articleSection": "Tde",
+      "name": "TDE",
+      "url" : "http://localhost:1313/CYBERTEC-pg-operator/tde/",
+      "headline": "TDE",
+      "description": " What is Transparent Data Encryption (TDE)? Transparent Data Encryption (TDE) is a technology for encrypting databases at file level. The data is automatically encrypted before it is stored on the storage medium and decrypted transparently for authorised applications and users if required. This ensures that the data is protected at rest without the need for changes to existing applications. TDE is used by various database vendors such as Microsoft, Oracle and IBM to increase the security of database files.",
+      "wordCount" : "522",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "http://localhost:1313/CYBERTEC-pg-operator/backup/encryption/"
+          "@id": "http://localhost:1313/CYBERTEC-pg-operator/tde/"
       },
       "copyrightHolder" : "CYBERTEC-PG-Operator",
       "copyrightYear" : "2023",
@@ -143,7 +137,7 @@ kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: c
   href="/CYBERTEC-pg-operator/custom.css"
   media="all"
 />
-  <link href="http://localhost:1313/CYBERTEC-pg-operator/backup/encryption/" rel="canonical" type="text/html" />
+  <link href="http://localhost:1313/CYBERTEC-pg-operator/tde/" rel="canonical" type="text/html" />
 
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
@@ -1648,7 +1642,7 @@ kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: c
               type="checkbox"
               
                 class="gdoc-nav__toggle" id="navtree-1890e70b"
-                checked
+                
               
             />
             <label
@@ -1919,7 +1913,7 @@ kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: c
                 <span class="flex">
                   <a
                     href="/CYBERTEC-pg-operator/backup/encryption/"
-                    class="gdoc-nav__entry is-active"
+                    class="gdoc-nav__entry"
                   >
                     Encrypted Backups
                   </a>
@@ -2464,6 +2458,80 @@ kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: c
               
             >
               
+                <span class="flex">Clone Cluster</span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">Standby Cluster</span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
                 <span class="flex">
                   <a
                     href="/CYBERTEC-pg-operator/cluster_upgrade/"
@@ -2547,7 +2615,7 @@ kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: c
                 <span class="flex">
                   <a
                     href="/CYBERTEC-pg-operator/tde/"
-                    class="gdoc-nav__entry"
+                    class="gdoc-nav__entry is-active"
                   >
                     TDE
                   </a>
@@ -3152,15 +3220,7 @@ kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: c
     
   
   
-    
-    
-    
-    
-  
-  
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/backup/' href='/CYBERTEC-pg-operator/backup/'><span itemprop='name'>Backup</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Encrypted Backups</span><meta itemprop='position' content='4' /></li>
-  
-
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/CYBERTEC-pg-operator/' href='/CYBERTEC-pg-operator/'><span itemprop='name'>CPO (CYBERTEC-PG-Operator)</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>TDE</span><meta itemprop='position' content='3' /></li>
   
 
   
@@ -3173,55 +3233,148 @@ kind: Secret apiVersion: v1 metadata: name: cluster-1-s3-credential namespace: c
 
 
   <section class="gdoc-markdown__title">
-    <h1>Encrypted Backups</h1>
+    <h1>TDE</h1>
   </section>
+
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    
-    <p>pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.</p>
-<p>Firstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the <code>spec.backup.pgbackrest.configuration.secret</code> object.</p>
-<pre tabindex="0"><code>kind: Secret
-apiVersion: v1
-metadata:
-  name: cluster-1-s3-credential
-  namespace: cpo
-stringData:
-  s3.conf |
-    [global]
-    repo1-s3-key=YOUR_S3_KEY
-    repo1-s3-key-secret=YOUR_S3_KEY_SECRET
-    repo1-cipher-pass=YOUR_ENCRYPTION_KEY
-</code></pre><p>We also need to configure the type of encryption for pgBackRest. This is done via the cipher-type parameter, which must also be specified for each repo.  You can find the available values for the parameter <a
+    <div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="what-is-transparent-data-encryption-tde"
+    >
+        What is Transparent Data Encryption (TDE)?
+    </h2>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tde/#what-is-transparent-data-encryption-tde" class="gdoc-page__anchor clip flex align-center" title="Anchor to: What is Transparent Data Encryption (TDE)?" aria-label="Anchor to: What is Transparent Data Encryption (TDE)?" href="#what-is-transparent-data-encryption-tde">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Transparent Data Encryption (TDE) is a technology for encrypting databases at file level. The data is automatically encrypted before it is stored on the storage medium and decrypted transparently for authorised applications and users if required. This ensures that the data is protected at rest without the need for changes to existing applications. TDE is used by various database vendors such as Microsoft, Oracle and IBM to increase the security of database files.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="difference-between-hard-disk-encryption-and-tde"
+    >
+        Difference between hard disk encryption and TDE
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tde/#difference-between-hard-disk-encryption-and-tde" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Difference between hard disk encryption and TDE" aria-label="Anchor to: Difference between hard disk encryption and TDE" href="#difference-between-hard-disk-encryption-and-tde">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Hard disk encryption, also known as Full Disk Encryption (FDE), encrypts the entire hard disk or individual partitions to prevent unauthorised access to sensitive data. This method protects all data on a system, including the operating system, but only when the system is switched off. As soon as an authorised user logs on, the encryption is removed and the data is accessible to anyone who can access the computer while the user is logged on.</p>
+<p>In contrast, TDE specifically encrypts the database files at file level. Encryption is transparent to the applications accessing the database and protects the data at rest, regardless of the status of the operating system or hardware. This provides an additional protection mechanism, especially in scenarios where hard disk encryption is not sufficient or not implemented.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="advantages-of-tde"
+    >
+        Advantages of TDE
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tde/#advantages-of-tde" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Advantages of TDE" aria-label="Anchor to: Advantages of TDE" href="#advantages-of-tde">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li><strong>Protection of data at rest</strong>: Data on the storage medium is encrypted, reducing the risk of data leaks.</li>
+<li><strong>Transparency for applications</strong>: Encryption is done directly at database level, so no changes to existing applications are required.</li>
+<li><strong>Integration with PGEE</strong>: Full support in Kubernetes environments and other modern IT infrastructures.</li>
+<li><strong>Fulfilment of regulatory requirements</strong>: Support for compliance requirements such as GDPR, HIPAA and other data protection standards.</li>
+<li><strong>Additional security features</strong>: In combination with other PGEE features such as data masking and obfuscation, comprehensive protection of sensitive data is ensured.</li>
+</ul>
+<p>Further information on TDE and PGEE can be found here: <a
   class="gdoc-markdown__link"
-  href="https://pgbackrest.org/configuration.html#section-repository/option-repo-cipher-type"
->here</a></p>
-<pre tabindex="0"><code>apiVersion: cpo.opensource.cybertec.at/v1
-kind: postgresql
-metadata:
-  name: cluster
-  namespace: cpo
-spec:
-  backup:
-    pgbackrest:
-      configuration:
-        secret: cluster-1-s3-credential
-      global:
-        repo1-path: /cluster/repo1/
-        repo1-retention-full: &#39;7&#39;
-        repo1-retention-full-type: count
-        repo1-cipher-type: aes-256-cbc
-      image: &#39;docker.io/cybertecpostgresql/cybertec-pg-container:pgbackrest-16.4-1&#39;
-      repos:
-        - endpoint: &#39;https://s3-zurich.cyberlink.cloud:443&#39;
-          name: repo1
-          region: zurich
-          resource: cpo-cluster-bucket
-          schedule:
-            full: 30 2 * * *
-            incr: &#39;*/30 * * * *&#39;
-          storage: s3
-</code></pre>
+  href="https://www.cybertec-postgresql.com/en/products/postgresql-transparent-data-encryption/"
+>CYBERTEC TDE</a>.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="securing-clusters-with-tde"
+    >
+        Securing clusters with TDE
+    </h2>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tde/#securing-clusters-with-tde" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Securing clusters with TDE" aria-label="Anchor to: Securing clusters with TDE" href="#securing-clusters-with-tde">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>The CYBERTEC pg operator, together with Patroni, takes over the setup and administration of the TDE functionality in conjunction with the cost-effective PGEE containers</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="preconditions"
+    >
+        Preconditions
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tde/#preconditions" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Preconditions" aria-label="Anchor to: Preconditions" href="#preconditions">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>CYBERTEC-pgee-container</li>
+<li>Valid licence agreement for PGEE</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="deploy-a-tde-cluster"
+    >
+        Deploy a TDE-Cluster
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tde/#deploy-a-tde-cluster" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Deploy a TDE-Cluster" aria-label="Anchor to: Deploy a TDE-Cluster" href="#deploy-a-tde-cluster">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Setting up a TDE cluster is basically the same as setting up a conventional cluster.
+The only difference is the defined Postgres. container and the object TDE.enabled: true, which instructs the operator to initialise the database with the TDE functionality.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">cpo.opensource.cybertec.at/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">postgresql</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">tde-cluster-1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">cpo</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">dockerImage</span>: <span style="color:#e6db74">&#39;containers.cybertec.at/cybertec-pgee-container/postgres:rocky9-17.4-1&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">numberOfInstances</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">postgresql</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;17&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">limits</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">250m</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">500Mi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">requests</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">250m</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">500Mi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tde</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">enable</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">teamId</span>: <span style="color:#ae81ff">acid</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">volume</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">size</span>: <span style="color:#ae81ff">5Gi</span>
+</span></span></code></pre></div><ul>
+<li><code>dockerImage</code> - Must contain a PostgreSQL image of the pgee container suite</li>
+<li><code>tde.enabled</code>- initialises the DB with TDE</li>
+</ul>
+
+
+
+
+
+<blockquote class="gdoc-hint important">
+  <div class="gdoc-hint__title flex align-center"><i class="fa important" title="Important"></i></div>
+  <div class="gdoc-hint__text">Please note that the activation of TDE is only possible when creating new clusters. Subsequent activation is not possible.</div>
+</blockquote>
+
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="check-tde-status"
+    >
+        Check TDE-Status
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/tde/#check-tde-status" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Check TDE-Status" aria-label="Anchor to: Check TDE-Status" href="#check-tde-status">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>postgres@tde-cluster-1-0 ~<span style="color:#f92672">]</span>$ psql
+</span></span><span style="display:flex;"><span>psql <span style="color:#f92672">(</span>17.4 EE 1.4.1<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span> ____   ____ _____ _____
+</span></span><span style="display:flex;"><span>|  _ <span style="color:#ae81ff">\ </span>/ ___| ____| ____|
+</span></span><span style="display:flex;"><span>| |_<span style="color:#f92672">)</span> | |  _|  _| |  _|
+</span></span><span style="display:flex;"><span>|  __/| |_| | |___| |___
+</span></span><span style="display:flex;"><span>|_|    <span style="color:#ae81ff">\_</span>___|_____|_____|
+</span></span><span style="display:flex;"><span>PostgreSQL EE by CYBERTEC
+</span></span><span style="display:flex;"><span>Type <span style="color:#e6db74">&#34;help&#34;</span> <span style="color:#66d9ef">for</span> help.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>postgres<span style="color:#f92672">=</span><span style="color:#75715e"># show data_encryption;</span>
+</span></span><span style="display:flex;"><span> data_encryption 
+</span></span><span style="display:flex;"><span>-----------------
+</span></span><span style="display:flex;"><span> on
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> row<span style="color:#f92672">)</span>
+</span></span></code></pre></div>
   </article>
 
 
@@ -4172,6 +4325,533 @@ spec:
         
 
         
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
           
           
         
@@ -4210,471 +4890,6 @@ spec:
             
             
           
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-
-        
-        
-          
-  
-  
-
-  
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
         
 
         
@@ -4835,11 +5050,11 @@ spec:
   
     <a
       class="gdoc-page__nav--prev flex align-center"
-      href="/CYBERTEC-pg-operator/backup/azure_blob/"
-      title="via Azure-Blob"
+      href="/CYBERTEC-pg-operator/multisite/"
+      title="Multisite"
     >
       <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-      via Azure-Blob
+      Multisite
     </a>
   
 </span>
@@ -4848,10 +5063,10 @@ spec:
   
     <a
       class="gdoc-page__nav--next flex align-center"
-      href="/CYBERTEC-pg-operator/backup/check_backups/"
-      title="Check/Monitor Backups"
+      href="/CYBERTEC-pg-operator/tutorials/"
+      title="Tutorials"
     >
-      Check/Monitor Backups
+      Tutorials
       <i class="gdoc-icon">gdoc_arrow_right_alt</i>
     </a>
   

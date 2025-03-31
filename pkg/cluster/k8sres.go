@@ -348,7 +348,7 @@ func generateSpiloJSONConfiguration(pg *cpov1.PostgresqlParam, patroni *cpov1.Pa
 	}
 
 	if enableTDE {
-		config.Bootstrap.Initdb = append(config.Bootstrap.Initdb, map[string]string{"encryption-key-command": "/scripts/pgee/tde.sh"})
+		config.Bootstrap.Initdb = append(config.Bootstrap.Initdb, map[string]string{"encryption-key-command": "/tmp/tde.sh"})
 	}
 
 	initdbOptionNames := []string{}
@@ -1000,7 +1000,7 @@ func (c *Cluster) generateSpiloPodEnvVars(
 
 	if spec.TDE != nil && spec.TDE.Enable {
 		envVars = append(envVars, v1.EnvVar{Name: "TDE", Value: "true"})
-		envVars = append(envVars, v1.EnvVar{Name: "PGENCRKEYCMD", Value: "/scripts/pgee/tde.sh"})
+		// envVars = append(envVars, v1.EnvVar{Name: "PGENCRKEYCMD", Value: "/tmp/tde.sh"})
 		envVars = append(envVars, v1.EnvVar{Name: "TDE_KEY", ValueFrom: &v1.EnvVarSource{
 			SecretKeyRef: &v1.SecretKeySelector{
 				LocalObjectReference: v1.LocalObjectReference{

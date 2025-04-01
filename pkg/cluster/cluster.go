@@ -1432,8 +1432,6 @@ func (c *Cluster) initSystemUsers() error {
 			Flags:     []string{constants.RoleFlagLogin},
 			Password:  util.RandomPassword(constants.PasswordLength),
 		}
-		c.logger.Debugf("Create cpo_monitoring user with password: %s",
-			MonitoringUser.Password)
 
 		if _, exists := c.systemUsers[constants.MonitoringUserKeyName]; !exists {
 			c.systemUsers[constants.MonitoringUserKeyName] = MonitoringUser

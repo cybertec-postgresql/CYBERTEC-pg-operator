@@ -54,6 +54,11 @@ The primary cluster must be accessible from the standby cluster. It can be locat
 To promote a cluster, it is only necessary to remove the standby object. 
 The cluster is then promoted to a primary cluster.
 
+```sh
+kubectl patch postgresqls.cpo.opensource.cybertec.at cluster-1 --type='merge' -p \
+'{"spec":{"standby":null}}'
+```
+
 
 ### Limitations
 A primary cluster cannot be demoted to a standby cluster. 

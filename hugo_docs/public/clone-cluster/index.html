@@ -12,6 +12,8 @@
 <meta name="generator" content="Hugo 0.145.0">
 
 
+  <meta name="description" content="The function of a cluster clone was implemented to create the possibility of duplicating the current status of a cluster in order to carry out tests such as a major upgrade. It creates an autonomous and independent cluster based on an existing local cluster or from a cloud storage via pgBackRest (S3, gcs or Azure Blob)
+Preconditions: The primary cluster must either:" />
 
     <title>Clone Cluster | CYBERTEC-PG-Operator</title>
 
@@ -33,6 +35,8 @@
     content="Clone Cluster"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
+  <meta property="og:description" content="The function of a cluster clone was implemented to create the possibility of duplicating the current status of a cluster in order to carry out tests such as a major upgrade. It creates an autonomous and independent cluster based on an existing local cluster or from a cloud storage via pgBackRest (S3, gcs or Azure Blob)
+Preconditions: The primary cluster must either:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/clone-cluster/" />
 
@@ -49,6 +53,8 @@
 
   <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Clone Cluster" />
+  <meta name="twitter:description" content="The function of a cluster clone was implemented to create the possibility of duplicating the current status of a cluster in order to carry out tests such as a major upgrade. It creates an autonomous and independent cluster based on an existing local cluster or from a cloud storage via pgBackRest (S3, gcs or Azure Blob)
+Preconditions: The primary cluster must either:" />
 
 
   <script type="application/ld+json">
@@ -59,7 +65,8 @@
       "name": "Clone Cluster",
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/clone-cluster/",
       "headline": "Clone Cluster",
-      "wordCount" : "0",
+      "description": "The function of a cluster clone was implemented to create the possibility of duplicating the current status of a cluster in order to carry out tests such as a major upgrade. It creates an autonomous and independent cluster based on an existing local cluster or from a cloud storage via pgBackRest (S3, gcs or Azure Blob)\nPreconditions: The primary cluster must either:",
+      "wordCount" : "269",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -835,50 +842,6 @@
 
   <ul class="gdoc-nav__list">
     
-    
-      
-
-      
-        
-      
-
-      
-        
-          
-          
-          
-          
-          
-          
-
-
-          <li>
-            <input
-              type="checkbox"
-              
-                class="hidden"
-              
-            />
-            <label
-              
-            >
-              
-                <span class="flex">
-                  <a
-                    href="/CYBERTEC-pg-operator/architecture/architecture/"
-                    class="gdoc-nav__entry"
-                  >
-                    Architecture
-                  </a>
-                </span>
-              
-              
-            </label>
-
-            
-          </li>
-        
-      
     
       
 
@@ -2454,7 +2417,14 @@
               
             >
               
-                <span class="flex">Clone Cluster</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/clone-cluster/"
+                    class="gdoc-nav__entry is-active"
+                  >
+                    Clone Cluster
+                  </a>
+                </span>
               
               
             </label>
@@ -3343,7 +3313,111 @@
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    
+    <p>The function of a cluster clone was implemented to create the possibility of duplicating the current status of a cluster in order to carry out tests such as a major upgrade.
+It creates an autonomous and independent cluster based on an existing local cluster or from a cloud storage via pgBackRest (S3, gcs or Azure Blob)</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="preconditions"
+    >
+        Preconditions:
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/clone-cluster/#preconditions" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Preconditions:" aria-label="Anchor to: Preconditions:" href="#preconditions">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>The primary cluster must either:</p>
+<ul>
+<li>be accessible from the standby cluster via streaming replication</li>
+<li>the backup storage used by the standby cluster (S3, GCS or Azure Blob) must be accessible for the standby cluster</li>
+</ul>
+<p>The passwords for the Postgres user, the replication user and the exporter user (if monitoring is active) must be created as a secret for the standby cluster. Otherwise connection problems will occur</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="clone-a-cluster-via-pvc"
+    >
+        Clone a cluster via pvc
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/clone-cluster/#clone-a-cluster-via-pvc" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Clone a cluster via pvc" aria-label="Anchor to: Clone a cluster via pvc" href="#clone-a-cluster-via-pvc">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">cpo.opensource.cybertec.at/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">postgresql</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cluster-1-clone</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">dockerImage</span>: <span style="color:#e6db74">&#39;docker.io/cybertecpostgresql/cybertec-pg-container:postgres-17.4-1&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">numberOfInstances</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">postgresql</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;17&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">limits</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">500m</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">500Mi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">requests</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">500m</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">500Mi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">teamId</span>: <span style="color:#ae81ff">acid</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">volume</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">size</span>: <span style="color:#ae81ff">5Gi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">clone</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">cluster-1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">pgbackrest</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">configuration</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">secret</span>: <span style="color:#ae81ff">cluster-1-pvc-configuration</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">repo</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">pvc</span>
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="clone-a-cluster-via-s3"
+    >
+        Clone a cluster via s3
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/clone-cluster/#clone-a-cluster-via-s3" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Clone a cluster via s3" aria-label="Anchor to: Clone a cluster via s3" href="#clone-a-cluster-via-s3">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">cpo.opensource.cybertec.at/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">postgresql</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cluster-1-clone</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">dockerImage</span>: <span style="color:#e6db74">&#39;docker.io/cybertecpostgresql/cybertec-pg-container:postgres-17.4-1&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">numberOfInstances</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">postgresql</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;17&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">limits</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">500m</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">500Mi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">requests</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">500m</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">500Mi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">teamId</span>: <span style="color:#ae81ff">acid</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">volume</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">size</span>: <span style="color:#ae81ff">5Gi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">clone</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">cluster-1</span> <span style="color:#75715e"># A random cluster name can be used if the source cluster is not present on the k8s.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">pgbackrest</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">configuration</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">secret</span>: <span style="color:#ae81ff">cluster-1-s3-credentials</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">options</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">repo1-path</span>: <span style="color:#ae81ff">/YOUR_PATH_INSIDE_THE_BUCKET_TO_THE_SOURCE_STANZA/repo1/</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">repo</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">endpoint</span>: <span style="color:#ae81ff">YOUR_SOURCE_S3_ENDPOINT</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">repo1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">region</span>: <span style="color:#ae81ff">YOUR_SOURCE_S3_REGION</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">resource</span>: <span style="color:#ae81ff">YOUR_SOURCE_BUCKET_NAME</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">s3</span>
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="limitations"
+    >
+        Limitations
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/clone-cluster/#limitations" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Limitations" aria-label="Anchor to: Limitations" href="#limitations">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>A primary cluster cannot be demoted to a standby cluster.
+If necessary, the recommendation is to create a new cluster as a standby cluster.</p>
+
   </article>
 
 
@@ -3570,39 +3644,6 @@
     
 
   
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
 
         
       
@@ -4706,6 +4747,8 @@
           
         
 
+        
+          
         
 
         

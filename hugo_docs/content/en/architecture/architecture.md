@@ -1,7 +1,7 @@
 ---
 title: "Architecture"
 date: 2023-03-07T14:26:51+01:00
-draft: false
+draft: true
 weight: 1
 ---
 This chapter covers all important aspects relating to the architecture of CPO and the associated components. In addition to the underlying Kubertnetes, the various components and their interaction for the operation of a PostgreSQL cluster are analysed.

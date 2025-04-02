@@ -66,7 +66,7 @@ Preconditions: The primary cluster must either:" />
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/standby-cluster/",
       "headline": "Standby Cluster",
       "description": "A standby cluster is an independent PostgreSQL cluster that consists of a standby leader and optionally further replicas (if numberOfInstances \u003e 1). The standby leader runs in read-only mode and does not accept any write operations. A standby cluster can be promoted to a primary cluster if required, whereby the standby leader becomes a fully-fledged leader and allows write operations.\nPreconditions: The primary cluster must either:",
-      "wordCount" : "273",
+      "wordCount" : "303",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -842,50 +842,6 @@ Preconditions: The primary cluster must either:" />
 
   <ul class="gdoc-nav__list">
     
-    
-      
-
-      
-        
-      
-
-      
-        
-          
-          
-          
-          
-          
-          
-
-
-          <li>
-            <input
-              type="checkbox"
-              
-                class="hidden"
-              
-            />
-            <label
-              
-            >
-              
-                <span class="flex">
-                  <a
-                    href="/CYBERTEC-pg-operator/architecture/architecture/"
-                    class="gdoc-nav__entry"
-                  >
-                    Architecture
-                  </a>
-                </span>
-              
-              
-            </label>
-
-            
-          </li>
-        
-      
     
       
 
@@ -2461,7 +2417,14 @@ Preconditions: The primary cluster must either:" />
               
             >
               
-                <span class="flex">Clone Cluster</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/clone-cluster/"
+                    class="gdoc-nav__entry"
+                  >
+                    Clone Cluster
+                  </a>
+                </span>
               
               
             </label>
@@ -3412,7 +3375,11 @@ Preconditions: The primary cluster must either:" />
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<div class="flex align-center gdoc-page__anchorwrap">
+<p>To promote a cluster, it is only necessary to remove the standby object.
+The cluster is then promoted to a primary cluster.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>kubectl patch postgresqls.cpo.opensource.cybertec.at cluster-1 --type<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;merge&#39;</span> -p <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">&#39;{&#34;spec&#34;:{&#34;standby&#34;:null}}&#39;</span>
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h3 id="limitations"
     >
         Limitations
@@ -3650,39 +3617,6 @@ If necessary, the recommendation is to create a new cluster as a standby cluster
     
 
   
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
 
         
       
@@ -4783,6 +4717,8 @@ If necessary, the recommendation is to create a new cluster as a standby cluster
 
         
 
+        
+          
         
 
         
@@ -5175,11 +5111,11 @@ If necessary, the recommendation is to create a new cluster as a standby cluster
   
     <a
       class="gdoc-page__nav--prev flex align-center"
-      href="/CYBERTEC-pg-operator/monitoring/"
-      title="Monitoring"
+      href="/CYBERTEC-pg-operator/clone-cluster/"
+      title="Clone Cluster"
     >
       <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-      Monitoring
+      Clone Cluster
     </a>
   
 </span>

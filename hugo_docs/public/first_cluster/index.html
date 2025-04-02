@@ -69,7 +69,7 @@ minimal Single-Node Cluster apiVersion: cpo.opensource.cybertec.at/v1 kind: post
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/first_cluster/",
       "headline": "Create a Cluster",
       "description": "To set up a cluster, the implementation is based on a description, as with the other Kubernetes deplyoments. To do this, the operator uses a document of type postgresql.\nYou can also find the basic minimum specifications for a single-node cluster in our tutorial project on Github\nminimal Single-Node Cluster apiVersion: cpo.opensource.cybertec.at\/v1 kind: postgresql metadata: name: cluster-1 spec: dockerImage: \u0022docker.io\/cybertecpostgresql\/cybertec-pg-container:postgres-17.4-1\u0022 numberOfInstances: 1 postgresql: version: \u002217\u0022 resources: limits: cpu: 500m memory: 500Mi requests: cpu: 500m memory: 500Mi volume: size: 5Gi Based on this Manifest the Operator will deploy a single-Node-Cluster based on the defined dockerImage and start the included Postgres-17-Server. Also created is a volume based on your default-storage Class. The Ressource-Definiton means, that we reserve a half cpu and a half GB Memory for this Cluster with the same Definition as limit.",
-      "wordCount" : "466",
+      "wordCount" : "465",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -2501,7 +2501,14 @@ minimal Single-Node Cluster apiVersion: cpo.opensource.cybertec.at/v1 kind: post
               
             >
               
-                <span class="flex">Standby Cluster</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/standby-cluster/"
+                    class="gdoc-nav__entry"
+                  >
+                    Standby Cluster
+                  </a>
+                </span>
               
               
             </label>
@@ -3385,11 +3392,19 @@ Also created is a volume based on your default-storage Class. The Ressource-Defi
 -----------------------------------------------------------------------------
 NAME                             | READY  | STATUS           | RESTARTS | AGE
 cluster-1-0                      | 1/1    | Running          | 0        | 50s
-</code></pre><blockquote>
-<p><strong><em>HINT:</em></strong>  <a
+</code></pre>
+
+
+
+
+<blockquote class="gdoc-hint info">
+  <div class="gdoc-hint__title flex align-center"><i class="fa info" title="Info"></i></div>
+  <div class="gdoc-hint__text"><a
   class="gdoc-markdown__link"
   href="documentation/crd/crd-postgresql/"
->Here</a> you will find a complete overview of the available options within the cluster manifest.</p></blockquote>
+>Here</a> you will find a complete overview of the available options within the cluster manifest.</div>
+</blockquote>
+
 <div class="flex align-center gdoc-page__anchorwrap">
     <h3 id="use-a-specific-storageclass"
     >
@@ -4881,6 +4896,8 @@ Please also ensure to check the default and allowed values for IOPS and Throughp
 
         
 
+        
+          
         
 
         

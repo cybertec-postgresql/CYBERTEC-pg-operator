@@ -72,7 +72,7 @@ requests: Basic requirement and guaranteed by the worker node limits: maximum av
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/resources/",
       "headline": "Apply Ressources",
       "description": "Kubernetes workloads are often deployed without a direct resource definition. This means that, apart from the limits specified by the administrators, the workloads can use the required resources of the worker node very dynamically.\nThe cluster manifest is used to define the Postgres pod resources via the typical resources objects.\nThere are basically two different definitions:\nrequests: Basic requirement and guaranteed by the worker node limits: maximum availability, allocation is increased dynamically if the worker node can provide the resources. For the planning of the cluster, a proper definition should be carried out in terms of the required hardware, which is then defined as requests. These resources are thus guaranteed to the cluster and are taken into account when deploying the pod. Accordingly, a pod can only be deployed on a worker if it can provide these resources. Any limits beyond this are not taken into account when deploying.",
-      "wordCount" : "413",
+      "wordCount" : "412",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -2504,7 +2504,14 @@ requests: Basic requirement and guaranteed by the worker node limits: maximum av
               
             >
               
-                <span class="flex">Standby Cluster</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/standby-cluster/"
+                    class="gdoc-nav__entry"
+                  >
+                    Standby Cluster
+                  </a>
+                </span>
               
               
             </label>
@@ -3392,8 +3399,16 @@ For example:</p>
       cpu: 2000m
       memory: 1Gi
 </code></pre><p>This is intended to create the possibility of additional CPU resources for sudden load peaks.</p>
-<blockquote>
-<p><strong><em>HINT:</em></strong>  The use of burstable definitions does not release you from a correct resource calculation, as <code>limits</code> resources are not guaranteed and therefore an undersupply can occur if the requests are not properly defined.</p></blockquote>
+
+
+
+
+
+<blockquote class="gdoc-hint info">
+  <div class="gdoc-hint__title flex align-center"><i class="fa info" title="Info"></i></div>
+  <div class="gdoc-hint__text">The use of burstable definitions does not release you from a correct resource calculation, as <code>limits</code> resources are not guaranteed and therefore an undersupply can occur if the requests are not properly defined.</div>
+</blockquote>
+
 
   </article>
 
@@ -4793,6 +4808,8 @@ For example:</p>
 
         
 
+        
+          
         
 
         

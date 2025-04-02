@@ -12,6 +12,8 @@
 <meta name="generator" content="Hugo 0.145.0">
 
 
+  <meta name="description" content="A standby cluster is an independent PostgreSQL cluster that consists of a standby leader and optionally further replicas (if numberOfInstances &gt; 1). The standby leader runs in read-only mode and does not accept any write operations. A standby cluster can be promoted to a primary cluster if required, whereby the standby leader becomes a fully-fledged leader and allows write operations.
+Preconditions: The primary cluster must either:" />
 
     <title>Standby Cluster | CYBERTEC-PG-Operator</title>
 
@@ -33,6 +35,8 @@
     content="Standby Cluster"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
+  <meta property="og:description" content="A standby cluster is an independent PostgreSQL cluster that consists of a standby leader and optionally further replicas (if numberOfInstances &gt; 1). The standby leader runs in read-only mode and does not accept any write operations. A standby cluster can be promoted to a primary cluster if required, whereby the standby leader becomes a fully-fledged leader and allows write operations.
+Preconditions: The primary cluster must either:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/standby-cluster/" />
 
@@ -49,6 +53,8 @@
 
   <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Standby Cluster" />
+  <meta name="twitter:description" content="A standby cluster is an independent PostgreSQL cluster that consists of a standby leader and optionally further replicas (if numberOfInstances &gt; 1). The standby leader runs in read-only mode and does not accept any write operations. A standby cluster can be promoted to a primary cluster if required, whereby the standby leader becomes a fully-fledged leader and allows write operations.
+Preconditions: The primary cluster must either:" />
 
 
   <script type="application/ld+json">
@@ -59,7 +65,8 @@
       "name": "Standby Cluster",
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/standby-cluster/",
       "headline": "Standby Cluster",
-      "wordCount" : "0",
+      "description": "A standby cluster is an independent PostgreSQL cluster that consists of a standby leader and optionally further replicas (if numberOfInstances \u003e 1). The standby leader runs in read-only mode and does not accept any write operations. A standby cluster can be promoted to a primary cluster if required, whereby the standby leader becomes a fully-fledged leader and allows write operations.\nPreconditions: The primary cluster must either:",
+      "wordCount" : "273",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -2491,7 +2498,14 @@
               
             >
               
-                <span class="flex">Standby Cluster</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/standby-cluster/"
+                    class="gdoc-nav__entry is-active"
+                  >
+                    Standby Cluster
+                  </a>
+                </span>
               
               
             </label>
@@ -2500,6 +2514,56 @@
           </li>
         
       
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="gdoc-nav__toggle" id="navtree-236c2ca1"
+                
+              
+            />
+            <label
+              
+                for="navtree-236c2ca1" class="flex justify-between align-center"
+              
+            >
+              
+                <span class="flex">PG versioning</span>
+              
+              
+                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_left">
+                  <use xlink:href="#gdoc_keyboard_arrow_left"></use>
+                </svg>
+                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_down">
+                  <use xlink:href="#gdoc_keyboard_arrow_down"></use>
+                </svg>
+              
+            </label>
+
+            
+              
+  
+
+
+  <ul class="gdoc-nav__list">
+    
     
       
 
@@ -2530,10 +2594,10 @@
               
                 <span class="flex">
                   <a
-                    href="/CYBERTEC-pg-operator/minor_update/"
+                    href="/CYBERTEC-pg-operator/pg_versioning/minor_updates/"
                     class="gdoc-nav__entry"
                   >
-                    Minor Update
+                    Minor version update
                   </a>
                 </span>
               
@@ -2574,15 +2638,22 @@
               
                 <span class="flex">
                   <a
-                    href="/CYBERTEC-pg-operator/major_upgrade/"
+                    href="/CYBERTEC-pg-operator/pg_versioning/major_upgrades/"
                     class="gdoc-nav__entry"
                   >
-                    Major Upgrade
+                    Major version upgrade
                   </a>
                 </span>
               
               
             </label>
+
+            
+          </li>
+        
+      
+    
+  </ul>
 
             
           </li>
@@ -3279,7 +3350,80 @@
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    
+    <p>A standby cluster is an independent PostgreSQL cluster that consists of a standby leader and optionally further replicas (if <code>numberOfInstances</code> &gt; 1). The standby leader runs in read-only mode and does not accept any write operations. A standby cluster can be promoted to a primary cluster if required, whereby the standby leader becomes a fully-fledged leader and allows write operations.</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="preconditions"
+    >
+        Preconditions:
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/standby-cluster/#preconditions" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Preconditions:" aria-label="Anchor to: Preconditions:" href="#preconditions">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>The primary cluster must either:</p>
+<ul>
+<li>be accessible from the standby cluster via streaming replication</li>
+<li>the backup storage used by the standby cluster (S3, GCS or Azure Blob) must be accessible for the standby cluster</li>
+</ul>
+<p>The passwords for the Postgres user, the replication user and the exporter user (if monitoring is active) must be created as a secret for the standby cluster. Otherwise connection problems will occur</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="create-standby-cluster"
+    >
+        Create standby cluster
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/standby-cluster/#create-standby-cluster" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create standby cluster" aria-label="Anchor to: Create standby cluster" href="#create-standby-cluster">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>The <code>standby</code> object in the cluster manifest is required to create a standby cluster.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">cpo.opensource.cybertec.at/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">postgresql</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">standby-cluster-1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">standby</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">standby_host</span>: <span style="color:#e6db74">&#34;cluster-1.cpo&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">standby_port</span>: <span style="color:#e6db74">&#34;5432&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">dockerImage</span>: <span style="color:#e6db74">&#39;docker.io/cybertecpostgresql/cybertec-pg-container:postgres-17.4-1&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">numberOfInstances</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">postgresql</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;17&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">limits</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">500m</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">500Mi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">requests</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">500m</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">500Mi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">teamId</span>: <span style="color:#ae81ff">acid</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">volume</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">size</span>: <span style="color:#ae81ff">5Gi</span>
+</span></span></code></pre></div><p>The primary cluster must be accessible from the standby cluster. It can be located in the same Kubernetes cluster or in a different one.</p>
+<ul>
+<li><code>standby_host</code>: Corresponds to the endpoint via which the primary pod can be reached. It can be a kubernetes-internal DNS name or an IP or DNS name that can be reached in the network.</li>
+<li><code>standby_port</code>: Corresponds to the PostgreSQL port used (default 5432)</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="promoting-cluster"
+    >
+        Promoting cluster
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/standby-cluster/#promoting-cluster" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Promoting cluster" aria-label="Anchor to: Promoting cluster" href="#promoting-cluster">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="limitations"
+    >
+        Limitations
+    </h3>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/standby-cluster/#limitations" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Limitations" aria-label="Anchor to: Limitations" href="#limitations">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>A primary cluster cannot be demoted to a standby cluster.
+If necessary, the recommendation is to create a new cluster as a standby cluster.</p>
+
   </article>
 
 
@@ -4674,12 +4818,49 @@
         
 
         
+          
+        
 
         
         
       
     
 
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+          
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
   
     
 
@@ -4747,6 +4928,12 @@
         
 
         
+        
+      
+    
+
+  
+
         
       
     
@@ -5001,10 +5188,10 @@
   
     <a
       class="gdoc-page__nav--next flex align-center"
-      href="/CYBERTEC-pg-operator/minor_update/"
-      title="Minor Update"
+      href="/CYBERTEC-pg-operator/pg_versioning/minor_updates/"
+      title="Minor version update"
     >
-      Minor Update
+      Minor version update
       <i class="gdoc-icon">gdoc_arrow_right_alt</i>
     </a>
   

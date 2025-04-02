@@ -66,7 +66,7 @@ How PostgreSQL handles connection PostgreSQL use a new Process for every databas
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/connection_pooler/",
       "headline": "connection pooler",
       "description": "A connection pooler is a tool that acts as a proxy between the application and the database and enables the performance of the application to be improved and the load on the database to be reduced. The reason for this lies in the connection handling of PostgreSQL.\nHow PostgreSQL handles connection PostgreSQL use a new Process for every database-connection created by the postmaster. This process is handling the connection. On the positive side, this enables a stable connection and isolation, but it is not particularly efficient for short-lived connections due to the effort required to create them.",
-      "wordCount" : "542",
+      "wordCount" : "541",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -2461,7 +2461,14 @@ How PostgreSQL handles connection PostgreSQL use a new Process for every databas
               
             >
               
-                <span class="flex">Clone Cluster</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/clone-cluster/"
+                    class="gdoc-nav__entry"
+                  >
+                    Clone Cluster
+                  </a>
+                </span>
               
               
             </label>
@@ -3366,8 +3373,16 @@ How PostgreSQL handles connection PostgreSQL use a new Process for every databas
 <p>With connection pooling, the application connects to the pooler, which in turn maintains a number of connections to the PostgreSQL database.
 This makes it possible to use the connections from the pooler to the database for a long time instead of short-lived connections and to recycle them accordingly.</p>
 <p>In addition to utilising long-term connections, a ConnectionPooler also makes it possible to reduce the number of connections required to the database. For example, if you have 3 application nodes, each of which maintains 100 connections to the database at the same time, that would be 300 connections in total. The application usually does not even begin to utilise this number of connections. With the pgBouncer, this can be optimised so that the applications open the 300 connections to the pgBouncer, but the pgBouncer only generates 100 connections to PostgreSQL, for example, thus reducing the load by 2/3.</p>
-<blockquote>
-<p><strong><em>HINT:</em></strong> It is important to correctly configure the bouncer and thus the connections to be created between pgBouncer and PostgreSQL so that enough connections are available for the workload.</p></blockquote>
+
+
+
+
+
+<blockquote class="gdoc-hint info">
+  <div class="gdoc-hint__title flex align-center"><i class="fa info" title="Info"></i></div>
+  <div class="gdoc-hint__text">It is important to correctly configure the bouncer and thus the connections to be created between pgBouncer and PostgreSQL so that enough connections are available for the workload.</div>
+</blockquote>
+
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="how-does-this-work-with-cpo"
     >
@@ -4801,6 +4816,8 @@ This makes it possible to use the connections from the pooler to the database fo
 
         
 
+        
+          
         
 
         

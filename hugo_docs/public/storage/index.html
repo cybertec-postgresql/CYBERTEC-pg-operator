@@ -66,7 +66,7 @@ A basic distinction is made between local storage, which is directly connected t
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/storage/",
       "headline": "Storage",
       "description": "Storage is crucial for the performance of a database and is therefore a central element. As with systems based on bare metal or virtual machines, the same requirements apply to Kubernetes workloads, such as constant availability, good performance, consistency and durability.\nA basic distinction is made between local storage, which is directly connected to the worker node, and network storage, which is mounted on the worker node and thus made available to the pod.",
-      "wordCount" : "607",
+      "wordCount" : "604",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -2461,7 +2461,14 @@ A basic distinction is made between local storage, which is directly connected t
               
             >
               
-                <span class="flex">Clone Cluster</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/clone-cluster/"
+                    class="gdoc-nav__entry"
+                  >
+                    Clone Cluster
+                  </a>
+                </span>
               
               
             </label>
@@ -3372,8 +3379,16 @@ Please check our <a
   class="gdoc-markdown__link"
   href="roadmap"
 >roadmap</a></p>
-<blockquote>
-<p><strong><em>PAY ATTENTION:</em></strong>  Please ensure, that the storageClass exists and is usable. If a Volume cannot provide the Volume will stand in the pending-State as like the Database-Pod.</p></blockquote>
+
+
+
+
+
+<blockquote class="gdoc-hint info">
+  <div class="gdoc-hint__title flex align-center"><i class="fa info" title="Info"></i></div>
+  <div class="gdoc-hint__text">Please ensure, that the storageClass exists and is usable. If a Volume cannot provide the Volume will stand in the pending-State as like the Database-Pod.</div>
+</blockquote>
+
 <p>The volume is currently used for both PG and WAL data. In future, there will be an optional option to create a separate WAL volume.</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="expanding-volume"
@@ -3384,8 +3399,16 @@ Please check our <a
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<blockquote>
-<p><strong><em>HINT:</em></strong>  Kubernetes is able to forward requests to expand the storage to the storage system and enable the expand without the need to restart the container. However, this also requires the associated storage system and the driver used to support this. This information can be found in the storage class under the object: allowVolumeExpansion. A distinction must also be made between online and offline expand. The latter requires a restart of the pod. To do this, the pod must be deleted manually.</p></blockquote>
+
+
+
+
+
+<blockquote class="gdoc-hint info">
+  <div class="gdoc-hint__title flex align-center"><i class="fa info" title="Info"></i></div>
+  <div class="gdoc-hint__text">Kubernetes is able to forward requests to expand the storage to the storage system and enable the expand without the need to restart the container. However, this also requires the associated storage system and the driver used to support this. This information can be found in the storage class under the object: allowVolumeExpansion. A distinction must also be made between online and offline expand. The latter requires a restart of the pod. To do this, the pod must be deleted manually.</div>
+</blockquote>
+
 <p>To Expand the Volume, the value of the object volume.size must be increased</p>
 <pre tabindex="0"><code>spec:
   volume:
@@ -4820,6 +4843,8 @@ Please also ensure to check the default and allowed values for IOPS and Throughp
 
         
 
+        
+          
         
 
         

@@ -69,7 +69,7 @@ Rescue my cluster CPO enables the restore based on an existing backup using pgBa
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/restore/",
       "headline": "Restore",
       "description": "Restore or recovery is the process of starting a PostgreSQL instance or a cluster based on a defined and existing backup. This can be just a Backup or a combination of a Backup and additional WAL files. The difference is that a Backup represents a fixed point in time, whereas the combination with WAL enables a point-in-time recovery(PITR).\nYou can find more information about backups here\nRescue my cluster CPO enables the restore based on an existing backup using pgBackRest. To do this, it needs the relevant information about the point in time or snapBackupshot to which it should restore and where the data for this comes from. As we have already provided the operator with all the information relating to the storage of backups in the previous chapter, it only needs the following information:",
-      "wordCount" : "456",
+      "wordCount" : "455",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -2464,7 +2464,14 @@ Rescue my cluster CPO enables the restore based on an existing backup using pgBa
               
             >
               
-                <span class="flex">Clone Cluster</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/clone-cluster/"
+                    class="gdoc-nav__entry"
+                  >
+                    Clone Cluster
+                  </a>
+                </span>
               
               
             </label>
@@ -2531,6 +2538,56 @@ Rescue my cluster CPO enables the restore based on an existing backup using pgBa
             <input
               type="checkbox"
               
+                class="gdoc-nav__toggle" id="navtree-236c2ca1"
+                
+              
+            />
+            <label
+              
+                for="navtree-236c2ca1" class="flex justify-between align-center"
+              
+            >
+              
+                <span class="flex">PG versioning</span>
+              
+              
+                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_left">
+                  <use xlink:href="#gdoc_keyboard_arrow_left"></use>
+                </svg>
+                <svg class="gdoc-icon toggle gdoc_keyboard_arrow_down">
+                  <use xlink:href="#gdoc_keyboard_arrow_down"></use>
+                </svg>
+              
+            </label>
+
+            
+              
+  
+
+
+  <ul class="gdoc-nav__list">
+    
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
                 class="hidden"
               
             />
@@ -2540,10 +2597,10 @@ Rescue my cluster CPO enables the restore based on an existing backup using pgBa
               
                 <span class="flex">
                   <a
-                    href="/CYBERTEC-pg-operator/minor_update/"
+                    href="/CYBERTEC-pg-operator/pg_versioning/minor_updates/"
                     class="gdoc-nav__entry"
                   >
-                    Minor Update
+                    Minor version update
                   </a>
                 </span>
               
@@ -2584,15 +2641,22 @@ Rescue my cluster CPO enables the restore based on an existing backup using pgBa
               
                 <span class="flex">
                   <a
-                    href="/CYBERTEC-pg-operator/major_upgrade/"
+                    href="/CYBERTEC-pg-operator/pg_versioning/major_upgrades/"
                     class="gdoc-nav__entry"
                   >
-                    Major Upgrade
+                    Major version upgrade
                   </a>
                 </span>
               
               
             </label>
+
+            
+          </li>
+        
+      
+    
+  </ul>
 
             
           </li>
@@ -3314,8 +3378,16 @@ As we have already provided the operator with all the information relating to th
   href="../backup/check_backups/"
 >backup</a> to see how to get the identifier</li>
 </ul>
-<blockquote>
-<p><strong><em>HINT:</em></strong> To ensure that the operator does not repeat an already done restore, the defined object <code>id</code> in the restore section is saved by the operator, so the value of this <code>id</code> must be changed for a new restore.</p></blockquote>
+
+
+
+
+
+<blockquote class="gdoc-hint info">
+  <div class="gdoc-hint__title flex align-center"><i class="fa info" title="Info"></i></div>
+  <div class="gdoc-hint__text">To ensure that the operator does not repeat an already done restore, the defined object <code>id</code> in the restore section is saved by the operator, so the value of this <code>id</code> must be changed for a new restore.</div>
+</blockquote>
+
 <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="details-for-a-backup-restore"
     >
@@ -4789,6 +4861,8 @@ spec:
         
 
         
+          
+        
 
         
         
@@ -4826,6 +4900,39 @@ spec:
       
     
 
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
   
     
 
@@ -4888,6 +4995,12 @@ spec:
         
 
         
+        
+      
+    
+
+  
+
         
       
     

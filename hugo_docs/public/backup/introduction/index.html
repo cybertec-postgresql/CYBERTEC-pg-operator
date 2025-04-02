@@ -66,7 +66,7 @@ Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/backup/introduction/",
       "headline": "Introduction",
       "description": "Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 \/ 2005) and pg_basebackup (PostgreSQL 9.0 \/ 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.\nBackups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried-and-tested tool with extensive backup and restore options. The backup is based on two elements:",
-      "wordCount" : "769",
+      "wordCount" : "767",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -2461,7 +2461,14 @@ Backups with pgBackRest CPO relies on pgBackRest as its backup solution, a tried
               
             >
               
-                <span class="flex">Clone Cluster</span>
+                <span class="flex">
+                  <a
+                    href="/CYBERTEC-pg-operator/clone-cluster/"
+                    class="gdoc-nav__entry"
+                  >
+                    Clone Cluster
+                  </a>
+                </span>
               
               
             </label>
@@ -3387,8 +3394,16 @@ With pgBackRest it is possible to create different types of Backups:</p>
 <li>Incremental backup: Only records the files that have been changed since the last backup (of any kind).</li>
 </ul>
 <p>When restoring using differential or incremental Backup, it is necessary to also use the previous Backup that provide the basis for the selected Backup.</p>
-<blockquote>
-<p><strong><em>HINT:</em></strong>  The choice of Backup types depends on factors such as the size of the database, the time available for backups and the restore.</p></blockquote>
+
+
+
+
+
+<blockquote class="gdoc-hint info">
+  <div class="gdoc-hint__title flex align-center"><i class="fa info" title="Info"></i></div>
+  <div class="gdoc-hint__text">The choice of Backup types depends on factors such as the size of the database, the time available for backups and the restore.</div>
+</blockquote>
+
 <div class="flex align-center gdoc-page__anchorwrap">
     <h3 id="wal-archive"
     >
@@ -3406,8 +3421,16 @@ These activities include</p>
 <li>Restoring instances that have lost parts of the WAL files in the event of a failure and cannot return to a consistent state without them without losing data</li>
 <li>Point-In-Time-Recovery (PITR): In contrast to Backups, which map a fixed point in time, WAL files make it possible to jump dynamically to a desired point in time and restore the database to the closest available consistent data point</li>
 </ul>
-<blockquote>
-<p><strong><em>HINT:</em></strong>  WAL archiving is an indispensable tool for data availability, recoverability and the continuous availability of PostgreSQL.</p></blockquote>
+
+
+
+
+
+<blockquote class="gdoc-hint info">
+  <div class="gdoc-hint__title flex align-center"><i class="fa info" title="Info"></i></div>
+  <div class="gdoc-hint__text">WAL archiving is an indispensable tool for data availability, recoverability and the continuous availability of PostgreSQL.</div>
+</blockquote>
+
 <div class="flex align-center gdoc-page__anchorwrap">
     <h3 id="backup-your-cluster"
     >
@@ -4830,6 +4853,8 @@ postgres-operator-66bbff5c54-5sjmk           | 1/1   | Running   | 0        | 47
 
         
 
+        
+          
         
 
         

@@ -134,7 +134,13 @@
     <loc>http://localhost:1313/CYBERTEC-pg-operator/standby-cluster/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/CYBERTEC-pg-operator/cluster_upgrade/</loc>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/pg_versioning/</loc>
+    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/pg_versioning/minor_updates/</loc>
+    <lastmod>2023-12-28T14:26:51+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/CYBERTEC-pg-operator/pg_versioning/major_upgrades/</loc>
     <lastmod>2023-12-28T14:26:51+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/CYBERTEC-pg-operator/multisite/</loc>

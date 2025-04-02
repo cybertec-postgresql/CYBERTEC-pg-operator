@@ -1,13 +1,14 @@
 ---
-title: "Major-Upgrade"
+title: "Major version upgrade"
 date: 2023-12-28T14:26:51+01:00
 draft: false
-weight: 2100
+weight: 2120
 ---
 
 CPO enables the use of the in-place upgrade, which makes it possible to upgrade a cluster to a new PG major. For this purpose, pg_upgrade is used in the background.
 
-> **_PAY ATTENTION:_**  Note that an in-place upgrade generates both a pod restore in the form of a rolling update and an operational interruption of the cluster during the actual execution of the restore.
+{{< hint type=info >}}Note that an in-place upgrade generates both a pod restore in the form of a rolling update and an operational interruption of the cluster during the actual execution of the restore.{{< /hint >}}
+
 
 ## How does the upgrade work?
 
@@ -21,7 +22,7 @@ CPO enables the use of the in-place upgrade, which makes it possible to upgrade 
 1. use initdb to prepare a new data_dir (`data_new`) based on the new `PGVERSION`.
 2. check the upgrade possibility with `pg_upgrade --check`
 
-> **_HINT:_**  If one of the steps is aborted, a cleanup is performed
+{{< hint type=info >}}If one of the steps is aborted, a cleanup is performed{{< /hint >}}
 
 ### Prepare the Upgrade
 1. remove dependencies that can cause problems. For example, the extensions `pg_stat_statements` and `pgaudit`.
@@ -33,7 +34,7 @@ CPO enables the use of the in-place upgrade, which makes it possible to upgrade 
 ### Start the Upgrade
 
 1. Call pg_upgrade -k to start the Upgrade
-> **_ATTENTION_** if the process failed, we need to rollback, if it was sucessful we're reaching the point of no return
+{{< hint type=Info >}}if the process failed, we need to rollback, if it was sucessful we're reaching the point of no return{{< /hint >}}
 2. Rename the directories. `data -> data_old` and `data_new -> data`
 3. Update the Patroni.config (`postgres.yml`)
 4. Call Checkpoint on every replica and trigger rsync on the Replicas
@@ -63,7 +64,24 @@ spec:
     version: "17"
 ```
 To trigger an In-Place-Upgrade you have just to increase the parameter `spec.postgresql.version`. If you choose a valid number the Operator will start with the prozedure, described above. 
-If you choosse a not allowed value, you will give an error and if you decrease the value, the operator will just ignore it with the following log-Entry.
+
+```sh
+kubectl patch postgresqls.cpo.opensource.cybertec.at cluster-1 --type='merge' -p \
+'{"spec":{"postgresql":{"version":"17"}}}'
 ```
-Operator-Log
-````
+
+## Upgrade on cloning
+
+When cloning, the new cluster manifest must have a higher version number than the source cluster and is created from a base backup. Depending on the cluster size, the downtime can be considerable in this case, as write operations in the database should be stopped and all WAL files should be archived first before cloning is started. Therefore, only use cloning to test major version upgrades and to check the compatibility of your app with the Postgres server of a higher version.
+
+## manual upgrade via the PostgreSQL container 
+
+In this scenario the major version could then be run by a user from within the primary pod. Exec into the container and run:
+
+```
+python3 /scripts/inplace_upgrade.py N
+```
+
+where `N` is the number of members of your cluster (see `numberOfInstances`). The upgrade is usually fast, well under one minute for most DBs. 
+
+{{< hint type=Info >}}Note, that changes become irrevertible once pg_upgrade is called.{{< /hint >}}

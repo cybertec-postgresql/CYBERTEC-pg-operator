@@ -54,4 +54,4 @@ For example:
 ```
 This is intended to create the possibility of additional CPU resources for sudden load peaks. 
 
-> **_HINT:_**  The use of burstable definitions does not release you from a correct resource calculation, as `limits` resources are not guaranteed and therefore an undersupply can occur if the requests are not properly defined.
+{{< hint type=Info >}}The use of burstable definitions does not release you from a correct resource calculation, as `limits` resources are not guaranteed and therefore an undersupply can occur if the requests are not properly defined.{{< /hint >}}

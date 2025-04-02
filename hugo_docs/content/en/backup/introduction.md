@@ -23,7 +23,7 @@ With pgBackRest it is possible to create different types of Backups:
 
 When restoring using differential or incremental Backup, it is necessary to also use the previous Backup that provide the basis for the selected Backup. 
 
-> **_HINT:_**  The choice of Backup types depends on factors such as the size of the database, the time available for backups and the restore. 
+{{< hint type=Info >}}The choice of Backup types depends on factors such as the size of the database, the time available for backups and the restore.{{< /hint >}}
 
 ### WAL-Archive
 
@@ -35,7 +35,7 @@ These activities include
 - Restoring instances that have lost parts of the WAL files in the event of a failure and cannot return to a consistent state without them without losing data
 - Point-In-Time-Recovery (PITR): In contrast to Backups, which map a fixed point in time, WAL files make it possible to jump dynamically to a desired point in time and restore the database to the closest available consistent data point
 
-> **_HINT:_**  WAL archiving is an indispensable tool for data availability, recoverability and the continuous availability of PostgreSQL.
+{{< hint type=Info >}}WAL archiving is an indispensable tool for data availability, recoverability and the continuous availability of PostgreSQL.{{< /hint >}}
 
 ### Backup your Cluster
 

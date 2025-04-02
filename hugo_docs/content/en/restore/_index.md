@@ -18,8 +18,7 @@ As we have already provided the operator with all the information relating to th
 - `repo`: Which repo the data should come from
 - `set`: Specific Backup to restore - Check [backup](../backup/check_backups/) to see how to get the identifier
 
-> **_HINT:_** To ensure that the operator does not repeat an already done restore, the defined object `id` in the restore section is saved by the operator, so the value of this `id` must be changed for a new restore.
-
+{{< hint type=Info >}}To ensure that the operator does not repeat an already done restore, the defined object `id` in the restore section is saved by the operator, so the value of this `id` must be changed for a new restore.{{< /hint >}}
 
 #### Details for a Backup restore
 With this information, we define a fixed Backup from `repo1` and that pgBackRest should stop at the end of the Backup

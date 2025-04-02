@@ -17,7 +17,7 @@ This makes it possible to use the connections from the pooler to the database fo
 
 In addition to utilising long-term connections, a ConnectionPooler also makes it possible to reduce the number of connections required to the database. For example, if you have 3 application nodes, each of which maintains 100 connections to the database at the same time, that would be 300 connections in total. The application usually does not even begin to utilise this number of connections. With the pgBouncer, this can be optimised so that the applications open the 300 connections to the pgBouncer, but the pgBouncer only generates 100 connections to PostgreSQL, for example, thus reducing the load by 2/3. 
 
-> **_HINT:_** It is important to correctly configure the bouncer and thus the connections to be created between pgBouncer and PostgreSQL so that enough connections are available for the workload. 
+{{< hint type=Info >}}It is important to correctly configure the bouncer and thus the connections to be created between pgBouncer and PostgreSQL so that enough connections are available for the workload. {{< /hint >}}
 
 ## How does this work with CPO
 CPO relies on pgBouncer, a popular and above all lightweight open source tool. pgBouncer manages individual user-database connections for each user used, which can be used immediately for incoming client connections. 

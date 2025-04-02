@@ -42,7 +42,7 @@ cluster-1-0                      | 1/1    | Running          | 0        | 50s
 
 ```
 
-> **_HINT:_**  [Here](documentation/crd/crd-postgresql/) you will find a complete overview of the available options within the cluster manifest.
+{{< hint type=Info >}}[Here](documentation/crd/crd-postgresql/) you will find a complete overview of the available options within the cluster manifest.{{< /hint >}}
 
 ### Use a specific Storageclass
 ```

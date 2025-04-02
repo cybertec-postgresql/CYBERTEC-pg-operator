@@ -79,6 +79,6 @@ spec:
 This example creates a logical replication slot with the name `cdc-example` within the `app_db` database and uses the `pgoutput` plugin for the slot.
 
 
-> **_ATTENTION:_**  Slots are only synchronised from the leader/standby leader to the replicas. This means that using the slots read-only on the replicas will cause a problem in the event of a failover.
+{{< hint type=Info >}}Slots are only synchronised from the leader/standby leader to the replicas. This means that using the slots read-only on the replicas will cause a problem in the event of a failover.{{< /hint >}}
 
 

@@ -28,13 +28,13 @@ spec:
 The volume is currently used for both PG and WAL data. In future, there will be an optional option to create a separate WAL volume.
 Please check our [roadmap](roadmap)
 
-> **_PAY ATTENTION:_**  Please ensure, that the storageClass exists and is usable. If a Volume cannot provide the Volume will stand in the pending-State as like the Database-Pod.
+{{< hint type=Info >}}Please ensure, that the storageClass exists and is usable. If a Volume cannot provide the Volume will stand in the pending-State as like the Database-Pod.{{< /hint >}}
 
 The volume is currently used for both PG and WAL data. In future, there will be an optional option to create a separate WAL volume.
 
 ## Expanding Volume
 
-> **_HINT:_**  Kubernetes is able to forward requests to expand the storage to the storage system and enable the expand without the need to restart the container. However, this also requires the associated storage system and the driver used to support this. This information can be found in the storage class under the object: allowVolumeExpansion. A distinction must also be made between online and offline expand. The latter requires a restart of the pod. To do this, the pod must be deleted manually.
+{{< hint type=Info >}}Kubernetes is able to forward requests to expand the storage to the storage system and enable the expand without the need to restart the container. However, this also requires the associated storage system and the driver used to support this. This information can be found in the storage class under the object: allowVolumeExpansion. A distinction must also be made between online and offline expand. The latter requires a restart of the pod. To do this, the pod must be deleted manually.{{< /hint >}}
 
 To Expand the Volume, the value of the object volume.size must be increased
 ```

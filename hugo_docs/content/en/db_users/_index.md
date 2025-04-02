@@ -67,7 +67,7 @@ spec:
     app_db: app_namespace.appl_user
 ```
 
-> **_HINT:_**  Be aware that the user name must be defined for the database owner in the same way as it is done in the users object. 
+{{< hint type=Info >}}Be aware that the user name must be defined for the database owner in the same way as it is done in the users object. {{< /hint >}}
 
 ## Prepared Databases
 
@@ -78,7 +78,7 @@ In addition to the creation of `databases` and `users`, this also enables the cr
 
 Creating the preparedDatabases object already creates a database whose name is based on the cluster name. `preparedDatabases: {}`
 
-> **_HINT:_**  For the database name, `-` is replaced with `_` in the cluster name
+{{< hint type=Info >}}For the database name, `-` is replaced with `_` in the cluster name{{< /hint >}}
 
 To create your own database names and elements such as schemas and extensions within the database, an object must be created within preparedDatabases for each database.
 

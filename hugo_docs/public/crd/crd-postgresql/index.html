@@ -12,7 +12,7 @@
 <meta name="generator" content="Hugo 0.145.0">
 
 
-  <meta name="description" content=" postgresql Name Type required Description apiVersion string true acid.zalando.do/v1 kind string true metadata object true spec object true status object false spec Name Type required Description additionalVolumes array false List of additional volumes to mount in each container of the statefulset pod allowedSourceRanges array false The corresponding load balancer is accessible only to the networks defined by this parameter backup object false Enables the definition of a customised backup solution for the cluster clone object false Defines the clone-target for the Cluster connectionPooler object false Defines the configuration and settings for every type of a connectionPoolers (Primary and Replica). databases map false Defines the name of the database, they are created by the operator. See tutorial dockerImage string true Defines the used PostgreSQL-Container-Image for this cluster enableLogicalBackup boolean false Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest) enableConnectionPooler boolean false creates a ConnectionPooler for the primary Pod enableReplicaConnectionPooler boolean false creates a ConnectionPooler for the replica Pods enableMasterLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres primary enableReplicaLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres replicas enableMasterPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the primary ConnectionPooler enableReplicaPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the Replica-ConnectionPooler enableShmVolume boolean false Start a database pod without limitations on shm memory. By default Docker limit /dev/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation. env array false Allows to add own Envs (added as map) initContainers array false Enables the definition of init-containers logicalBackupSchedule string false Enables the scheduling of logical backups based on cron-syntax. Example: 30 00 * * * maintenanceWindows array false Enables the definition of maintenance windows for the cluster. Example: Sat:00:00-04:00 masterServiceAnnotations map false Enables the definition of annotations for the Primary Service monitor map false Enables monitoring on the basis of the defined image nodeAffinity map false Enables overwriting of the nodeAffinity numberOfInstances int true Number of nodes of the cluster [patroni](#patroni map false Enables the customisation of patroni settings podPriorityClassName string false a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance podAnnotations map false A map of key value pairs that gets attached as annotations to each pod created for the database. postgresql map false Enables the customisation of PostgreSQL settings and parameters preparedDatabases map false Allows you to define databases including owner, schemas and extension and have the operator generate them. See tutorial replicaServiceAnnotations map false Enables the definition of annotations for the Replica Service resources map true CPU &amp; Memory (Limit &amp; Request) definition for the Postgres container ServiceAnnotations map false A map of key value pairs that gets attached as annotations to each Service created for the database. sidecars array false Enables the definition of custom sidecars spiloFSGroup int false the Persistent Volumes for the Spilo pods in the StatefulSet will be owned and writable by the group ID specified. This will override the spilo_fsgroup operator parameter spiloRunAsGroup int false sets the group ID which should be used in the container to run the process. spiloRunAsUser int false Sets the user ID which should be used in the container to run the process. This must be set to run the container without root. standby map false Enables the creation of a standby cluster at the time of the creation of a new cluster streams array false Enables change data capture streams for defined database tables tde map false Enables the activation of TDE if a new cluster is created teamId string true name of the team the cluster belongs to. Will be removed soon tls map false Custom TLS certificate tolerations array false a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields: key, operator, value, effect and tolerationSeconds topologySpreadConstraints map false Enables the definition of a topologySpreadConstraint. See K8s-Documentation users map false a map of usernames to user flags for the users that should be created in the cluster by the operator. See tutorial usersWithSecretRotation list false list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally. usersWithInPlaceSecretRotation list false list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally. volume map true define the properties of the persistent storage that stores Postgres data back to parent" />
+  <meta name="description" content=" CRD for kind postgresql Name Type required Description apiVersion string true acid.zalando.do/v1 kind string true metadata object true spec object true status object false spec Name Type required Description additionalVolumes array false List of additional volumes to mount in each container of the statefulset pod allowedSourceRanges array false The corresponding load balancer is accessible only to the networks defined by this parameter backup object false Enables the definition of a customised backup solution for the cluster clone object false Defines the clone-target for the Cluster connectionPooler object false Defines the configuration and settings for every type of a connectionPoolers (Primary and Replica). databases map false Defines the name of the database, they are created by the operator. See tutorial dockerImage string true Defines the used PostgreSQL-Container-Image for this cluster enableLogicalBackup boolean false Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest) enableConnectionPooler boolean false creates a ConnectionPooler for the primary Pod enableReplicaConnectionPooler boolean false creates a ConnectionPooler for the replica Pods enableMasterLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres primary enableReplicaLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres replicas enableMasterPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the primary ConnectionPooler enableReplicaPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the Replica-ConnectionPooler enableShmVolume boolean false Start a database pod without limitations on shm memory. By default Docker limit /dev/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation. env array false Allows to add own Envs to the PostgreSQL containers initContainers array false Enables the definition of init-containers logicalBackupSchedule string false Enables the scheduling of logical backups based on cron-syntax. Example: 30 00 * * * maintenanceWindows array false Enables the definition of maintenance windows for the cluster. Example: Sat:00:00-04:00 masterServiceAnnotations map false Enables the definition of annotations for the Primary Service monitor map false Enables monitoring on the basis of the defined image nodeAffinity map false Enables overwriting of the nodeAffinity numberOfInstances int true Number of nodes of the cluster patroni map false Enables the customisation of patroni settings podPriorityClassName string false a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance podAnnotations map false A map of key value pairs that gets attached as annotations to each pod created for the database. postgresql map false Enables the customisation of PostgreSQL settings and parameters preparedDatabases map false Allows you to define databases including owner, schemas and extension and have the operator generate them. item See tutorial replicaServiceAnnotations map false Enables the definition of annotations for the Replica Service resources map true CPU &amp; Memory (Limit &amp; Request) definition for the Postgres container ServiceAnnotations map false A map of key value pairs that gets attached as annotations to each Service created for the database. sidecars array false Enables the definition of custom sidecars spiloFSGroup int false the Persistent Volumes for the Spilo pods in the StatefulSet will be owned and writable by the group ID specified. This will override the spilo_fsgroup operator parameter spiloRunAsGroup int false sets the group ID which should be used in the container to run the process. spiloRunAsUser int false Sets the user ID which should be used in the container to run the process. This must be set to run the container without root. standby map false Enables the creation of a standby cluster at the time of the creation of a new cluster streams array false Enables change data capture streams for defined database tables tde map false Enables the activation of TDE if a new cluster is created teamId string true name of the team the cluster belongs to. Will be removed soon tls map false Custom TLS certificate tolerations array false a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields: key, operator, value, effect and tolerationSeconds topologySpreadConstraints map false Enables the definition of a topologySpreadConstraint. See K8s-Documentation users map false a map of usernames to user flags for the users that should be created in the cluster by the operator. See tutorial usersWithSecretRotation list false list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally. usersWithInPlaceSecretRotation list false list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally. volume map true define the properties of the persistent storage that stores Postgres data ⬅ Back to Parent additionalVolumes Name Type required Description name string true Enables the definition of a pgbackrest-setup for the cluster mountPath string true Enables the definition of a pgbackrest-setup for the cluster targetContainers array true Enables the definition of a pgbackrest-setup for the cluster subPath string false Enables the definition of a pgbackrest-setup for the cluster isSubPathExpr boolean false Enables the definition of a pgbackrest-setup for the cluster volumeSource map true Enables the definition of a pgbackrest-setup for the cluster ⬅ Back to Parent backup Name Type required Description pgbackrest object false Enables the definition of a pgbackrest-setup for the cluster ⬅ Back to Parent clone Name Type required Description cluster string true Name of the cluster to be cloned. Random value if the cluster does not exist locally. pgbackrest object false Enables the definition of a pgbackrest-setup for the cluster ⬅ Back to Parent connectionPooler Name Type required Description numberOfInstances int true Number of Pods per Pooler mode string true pooling mode for pgBouncer (session, transaction, statement) schema string true Schema for Pooler (Default: pooler) user string true Username for Pooler (Default: pooler) maxDBConnections string true maxConnections to the DB-Pod(s) resources map true CPU &amp; Memory (Limit &amp; Request) definition for the Pooler ⬅ Back to Parent " />
 
     <title>PostgreSQL | CYBERTEC-PG-Operator</title>
 
@@ -34,7 +34,7 @@
     content="PostgreSQL"
   />
   <meta property="og:site_name" content="CYBERTEC-PG-Operator" />
-  <meta property="og:description" content=" postgresql Name Type required Description apiVersion string true acid.zalando.do/v1 kind string true metadata object true spec object true status object false spec Name Type required Description additionalVolumes array false List of additional volumes to mount in each container of the statefulset pod allowedSourceRanges array false The corresponding load balancer is accessible only to the networks defined by this parameter backup object false Enables the definition of a customised backup solution for the cluster clone object false Defines the clone-target for the Cluster connectionPooler object false Defines the configuration and settings for every type of a connectionPoolers (Primary and Replica). databases map false Defines the name of the database, they are created by the operator. See tutorial dockerImage string true Defines the used PostgreSQL-Container-Image for this cluster enableLogicalBackup boolean false Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest) enableConnectionPooler boolean false creates a ConnectionPooler for the primary Pod enableReplicaConnectionPooler boolean false creates a ConnectionPooler for the replica Pods enableMasterLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres primary enableReplicaLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres replicas enableMasterPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the primary ConnectionPooler enableReplicaPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the Replica-ConnectionPooler enableShmVolume boolean false Start a database pod without limitations on shm memory. By default Docker limit /dev/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation. env array false Allows to add own Envs (added as map) initContainers array false Enables the definition of init-containers logicalBackupSchedule string false Enables the scheduling of logical backups based on cron-syntax. Example: 30 00 * * * maintenanceWindows array false Enables the definition of maintenance windows for the cluster. Example: Sat:00:00-04:00 masterServiceAnnotations map false Enables the definition of annotations for the Primary Service monitor map false Enables monitoring on the basis of the defined image nodeAffinity map false Enables overwriting of the nodeAffinity numberOfInstances int true Number of nodes of the cluster [patroni](#patroni map false Enables the customisation of patroni settings podPriorityClassName string false a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance podAnnotations map false A map of key value pairs that gets attached as annotations to each pod created for the database. postgresql map false Enables the customisation of PostgreSQL settings and parameters preparedDatabases map false Allows you to define databases including owner, schemas and extension and have the operator generate them. See tutorial replicaServiceAnnotations map false Enables the definition of annotations for the Replica Service resources map true CPU &amp; Memory (Limit &amp; Request) definition for the Postgres container ServiceAnnotations map false A map of key value pairs that gets attached as annotations to each Service created for the database. sidecars array false Enables the definition of custom sidecars spiloFSGroup int false the Persistent Volumes for the Spilo pods in the StatefulSet will be owned and writable by the group ID specified. This will override the spilo_fsgroup operator parameter spiloRunAsGroup int false sets the group ID which should be used in the container to run the process. spiloRunAsUser int false Sets the user ID which should be used in the container to run the process. This must be set to run the container without root. standby map false Enables the creation of a standby cluster at the time of the creation of a new cluster streams array false Enables change data capture streams for defined database tables tde map false Enables the activation of TDE if a new cluster is created teamId string true name of the team the cluster belongs to. Will be removed soon tls map false Custom TLS certificate tolerations array false a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields: key, operator, value, effect and tolerationSeconds topologySpreadConstraints map false Enables the definition of a topologySpreadConstraint. See K8s-Documentation users map false a map of usernames to user flags for the users that should be created in the cluster by the operator. See tutorial usersWithSecretRotation list false list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally. usersWithInPlaceSecretRotation list false list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally. volume map true define the properties of the persistent storage that stores Postgres data back to parent" />
+  <meta property="og:description" content=" CRD for kind postgresql Name Type required Description apiVersion string true acid.zalando.do/v1 kind string true metadata object true spec object true status object false spec Name Type required Description additionalVolumes array false List of additional volumes to mount in each container of the statefulset pod allowedSourceRanges array false The corresponding load balancer is accessible only to the networks defined by this parameter backup object false Enables the definition of a customised backup solution for the cluster clone object false Defines the clone-target for the Cluster connectionPooler object false Defines the configuration and settings for every type of a connectionPoolers (Primary and Replica). databases map false Defines the name of the database, they are created by the operator. See tutorial dockerImage string true Defines the used PostgreSQL-Container-Image for this cluster enableLogicalBackup boolean false Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest) enableConnectionPooler boolean false creates a ConnectionPooler for the primary Pod enableReplicaConnectionPooler boolean false creates a ConnectionPooler for the replica Pods enableMasterLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres primary enableReplicaLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres replicas enableMasterPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the primary ConnectionPooler enableReplicaPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the Replica-ConnectionPooler enableShmVolume boolean false Start a database pod without limitations on shm memory. By default Docker limit /dev/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation. env array false Allows to add own Envs to the PostgreSQL containers initContainers array false Enables the definition of init-containers logicalBackupSchedule string false Enables the scheduling of logical backups based on cron-syntax. Example: 30 00 * * * maintenanceWindows array false Enables the definition of maintenance windows for the cluster. Example: Sat:00:00-04:00 masterServiceAnnotations map false Enables the definition of annotations for the Primary Service monitor map false Enables monitoring on the basis of the defined image nodeAffinity map false Enables overwriting of the nodeAffinity numberOfInstances int true Number of nodes of the cluster patroni map false Enables the customisation of patroni settings podPriorityClassName string false a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance podAnnotations map false A map of key value pairs that gets attached as annotations to each pod created for the database. postgresql map false Enables the customisation of PostgreSQL settings and parameters preparedDatabases map false Allows you to define databases including owner, schemas and extension and have the operator generate them. item See tutorial replicaServiceAnnotations map false Enables the definition of annotations for the Replica Service resources map true CPU &amp; Memory (Limit &amp; Request) definition for the Postgres container ServiceAnnotations map false A map of key value pairs that gets attached as annotations to each Service created for the database. sidecars array false Enables the definition of custom sidecars spiloFSGroup int false the Persistent Volumes for the Spilo pods in the StatefulSet will be owned and writable by the group ID specified. This will override the spilo_fsgroup operator parameter spiloRunAsGroup int false sets the group ID which should be used in the container to run the process. spiloRunAsUser int false Sets the user ID which should be used in the container to run the process. This must be set to run the container without root. standby map false Enables the creation of a standby cluster at the time of the creation of a new cluster streams array false Enables change data capture streams for defined database tables tde map false Enables the activation of TDE if a new cluster is created teamId string true name of the team the cluster belongs to. Will be removed soon tls map false Custom TLS certificate tolerations array false a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields: key, operator, value, effect and tolerationSeconds topologySpreadConstraints map false Enables the definition of a topologySpreadConstraint. See K8s-Documentation users map false a map of usernames to user flags for the users that should be created in the cluster by the operator. See tutorial usersWithSecretRotation list false list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally. usersWithInPlaceSecretRotation list false list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally. volume map true define the properties of the persistent storage that stores Postgres data ⬅ Back to Parent additionalVolumes Name Type required Description name string true Enables the definition of a pgbackrest-setup for the cluster mountPath string true Enables the definition of a pgbackrest-setup for the cluster targetContainers array true Enables the definition of a pgbackrest-setup for the cluster subPath string false Enables the definition of a pgbackrest-setup for the cluster isSubPathExpr boolean false Enables the definition of a pgbackrest-setup for the cluster volumeSource map true Enables the definition of a pgbackrest-setup for the cluster ⬅ Back to Parent backup Name Type required Description pgbackrest object false Enables the definition of a pgbackrest-setup for the cluster ⬅ Back to Parent clone Name Type required Description cluster string true Name of the cluster to be cloned. Random value if the cluster does not exist locally. pgbackrest object false Enables the definition of a pgbackrest-setup for the cluster ⬅ Back to Parent connectionPooler Name Type required Description numberOfInstances int true Number of Pods per Pooler mode string true pooling mode for pgBouncer (session, transaction, statement) schema string true Schema for Pooler (Default: pooler) user string true Username for Pooler (Default: pooler) maxDBConnections string true maxConnections to the DB-Pod(s) resources map true CPU &amp; Memory (Limit &amp; Request) definition for the Pooler ⬅ Back to Parent " />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/" />
 
@@ -51,7 +51,7 @@
 
   <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="PostgreSQL" />
-  <meta name="twitter:description" content=" postgresql Name Type required Description apiVersion string true acid.zalando.do/v1 kind string true metadata object true spec object true status object false spec Name Type required Description additionalVolumes array false List of additional volumes to mount in each container of the statefulset pod allowedSourceRanges array false The corresponding load balancer is accessible only to the networks defined by this parameter backup object false Enables the definition of a customised backup solution for the cluster clone object false Defines the clone-target for the Cluster connectionPooler object false Defines the configuration and settings for every type of a connectionPoolers (Primary and Replica). databases map false Defines the name of the database, they are created by the operator. See tutorial dockerImage string true Defines the used PostgreSQL-Container-Image for this cluster enableLogicalBackup boolean false Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest) enableConnectionPooler boolean false creates a ConnectionPooler for the primary Pod enableReplicaConnectionPooler boolean false creates a ConnectionPooler for the replica Pods enableMasterLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres primary enableReplicaLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres replicas enableMasterPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the primary ConnectionPooler enableReplicaPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the Replica-ConnectionPooler enableShmVolume boolean false Start a database pod without limitations on shm memory. By default Docker limit /dev/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation. env array false Allows to add own Envs (added as map) initContainers array false Enables the definition of init-containers logicalBackupSchedule string false Enables the scheduling of logical backups based on cron-syntax. Example: 30 00 * * * maintenanceWindows array false Enables the definition of maintenance windows for the cluster. Example: Sat:00:00-04:00 masterServiceAnnotations map false Enables the definition of annotations for the Primary Service monitor map false Enables monitoring on the basis of the defined image nodeAffinity map false Enables overwriting of the nodeAffinity numberOfInstances int true Number of nodes of the cluster [patroni](#patroni map false Enables the customisation of patroni settings podPriorityClassName string false a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance podAnnotations map false A map of key value pairs that gets attached as annotations to each pod created for the database. postgresql map false Enables the customisation of PostgreSQL settings and parameters preparedDatabases map false Allows you to define databases including owner, schemas and extension and have the operator generate them. See tutorial replicaServiceAnnotations map false Enables the definition of annotations for the Replica Service resources map true CPU &amp; Memory (Limit &amp; Request) definition for the Postgres container ServiceAnnotations map false A map of key value pairs that gets attached as annotations to each Service created for the database. sidecars array false Enables the definition of custom sidecars spiloFSGroup int false the Persistent Volumes for the Spilo pods in the StatefulSet will be owned and writable by the group ID specified. This will override the spilo_fsgroup operator parameter spiloRunAsGroup int false sets the group ID which should be used in the container to run the process. spiloRunAsUser int false Sets the user ID which should be used in the container to run the process. This must be set to run the container without root. standby map false Enables the creation of a standby cluster at the time of the creation of a new cluster streams array false Enables change data capture streams for defined database tables tde map false Enables the activation of TDE if a new cluster is created teamId string true name of the team the cluster belongs to. Will be removed soon tls map false Custom TLS certificate tolerations array false a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields: key, operator, value, effect and tolerationSeconds topologySpreadConstraints map false Enables the definition of a topologySpreadConstraint. See K8s-Documentation users map false a map of usernames to user flags for the users that should be created in the cluster by the operator. See tutorial usersWithSecretRotation list false list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally. usersWithInPlaceSecretRotation list false list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally. volume map true define the properties of the persistent storage that stores Postgres data back to parent" />
+  <meta name="twitter:description" content=" CRD for kind postgresql Name Type required Description apiVersion string true acid.zalando.do/v1 kind string true metadata object true spec object true status object false spec Name Type required Description additionalVolumes array false List of additional volumes to mount in each container of the statefulset pod allowedSourceRanges array false The corresponding load balancer is accessible only to the networks defined by this parameter backup object false Enables the definition of a customised backup solution for the cluster clone object false Defines the clone-target for the Cluster connectionPooler object false Defines the configuration and settings for every type of a connectionPoolers (Primary and Replica). databases map false Defines the name of the database, they are created by the operator. See tutorial dockerImage string true Defines the used PostgreSQL-Container-Image for this cluster enableLogicalBackup boolean false Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest) enableConnectionPooler boolean false creates a ConnectionPooler for the primary Pod enableReplicaConnectionPooler boolean false creates a ConnectionPooler for the replica Pods enableMasterLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres primary enableReplicaLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres replicas enableMasterPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the primary ConnectionPooler enableReplicaPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the Replica-ConnectionPooler enableShmVolume boolean false Start a database pod without limitations on shm memory. By default Docker limit /dev/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation. env array false Allows to add own Envs to the PostgreSQL containers initContainers array false Enables the definition of init-containers logicalBackupSchedule string false Enables the scheduling of logical backups based on cron-syntax. Example: 30 00 * * * maintenanceWindows array false Enables the definition of maintenance windows for the cluster. Example: Sat:00:00-04:00 masterServiceAnnotations map false Enables the definition of annotations for the Primary Service monitor map false Enables monitoring on the basis of the defined image nodeAffinity map false Enables overwriting of the nodeAffinity numberOfInstances int true Number of nodes of the cluster patroni map false Enables the customisation of patroni settings podPriorityClassName string false a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance podAnnotations map false A map of key value pairs that gets attached as annotations to each pod created for the database. postgresql map false Enables the customisation of PostgreSQL settings and parameters preparedDatabases map false Allows you to define databases including owner, schemas and extension and have the operator generate them. item See tutorial replicaServiceAnnotations map false Enables the definition of annotations for the Replica Service resources map true CPU &amp; Memory (Limit &amp; Request) definition for the Postgres container ServiceAnnotations map false A map of key value pairs that gets attached as annotations to each Service created for the database. sidecars array false Enables the definition of custom sidecars spiloFSGroup int false the Persistent Volumes for the Spilo pods in the StatefulSet will be owned and writable by the group ID specified. This will override the spilo_fsgroup operator parameter spiloRunAsGroup int false sets the group ID which should be used in the container to run the process. spiloRunAsUser int false Sets the user ID which should be used in the container to run the process. This must be set to run the container without root. standby map false Enables the creation of a standby cluster at the time of the creation of a new cluster streams array false Enables change data capture streams for defined database tables tde map false Enables the activation of TDE if a new cluster is created teamId string true name of the team the cluster belongs to. Will be removed soon tls map false Custom TLS certificate tolerations array false a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields: key, operator, value, effect and tolerationSeconds topologySpreadConstraints map false Enables the definition of a topologySpreadConstraint. See K8s-Documentation users map false a map of usernames to user flags for the users that should be created in the cluster by the operator. See tutorial usersWithSecretRotation list false list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally. usersWithInPlaceSecretRotation list false list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally. volume map true define the properties of the persistent storage that stores Postgres data ⬅ Back to Parent additionalVolumes Name Type required Description name string true Enables the definition of a pgbackrest-setup for the cluster mountPath string true Enables the definition of a pgbackrest-setup for the cluster targetContainers array true Enables the definition of a pgbackrest-setup for the cluster subPath string false Enables the definition of a pgbackrest-setup for the cluster isSubPathExpr boolean false Enables the definition of a pgbackrest-setup for the cluster volumeSource map true Enables the definition of a pgbackrest-setup for the cluster ⬅ Back to Parent backup Name Type required Description pgbackrest object false Enables the definition of a pgbackrest-setup for the cluster ⬅ Back to Parent clone Name Type required Description cluster string true Name of the cluster to be cloned. Random value if the cluster does not exist locally. pgbackrest object false Enables the definition of a pgbackrest-setup for the cluster ⬅ Back to Parent connectionPooler Name Type required Description numberOfInstances int true Number of Pods per Pooler mode string true pooling mode for pgBouncer (session, transaction, statement) schema string true Schema for Pooler (Default: pooler) user string true Username for Pooler (Default: pooler) maxDBConnections string true maxConnections to the DB-Pod(s) resources map true CPU &amp; Memory (Limit &amp; Request) definition for the Pooler ⬅ Back to Parent " />
 
 
   <script type="application/ld+json">
@@ -62,8 +62,8 @@
       "name": "PostgreSQL",
       "url" : "http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/",
       "headline": "PostgreSQL",
-      "description": " postgresql Name Type required Description apiVersion string true acid.zalando.do\/v1 kind string true metadata object true spec object true status object false spec Name Type required Description additionalVolumes array false List of additional volumes to mount in each container of the statefulset pod allowedSourceRanges array false The corresponding load balancer is accessible only to the networks defined by this parameter backup object false Enables the definition of a customised backup solution for the cluster clone object false Defines the clone-target for the Cluster connectionPooler object false Defines the configuration and settings for every type of a connectionPoolers (Primary and Replica). databases map false Defines the name of the database, they are created by the operator. See tutorial dockerImage string true Defines the used PostgreSQL-Container-Image for this cluster enableLogicalBackup boolean false Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest) enableConnectionPooler boolean false creates a ConnectionPooler for the primary Pod enableReplicaConnectionPooler boolean false creates a ConnectionPooler for the replica Pods enableMasterLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres primary enableReplicaLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres replicas enableMasterPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the primary ConnectionPooler enableReplicaPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the Replica-ConnectionPooler enableShmVolume boolean false Start a database pod without limitations on shm memory. By default Docker limit \/dev\/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation. env array false Allows to add own Envs (added as map) initContainers array false Enables the definition of init-containers logicalBackupSchedule string false Enables the scheduling of logical backups based on cron-syntax. Example: 30 00 * * * maintenanceWindows array false Enables the definition of maintenance windows for the cluster. Example: Sat:00:00-04:00 masterServiceAnnotations map false Enables the definition of annotations for the Primary Service monitor map false Enables monitoring on the basis of the defined image nodeAffinity map false Enables overwriting of the nodeAffinity numberOfInstances int true Number of nodes of the cluster [patroni](#patroni map false Enables the customisation of patroni settings podPriorityClassName string false a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance podAnnotations map false A map of key value pairs that gets attached as annotations to each pod created for the database. postgresql map false Enables the customisation of PostgreSQL settings and parameters preparedDatabases map false Allows you to define databases including owner, schemas and extension and have the operator generate them. See tutorial replicaServiceAnnotations map false Enables the definition of annotations for the Replica Service resources map true CPU \u0026 Memory (Limit \u0026 Request) definition for the Postgres container ServiceAnnotations map false A map of key value pairs that gets attached as annotations to each Service created for the database. sidecars array false Enables the definition of custom sidecars spiloFSGroup int false the Persistent Volumes for the Spilo pods in the StatefulSet will be owned and writable by the group ID specified. This will override the spilo_fsgroup operator parameter spiloRunAsGroup int false sets the group ID which should be used in the container to run the process. spiloRunAsUser int false Sets the user ID which should be used in the container to run the process. This must be set to run the container without root. standby map false Enables the creation of a standby cluster at the time of the creation of a new cluster streams array false Enables change data capture streams for defined database tables tde map false Enables the activation of TDE if a new cluster is created teamId string true name of the team the cluster belongs to. Will be removed soon tls map false Custom TLS certificate tolerations array false a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields: key, operator, value, effect and tolerationSeconds topologySpreadConstraints map false Enables the definition of a topologySpreadConstraint. See K8s-Documentation users map false a map of usernames to user flags for the users that should be created in the cluster by the operator. See tutorial usersWithSecretRotation list false list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally. usersWithInPlaceSecretRotation list false list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally. volume map true define the properties of the persistent storage that stores Postgres data back to parent",
-      "wordCount" : "1209",
+      "description": " CRD for kind postgresql Name Type required Description apiVersion string true acid.zalando.do\/v1 kind string true metadata object true spec object true status object false spec Name Type required Description additionalVolumes array false List of additional volumes to mount in each container of the statefulset pod allowedSourceRanges array false The corresponding load balancer is accessible only to the networks defined by this parameter backup object false Enables the definition of a customised backup solution for the cluster clone object false Defines the clone-target for the Cluster connectionPooler object false Defines the configuration and settings for every type of a connectionPoolers (Primary and Replica). databases map false Defines the name of the database, they are created by the operator. See tutorial dockerImage string true Defines the used PostgreSQL-Container-Image for this cluster enableLogicalBackup boolean false Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest) enableConnectionPooler boolean false creates a ConnectionPooler for the primary Pod enableReplicaConnectionPooler boolean false creates a ConnectionPooler for the replica Pods enableMasterLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres primary enableReplicaLoadBalancer boolean false Define whether to enable the load balancer pointing to the Postgres replicas enableMasterPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the primary ConnectionPooler enableReplicaPoolerLoadBalancer boolean false Define whether to enable the load balancer pointing to the Replica-ConnectionPooler enableShmVolume boolean false Start a database pod without limitations on shm memory. By default Docker limit \/dev\/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation. env array false Allows to add own Envs to the PostgreSQL containers initContainers array false Enables the definition of init-containers logicalBackupSchedule string false Enables the scheduling of logical backups based on cron-syntax. Example: 30 00 * * * maintenanceWindows array false Enables the definition of maintenance windows for the cluster. Example: Sat:00:00-04:00 masterServiceAnnotations map false Enables the definition of annotations for the Primary Service monitor map false Enables monitoring on the basis of the defined image nodeAffinity map false Enables overwriting of the nodeAffinity numberOfInstances int true Number of nodes of the cluster patroni map false Enables the customisation of patroni settings podPriorityClassName string false a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance podAnnotations map false A map of key value pairs that gets attached as annotations to each pod created for the database. postgresql map false Enables the customisation of PostgreSQL settings and parameters preparedDatabases map false Allows you to define databases including owner, schemas and extension and have the operator generate them. item See tutorial replicaServiceAnnotations map false Enables the definition of annotations for the Replica Service resources map true CPU \u0026 Memory (Limit \u0026 Request) definition for the Postgres container ServiceAnnotations map false A map of key value pairs that gets attached as annotations to each Service created for the database. sidecars array false Enables the definition of custom sidecars spiloFSGroup int false the Persistent Volumes for the Spilo pods in the StatefulSet will be owned and writable by the group ID specified. This will override the spilo_fsgroup operator parameter spiloRunAsGroup int false sets the group ID which should be used in the container to run the process. spiloRunAsUser int false Sets the user ID which should be used in the container to run the process. This must be set to run the container without root. standby map false Enables the creation of a standby cluster at the time of the creation of a new cluster streams array false Enables change data capture streams for defined database tables tde map false Enables the activation of TDE if a new cluster is created teamId string true name of the team the cluster belongs to. Will be removed soon tls map false Custom TLS certificate tolerations array false a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields: key, operator, value, effect and tolerationSeconds topologySpreadConstraints map false Enables the definition of a topologySpreadConstraint. See K8s-Documentation users map false a map of usernames to user flags for the users that should be created in the cluster by the operator. See tutorial usersWithSecretRotation list false list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally. usersWithInPlaceSecretRotation list false list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally. volume map true define the properties of the persistent storage that stores Postgres data ⬅ Back to Parent additionalVolumes Name Type required Description name string true Enables the definition of a pgbackrest-setup for the cluster mountPath string true Enables the definition of a pgbackrest-setup for the cluster targetContainers array true Enables the definition of a pgbackrest-setup for the cluster subPath string false Enables the definition of a pgbackrest-setup for the cluster isSubPathExpr boolean false Enables the definition of a pgbackrest-setup for the cluster volumeSource map true Enables the definition of a pgbackrest-setup for the cluster ⬅ Back to Parent backup Name Type required Description pgbackrest object false Enables the definition of a pgbackrest-setup for the cluster ⬅ Back to Parent clone Name Type required Description cluster string true Name of the cluster to be cloned. Random value if the cluster does not exist locally. pgbackrest object false Enables the definition of a pgbackrest-setup for the cluster ⬅ Back to Parent connectionPooler Name Type required Description numberOfInstances int true Number of Pods per Pooler mode string true pooling mode for pgBouncer (session, transaction, statement) schema string true Schema for Pooler (Default: pooler) user string true Username for Pooler (Default: pooler) maxDBConnections string true maxConnections to the DB-Pod(s) resources map true CPU \u0026 Memory (Limit \u0026 Request) definition for the Pooler ⬅ Back to Parent ",
+      "wordCount" : "1013",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -3319,11 +3319,11 @@
   >
     
     <div class="flex align-center gdoc-page__anchorwrap">
-    <h4 id="postgresql"
+    <h4 id="crd-for-kind-postgresql"
     >
-        postgresql
+        CRD for kind postgresql
     </h4>
-    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#postgresql" class="gdoc-page__anchor clip flex align-center" title="Anchor to: postgresql" aria-label="Anchor to: postgresql" href="#postgresql">
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#crd-for-kind-postgresql" class="gdoc-page__anchor clip flex align-center" title="Anchor to: CRD for kind postgresql" aria-label="Anchor to: CRD for kind postgresql" href="#crd-for-kind-postgresql">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -3398,7 +3398,7 @@
       <tr>
           <td><a
   class="gdoc-markdown__link"
-  href="additionalVolumes"
+  href="#additionalvolumes"
 >additionalVolumes</a></td>
           <td style="text-align: center">array</td>
           <td style="text-align: right">false</td>
@@ -3431,7 +3431,7 @@
       <tr>
           <td><a
   class="gdoc-markdown__link"
-  href="#connectionPooler"
+  href="#connectionpooler"
 >connectionPooler</a></td>
           <td style="text-align: center">object</td>
           <td style="text-align: right">false</td>
@@ -3507,12 +3507,12 @@
 >env</a></td>
           <td style="text-align: center">array</td>
           <td style="text-align: right">false</td>
-          <td style="text-align: right">Allows to add own Envs (added as map)</td>
+          <td style="text-align: right">Allows to add own Envs to the PostgreSQL containers</td>
       </tr>
       <tr>
           <td><a
   class="gdoc-markdown__link"
-  href="#initContainers"
+  href="#initcontainers"
 >initContainers</a></td>
           <td style="text-align: center">array</td>
           <td style="text-align: right">false</td>
@@ -3558,7 +3558,10 @@
           <td style="text-align: right">Number of nodes of the cluster</td>
       </tr>
       <tr>
-          <td>[patroni](#patroni</td>
+          <td><a
+  class="gdoc-markdown__link"
+  href="#patroni"
+>patroni</a></td>
           <td style="text-align: center">map</td>
           <td style="text-align: right">false</td>
           <td style="text-align: right">Enables the customisation of patroni settings</td>
@@ -3587,11 +3590,11 @@
       <tr>
           <td><a
   class="gdoc-markdown__link"
-  href="#preparedDatabases"
+  href="#prepareddatabases"
 >preparedDatabases</a></td>
           <td style="text-align: center">map</td>
           <td style="text-align: right">false</td>
-          <td style="text-align: right">Allows you to define databases including owner, schemas and extension and have the operator generate them. See <a
+          <td style="text-align: right">Allows you to define databases including owner, schemas and extension and have the operator generate them. item See <a
   class="gdoc-markdown__link"
   href="https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials/tree/main/cluster-tutorials/prepared_databases"
 >tutorial</a></td>
@@ -3745,10 +3748,7 @@
       </tr>
   </tbody>
 </table> </div>
-<p><a
-  class="gdoc-markdown__link"
-  href="#postgresql"
->back to parent</a></p>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="additionalvolumes"
@@ -3810,10 +3810,7 @@
       </tr>
   </tbody>
 </table> </div>
-<p><a
-  class="gdoc-markdown__link"
-  href="#spec"
->back to parent</a></p>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="backup"
@@ -3845,10 +3842,7 @@
       </tr>
   </tbody>
 </table> </div>
-<p><a
-  class="gdoc-markdown__link"
-  href="#spec"
->back to parent</a></p>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="clone"
@@ -3886,10 +3880,749 @@
       </tr>
   </tbody>
 </table> </div>
-<p><a
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="connectionpooler"
+    >
+        connectionPooler
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#connectionpooler" class="gdoc-page__anchor clip flex align-center" title="Anchor to: connectionPooler" aria-label="Anchor to: connectionPooler" href="#connectionpooler">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>numberOfInstances</td>
+          <td style="text-align: center">int</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Number of Pods per Pooler</td>
+      </tr>
+      <tr>
+          <td>mode</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">pooling mode for pgBouncer (session, transaction, statement)</td>
+      </tr>
+      <tr>
+          <td>schema</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Schema for Pooler (Default: pooler)</td>
+      </tr>
+      <tr>
+          <td>user</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Username for Pooler (Default: pooler)</td>
+      </tr>
+      <tr>
+          <td>maxDBConnections</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">maxConnections to the DB-Pod(s)</td>
+      </tr>
+      <tr>
+          <td><a
   class="gdoc-markdown__link"
-  href="#spec"
->back to parent</a></p>
+  href="#resources"
+>resources</a></td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">CPU &amp; Memory (Limit &amp; Request) definition for the Pooler</td>
+      </tr>
+  </tbody>
+</table> </div>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="hahahugoshortcode230s4hbhb"
+    >
+        <a href="javascript:history.back()">⬅ Back to Parent</a>
+    </h2>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode230s4hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: <a href="javascript:history.back()">⬅ Back to Parent</a>" aria-label="Anchor to: <a href="javascript:history.back()">⬅ Back to Parent</a>" href="#hahahugoshortcode230s4hbhb">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="env"
+    >
+        env
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#env" class="gdoc-page__anchor clip flex align-center" title="Anchor to: env" aria-label="Anchor to: env" href="#env">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>name</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Keyfield for the ENV-Entry</td>
+      </tr>
+      <tr>
+          <td>value</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Valuefield for the ENV-Entry</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="initcontainers"
+    >
+        initContainers
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#initcontainers" class="gdoc-page__anchor clip flex align-center" title="Anchor to: initContainers" aria-label="Anchor to: initContainers" href="#initcontainers">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>name</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Name for the container</td>
+      </tr>
+      <tr>
+          <td>image</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Docker-Image for container</td>
+      </tr>
+      <tr>
+          <td>command</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">to override CMD inside the container</td>
+      </tr>
+      <tr>
+          <td><a
+  class="gdoc-markdown__link"
+  href="#env"
+>env</a></td>
+          <td style="text-align: center">array</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Allows to add own Envs to the container</td>
+      </tr>
+      <tr>
+          <td><a
+  class="gdoc-markdown__link"
+  href="#resources"
+>resources</a></td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">CPU &amp; Memory (Limit &amp; Request) definition for the container</td>
+      </tr>
+      <tr>
+          <td><a
+  class="gdoc-markdown__link"
+  href="ports"
+>ports</a></td>
+          <td style="text-align: center">array</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Define open ports for the container</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="monitor"
+    >
+        monitor
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#monitor" class="gdoc-page__anchor clip flex align-center" title="Anchor to: monitor" aria-label="Anchor to: monitor" href="#monitor">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>image</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Docker-Image for the metric exporter</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="patroni"
+    >
+        patroni
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#patroni" class="gdoc-page__anchor clip flex align-center" title="Anchor to: patroni" aria-label="Anchor to: patroni" href="#patroni">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>failsafe_mode</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Patroni failsafe_mode parameter value. See the <a
+  class="gdoc-markdown__link"
+  href="https://patroni.readthedocs.io/en/master/dcs_failsafe_mode.html"
+>Patroni documentation</a> for more details.</td>
+      </tr>
+      <tr>
+          <td>initdb</td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">a map of key-value pairs describing initdb parameters</td>
+      </tr>
+      <tr>
+          <td>loop_wait</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Patroni <code>loop_wait</code> parameter value, optional. The default is set by the PostgreSQL image.</td>
+      </tr>
+      <tr>
+          <td>maximum_lag_on_failover</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Patroni <code>maximum_lag_on_failover</code> parameter value, optional. The default is set by the PostgreSQL image.</td>
+      </tr>
+      <tr>
+          <td><a
+  class="gdoc-markdown__link"
+  href="#multisite"
+>multisite</a></td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Multisite configuration - Check the <a
+  class="gdoc-markdown__link"
+  href="CYBERTEC-pg-operator/multisite/"
+>Documentation</a> first</td>
+      </tr>
+      <tr>
+          <td>pg_hba</td>
+          <td style="text-align: center">array</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">list of custom pg_hba lines to replace default ones. One entry per item (example: - hostssl all all 0.0.0.0/0 scram-sha-256)</td>
+      </tr>
+      <tr>
+          <td>retry_timeout</td>
+          <td style="text-align: center">int</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Patroni <code>retry_timeout</code> parameter value, optional. The default is set by the PostgreSQL image.</td>
+      </tr>
+      <tr>
+          <td><a
+  class="gdoc-markdown__link"
+  href="#slots"
+>slots</a></td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">permanent replication slots that Patroni preserves after failover by re-creating them on the new primary immediately. after doing a promote. Use preferred slot-name as map-item</td>
+      </tr>
+      <tr>
+          <td>synchronous_mode</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">DPatroni <code>synchronous_mode</code> parameter value, optional. The default is false.</td>
+      </tr>
+      <tr>
+          <td>synchronous_mode_strict</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Patroni <code>synchronous_mode_strict</code> parameter value, optional. The default is false.</td>
+      </tr>
+      <tr>
+          <td>synchronous_node_count</td>
+          <td style="text-align: center">int</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Patroni <code>synchronous_node_count</code> parameter value, optional. The default is set to 1. Only used if <code>synchronous_mode_strict</code> is true</td>
+      </tr>
+      <tr>
+          <td>ttl</td>
+          <td style="text-align: center">int</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Patroni <code>ttl</code> parameter value, optional. The default is set by the PostgreSQL image.</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="postgresql"
+    >
+        PostgreSQL
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#postgresql" class="gdoc-page__anchor clip flex align-center" title="Anchor to: PostgreSQL" aria-label="Anchor to: PostgreSQL" href="#postgresql">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>parameters</td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">PostgreSQL-Parameter as item (Example: max_connections: &ldquo;100&rdquo;). For help check out the <a
+  class="gdoc-markdown__link"
+  href="https://pgconfigurator.cybertec.at"
+>CYBERTEC PostgreSQL Configurator</a></td>
+      </tr>
+      <tr>
+          <td>version</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">a map of key-value pairs describing initdb parameters</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="prepareddatabases"
+    >
+        preparedDatabases
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#prepareddatabases" class="gdoc-page__anchor clip flex align-center" title="Anchor to: preparedDatabases" aria-label="Anchor to: preparedDatabases" href="#prepareddatabases">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>defaultUsers</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Creates roles with <code>LOGIN</code> permission and <code>_user</code>suffix. Default: false</td>
+      </tr>
+      <tr>
+          <td>extensions</td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Includes the Extensions as items (key:value). Key is the Name of the Extension and value the schema. Example: pgcrypto: public</td>
+      </tr>
+      <tr>
+          <td><a
+  class="gdoc-markdown__link"
+  href="#schemas"
+>schemas</a></td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Includes the schemanames as items.</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="resources"
+    >
+        resources
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#resources" class="gdoc-page__anchor clip flex align-center" title="Anchor to: resources" aria-label="Anchor to: resources" href="#resources">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a
+  class="gdoc-markdown__link"
+  href="#requests"
+>requests</a></td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">cpu and memory definitons (request.cpu / request.memory)</td>
+      </tr>
+      <tr>
+          <td><a
+  class="gdoc-markdown__link"
+  href="#limits"
+>limits</a></td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">cpu and memory definitons (limits.cpu / limits.memory)</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="sidecars"
+    >
+        sidecars
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#sidecars" class="gdoc-page__anchor clip flex align-center" title="Anchor to: sidecars" aria-label="Anchor to: sidecars" href="#sidecars">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>name</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Name for the container</td>
+      </tr>
+      <tr>
+          <td>image</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Docker-Image for container</td>
+      </tr>
+      <tr>
+          <td>command</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">to override CMD inside the container</td>
+      </tr>
+      <tr>
+          <td><a
+  class="gdoc-markdown__link"
+  href="#env"
+>env</a></td>
+          <td style="text-align: center">array</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Allows to add own Envs to the container</td>
+      </tr>
+      <tr>
+          <td><a
+  class="gdoc-markdown__link"
+  href="#resources"
+>resources</a></td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">CPU &amp; Memory (Limit &amp; Request) definition for the container</td>
+      </tr>
+      <tr>
+          <td><a
+  class="gdoc-markdown__link"
+  href="ports"
+>ports</a></td>
+          <td style="text-align: center">array</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Define open ports for the container</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="standby"
+    >
+        standby
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#standby" class="gdoc-page__anchor clip flex align-center" title="Anchor to: standby" aria-label="Anchor to: standby" href="#standby">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>standby_host</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Endpoint of the primary cluster</td>
+      </tr>
+      <tr>
+          <td>standby_port</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">PostgreSQL port of the primary cluster</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="streams"
+    >
+        streams
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#streams" class="gdoc-page__anchor clip flex align-center" title="Anchor to: streams" aria-label="Anchor to: streams" href="#streams">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>applicationId</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">The application name to which the database and CDC belongs to.</td>
+      </tr>
+      <tr>
+          <td>database</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Name of the database from where events will be published via Postgres&rsquo; logical decoding feature.</td>
+      </tr>
+      <tr>
+          <td>tables</td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Defines a map of table names and their properties (eventType, idColumn and payloadColumn).</td>
+      </tr>
+      <tr>
+          <td>batchSize</td>
+          <td style="text-align: center">int</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Defines the size of batches in which events are consumed. Defaults to 1</td>
+      </tr>
+      <tr>
+          <td>enableRecovery</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Flag to enable a dead letter queue recovery for all streams tables.</td>
+      </tr>
+      <tr>
+          <td>filter</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Streamed events can be filtered by a jsonpath expression for each table.</td>
+      </tr>
+      <tr>
+          <td>standby_port</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">PostgreSQL port of the primary cluster</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="tde"
+    >
+        tde
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#tde" class="gdoc-page__anchor clip flex align-center" title="Anchor to: tde" aria-label="Anchor to: tde" href="#tde">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>enable</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">enable TDE during initDB</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="tolerations"
+    >
+        tolerations
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#tolerations" class="gdoc-page__anchor clip flex align-center" title="Anchor to: tolerations" aria-label="Anchor to: tolerations" href="#tolerations">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>key</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Key for the taint attribute of the node</td>
+      </tr>
+      <tr>
+          <td>operator</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Comparison operator (Equal or Exists).</td>
+      </tr>
+      <tr>
+          <td>value</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Value of the taint (only relevant for ‘Equal’).</td>
+      </tr>
+      <tr>
+          <td>effect</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Specifies how the node handles the pod (NoExecute, NoSchedule, PreferNoSchedule)</td>
+      </tr>
+      <tr>
+          <td>tolerationSeconds</td>
+          <td style="text-align: center">int</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Specifies how long the pod tolerates the taint (only for NoExecute).</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="volume"
+    >
+        volume
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#volume" class="gdoc-page__anchor clip flex align-center" title="Anchor to: volume" aria-label="Anchor to: volume" href="#volume">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>size</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">the size of the target volume. Usual Kubernetes size modifiers, i.e. Gi or Mi, apply</td>
+      </tr>
+      <tr>
+          <td>storageClass</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">the name of the Kubernetes storage class to draw the persistent volume from. If empty K8s will choose the default StorageClass</td>
+      </tr>
+      <tr>
+          <td>subPath</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Subpath to use when mounting volume into PostgreSQL container.</td>
+      </tr>
+      <tr>
+          <td>iops</td>
+          <td style="text-align: center">int</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">When running the operator on AWS the latest generation of EBS volumes (gp3) allows for configuring the number of IOPS. Maximum is 16000</td>
+      </tr>
+      <tr>
+          <td>throughput</td>
+          <td style="text-align: center">int</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">When running the operator on AWS the latest generation of EBS volumes (gp3) allows for configuring the throughput in MB/s. Maximum is 1000</td>
+      </tr>
+      <tr>
+          <td>selector</td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">A label query over PVs to consider for binding. See the <a
+  class="gdoc-markdown__link"
+  href="https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
+>Kubernetes documentation</a> for details on using matchLabels and matchExpressions</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="volumesource"
@@ -3936,10 +4669,7 @@
       </tr>
   </tbody>
 </table> </div>
-<p><a
-  class="gdoc-markdown__link"
-  href="#additionalVolumes"
->back to parent</a></p>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="volumesource-persistentvolumeclaim"
@@ -3974,10 +4704,7 @@
       </tr>
   </tbody>
 </table> </div>
-<p><a
-  class="gdoc-markdown__link"
-  href="#volumeSource"
->back to parent</a></p>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="volumesource-configmap"
@@ -4006,10 +4733,261 @@
       </tr>
   </tbody>
 </table> </div>
-<p><a
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="multisite"
+    >
+        multisite
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#multisite" class="gdoc-page__anchor clip flex align-center" title="Anchor to: multisite" aria-label="Anchor to: multisite" href="#multisite">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>enable</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Enable multisite-feature</td>
+      </tr>
+      <tr>
+          <td><a
   class="gdoc-markdown__link"
-  href="#volumeSource"
->back to parent</a></p>
+  href="#etcd"
+>etcd</a></td>
+          <td style="text-align: center">map</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster</td>
+      </tr>
+      <tr>
+          <td>retry_timeout</td>
+          <td style="text-align: center">int</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Patroni <code>retry_timeout</code> parameter value for the global etcd, optional. The default is set by the PostgreSQL image.</td>
+      </tr>
+      <tr>
+          <td>site</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Name for the site of this cluster</td>
+      </tr>
+      <tr>
+          <td>ttl</td>
+          <td style="text-align: center">int</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Patroni <code>ttl</code> parameter value for the global etcd, optional. The default is set by the PostgreSQL image.</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="slots"
+    >
+        slots
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#slots" class="gdoc-page__anchor clip flex align-center" title="Anchor to: slots" aria-label="Anchor to: slots" href="#slots">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>type</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Slot-Type (<code>physical</code> or <code>logical</code>)</td>
+      </tr>
+      <tr>
+          <td>database</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Databasename - for logical replication only</td>
+      </tr>
+      <tr>
+          <td>plugin</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Plugin - for logical replication only</td>
+      </tr>
+  </tbody>
+</table> </div>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="hahahugoshortcode230s22hbhb"
+    >
+        <a href="javascript:history.back()">⬅ Back to Parent</a>
+    </h2>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode230s22hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: <a href="javascript:history.back()">⬅ Back to Parent</a>" aria-label="Anchor to: <a href="javascript:history.back()">⬅ Back to Parent</a>" href="#hahahugoshortcode230s22hbhb">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="schemas"
+    >
+        schemas
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#schemas" class="gdoc-page__anchor clip flex align-center" title="Anchor to: schemas" aria-label="Anchor to: schemas" href="#schemas">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>defaultRoles</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Creates schema exclusiv roles with <code>NOLOGIN</code> permission and <code>_user</code>suffix Default: true</td>
+      </tr>
+      <tr>
+          <td>defaultUsers</td>
+          <td style="text-align: center">boolean</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Creates schema exclusiv roles with <code>LOGIN</code> permission and <code>_user</code>suffix Default: false</td>
+      </tr>
+  </tbody>
+</table> </div>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="etcd"
+    >
+        etcd
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#etcd" class="gdoc-page__anchor clip flex align-center" title="Anchor to: etcd" aria-label="Anchor to: etcd" href="#etcd">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>hosts</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">list of etcd hosts, including etcd-client-port (default: <code>2379</code>), comma separated like in the etcd config</td>
+      </tr>
+      <tr>
+          <td>password</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Password for the global etcd</td>
+      </tr>
+      <tr>
+          <td>protocol</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">Protocol for the global etcd (http or https)</td>
+      </tr>
+      <tr>
+          <td>user</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">false</td>
+          <td style="text-align: right">Username for the global etcd</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="requests"
+    >
+        requests
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#requests" class="gdoc-page__anchor clip flex align-center" title="Anchor to: requests" aria-label="Anchor to: requests" href="#requests">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>cpu</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">cpu definitons Example: 1000m</td>
+      </tr>
+      <tr>
+          <td>memory</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">memory definitons Example: 1000Mi</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h4 id="limits"
+    >
+        limits
+    </h4>
+    <a data-clipboard-text="http://localhost:1313/CYBERTEC-pg-operator/crd/crd-postgresql/#limits" class="gdoc-page__anchor clip flex align-center" title="Anchor to: limits" aria-label="Anchor to: limits" href="#limits">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: right">required</th>
+          <th style="text-align: right">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>cpu</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">cpu definitons Example: 1000m</td>
+      </tr>
+      <tr>
+          <td>memory</td>
+          <td style="text-align: center">string</td>
+          <td style="text-align: right">true</td>
+          <td style="text-align: right">memory definitons Example: 1000Mi</td>
+      </tr>
+  </tbody>
+</table> </div>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="pgbackrest"
@@ -4061,17 +5039,17 @@
           <td style="text-align: right"></td>
       </tr>
       <tr>
-          <td>resources:</td>
+          <td><a
+  class="gdoc-markdown__link"
+  href="#resources"
+>resources</a></td>
           <td style="text-align: center">object</td>
           <td style="text-align: right">false</td>
-          <td style="text-align: right">Resource definition (limits.cpu, limits.memory &amp; requests.cpu &amp; requests.memory)</td>
+          <td style="text-align: right">CPU &amp; Memory (Limit &amp; Request) definition for the pgBackRest container</td>
       </tr>
   </tbody>
 </table> </div>
-<p><a
-  class="gdoc-markdown__link"
-  href="#backup"
->back to parent</a></p>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="configuration"
@@ -4109,10 +5087,7 @@
       </tr>
   </tbody>
 </table> </div>
-<p><a
-  class="gdoc-markdown__link"
-  href="#pgbackrest"
->back to parent</a></p>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="protection"
@@ -4141,10 +5116,7 @@
       </tr>
   </tbody>
 </table> </div>
-<p><a
-  class="gdoc-markdown__link"
-  href="#configuration"
->back to parent</a></p>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="repos"
@@ -4206,10 +5178,7 @@
       </tr>
   </tbody>
 </table> </div>
-<p><a
-  class="gdoc-markdown__link"
-  href="#pgbackrest"
->back to parent</a></p>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="schedule"
@@ -4250,10 +5219,7 @@
       </tr>
   </tbody>
 </table> </div>
-<p><a
-  class="gdoc-markdown__link"
-  href="#pgbackrest"
->back to parent</a></p>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h4 id="status"
@@ -4282,10 +5248,7 @@
       </tr>
   </tbody>
 </table> </div>
-<p><a
-  class="gdoc-markdown__link"
-  href="#postgresql"
->back to parent</a></p>
+<a href="javascript:history.back()">⬅ Back to Parent</a>
 
   </article>
 

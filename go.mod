@@ -1,6 +1,6 @@
 module github.com/cybertec-postgresql/cybertec-pg-operator
 
-go 1.21.7
+go 1.22.12
 
 require (
 	github.com/aws/aws-sdk-go v1.54.18

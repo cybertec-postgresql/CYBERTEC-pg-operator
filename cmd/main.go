@@ -70,7 +70,7 @@ func main() {
 		log.SetFormatter(&log.JSONFormatter{})
 	}
 	log.SetOutput(os.Stdout)
-	log.Printf("CYBERTEC-pg-operator %s\n", version)
+	log.Printf("CYBERTEC-pg-operator %s", version)
 
 	sigs := make(chan os.Signal, 1)
 	stop := make(chan struct{})

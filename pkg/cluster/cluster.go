@@ -127,16 +127,7 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec cpov1.Postgresq
 	if !ok {
 		passwordEncryption = "scram-sha-256"
 	}
-	if pgSpec.Spec.Monitoring != nil {
-		flg := cpov1.UserFlags{constants.RoleFlagLogin}
-		if pgSpec.Spec.Users != nil {
-			pgSpec.Spec.Users[monitorUsername] = flg
-		} else {
-			users := make(map[string]cpov1.UserFlags)
-			pgSpec.Spec.Users = users
-			pgSpec.Spec.Users[monitorUsername] = flg
-		}
-	}
+
 	cluster := &Cluster{
 		Config:         cfg,
 		Postgresql:     pgSpec,
@@ -359,12 +350,6 @@ func (c *Cluster) Create() (err error) {
 		}
 		c.logger.Info("a TDE secret was successfully created")
 	}
-	if c.Postgresql.Spec.Monitoring != nil {
-		if err := c.createMonitoringSecret(); err != nil {
-			return fmt.Errorf("could not create the monitoring secret: %v", err)
-		}
-		c.logger.Info("a monitoring secret was successfully created")
-	}
 
 	if specHasPgbackrestClone(&c.Postgresql.Spec) {
 		if err := c.createPgbackrestCloneConfig(); err != nil {
@@ -440,27 +425,8 @@ func (c *Cluster) Create() (err error) {
 	// something fails, report warning
 	c.createConnectionPooler(c.installLookupFunction)
 
-	//Setup cpo monitoring related sql statements
 	if c.Spec.Monitoring != nil {
-		c.logger.Info("setting up CPO monitoring")
-
-		// Open a new connection to the postgres db tp setup monitoring struc and permissions
-		if err := c.initDbConnWithName("postgres"); err != nil {
-			return fmt.Errorf("could not init database connection")
-		}
-		defer func() {
-			if c.connectionIsClosed() {
-				return
-			}
-
-			if err := c.closeDbConn(); err != nil {
-				c.logger.Errorf("could not close database connection: %v", err)
-			}
-		}()
-		_, err := c.pgDb.Exec(CPOmonitoring)
-		if err != nil {
-			return fmt.Errorf("CPO monitoring could not be setup: %v", err)
-		}
+		c.addMonitoringPermissions()
 	}
 
 	// remember slots to detect deletion from manifest
@@ -961,22 +927,10 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 			updateFailed = true
 		}
 	}
-	//Add monitoring user if required
-	if newSpec.Spec.Monitoring != nil {
-		flags := []string{constants.RoleFlagLogin}
-		monitorUser := map[string]spec.PgUser{
-			monitorUsername: {
-				Origin:    spec.RoleOriginInfrastructure,
-				Name:      monitorUsername,
-				Namespace: c.Namespace,
-				Flags:     flags,
-			},
-		}
-		c.pgUsers[monitorUsername] = monitorUser[monitorUsername]
-	}
 	//Check if monitoring user is added in manifest
 	if _, ok := newSpec.Spec.Users["cpo-exporter"]; ok {
 		c.logger.Error("creating user of name cpo-exporter is not allowed as it is reserved for monitoring")
+		updateFailed = true
 	}
 
 	// Users
@@ -990,11 +944,14 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 		// only when disabled in oldSpec and enabled in newSpec
 		needPoolerUser := c.needConnectionPoolerUser(&oldSpec.Spec, &newSpec.Spec)
 
+		// Check if Monitor-User needs to be created
+		needMonitoring := newSpec.Spec.Monitoring != nil && oldSpec.Spec.Monitoring == nil
+
 		// streams new replication user created who is initialized in initUsers
 		// only when streams were not specified in oldSpec but in newSpec
 		needStreamUser := len(oldSpec.Spec.Streams) == 0 && len(newSpec.Spec.Streams) > 0
 
-		if !sameUsers || !sameRotatedUsers || needPoolerUser || needStreamUser {
+		if !sameUsers || !sameRotatedUsers || needPoolerUser || needMonitoring || needStreamUser {
 			c.logger.Debugf("initialize users")
 			if err := c.initUsers(); err != nil {
 				c.logger.Errorf("could not init users - skipping sync of secrets and databases: %v", err)
@@ -1022,12 +979,6 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	// streams configuration
 	if len(oldSpec.Spec.Streams) == 0 && len(newSpec.Spec.Streams) > 0 {
 		syncStatefulSet = true
-	}
-
-	//sync monitoring container
-	if !reflect.DeepEqual(oldSpec.Spec.Monitoring, newSpec.Spec.Monitoring) {
-		syncStatefulSet = true
-		c.syncMonitoringSecret(oldSpec, newSpec)
 	}
 
 	//sync sts when there is a change in the pgbackrest secret, since we need to mount this
@@ -1211,6 +1162,17 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	if _, err := c.syncConnectionPooler(oldSpec, newSpec, c.installLookupFunction); err != nil {
 		c.logger.Errorf("could not sync connection pooler: %v", err)
 		updateFailed = true
+	}
+
+	// Check if we need to call addMonitoringPermissions-func
+	if c.Spec.Monitoring != nil && newSpec.Spec.Monitoring != nil && oldSpec.Spec.Monitoring == nil {
+		c.addMonitoringPermissions()
+	}
+	// Check if Monitoring-Secret needs to be removed
+	if newSpec.Spec.Monitoring == nil && oldSpec.Spec.Monitoring != nil {
+		if err := c.deleteMonitoringSecret(); err != nil {
+			return fmt.Errorf("could not remove the Monitoring secret: %v", err)
+		}
 	}
 
 	// streams
@@ -1457,6 +1419,22 @@ func (c *Cluster) initSystemUsers() error {
 
 		if _, exists := c.systemUsers[constants.ConnectionPoolerUserKeyName]; !exists {
 			c.systemUsers[constants.ConnectionPoolerUserKeyName] = connectionPoolerUser
+		}
+	}
+
+	// if the monitor object has been created, a monitoring user is required.
+	if c.Spec.Monitoring != nil {
+
+		MonitoringUser := spec.PgUser{
+			Origin:    spec.RoleMonitoring,
+			Name:      constants.MonitoringUserKeyName,
+			Namespace: c.Namespace,
+			Flags:     []string{constants.RoleFlagLogin},
+			Password:  util.RandomPassword(constants.PasswordLength),
+		}
+
+		if _, exists := c.systemUsers[constants.MonitoringUserKeyName]; !exists {
+			c.systemUsers[constants.MonitoringUserKeyName] = MonitoringUser
 		}
 	}
 

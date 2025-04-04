@@ -33,6 +33,7 @@ const (
 	RoleOriginSystem
 	RoleOriginBootstrap
 	RoleOriginConnectionPooler
+	RoleMonitoring
 	RoleOriginStream
 )
 
@@ -198,6 +199,8 @@ func (r RoleOrigin) String() string {
 		return "bootstrapped role"
 	case RoleOriginConnectionPooler:
 		return "connection pooler role"
+	case RoleMonitoring:
+		return "Monitoring role"
 	default:
 		panic(fmt.Sprintf("bogus role origin value %d", r))
 	}

@@ -192,11 +192,6 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		return fmt.Errorf("error refreshing restore configmap: %v", err)
 	}
 
-	// sync monitoring
-	if err = c.syncMonitoringSecret(&oldSpec, newSpec); err != nil {
-		return fmt.Errorf("could not sync monitoring: %v", err)
-	}
-
 	if err = c.initUsers(); err != nil {
 		err = fmt.Errorf("could not init users: %v", err)
 		return err
@@ -1032,6 +1027,13 @@ func (c *Cluster) updateSecret(
 			userMap = c.systemUsers
 		}
 	}
+	// use system user when Monitoring is enabled and Monitoring user is specfied in manifest
+	if _, exists := c.systemUsers[constants.MonitoringUserKeyName]; exists {
+		if secretUsername == c.systemUsers[constants.MonitoringUserKeyName].Name {
+			userKey = constants.MonitoringUserKeyName
+			userMap = c.systemUsers
+		}
+	}
 	// use system user when streams are defined and fes_user is specfied in manifest
 	if _, exists := c.systemUsers[constants.EventStreamUserKeyName]; exists {
 		if secretUsername == c.systemUsers[constants.EventStreamUserKeyName].Name {
@@ -1682,37 +1684,6 @@ func (c *Cluster) createTDESecret() error {
 	return nil
 }
 
-func (c *Cluster) createMonitoringSecret() error {
-	c.logger.Info("creating Monitoring secret")
-	c.setProcessName("creating Monitoring secret")
-	generatedKey := make([]byte, 16)
-	rand.Read(generatedKey)
-
-	generatedSecret := v1.Secret{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      c.getMonitoringSecretName(),
-			Namespace: c.Namespace,
-			Labels:    c.labelsSet(true),
-		},
-		Type: v1.SecretTypeOpaque,
-		Data: map[string][]byte{
-			"username": []byte(monitorUsername),
-			"password": []byte(fmt.Sprintf("%x", generatedKey)),
-		},
-	}
-	secret, err := c.KubeClient.Secrets(generatedSecret.Namespace).Create(context.TODO(), &generatedSecret, metav1.CreateOptions{})
-	if err == nil {
-		c.Secrets[secret.UID] = secret
-		c.logger.Debugf("created new secret %s, namespace: %s, uid: %s", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, secret.UID)
-	} else {
-		if !k8sutil.ResourceAlreadyExists(err) {
-			return fmt.Errorf("could not create secret for Monitoring %s: in namespace %s: %v", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, err)
-		}
-	}
-
-	return nil
-}
-
 // delete monitoring secret
 func (c *Cluster) deleteMonitoringSecret() (err error) {
 	// Repeat the same for the secret object
@@ -1728,47 +1699,6 @@ func (c *Cluster) deleteMonitoringSecret() (err error) {
 		if err = c.deleteSecret(secret.UID, *secret); err != nil {
 			return fmt.Errorf("could not delete monitoring secret: %v", err)
 		}
-	}
-	return nil
-}
-
-// Sync monitoring
-// In case of monitoring is added/deleted, we need to
-// 1. Update sts to in/exclude the exporter contianer
-// 2. Add/Delete the respective user
-// 3. Add/Delete the respective secret
-func (c *Cluster) syncMonitoringSecret(oldSpec, newSpec *cpov1.Postgresql) error {
-	c.logger.Info("syncing Monitoring secret")
-	c.setProcessName("syncing Monitoring secret")
-
-	if newSpec.Spec.Monitoring != nil && oldSpec.Spec.Monitoring == nil {
-		// Create monitoring secret
-		if err := c.createMonitoringSecret(); err != nil {
-			return fmt.Errorf("could not create the monitoring secret: %v", err)
-		} else {
-			flags := []string{constants.RoleFlagLogin}
-			monitorUser := map[string]spec.PgUser{
-				monitorUsername: {
-					Origin:    spec.RoleOriginInfrastructure,
-					Name:      monitorUsername,
-					Namespace: c.Namespace,
-					Flags:     flags,
-				},
-			}
-			c.pgUsers[monitorUsername] = monitorUser[monitorUsername]
-		}
-		c.logger.Info("monitoring secret was successfully created")
-	} else if newSpec.Spec.Monitoring == nil && oldSpec.Spec.Monitoring != nil {
-		// Delete the monitoring secret
-		if err := c.deleteMonitoringSecret(); err != nil {
-			return fmt.Errorf("could not delete the monitoring secret: %v", err)
-		} else {
-			// Delete the monitoring user
-			monitorUser := c.pgUsers[monitorUsername]
-			monitorUser.Deleted = true
-			c.pgUsers[monitorUsername] = monitorUser
-		}
-		c.logger.Info("monitoring secret was successfully deleted")
 	}
 	return nil
 }

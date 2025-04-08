@@ -96,6 +96,7 @@ type PostgresSpec struct {
 	Backup                  *Backup        `json:"backup,omitempty"`
 	TDE                     *TDE           `json:"tde,omitempty"`
 	Monitoring              *Monitoring    `json:"monitor,omitempty"`
+	NodeType                []NodeType     `json:"nodeType,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -320,6 +321,11 @@ type TDE struct {
 // Monitoring Sidecar defines a container to be run in the same pod as the Postgres container.
 type Monitoring struct {
 	Image string `json:"image,omitempty"`
+}
+
+// Monitoring Sidecar defines a container to be run in the same pod as the Postgres container.
+type NodeType struct {
+	Volume Volume `json:"volume,omitempty"`
 }
 
 // Multisite enables cross Kubernetes replication coordinated via etcd

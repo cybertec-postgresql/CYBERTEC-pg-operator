@@ -25,7 +25,6 @@ const (
 
 	// clusterrole for service
 	ClusterPods PostgresRole = "clusterpods"
-
 )
 
 // PodEventType represents the type of a pod-related event
@@ -66,7 +65,7 @@ type ClusterStatus struct {
 	Namespace           string
 	MasterService       *v1.Service
 	ReplicaService      *v1.Service
-	ClusterPodsService	*v1.Service
+	ClusterPodsService  *v1.Service
 	MasterEndpoint      *v1.Endpoints
 	ReplicaEndpoint     *v1.Endpoints
 	StatefulSet         *appsv1.StatefulSet

@@ -81,8 +81,9 @@ type spiloConfiguration struct {
 	Bootstrap            pgBootstrap            `json:"bootstrap"`
 }
 
-func (c *Cluster) statefulSetName() string {
-	return c.Name
+func (c *Cluster) statefulSetName(nodeName string) string {
+	stsName := c.Name + nodeName
+	return stsName
 }
 
 func (c *Cluster) endpointName(role PostgresRole) string {
@@ -1292,7 +1293,7 @@ func generateSpiloReadinessProbe() *v1.Probe {
 	}
 }
 
-func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.StatefulSet, error) {
+func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec, nodeName string) (*appsv1.StatefulSet, error) {
 
 	var (
 		err                 error
@@ -1598,7 +1599,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 
 	statefulSet := &appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:        c.statefulSetName(),
+			Name:        c.statefulSetName(nodeName),
 			Namespace:   c.Namespace,
 			Labels:      c.labelsSetWithType(true, TYPE_POSTGRESQL),
 			Annotations: c.AnnotationsToPropagate(c.annotationsSet(nil)),

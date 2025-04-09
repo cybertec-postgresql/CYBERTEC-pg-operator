@@ -1459,6 +1459,12 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							Schema: &apiextv1.JSONSchemaProps{
 								Type: "object",
 								Properties: map[string]apiextv1.JSONSchemaProps{
+									"name": {
+										Type: "string",
+									},
+									"citusGroup": {
+										Type: "integer",
+									},
 									"volume": {
 										Type:     "object",
 										Required: []string{"size"},

@@ -62,7 +62,7 @@ type kubeResources struct {
 	Services            map[PostgresRole]*v1.Service
 	Endpoints           map[PostgresRole]*v1.Endpoints
 	Secrets             map[types.UID]*v1.Secret
-	Statefulset         *appsv1.StatefulSet
+	Statefulset         map[string]*appsv1.StatefulSet
 	PodDisruptionBudget *policyv1.PodDisruptionBudget
 	//Pods are treated separately
 	//PVCs are treated separately
@@ -362,15 +362,31 @@ func (c *Cluster) Create() (err error) {
 		c.waitForPrimaryLoadBalancerIp()
 	}
 
-	if c.Statefulset != nil {
-		return fmt.Errorf("statefulset already exists in the cluster")
+	//If ‘NodeType’ loops over the items
+	if c.Spec.NodeType != nil {
+		for i, node := range c.Spec.NodeType {
+			c.logger.Debugf("Statefulset-Loop: %s", i)
+			if c.Statefulset[node.Name] != nil {
+				return fmt.Errorf("statefulset already exists in the cluster")
+			}
+			ss, err = c.createStatefulSet(false, node.Name)
+			if err != nil {
+				return fmt.Errorf("could not create statefulset: %v", err)
+			}
+			c.logger.Infof("statefulset %q has been successfully created", util.NameFromMeta(ss.ObjectMeta))
+			c.eventRecorder.Eventf(c.GetReference(), v1.EventTypeNormal, "StatefulSet", "Statefulset %q has been successfully created", util.NameFromMeta(ss.ObjectMeta))
+		}
+	} else {
+		if c.Statefulset["0"] != nil {
+			return fmt.Errorf("statefulset already exists in the cluster")
+		}
+		ss, err = c.createStatefulSet(true, "0")
+		if err != nil {
+			return fmt.Errorf("could not create statefulset: %v", err)
+		}
+		c.logger.Infof("statefulset %q has been successfully created", util.NameFromMeta(ss.ObjectMeta))
+		c.eventRecorder.Eventf(c.GetReference(), v1.EventTypeNormal, "StatefulSet", "Statefulset %q has been successfully created", util.NameFromMeta(ss.ObjectMeta))
 	}
-	ss, err = c.createStatefulSet()
-	if err != nil {
-		return fmt.Errorf("could not create statefulset: %v", err)
-	}
-	c.logger.Infof("statefulset %q has been successfully created", util.NameFromMeta(ss.ObjectMeta))
-	c.eventRecorder.Eventf(c.GetReference(), v1.EventTypeNormal, "StatefulSet", "Statefulset %q has been successfully created", util.NameFromMeta(ss.ObjectMeta))
 
 	c.logger.Info("waiting for the cluster being ready")
 
@@ -1048,6 +1064,8 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 
 	// Statefulset
 	func() {
+		//ss, err = c.createStatefulSet(false, node.Name)
+
 		oldSs, err := c.generateStatefulSet(&oldSpec.Spec)
 		if err != nil {
 			c.logger.Errorf("could not generate old statefulset spec: %v", err)

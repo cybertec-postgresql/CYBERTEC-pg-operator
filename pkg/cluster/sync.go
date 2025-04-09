@@ -502,12 +502,7 @@ func (c *Cluster) syncStatefulSet() error {
 	if err != nil {
 		c.logger.Warnf("could not list pods of the statefulset: %v", err)
 	}
-	if c.Spec.NodeType != nil {
-		c.logger.Debugf("Detected Nodetypes")
-		for i, node := range c.Spec.NodeType {
-			c.logger.Debugf("NodeType #%d: volume name = %s, size = %s", i, node.Volume.Size, node.Volume.StorageClass)
-		}
-	}
+
 	if c.Spec.Monitoring != nil { // XXX: Why are we generating a sidecar in the sync code?
 		monitor := c.Spec.Monitoring
 		sidecar := &cpov1.Sidecar{

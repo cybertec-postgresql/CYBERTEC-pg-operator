@@ -67,7 +67,7 @@ func (c *Cluster) listResources() error {
 	return nil
 }
 
-func (c *Cluster) createStatefulSet() (*appsv1.StatefulSet, error) {
+func (c *Cluster) createStatefulSet(oldSTSMethod bool, nodeName string) (*appsv1.StatefulSet, error) {
 	c.setProcessName("creating statefulset")
 	// check if it's allowed that spec contains initContainers
 	if c.Spec.InitContainers != nil && len(c.Spec.InitContainers) > 0 &&
@@ -96,7 +96,7 @@ func (c *Cluster) createStatefulSet() (*appsv1.StatefulSet, error) {
 		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
 	}
 
-	statefulSetSpec, err := c.generateStatefulSet(&c.Spec)
+	statefulSetSpec, err := c.generateStatefulSet(&c.Spec, nodeName)
 	if err != nil {
 		return nil, fmt.Errorf("could not generate statefulset: %v", err)
 	}
@@ -107,7 +107,7 @@ func (c *Cluster) createStatefulSet() (*appsv1.StatefulSet, error) {
 	if err != nil {
 		return nil, err
 	}
-	c.Statefulset = statefulSet
+	c.Statefulset[nodeName] = statefulSet
 	c.logger.Debugf("created new statefulset %q, uid: %q", util.NameFromMeta(statefulSet.ObjectMeta), statefulSet.UID)
 
 	return statefulSet, nil

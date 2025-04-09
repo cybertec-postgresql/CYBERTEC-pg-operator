@@ -20,6 +20,12 @@ import (
 )
 
 func (c *Cluster) syncVolumes() error {
+	if c.Spec.NodeType != nil {
+		c.logger.Debugf("Detected Nodetypes")
+		for i, node := range c.Spec.NodeType {
+			c.logger.Debugf("NodeType #%d: volume name =  %s, size = %s, storageClass = %s", i, node.Name, node.Volume.Size, node.Volume.StorageClass)
+		}
+	}
 	c.logger.Debugf("syncing volumes using %q storage resize mode", c.OpConfig.StorageResizeMode)
 	var err error
 

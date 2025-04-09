@@ -325,7 +325,9 @@ type Monitoring struct {
 
 // Monitoring Sidecar defines a container to be run in the same pod as the Postgres container.
 type NodeType struct {
-	Volume Volume `json:"volume,omitempty"`
+	Name       string `json:"name,omitempty"`
+	CitusGroup int    `json:"citusGroup,omitempty"`
+	Volume     Volume `json:"volume,omitempty"`
 }
 
 // Multisite enables cross Kubernetes replication coordinated via etcd

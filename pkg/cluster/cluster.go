@@ -362,25 +362,22 @@ func (c *Cluster) Create() (err error) {
 		c.waitForPrimaryLoadBalancerIp()
 	}
 
-	//If ‘NodeType’ loops over the items
+	//If ‘NodeType’ loops over the items, else add single sts
+	var tempNodeType []string
 	if c.Spec.NodeType != nil {
-		for i, node := range c.Spec.NodeType {
-			c.logger.Debugf("Statefulset-Loop: %s", i)
-			if c.Statefulset[node.Name] != nil {
-				return fmt.Errorf("statefulset already exists in the cluster")
-			}
-			ss, err = c.createStatefulSet(false, node.Name)
-			if err != nil {
-				return fmt.Errorf("could not create statefulset: %v", err)
-			}
-			c.logger.Infof("statefulset %q has been successfully created", util.NameFromMeta(ss.ObjectMeta))
-			c.eventRecorder.Eventf(c.GetReference(), v1.EventTypeNormal, "StatefulSet", "Statefulset %q has been successfully created", util.NameFromMeta(ss.ObjectMeta))
+		for _, node := range c.Spec.NodeType {
+			tempNodeType = append(tempNodeType, node.Name)
 		}
 	} else {
-		if c.Statefulset["0"] != nil {
+		tempNodeType = []string{"0"}
+	}
+
+	for i, typeName := range tempNodeType {
+		c.logger.Debugf("Statefulset-Loop: %s", i)
+		if c.Statefulset[typeName] != nil {
 			return fmt.Errorf("statefulset already exists in the cluster")
 		}
-		ss, err = c.createStatefulSet(true, "0")
+		ss, err = c.createStatefulSet(false, typeName)
 		if err != nil {
 			return fmt.Errorf("could not create statefulset: %v", err)
 		}
@@ -1064,71 +1061,56 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 
 	// Statefulset
 	func() {
-		oldSs := make(map[string]*appsv1.StatefulSet)
-		newSs := make(map[string]*appsv1.StatefulSet)
+
+		var tempNodeType1 []string
+
 		if c.Spec.NodeType != nil {
-			for i, node := range c.Spec.NodeType {
-				c.logger.Debugf("Statefulset-Loop: %s", i)
-
-				oldSsTemp, err := c.generateStatefulSet(&oldSpec.Spec, node.Name)
-				if err != nil {
-					c.logger.Errorf("could not generate old statefulset spec: %v", err)
-					updateFailed = true
-					return
-				} else {
-					oldSs[node.Name] = oldSsTemp
-				}
-
-				newSsTemp, err := c.generateStatefulSet(&newSpec.Spec, node.Name)
-				if err != nil {
-					c.logger.Errorf("could not generate new statefulset spec: %v", err)
-					updateFailed = true
-					return
-				} else {
-					newSs[node.Name] = newSsTemp
-				}
-
+			for _, node := range c.Spec.NodeType {
+				tempNodeType = append(tempNodeType, node.Name)
 			}
 		} else {
-			oldSsTemp, err := c.generateStatefulSet(&oldSpec.Spec, "0")
+			tempNodeType = []string{"0"}
+		}
+
+		for i, typeName := range tempNodeType {
+			c.logger.Debugf("Statefulset-Loop: %s", i)
+
+			oldSs, err := c.generateStatefulSet(&oldSpec.Spec, typeName)
 			if err != nil {
 				c.logger.Errorf("could not generate old statefulset spec: %v", err)
 				updateFailed = true
 				return
-			} else {
-				oldSs["0"] = oldSsTemp
 			}
 
-			newSsTemp, err := c.generateStatefulSet(&newSpec.Spec, "0")
+			newSs, err := c.generateStatefulSet(&newSpec.Spec, typeName)
 			if err != nil {
 				c.logger.Errorf("could not generate new statefulset spec: %v", err)
 				updateFailed = true
 				return
-			} else {
-				newSs["0"] = newSsTemp
 			}
-		}
 
-		if c.restoreInProgress() {
-			c.applyRestoreStatefulSetSyncOverrides(newSs, oldSs)
-		}
-
-		if syncStatefulSet || !reflect.DeepEqual(oldSs, newSs) {
-			c.logger.Debugf("syncing statefulsets")
-			syncStatefulSet = false
-			// TODO: avoid generating the StatefulSet object twice by passing it to syncStatefulSet
-			if err := c.syncStatefulSet(); err != nil {
-				c.logger.Errorf("could not sync statefulsets: %v", err)
-				updateFailed = true
+			if c.restoreInProgress() {
+				c.applyRestoreStatefulSetSyncOverrides(newSs, oldSs)
 			}
-			// TODO: avoid generating the StatefulSet object twice by passing it to syncStatefulSet
-			if err := c.syncStatefulSet(); err != nil {
-				c.logger.Errorf("could not sync statefulsets: %v", err)
-				updateFailed = true
-				return
+
+			if syncStatefulSet || !reflect.DeepEqual(oldSs, newSs) {
+				c.logger.Debugf("syncing statefulsets")
+				syncStatefulSet = false
+				// TODO: avoid generating the StatefulSet object twice by passing it to syncStatefulSet
+				if err := c.syncStatefulSet(); err != nil {
+					c.logger.Errorf("could not sync statefulsets: %v", err)
+					updateFailed = true
+				}
+				// TODO: avoid generating the StatefulSet object twice by passing it to syncStatefulSet
+				if err := c.syncStatefulSet(); err != nil {
+					c.logger.Errorf("could not sync statefulsets: %v", err)
+					updateFailed = true
+					return
+				}
 			}
 
 		}
+
 	}()
 
 	// pod disruption budget

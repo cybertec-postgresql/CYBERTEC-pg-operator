@@ -1062,7 +1062,7 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	// Statefulset
 	func() {
 
-		var tempNodeType1 []string
+		var tempNodeType []string
 
 		if c.Spec.NodeType != nil {
 			for _, node := range c.Spec.NodeType {

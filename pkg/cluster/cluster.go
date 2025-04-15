@@ -1064,20 +1064,49 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 
 	// Statefulset
 	func() {
-		//ss, err = c.createStatefulSet(false, node.Name)
+		oldSs := make(map[string]*appsv1.StatefulSet)
+		newSs := make(map[string]*appsv1.StatefulSet)
+		if c.Spec.NodeType != nil {
+			for i, node := range c.Spec.NodeType {
+				c.logger.Debugf("Statefulset-Loop: %s", i)
 
-		oldSs, err := c.generateStatefulSet(&oldSpec.Spec)
-		if err != nil {
-			c.logger.Errorf("could not generate old statefulset spec: %v", err)
-			updateFailed = true
-			return
-		}
+				oldSsTemp, err := c.generateStatefulSet(&oldSpec.Spec, node.Name)
+				if err != nil {
+					c.logger.Errorf("could not generate old statefulset spec: %v", err)
+					updateFailed = true
+					return
+				} else {
+					oldSs[node.Name] = oldSsTemp
+				}
 
-		newSs, err := c.generateStatefulSet(&newSpec.Spec)
-		if err != nil {
-			c.logger.Errorf("could not generate new statefulset spec: %v", err)
-			updateFailed = true
-			return
+				newSsTemp, err := c.generateStatefulSet(&newSpec.Spec, node.Name)
+				if err != nil {
+					c.logger.Errorf("could not generate new statefulset spec: %v", err)
+					updateFailed = true
+					return
+				} else {
+					newSs[node.Name] = newSsTemp
+				}
+
+			}
+		} else {
+			oldSsTemp, err := c.generateStatefulSet(&oldSpec.Spec, "0")
+			if err != nil {
+				c.logger.Errorf("could not generate old statefulset spec: %v", err)
+				updateFailed = true
+				return
+			} else {
+				oldSs["0"] = oldSsTemp
+			}
+
+			newSsTemp, err := c.generateStatefulSet(&newSpec.Spec, "0")
+			if err != nil {
+				c.logger.Errorf("could not generate new statefulset spec: %v", err)
+				updateFailed = true
+				return
+			} else {
+				newSs["0"] = newSsTemp
+			}
 		}
 
 		if c.restoreInProgress() {

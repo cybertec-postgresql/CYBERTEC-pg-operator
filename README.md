@@ -11,9 +11,9 @@ Fully integrated with GitOps/CI/CD workflows and infrastructure-as-code principl
 ## Highlights
 
 - **Completely declarative configuration** via custom resources
-- Highly available PostgreSQL clusters** with [Patroni](https://github.com/zalando/patroni)
-- Seamless integration into CI/CD pipelines** (e.g. ArgoCD, Flux)
-- Compatible with OpenShift**
+- Highly available **PostgreSQL clusters** with [Patroni](https://github.com/zalando/patroni)
+- Seamless integration into **CI/CD pipelines** (e.g. ArgoCD, Flux)
+- Compatible with **OpenShift**
 - **Support for cloud & on-prem environments**
 
 ---
@@ -26,7 +26,8 @@ Fully integrated with GitOps/CI/CD workflows and infrastructure-as-code principl
 - In-place major upgrades of all clusters (fast & secure)
 - Backup & restore to PVC, AWS, GCS and Azure
 - Client-side backup encryption
-- Support for standby clusters & multi-site topologies
+- Support for standby clusters
+- Support for Multisite-Clusters with automatic failover
 - User & credential management at K8s level
 - Support for own TLS certificates
 - **TDE** integration with **[CYBERTEC PGEE](https://www.cybertec-postgresql.com/en/products/cybertec-postgresql-enterprise-edition/)**
@@ -40,9 +41,9 @@ The CYBERTEC PG Operator is designed from the ground up with a **cloud-native ap
 
 - **Declarative configuration** via Kubernetes CRDs - completely in the spirit of *Infrastructure as Code*.
 - **Self-healing and automation** through Kubernetes and [Patroni](https://github.com/zalando/patroni), including automatic failover, leader election and rolling updates.
-- CI/CD-friendly**: No direct access to the Kubernetes API required - ideal for GitOps workflows and automated deployments.
-- Platform-independent**: Runs on any Kubernetes-compatible infrastructure - whether public cloud, on-prem or hybrid.
-- API-driven control**: Patroni provides a REST API to query the cluster state and trigger failover - essential for dynamic, service-oriented architectures.
+- **CI/CD-friendly**: No direct access to the Kubernetes API required - ideal for GitOps workflows and automated deployments.
+- **Platform-independent**: Runs on any Kubernetes-compatible infrastructure - whether public cloud, on-prem or hybrid.
+- **API-driven control**: The operator uses the Kubernetes API for declarative control and orchestrates critical processes such as failover, leader election and replication internally via Patroni - essential for dynamic, service-oriented architectures.
 
 This architecture forms the basis for a modern, highly available and scalable PostgreSQL platform in the cloud era.
 

@@ -57,12 +57,12 @@ This architecture forms the basis for a modern, highly available and scalable Po
 - Streaming replication via **Patroni**
 - Fully integrated backup & PITR with `pgBackRest` or `pg_basebackup`
 - Extensions like:
-- [PostGIS](https://postgis.net/)
-- [pgAudit](https://github.com/pgaudit/pgaudit)
-- [TimescaleDB](https://github.com/timescale/timescaledb)
-- [pg_cron](https://github.com/citusdata/pg_cron)
-- [credcheck](https://github.com/MigOpsRepos/credcheck)
-- [set_user](https://github.com/pgaudit/set_user)
+    - [PostGIS](https://postgis.net/)
+    - [pgAudit](https://github.com/pgaudit/pgaudit)
+    - [TimescaleDB](https://github.com/timescale/timescaledb)
+    - [pg_cron](https://github.com/citusdata/pg_cron)
+    - [credcheck](https://github.com/MigOpsRepos/credcheck)
+    - [set_user](https://github.com/pgaudit/set_user)
 - Minimal downtime during upgrades thanks to rolling updates and failover mechanisms
 - Self-healing, redundancy and pod anti-affinity for maximum availability
 

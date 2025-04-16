@@ -1,0 +1,17 @@
+apiVersion: cpo.opensource.cybertec.at/v1
+kind: postgresql
+metadata:
+  name: {{ .Values.clusterName | default .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "postgres-cluster.labels" . | nindent 4 }}
+    {{- with .Values.commonLabels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+{{- with .Values.extraAnnotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+{{- end}}
+
+spec:
+  {{- toYaml .Values.cluster | nindent 2 }}

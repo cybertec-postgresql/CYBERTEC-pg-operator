@@ -4,7 +4,7 @@
 **The CYBERTEC PG Operator (CPO)** is a powerful Kubernetes operator that dramatically simplifies the creation and management of highly available **PostgreSQL clusters**. 
 Fully integrated with GitOps/CI/CD workflows and infrastructure-as-code principles, CPO enables consistent, secure and automated database provisioning - **without direct access to the Kubernetes API**.
 
-![CYBERTEC Logo](docs/diagrams/cpo_logo.svg)
+<img src="docs/diagrams/cpo_logo.svg" width="350">
 
 ---
 

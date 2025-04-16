@@ -1,78 +1,90 @@
 
-# CYBERTEC PG Operator
+# CYBERTEC PG Operator (CPO)
 
-CPO (CYBERTEC PG Operator) allows you to create and run PostgreSQL clusters on Kubernetes.
+**The CYBERTEC PG Operator (CPO)** is a powerful Kubernetes operator that dramatically simplifies the creation and management of highly available **PostgreSQL clusters**. 
+Fully integrated with GitOps/CI/CD workflows and infrastructure-as-code principles, CPO enables consistent, secure and automated database provisioning - **without direct access to the Kubernetes API**.
 
-The operator reduces your efforts and simplifies the administration of your PostgreSQL clusters so that you can concentrate on other things.
-<img src="docs/diagrams/cpo_logo.svg" width="350">
+![CYBERTEC Logo](docs/diagrams/cpo_logo.svg)
 
-The Postgres Operator delivers an easy to run highly-available [PostgreSQL](https://www.postgresql.org/)
-clusters on Kubernetes (K8s) powered by [Patroni](https://github.com/zalando/patroni).
-It is configured only through Postgres manifests (CRDs) to ease integration into automated CI/CD
-pipelines with no access to Kubernetes API directly, promoting infrastructure as code vs manual operations.
+---
+
+## Highlights
+
+- **Completely declarative configuration** via custom resources
+- Highly available PostgreSQL clusters** with [Patroni](https://github.com/zalando/patroni)
+- Seamless integration into CI/CD pipelines** (e.g. ArgoCD, Flux)
+- Compatible with OpenShift**
+- **Support for cloud & on-prem environments**
+
+---
 
 ### Operator features
 
-* Rolling updates on Postgres cluster changes, incl. quick minor version updates
-* Live volume resize without pod restarts if supported by the storage-system (PVC)
-* Database connection pooling with pgBouncer
-* Support fast in place major version upgrade. Supports global upgrade of all clusters.
-* Restore and cloning Postgres clusters on PVC, AWS, GCS and Azure
-* Client-side backup encryption
-* Standby cluster
-* Patroni-Multisite-Cluster with automatic failover
-* Configurable for non-cloud environments
-* Basic credential and user management on K8s, eases application deployments
-* Support for custom TLS certificates
-* Support for AWS EBS gp2 to gp3 migration, supporting iops and throughput configuration
-* Compatible with OpenShift
-* TDE-Integration with [CYBERTEC PGEE](https://www.cybertec-postgresql.com/en/products/cybertec-postgresql-enterprise-edition/)
+- Rolling updates for cluster changes & minor version upgrades
+- Live Volume Resize (without pod restarts if supported by storage)
+- Database Connection Pooling via **pgBouncer**
+- In-place major upgrades of all clusters (fast & secure)
+- Backup & restore to PVC, AWS, GCS and Azure
+- Client-side backup encryption
+- Support for standby clusters & multi-site topologies
+- User & credential management at K8s level
+- Support for own TLS certificates
+- TDE integration** with [CYBERTEC PGEE](https://www.cybertec-postgresql.com/en/products/cybertec-postgresql-enterprise-edition/)
+- Migration from AWS EBS `gp2` to `gp3` with IOPS and throughput config
 
-### PostgreSQL features
+---
 
-* Supports PostgreSQL 17, starting from 13+
-* Streaming replication cluster via Patroni
-* Integrated backup solution, automatic backups and very easy restore (Backup & PITR)
-* Rolling update procedure for adjustments to the pods and minor updates
-* Major upgrade with minimum interruption time
-* Reduction of downtime thanks to redundancy, pod anti-affinity, auto-failover and self-healing
-* Supports PostgreSQL 17, starting from 13+
-* Several extensions such as Postgis, TimescaleDB, pgAudit and many more are included
-* Streaming replication cluster via Patroni
-* Point-In-Time-Recovery with
-[pg_basebackup](https://www.postgresql.org/docs/16/app-pgbasebackup.html) /
-[pgBackRest](https://pgbackrest.org/) via [CYBERTEC-pg-container](https://github.com/cybertec-postgresql/CYBERTEC-pg-container)
-[pg_stat_statements](https://www.postgresql.org/docs/16/pgstatstatements.html),
-* Incl. popular Postgres extensions such as
-[pgaudit](https://github.com/pgaudit/pgaudit),
-[pgauditlogtofile](https://github.com/fmbiete/pgauditlogtofile),
-<!-- [pg_partman](https://github.com/pgpartman/pg_partman), -->
-[postgis](https://postgis.net/),
-[set_user](https://github.com/pgaudit/set_user)
-[pg_cron](https://github.com/citusdata/pg_cron),
-[timescaledb](https://github.com/timescale/timescaledb)
-[credcheck](https://github.com/MigOpsRepos/credcheck)
+## PostgreSQL features
 
-The Operator project is being driven forward by CYBERTEC and is currently in production at various locations.
+- PostgreSQL 13 to 17
+- Streaming replication via **Patroni**
+- Fully integrated backup & PITR with `pgBackRest` or `pg_basebackup`
+- Extensions like:
+- [PostGIS](https://postgis.net/)
+- pgAudit](https://github.com/pgaudit/pgaudit)
+- TimescaleDB](https://github.com/timescale/timescaledb)
+- pg_cron](https://github.com/citusdata/pg_cron)
+- credcheck](https://github.com/MigOpsRepos/credcheck)
+- set_user](https://github.com/pgaudit/set_user)
+- Minimal downtime during upgrades thanks to rolling updates and failover mechanisms
+- Self-healing, redundancy and pod anti-affinity for maximum availability
 
-## Supported Postgres & K8s versions
+---
 
-| Release   | Postgres versions | pgBackRest versions   | Patroni versions | K8s versions      | Golang  |
-| :-------- | :---------------: | :-------------------: | :--------------: | :----------------:| :-----: |
-| 0.8.0     | 13 &rarr; 17      | 2.53                  | 4.0.2            | 1.21+             | 1.21.7  |
-| 0.8.3     | 13 &rarr; 17      | 2.54-2                | 4.0.5            | 1.21+             | 1.22.12  |
+## Compatibility
 
+| Release | PostgreSQL | pgBackRest | Patroni | Kubernetes | Go      |
+|---------|------------|------------|---------|------------|---------|
+| 0.8.0   | 13 - 17    | 2.53       | 4.0.2   | 1.21+      | 1.21.7  |
+| 0.8.3   | 13 - 17    | 2.54-2     | 4.0.5   | 1.21+      | 1.22.12 |
 
-## Getting started
+--- 
 
-[Getting started - Documentation](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/quickstart/) 
+## Getting Started
 
-[Tutorials](https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials).
+Want to get started quickly? This way:
 
+- [Quickstart-Guide (documentation)](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/quickstart/)
+- [Tutorials & examples](https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials)
+
+---
 
 ## Documentation
 
-There is a browser-friendly version of this documentation at
-[CPO-Documentation](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/)
+You can find the complete and searchable documentation here:
 
+- [Official Documentation](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/)
 
+---
+
+## Licence
+
+This project is licensed under the **Apache 2.0 licence**. Further information can be found in the [LICENSE](./LICENSE) file.
+
+---
+
+## participate
+
+Pull requests and feedback are always welcome. Please read our [Contribution Guidelines](CONTRIBUTING.md) in advance if you would like to participate.
+
+---

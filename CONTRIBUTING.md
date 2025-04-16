@@ -1,14 +1,12 @@
 # Contributing guidelines
 
-Wanna contribute to the Postgres Operator? Yay - here is how!
+Wanna contribute to the cpo? Yay - here is how!
 
 ## Reporting issues
 
 Before filing an issue, if you have a question about Postgres Operator or have
-a problem using it, please read the [concepts](docs/index.md) page or use the
-different guides that we provide for [users](docs/user.md),
-[developers](docs/developer.md) or [admins](docs/administrator). Also double
-check with the current issues on our [Issues Tracker](https://github.com/cybertec-postgresql/cybertec-pg-operator/issues).
+a problem using it, please read the [Official Documentation](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/).
+Also double check with the current issues on our [Issues Tracker](https://github.com/cybertec-postgresql/cybertec-pg-operator/issues).
 
 ## Contributing a pull request
 

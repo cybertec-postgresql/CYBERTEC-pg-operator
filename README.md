@@ -15,26 +15,29 @@ pipelines with no access to Kubernetes API directly, promoting infrastructure as
 
 * Rolling updates on Postgres cluster changes, incl. quick minor version updates
 * Live volume resize without pod restarts if supported by the storage-system (PVC)
-* Database connection pooling with PGBouncer
+* Database connection pooling with pgBouncer
 * Support fast in place major version upgrade. Supports global upgrade of all clusters.
 * Restore and cloning Postgres clusters on PVC, AWS, GCS and Azure
+* Client-side backup encryption
 * Standby cluster
+* Patroni-Multisite-Cluster with automatic failover
 * Configurable for non-cloud environments
 * Basic credential and user management on K8s, eases application deployments
 * Support for custom TLS certificates
-* UI to create and edit Postgres cluster manifests
 * Support for AWS EBS gp2 to gp3 migration, supporting iops and throughput configuration
 * Compatible with OpenShift
+* TDE-Integration with [CYBERTEC PGEE](https://www.cybertec-postgresql.com/en/products/cybertec-postgresql-enterprise-edition/)
 
 ### PostgreSQL features
 
-* Supports PostgreSQL 16, starting from 10+
+* Supports PostgreSQL 17, starting from 13+
 * Streaming replication cluster via Patroni
 * Integrated backup solution, automatic backups and very easy restore (Backup & PITR)
 * Rolling update procedure for adjustments to the pods and minor updates
 * Major upgrade with minimum interruption time
 * Reduction of downtime thanks to redundancy, pod anti-affinity, auto-failover and self-healing
-* Supports PostgreSQL 16, starting from 10+
+* Supports PostgreSQL 17, starting from 13+
+* Several extensions such as Postgis, TimescaleDB, pgAudit and many more are included
 * Streaming replication cluster via Patroni
 * Point-In-Time-Recovery with
 [pg_basebackup](https://www.postgresql.org/docs/16/app-pgbasebackup.html) /
@@ -57,10 +60,12 @@ The Operator project is being driven forward by CYBERTEC and is currently in pro
 | Release   | Postgres versions | pgBackRest versions   | Patroni versions | K8s versions      | Golang  |
 | :-------- | :---------------: | :-------------------: | :--------------: | :----------------:| :-----: |
 | 0.8.0     | 13 &rarr; 17      | 2.53                  | 4.0.2            | 1.21+             | 1.21.7  |
+| 0.8.3     | 13 &rarr; 17      | 2.54-2                | 4.0.5            | 1.21+             | 1.22.12  |
+
 
 ## Getting started
 
-[Getting started - Documentation](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/documentation/how-to-use/installation/) 
+[Getting started - Documentation](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/quickstart/) 
 
 [Tutorials](https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials).
 
@@ -70,6 +75,4 @@ The Operator project is being driven forward by CYBERTEC and is currently in pro
 There is a browser-friendly version of this documentation at
 [CPO-Documentation](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/)
 
-## Community
 
-Coming soon 

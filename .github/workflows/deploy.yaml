@@ -3,7 +3,7 @@ name: Deploy Hugo site to GitHub Pages
 on:
   push:
     branches:
-      - main  # oder "master", je nachdem wie dein Hauptbranch heißt
+      - documentation  # oder "master", je nachdem wie dein Hauptbranch heißt
 
 permissions:
   contents: read

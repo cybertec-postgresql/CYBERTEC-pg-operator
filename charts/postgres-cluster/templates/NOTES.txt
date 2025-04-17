@@ -1,5 +1,0 @@
-Database cluster object has been created and the operator should start initializing it now.
-
-To wait for the initialization to complete you can issue the following command:
-
-  kubectl wait --for=jsonpath='.status.PostgresClusterStatus'=Running -n {{ .Release.Namespace }} pg/{{ .Release.Name }} --timeout=1h

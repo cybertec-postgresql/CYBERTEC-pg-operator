@@ -18,6 +18,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.22'  # oder deine lokale Go-Version
+
+      - name: Install Go modules
+        run: |
+          go mod tidy
+          go mod vendor
+
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
@@ -25,7 +35,7 @@ jobs:
           extended: true
 
       - name: Build site
-        run: hugo --minify
+        run: hugo --minify --vendor  # Build mit vendored Go-Modulen
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

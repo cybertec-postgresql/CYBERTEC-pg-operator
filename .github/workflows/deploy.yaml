@@ -35,7 +35,7 @@ jobs:
           extended: true
 
       - name: Build site
-        run: hugo --minify --vendor  # Build mit vendored Go-Modulen
+        run: hugo --minify  # Hier kein --vendor, da es nicht notwendig ist
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

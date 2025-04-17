@@ -38,8 +38,8 @@ func (c *Cluster) listResources() error {
 		tempNodeType = []string{"0"}
 	}
 
-	for i, typeName := range tempNodeType {
-		c.logger.Infof("found statefulset %s:  %q (uid: %q)", i, util.NameFromMeta(c.Statefulset[typeName].ObjectMeta), c.Statefulset[typeName].UID)
+	for i, nodeTypeName := range tempNodeType {
+		c.logger.Infof("found statefulset %s:  %q (uid: %q)", i, util.NameFromMeta(c.Statefulset[nodeTypeName].ObjectMeta), c.Statefulset[nodeTypeName].UID)
 	}
 
 	// if c.Statefulset != nil {
@@ -174,8 +174,8 @@ func (c *Cluster) preScaleDown(newStatefulSet *appsv1.StatefulSet) error {
 	// Need to check
 	var masterCandidatePod *v1.Pod
 	var podName string
-	for _, typeName := range tempNodeType {
-		podName = fmt.Sprintf("%s-0", c.Statefulset[typeName].Name)
+	for _, nodeTypeName := range tempNodeType {
+		podName = fmt.Sprintf("%s-0", c.Statefulset[nodeTypeName].Name)
 		masterCandidatePodTemp, err := c.KubeClient.Pods(c.clusterNamespace()).Get(context.TODO(), podName, metav1.GetOptions{})
 		if err != nil {
 			return fmt.Errorf("could not get master candidate pod: %v", err)
@@ -198,28 +198,28 @@ func (c *Cluster) preScaleDown(newStatefulSet *appsv1.StatefulSet) error {
 	return nil
 }
 
-func (c *Cluster) updateStatefulSet(newStatefulSet *appsv1.StatefulSet, typeName) error {
+func (c *Cluster) updateStatefulSet(newStatefulSet *appsv1.StatefulSet, nodeTypeName) error {
 	c.setProcessName("updating statefulset(s)")
 
-	if c.Statefulset[typeName] == nil {
+	if c.Statefulset[nodeTypeName] == nil {
 		return fmt.Errorf("there is no statefulset in the cluster")
 	}
-	statefulSetName := util.NameFromMeta(c.Statefulset[typeName].ObjectMeta)
+	statefulSetName := util.NameFromMeta(c.Statefulset[nodeTypeName].ObjectMeta)
 
 	//scale down
-	if *c.Statefulset[typeName].Spec.Replicas > *newStatefulSet.Spec[typeName].Replicas {
+	if *c.Statefulset[nodeTypeName].Spec.Replicas > *newStatefulSet.Spec[nodeTypeName].Replicas {
 		if err := c.preScaleDown(newStatefulSet); err != nil {
 			c.logger.Warningf("could not scale down: %v", err)
 		}
 	}
 	c.logger.Debugf("updating statefulset")
 
-	patchData, err := specPatch(newStatefulSet[typeName].Spec)
+	patchData, err := specPatch(newStatefulSet[nodeTypeName].Spec)
 	if err != nil {
 		return fmt.Errorf("could not form patch for the statefulset %q: %v", statefulSetName, err)
 	}
 
-	statefulSet, err := c.KubeClient.StatefulSets[typeName](c.Statefulset[typeName].Namespace).Patch(
+	statefulSet, err := c.KubeClient.StatefulSets[nodeTypeName](c.Statefulset[nodeTypeName].Namespace).Patch(
 		context.TODO(),
 		c.Statefulset.Name,
 		types.MergePatchType,

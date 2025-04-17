@@ -372,12 +372,12 @@ func (c *Cluster) Create() (err error) {
 		tempNodeType = []string{"0"}
 	}
 
-	for i, typeName := range tempNodeType {
+	for i, nodeTypeName := range tempNodeType {
 		c.logger.Debugf("Statefulset-Loop: %s", i)
-		if c.Statefulset[typeName] != nil {
+		if c.Statefulset[nodeTypeName] != nil {
 			return fmt.Errorf("statefulset already exists in the cluster")
 		}
-		ss, err = c.createStatefulSet(false, typeName)
+		ss, err = c.createStatefulSet(false, nodeTypeName)
 		if err != nil {
 			return fmt.Errorf("could not create statefulset: %v", err)
 		}
@@ -1072,17 +1072,17 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 			tempNodeType = []string{"0"}
 		}
 
-		for i, typeName := range tempNodeType {
+		for i, nodeTypeName := range tempNodeType {
 			c.logger.Debugf("Statefulset-Loop: %s", i)
 
-			oldSs, err := c.generateStatefulSet(&oldSpec.Spec, typeName)
+			oldSs, err := c.generateStatefulSet(&oldSpec.Spec, nodeTypeName)
 			if err != nil {
 				c.logger.Errorf("could not generate old statefulset spec: %v", err)
 				updateFailed = true
 				return
 			}
 
-			newSs, err := c.generateStatefulSet(&newSpec.Spec, typeName)
+			newSs, err := c.generateStatefulSet(&newSpec.Spec, nodeTypeName)
 			if err != nil {
 				c.logger.Errorf("could not generate new statefulset spec: %v", err)
 				updateFailed = true

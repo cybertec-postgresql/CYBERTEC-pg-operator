@@ -3,8 +3,7 @@ name: Deploy Hugo site to GitHub Pages
 on:
   push:
     branches:
-      - documentation  # oder "master", je nachdem wie dein Hauptbranch heißt
-
+      - documentation  
 permissions:
   contents: read
   pages: write
@@ -21,7 +20,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.22'  # oder deine lokale Go-Version
+          go-version: '1.22'  
 
       - name: Install Go modules
         run: |
@@ -31,11 +30,11 @@ jobs:
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
-          hugo-version: '0.121.1'  # oder was du lokal nutzt
+          hugo-version: '0.121.1'  
           extended: true
 
       - name: Build site
-        run: hugo --minify  # Hier kein --vendor, da es nicht notwendig ist
+        run: hugo --minify  
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Installation on CYBERTEC-PG-Operator</title>
+    <link>http://localhost:1313/CYBERTEC-pg-operator/installation/</link>
+    <description>Recent content in Installation on CYBERTEC-PG-Operator</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 07 Mar 2023 14:26:51 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/CYBERTEC-pg-operator/installation/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Setup local Kubernetes</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/installation/dev-k8s/</link>
+      <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/installation/dev-k8s/</guid>
+      <description>&lt;p&gt;There are various options for setting up a local Kubernetes environment. This chapter deals with the following two variants:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;minikube&lt;/li&gt;&#xA;&lt;li&gt;crc (CodeReadyContainers from RedHat)&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;div class=&#34;flex align-center gdoc-page__anchorwrap&#34;&gt;&#xA;    &lt;h3 id=&#34;minikube&#34;&#xA;    &gt;&#xA;        Minikube&#xA;    &lt;/h3&gt;&#xA;    &lt;a data-clipboard-text=&#34;http://localhost:1313/CYBERTEC-pg-operator/installation/dev-k8s/#minikube&#34; class=&#34;gdoc-page__anchor clip flex align-center&#34; title=&#34;Anchor to: Minikube&#34; aria-label=&#34;Anchor to: Minikube&#34; href=&#34;#minikube&#34;&gt;&#xA;        &lt;svg class=&#34;gdoc-icon gdoc_link&#34;&gt;&lt;use xlink:href=&#34;#gdoc_link&#34;&gt;&lt;/use&gt;&lt;/svg&gt;&#xA;    &lt;/a&gt;&#xA;&lt;/div&gt;&#xA;&lt;p&gt;Minikube is a tool that makes it possible to run Kubernetes locally on a single computer. It sets up a minimal but functional Kubernetes environment suitable for development and testing purposes. Minikube supports most Kubernetes features and provides an easy way to launch and manage Kubernetes clusters on local machines without the need for a complex cloud infrastructure.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Install CPO</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/installation/install_operator/</link>
+      <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/installation/install_operator/</guid>
+      <description>&lt;div class=&#34;flex align-center gdoc-page__anchorwrap&#34;&gt;&#xA;    &lt;h2 id=&#34;prerequisites&#34;&#xA;    &gt;&#xA;        Prerequisites&#xA;    &lt;/h2&gt;&#xA;    &lt;a data-clipboard-text=&#34;http://localhost:1313/CYBERTEC-pg-operator/installation/install_operator/#prerequisites&#34; class=&#34;gdoc-page__anchor clip flex align-center&#34; title=&#34;Anchor to: Prerequisites&#34; aria-label=&#34;Anchor to: Prerequisites&#34; href=&#34;#prerequisites&#34;&gt;&#xA;        &lt;svg class=&#34;gdoc-icon gdoc_link&#34;&gt;&lt;use xlink:href=&#34;#gdoc_link&#34;&gt;&lt;/use&gt;&lt;/svg&gt;&#xA;    &lt;/a&gt;&#xA;&lt;/div&gt;&#xA;&lt;p&gt;For the installation you either need our CPO tutorial repository or you install CPO directly from our registry.&lt;!-- raw HTML omitted --&gt;&#xA;Exception: Installation via Operatorhub (Openshift only)&lt;/p&gt;&#xA;&lt;div class=&#34;flex align-center gdoc-page__anchorwrap&#34;&gt;&#xA;    &lt;h3 id=&#34;cpo-tutorial-repository&#34;&#xA;    &gt;&#xA;        CPO-Tutorial-Repository&#xA;    &lt;/h3&gt;&#xA;    &lt;a data-clipboard-text=&#34;http://localhost:1313/CYBERTEC-pg-operator/installation/install_operator/#cpo-tutorial-repository&#34; class=&#34;gdoc-page__anchor clip flex align-center&#34; title=&#34;Anchor to: CPO-Tutorial-Repository&#34; aria-label=&#34;Anchor to: CPO-Tutorial-Repository&#34; href=&#34;#cpo-tutorial-repository&#34;&gt;&#xA;        &lt;svg class=&#34;gdoc-icon gdoc_link&#34;&gt;&lt;use xlink:href=&#34;#gdoc_link&#34;&gt;&lt;/use&gt;&lt;/svg&gt;&#xA;    &lt;/a&gt;&#xA;&lt;/div&gt;&#xA;&lt;p&gt;To get started, you can fork our tutorial repository on Github and then download it.&#xA;&lt;a&#xA;  class=&#34;gdoc-markdown__link&#34;&#xA;  href=&#34;https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials/fork&#34;&#xA;&gt;CYBERTEC-operator-tutorials&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Operator-Configuration</title>
+      <link>http://localhost:1313/CYBERTEC-pg-operator/installation/configuration_operator/</link>
+      <pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate>
+      <guid>http://localhost:1313/CYBERTEC-pg-operator/installation/configuration_operator/</guid>
+      <description>&lt;p&gt;Users who are already used to working with PostgreSQL from Baremetal or VMs are already familiar with the need for various files to configure PostgreSQL. These include&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;postgresql.conf&lt;/li&gt;&#xA;&lt;li&gt;pg_hba.conf&lt;/li&gt;&#xA;&lt;li&gt;&amp;hellip;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;Although these files are available in the container, direct modification is not planned. As part of the declarative mode of operation of the operator, these files are defined via the operator. The modifying intervention within the container also represents a contradiction to the immutability of the container.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

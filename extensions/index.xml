@@ -1,0 +1,1976 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Extensions on CYBERTEC-PG-Operator</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/</link><description>Recent content in Extensions on CYBERTEC-PG-Operator</description><generator>Hugo</generator><language>en</language><lastBuildDate>Thu, 28 Dec 2023 14:26:51 +0100</lastBuildDate><atom:link href="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/index.xml" rel="self" type="application/rss+xml"/><item><title>PostgreSQL 13</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/pg13/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/pg13/</guid><description>&lt;blockquote class="gdoc-hint info">
+ &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__text">The extensions listed are included in the standard images. This list refers to PostgreSQL 13.&lt;/div>
+&lt;/blockquote>
+
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th>Default Version&lt;/th>
+ &lt;th>Comment&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>adminpack&lt;/td>
+ &lt;td>2.1&lt;/td>
+ &lt;td>Administrative functions for PostgreSQL&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>amcheck&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Functions for verifying relation integrity&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>autoinc&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for autoincrementing fields&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>bloom&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Bloom access method - signature file based index&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>btree_gin&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Support for indexing common datatypes in GIN&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>btree_gist&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Support for indexing common datatypes in GiST&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>citext&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Data type for case-insensitive character strings&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>credcheck&lt;/td>
+ &lt;td>3.0.0&lt;/td>
+ &lt;td>credcheck - PostgreSQL plain text credential checker&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>cube&lt;/td>
+ &lt;td>1.4&lt;/td>
+ &lt;td>Data type for multidimensional cubes&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dblink&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Connect to other PostgreSQL databases from within a database&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dict_int&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Text search dictionary template for integers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dict_xsyn&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Text search dictionary template for extended synonym processing&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>earthdistance&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Calculate great-circle distances on the surface of the Earth&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>file_fdw&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Foreign-data wrapper for flat file access&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>fuzzystrmatch&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Determine similarities and distance between strings&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore&lt;/td>
+ &lt;td>1.7&lt;/td>
+ &lt;td>Data type for storing sets of (key, value) pairs&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plperl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plperl&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plperlu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plperlu&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>insert_username&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for tracking who changed a table&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>intagg&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Integer aggregator and enumerator (obsolete)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>intarray&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Functions, operators, and index support for 1-D arrays of integers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>isn&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Data types for international product numbering standards&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plperl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plperl&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plperlu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plperlu&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>lo&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Large Object maintenance&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ltree&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Data type for hierarchical tree-like structures&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ltree_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between ltree and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>moddatetime&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for tracking last modification time&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pageinspect&lt;/td>
+ &lt;td>1.8&lt;/td>
+ &lt;td>Inspect the contents of database pages at a low level&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_buffercache&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Examine the shared buffer cache&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_cron&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Job scheduler for PostgreSQL&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_freespacemap&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Examine the free space map (FSM)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_permissions&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>View object permissions and compare them with the desired state&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_prewarm&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Prewarm relation data&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_proctab&lt;/td>
+ &lt;td>&lt;/td>
+ &lt;td>Placeholder - see pg_proctab&amp;ndash;0.0.10-compat.control&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_stat_statements&lt;/td>
+ &lt;td>1.8&lt;/td>
+ &lt;td>Track planning and execution statistics of all SQL statements executed&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_trgm&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Text similarity measurement and index searching based on trigrams&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_visibility&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Examine the visibility map (VM) and page-level visibility info&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgaudit&lt;/td>
+ &lt;td>1.5.3&lt;/td>
+ &lt;td>Provides auditing functionality&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgauditlogtofile&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>pgAudit addon to redirect audit entries to an independent file&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgcrypto&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Cryptographic functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgnodemx&lt;/td>
+ &lt;td>1.7&lt;/td>
+ &lt;td>SQL functions that allow capture of node OS metrics from PostgreSQL&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgrowlocks&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Show row-level locking information&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgstattuple&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Show tuple-level statistics&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>plpgsql&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/pgSQL procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/Python3U untrusted procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pltcl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/Tcl procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pltclu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/TclU untrusted procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgres_fdw&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Foreign-data wrapper for remote PostgreSQL servers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>refint&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for implementing referential integrity (obsolete)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>seg&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Data type for representing line segments or floating-point intervals&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>set_user&lt;/td>
+ &lt;td>4.1.0&lt;/td>
+ &lt;td>Similar to SET ROLE but with added logging&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>sslinfo&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Information about SSL certificates&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tablefunc&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions that manipulate whole tables, including crosstab&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tcn&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Triggered change notifications&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>timescaledb&lt;/td>
+ &lt;td>2.15.3&lt;/td>
+ &lt;td>Enables scalable inserts and complex queries for time-series data (Apache 2 Edition)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tsm_system_rows&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>TABLESAMPLE method which accepts number of rows as a limit&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tsm_system_time&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>TABLESAMPLE method which accepts time in milliseconds as a limit&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>unaccent&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Text search dictionary that removes accents&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>uuid-ossp&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Generate universally unique identifiers (UUIDs)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>xml2&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>XPath querying and XSLT&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+
+
+
+
+
+&lt;blockquote class="gdoc-hint info">
+ &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__text">The following extensions are additionally included in the Postgis images.&lt;/div>
+&lt;/blockquote>
+
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th>Default Version&lt;/th>
+ &lt;th>Comment&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>address_standardizer&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>Used to parse an address into constituent elements. Generally used to support geocoding address normalization step.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>address_standardizer_data_us&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>Address Standardizer US dataset example&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS geometry and geography spatial types and functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_raster&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS raster types and functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_sfcgal&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS SFCGAL functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_tiger_geocoder&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS tiger geocoder and reverse geocoder&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_topology&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS topology spatial types and functions&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table></description></item><item><title>PostgreSQL 14</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/pg14/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/pg14/</guid><description>&lt;blockquote class="gdoc-hint info">
+ &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__text">The extensions listed are included in the standard images. This list refers to PostgreSQL 14.&lt;/div>
+&lt;/blockquote>
+
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th>Default Version&lt;/th>
+ &lt;th>Comment&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>adminpack&lt;/td>
+ &lt;td>2.1&lt;/td>
+ &lt;td>Administrative functions for PostgreSQL&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>amcheck&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Functions for verifying relation integrity&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>autoinc&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for autoincrementing fields&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>bloom&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Bloom access method - signature file based index&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>btree_gin&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Support for indexing common datatypes in GIN&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>btree_gist&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Support for indexing common datatypes in GiST&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>citext&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Data type for case-insensitive character strings&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>credcheck&lt;/td>
+ &lt;td>3.0.0&lt;/td>
+ &lt;td>credcheck - PostgreSQL plain text credential checker&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>cube&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Data type for multidimensional cubes&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dblink&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Connect to other PostgreSQL databases from within a database&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dict_int&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Text search dictionary template for integers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dict_xsyn&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Text search dictionary template for extended synonym processing&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>earthdistance&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Calculate great-circle distances on the surface of the Earth&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>file_fdw&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Foreign-data wrapper for flat file access&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>fuzzystrmatch&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Determine similarities and distance between strings&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore&lt;/td>
+ &lt;td>1.8&lt;/td>
+ &lt;td>Data type for storing sets of (key, value) pairs&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plperl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plperl&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plperlu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plperlu&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>insert_username&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for tracking who changed a table&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>intagg&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Integer aggregator and enumerator (obsolete)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>intarray&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Functions, operators, and index support for 1-D arrays of integers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>isn&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Data types for international product numbering standards&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plperl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plperl&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plperlu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plperlu&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>lo&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Large Object maintenance&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ltree&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Data type for hierarchical tree-like structures&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ltree_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between ltree and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>moddatetime&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for tracking last modification time&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>old_snapshot&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Utilities in support of old_snapshot_threshold&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pageinspect&lt;/td>
+ &lt;td>1.9&lt;/td>
+ &lt;td>Inspect the contents of database pages at a low level&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_buffercache&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Examine the shared buffer cache&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_cron&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Job scheduler for PostgreSQL&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_freespacemap&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Examine the free space map (FSM)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_permissions&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>View object permissions and compare them with the desired state&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_prewarm&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Prewarm relation data&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_proctab&lt;/td>
+ &lt;td>&lt;/td>
+ &lt;td>Placeholder - see pg_proctab&amp;ndash;0.0.10-compat.control&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_stat_statements&lt;/td>
+ &lt;td>1.9&lt;/td>
+ &lt;td>Track planning and execution statistics of all SQL statements executed&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_surgery&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Extension to perform surgery on a damaged relation&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_trgm&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Text similarity measurement and index searching based on trigrams&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_visibility&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Examine the visibility map (VM) and page-level visibility info&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgaudit&lt;/td>
+ &lt;td>1.6.3&lt;/td>
+ &lt;td>Provides auditing functionality&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgauditlogtofile&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>pgAudit addon to redirect audit entries to an independent file&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgcrypto&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Cryptographic functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgnodemx&lt;/td>
+ &lt;td>1.7&lt;/td>
+ &lt;td>SQL functions that allow capture of node OS metrics from PostgreSQL&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgrowlocks&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Show row-level locking information&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgstattuple&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Show tuple-level statistics&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>plpgsql&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/pgSQL procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/Python3U untrusted procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pltcl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/Tcl procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pltclu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/TclU untrusted procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgres_fdw&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Foreign-data wrapper for remote PostgreSQL servers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>refint&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for implementing referential integrity (obsolete)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>seg&lt;/td>
+ &lt;td>1.4&lt;/td>
+ &lt;td>Data type for representing line segments or floating-point intervals&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>set_user&lt;/td>
+ &lt;td>4.1.0&lt;/td>
+ &lt;td>Similar to SET ROLE but with added logging&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>sslinfo&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Information about SSL certificates&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tablefunc&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions that manipulate whole tables, including crosstab&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tcn&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Triggered change notifications&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>timescaledb&lt;/td>
+ &lt;td>2.18.2&lt;/td>
+ &lt;td>Enables scalable inserts and complex queries for time-series data (Apache 2 Edition)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tsm_system_rows&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>TABLESAMPLE method which accepts number of rows as a limit&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tsm_system_time&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>TABLESAMPLE method which accepts time in milliseconds as a limit&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>unaccent&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Text search dictionary that removes accents&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>uuid-ossp&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Generate universally unique identifiers (UUIDs)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>xml2&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>XPath querying and XSLT&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+
+
+
+
+
+&lt;blockquote class="gdoc-hint info">
+ &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__text">The following extensions are additionally included in the Postgis images.&lt;/div>
+&lt;/blockquote>
+
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th>Default Version&lt;/th>
+ &lt;th>Comment&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>address_standardizer&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>Used to parse an address into constituent elements. Generally used to support geocoding address normalization step.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>address_standardizer_data_us&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>Address Standardizer US dataset example&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS geometry and geography spatial types and functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_raster&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS raster types and functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_sfcgal&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS SFCGAL functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_tiger_geocoder&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS tiger geocoder and reverse geocoder&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_topology&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS topology spatial types and functions&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table></description></item><item><title>PostgreSQL 15</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/pg15/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/pg15/</guid><description>&lt;blockquote class="gdoc-hint info">
+ &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__text">The extensions listed are included in the standard images. This list refers to PostgreSQL 15.&lt;/div>
+&lt;/blockquote>
+
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th>Default Version&lt;/th>
+ &lt;th>Comment&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>adminpack&lt;/td>
+ &lt;td>2.1&lt;/td>
+ &lt;td>Administrative functions for PostgreSQL&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>amcheck&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Functions for verifying relation integrity&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>autoinc&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for autoincrementing fields&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>bloom&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Bloom access method - signature file based index&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>btree_gin&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Support for indexing common datatypes in GIN&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>btree_gist&lt;/td>
+ &lt;td>1.7&lt;/td>
+ &lt;td>Support for indexing common datatypes in GiST&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>citext&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Data type for case-insensitive character strings&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>credcheck&lt;/td>
+ &lt;td>3.0.0&lt;/td>
+ &lt;td>credcheck - PostgreSQL plain text credential checker&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>cube&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Data type for multidimensional cubes&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dblink&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Connect to other PostgreSQL databases from within a database&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dict_int&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Text search dictionary template for integers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dict_xsyn&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Text search dictionary template for extended synonym processing&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>earthdistance&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Calculate great-circle distances on the surface of the Earth&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>file_fdw&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Foreign-data wrapper for flat file access&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>fuzzystrmatch&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Determine similarities and distance between strings&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore&lt;/td>
+ &lt;td>1.8&lt;/td>
+ &lt;td>Data type for storing sets of (key, value) pairs&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plperl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plperl&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plperlu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plperlu&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>insert_username&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for tracking who changed a table&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>intagg&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Integer aggregator and enumerator (obsolete)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>intarray&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Functions, operators, and index support for 1-D arrays of integers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>isn&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Data types for international product numbering standards&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plperl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plperl&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plperlu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plperlu&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>lo&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Large Object maintenance&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ltree&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Data type for hierarchical tree-like structures&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ltree_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between ltree and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>moddatetime&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for tracking last modification time&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>old_snapshot&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Utilities in support of old_snapshot_threshold&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pageinspect&lt;/td>
+ &lt;td>1.11&lt;/td>
+ &lt;td>Inspect the contents of database pages at a low level&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_buffercache&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Examine the shared buffer cache&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_cron&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Job scheduler for PostgreSQL&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_freespacemap&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Examine the free space map (FSM)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_permissions&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>View object permissions and compare them with the desired state&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_prewarm&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Prewarm relation data&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_proctab&lt;/td>
+ &lt;td>&lt;/td>
+ &lt;td>Placeholder - see pg_proctab&amp;ndash;0.0.10-compat.control&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_stat_statements&lt;/td>
+ &lt;td>1.10&lt;/td>
+ &lt;td>Track planning and execution statistics of all SQL statements executed&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_surgery&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Extension to perform surgery on a damaged relation&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_trgm&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Text similarity measurement and index searching based on trigrams&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_visibility&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Examine the visibility map (VM) and page-level visibility info&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_walinspect&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions to inspect contents of PostgreSQL Write-Ahead Log&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgaudit&lt;/td>
+ &lt;td>1.7&lt;/td>
+ &lt;td>Provides auditing functionality&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgauditlogtofile&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>pgAudit addon to redirect audit entries to an independent file&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgcrypto&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Cryptographic functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgnodemx&lt;/td>
+ &lt;td>1.7&lt;/td>
+ &lt;td>SQL functions that allow capture of node OS metrics from PostgreSQL&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgrowlocks&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Show row-level locking information&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgstattuple&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Show tuple-level statistics&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>plpgsql&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/pgSQL procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/Python3U untrusted procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pltcl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/Tcl procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pltclu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/TclU untrusted procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgres_fdw&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Foreign-data wrapper for remote PostgreSQL servers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>refint&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for implementing referential integrity (obsolete)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>seg&lt;/td>
+ &lt;td>1.4&lt;/td>
+ &lt;td>Data type for representing line segments or floating-point intervals&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>set_user&lt;/td>
+ &lt;td>4.1.0&lt;/td>
+ &lt;td>Similar to SET ROLE but with added logging&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>sslinfo&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Information about SSL certificates&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tablefunc&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions that manipulate whole tables, including crosstab&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tcn&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Triggered change notifications&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>timescaledb&lt;/td>
+ &lt;td>2.18.2&lt;/td>
+ &lt;td>Enables scalable inserts and complex queries for time-series data (Apache 2 Edition)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tsm_system_rows&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>TABLESAMPLE method which accepts number of rows as a limit&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tsm_system_time&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>TABLESAMPLE method which accepts time in milliseconds as a limit&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>unaccent&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Text search dictionary that removes accents&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>uuid-ossp&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Generate universally unique identifiers (UUIDs)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>xml2&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>XPath querying and XSLT&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+
+
+
+
+
+&lt;blockquote class="gdoc-hint info">
+ &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__text">The following extensions are additionally included in the Postgis images.&lt;/div>
+&lt;/blockquote>
+
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th>Default Version&lt;/th>
+ &lt;th>Comment&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>address_standardizer&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>Used to parse an address into constituent elements. Generally used to support geocoding address normalization step.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>address_standardizer_data_us&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>Address Standardizer US dataset example&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS geometry and geography spatial types and functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_raster&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS raster types and functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_sfcgal&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS SFCGAL functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_tiger_geocoder&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS tiger geocoder and reverse geocoder&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_topology&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS topology spatial types and functions&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table></description></item><item><title>PostgreSQL 16</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/pg16/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/pg16/</guid><description>&lt;blockquote class="gdoc-hint info">
+ &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__text">The extensions listed are included in the standard images. This list refers to PostgreSQL 16.&lt;/div>
+&lt;/blockquote>
+
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th>Default Version&lt;/th>
+ &lt;th>Comment&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>adminpack&lt;/td>
+ &lt;td>2.1&lt;/td>
+ &lt;td>Administrative functions for PostgreSQL&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>amcheck&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Functions for verifying relation integrity&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>autoinc&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for autoincrementing fields&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>bloom&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Bloom access method - signature file based index&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>btree_gin&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Support for indexing common datatypes in GIN&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>btree_gist&lt;/td>
+ &lt;td>1.7&lt;/td>
+ &lt;td>Support for indexing common datatypes in GiST&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>citext&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Data type for case-insensitive character strings&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>credcheck&lt;/td>
+ &lt;td>3.0.0&lt;/td>
+ &lt;td>credcheck - PostgreSQL plain text credential checker&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>cube&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Data type for multidimensional cubes&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dblink&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Connect to other PostgreSQL databases from within a database&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dict_int&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Text search dictionary template for integers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dict_xsyn&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Text search dictionary template for extended synonym processing&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>earthdistance&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Calculate great-circle distances on the surface of the Earth&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>file_fdw&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Foreign-data wrapper for flat file access&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>fuzzystrmatch&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Determine similarities and distance between strings&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore&lt;/td>
+ &lt;td>1.8&lt;/td>
+ &lt;td>Data type for storing sets of (key, value) pairs&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plperl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plperl&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plperlu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plperlu&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>insert_username&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for tracking who changed a table&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>intagg&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Integer aggregator and enumerator (obsolete)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>intarray&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Functions, operators, and index support for 1-D arrays of integers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>isn&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Data types for international product numbering standards&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plperl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plperl&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plperlu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plperlu&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>lo&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Large Object maintenance&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ltree&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Data type for hierarchical tree-like structures&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ltree_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between ltree and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>moddatetime&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for tracking last modification time&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>old_snapshot&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Utilities in support of old_snapshot_threshold&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pageinspect&lt;/td>
+ &lt;td>1.12&lt;/td>
+ &lt;td>Inspect the contents of database pages at a low level&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_buffercache&lt;/td>
+ &lt;td>1.4&lt;/td>
+ &lt;td>Examine the shared buffer cache&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_cron&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Job scheduler for PostgreSQL&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_freespacemap&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Examine the free space map (FSM)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_permissions&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>View object permissions and compare them with the desired state&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_prewarm&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Prewarm relation data&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_proctab&lt;/td>
+ &lt;td>&lt;/td>
+ &lt;td>Placeholder - see pg_proctab&amp;ndash;0.0.10-compat.control&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_stat_statements&lt;/td>
+ &lt;td>1.10&lt;/td>
+ &lt;td>Track planning and execution statistics of all SQL statements executed&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_surgery&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Extension to perform surgery on a damaged relation&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_trgm&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Text similarity measurement and index searching based on trigrams&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_visibility&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Examine the visibility map (VM) and page-level visibility info&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_walinspect&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Functions to inspect contents of PostgreSQL Write-Ahead Log&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgaudit&lt;/td>
+ &lt;td>16.1&lt;/td>
+ &lt;td>Provides auditing functionality&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgauditlogtofile&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>pgAudit addon to redirect audit entries to an independent file&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgcrypto&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Cryptographic functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgnodemx&lt;/td>
+ &lt;td>1.7&lt;/td>
+ &lt;td>SQL functions that allow capture of node OS metrics from PostgreSQL&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgrowlocks&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Show row-level locking information&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgstattuple&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Show tuple-level statistics&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>plpgsql&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/pgSQL procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/Python3U untrusted procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pltcl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/Tcl procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pltclu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/TclU untrusted procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgres_fdw&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Foreign-data wrapper for remote PostgreSQL servers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>refint&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for implementing referential integrity (obsolete)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>seg&lt;/td>
+ &lt;td>1.4&lt;/td>
+ &lt;td>Data type for representing line segments or floating-point intervals&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>set_user&lt;/td>
+ &lt;td>4.1.0&lt;/td>
+ &lt;td>Similar to SET ROLE but with added logging&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>sslinfo&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Information about SSL certificates&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tablefunc&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions that manipulate whole tables, including crosstab&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tcn&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Triggered change notifications&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>timescaledb&lt;/td>
+ &lt;td>2.18.2&lt;/td>
+ &lt;td>Enables scalable inserts and complex queries for time-series data (Apache 2 Edition)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tsm_system_rows&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>TABLESAMPLE method which accepts number of rows as a limit&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tsm_system_time&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>TABLESAMPLE method which accepts time in milliseconds as a limit&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>unaccent&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Text search dictionary that removes accents&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>uuid-ossp&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Generate universally unique identifiers (UUIDs)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>xml2&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>XPath querying and XSLT&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+
+
+
+
+
+&lt;blockquote class="gdoc-hint info">
+ &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__text">The following extensions are additionally included in the Postgis images.&lt;/div>
+&lt;/blockquote>
+
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th>Default Version&lt;/th>
+ &lt;th>Comment&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>address_standardizer&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>Used to parse an address into constituent elements. Generally used to support geocoding address normalization step.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>address_standardizer_data_us&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>Address Standardizer US dataset example&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS geometry and geography spatial types and functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_raster&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS raster types and functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_sfcgal&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS SFCGAL functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_tiger_geocoder&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS tiger geocoder and reverse geocoder&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_topology&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS topology spatial types and functions&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table></description></item><item><title>PostgreSQL 17</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/pg17/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/pg17/</guid><description>&lt;blockquote class="gdoc-hint info">
+ &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__text">The extensions listed are included in the standard images. This list refers to PostgreSQL 17.&lt;/div>
+&lt;/blockquote>
+
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th>Default Version&lt;/th>
+ &lt;th>Comment&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>amcheck&lt;/td>
+ &lt;td>1.4&lt;/td>
+ &lt;td>Functions for verifying relation integrity&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>autoinc&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for autoincrementing fields&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>bloom&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Bloom access method - signature file based index&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>btree_gin&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Support for indexing common datatypes in GIN&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>btree_gist&lt;/td>
+ &lt;td>1.7&lt;/td>
+ &lt;td>Support for indexing common datatypes in GiST&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>citext&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Data type for case-insensitive character strings&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>credcheck&lt;/td>
+ &lt;td>3.0.0&lt;/td>
+ &lt;td>credcheck - PostgreSQL plain text credential checker&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>cube&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Data type for multidimensional cubes&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dblink&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Connect to other PostgreSQL databases from within a database&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dict_int&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Text search dictionary template for integers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dict_xsyn&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Text search dictionary template for extended synonym processing&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>earthdistance&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Calculate great-circle distances on the surface of the Earth&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>file_fdw&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Foreign-data wrapper for flat file access&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>fuzzystrmatch&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Determine similarities and distance between strings&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore&lt;/td>
+ &lt;td>1.8&lt;/td>
+ &lt;td>Data type for storing sets of (key, value) pairs&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plperl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plperl&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plperlu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plperlu&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>hstore_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between hstore and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>insert_username&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for tracking who changed a table&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>intagg&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Integer aggregator and enumerator (obsolete)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>intarray&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Functions, operators, and index support for 1-D arrays of integers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>isn&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Data types for international product numbering standards&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plperl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plperl&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plperlu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plperlu&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>jsonb_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between jsonb and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>lo&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Large Object maintenance&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ltree&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Data type for hierarchical tree-like structures&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ltree_plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Transform between ltree and plpython3u&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>moddatetime&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for tracking last modification time&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pageinspect&lt;/td>
+ &lt;td>1.12&lt;/td>
+ &lt;td>Inspect the contents of database pages at a low level&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_buffercache&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Examine the shared buffer cache&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_cron&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Job scheduler for PostgreSQL&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_freespacemap&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Examine the free space map (FSM)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_permissions&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>View object permissions and compare them with the desired state&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_prewarm&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Prewarm relation data&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_proctab&lt;/td>
+ &lt;td>&lt;/td>
+ &lt;td>Placeholder - see pg_proctab&amp;ndash;0.0.10-compat.control&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_stat_statements&lt;/td>
+ &lt;td>1.11&lt;/td>
+ &lt;td>Track planning and execution statistics of all SQL statements executed&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_surgery&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Extension to perform surgery on a damaged relation&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_trgm&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>Text similarity measurement and index searching based on trigrams&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_visibility&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Examine the visibility map (VM) and page-level visibility info&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_walinspect&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Functions to inspect contents of PostgreSQL Write-Ahead Log&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgaudit&lt;/td>
+ &lt;td>17.1&lt;/td>
+ &lt;td>Provides auditing functionality&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgauditlogtofile&lt;/td>
+ &lt;td>1.6&lt;/td>
+ &lt;td>pgAudit addon to redirect audit entries to an independent file&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgcrypto&lt;/td>
+ &lt;td>1.3&lt;/td>
+ &lt;td>Cryptographic functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgnodemx&lt;/td>
+ &lt;td>1.7&lt;/td>
+ &lt;td>SQL functions that allow capture of node OS metrics from PostgreSQL&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgrowlocks&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Show row-level locking information&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pgstattuple&lt;/td>
+ &lt;td>1.5&lt;/td>
+ &lt;td>Show tuple-level statistics&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>plpgsql&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/pgSQL procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>plpython3u&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/Python3U untrusted procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pltcl&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/Tcl procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pltclu&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>PL/TclU untrusted procedural language&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgres_fdw&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Foreign-data wrapper for remote PostgreSQL servers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>refint&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions for implementing referential integrity (obsolete)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>seg&lt;/td>
+ &lt;td>1.4&lt;/td>
+ &lt;td>Data type for representing line segments or floating-point intervals&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>set_user&lt;/td>
+ &lt;td>4.1.0&lt;/td>
+ &lt;td>Similar to SET ROLE but with added logging&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>sslinfo&lt;/td>
+ &lt;td>1.2&lt;/td>
+ &lt;td>Information about SSL certificates&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tablefunc&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Functions that manipulate whole tables, including crosstab&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tcn&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>Triggered change notifications&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>timescaledb&lt;/td>
+ &lt;td>2.18.2&lt;/td>
+ &lt;td>Enables scalable inserts and complex queries for time-series data (Apache 2 Edition)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tsm_system_rows&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>TABLESAMPLE method which accepts number of rows as a limit&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tsm_system_time&lt;/td>
+ &lt;td>1.0&lt;/td>
+ &lt;td>TABLESAMPLE method which accepts time in milliseconds as a limit&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>unaccent&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Text search dictionary that removes accents&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>uuid-ossp&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>Generate universally unique identifiers (UUIDs)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>xml2&lt;/td>
+ &lt;td>1.1&lt;/td>
+ &lt;td>XPath querying and XSLT&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+
+
+
+
+
+&lt;blockquote class="gdoc-hint info">
+ &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__text">The following extensions are additionally included in the Postgis images.&lt;/div>
+&lt;/blockquote>
+
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th>Default Version&lt;/th>
+ &lt;th>Comment&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>address_standardizer&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>Used to parse an address into constituent elements. Generally used to support geocoding address normalization step.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>address_standardizer_data_us&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>Address Standardizer US dataset example&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS geometry and geography spatial types and functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_raster&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS raster types and functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_sfcgal&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS SFCGAL functions&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_tiger_geocoder&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS tiger geocoder and reverse geocoder&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgis_topology&lt;/td>
+ &lt;td>3.4.4&lt;/td>
+ &lt;td>PostGIS topology spatial types and functions&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table></description></item></channel></rss>

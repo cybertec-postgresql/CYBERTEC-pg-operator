@@ -1,0 +1,2386 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>References on CYBERTEC-PG-Operator</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/</link><description>Recent content in References on CYBERTEC-PG-Operator</description><generator>Hugo</generator><language>en</language><lastBuildDate>Tue, 07 Mar 2023 14:26:51 +0100</lastBuildDate><atom:link href="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/index.xml" rel="self" type="application/rss+xml"/><item><title>PostgreSQL</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/</guid><description>&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="crd-for-kind-postgresql"
+ >
+ CRD for kind postgresql
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#crd-for-kind-postgresql" class="gdoc-page__anchor clip flex align-center" title="Anchor to: CRD for kind postgresql" aria-label="Anchor to: CRD for kind postgresql" href="#crd-for-kind-postgresql">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>apiVersion&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">acid.zalando.do/v1&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>kind&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>metadata&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#spec"
+>spec&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#status"
+>status&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="spec"
+ >
+ spec
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#spec" class="gdoc-page__anchor clip flex align-center" title="Anchor to: spec" aria-label="Anchor to: spec" href="#spec">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#additionalvolumes"
+>additionalVolumes&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">List of additional volumes to mount in each container of the statefulset pod&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>allowedSourceRanges&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">The corresponding load balancer is accessible only to the networks defined by this parameter&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#backup"
+>backup&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of a customised backup solution for the cluster&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#clone"
+>clone&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Defines the clone-target for the Cluster&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#connectionpooler"
+>connectionPooler&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Defines the configuration and settings for every type of a connectionPoolers (Primary and Replica).&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>databases&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Defines the name of the database, they are created by the operator. See &lt;a
+ class="gdoc-markdown__link"
+ href="https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials/tree/main/cluster-tutorials/configure_users_and_databases"
+>tutorial&lt;/a>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dockerImage&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Defines the used PostgreSQL-Container-Image for this cluster&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enableLogicalBackup&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enable logical Backups for this Cluster (Stored on S3) - s3-configuration for Operator is needed (Not for pgBackRest)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enableConnectionPooler&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">creates a ConnectionPooler for the primary Pod&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enableReplicaConnectionPooler&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">creates a ConnectionPooler for the replica Pods&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enableMasterLoadBalancer&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Define whether to enable the load balancer pointing to the Postgres primary&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enableReplicaLoadBalancer&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Define whether to enable the load balancer pointing to the Postgres replicas&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enableMasterPoolerLoadBalancer&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Define whether to enable the load balancer pointing to the primary ConnectionPooler&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enableReplicaPoolerLoadBalancer&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Define whether to enable the load balancer pointing to the Replica-ConnectionPooler&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enableShmVolume&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Start a database pod without limitations on shm memory. By default Docker limit /dev/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#env"
+>env&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows to add own Envs to the PostgreSQL containers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#initcontainers"
+>initContainers&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of init-containers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>logicalBackupSchedule&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the scheduling of logical backups based on cron-syntax. Example: &lt;code>30 00 * * *&lt;/code>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>maintenanceWindows&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of maintenance windows for the cluster. Example: &lt;code>Sat:00:00-04:00&lt;/code>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>masterServiceAnnotations&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of annotations for the Primary Service&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#monitor"
+>monitor&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables monitoring on the basis of the defined image&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>nodeAffinity&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables overwriting of the nodeAffinity&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>numberOfInstances&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Number of nodes of the cluster&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#patroni"
+>patroni&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the customisation of patroni settings&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>podPriorityClassName&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">a name of the priority class that should be assigned to the cluster pods. If not set then the default priority class is taken. The priority class itself must be defined in advance&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>podAnnotations&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">A map of key value pairs that gets attached as annotations to each pod created for the database.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#postgresql"
+>postgresql&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the customisation of PostgreSQL settings and parameters&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#prepareddatabases"
+>preparedDatabases&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to define databases including owner, schemas and extension and have the operator generate them. item See &lt;a
+ class="gdoc-markdown__link"
+ href="https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials/tree/main/cluster-tutorials/prepared_databases"
+>tutorial&lt;/a>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>replicaServiceAnnotations&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of annotations for the Replica Service&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#resources"
+>resources&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">CPU &amp;amp; Memory (Limit &amp;amp; Request) definition for the Postgres container&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ServiceAnnotations&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">A map of key value pairs that gets attached as annotations to each Service created for the database.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#sidecars"
+>sidecars&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of custom sidecars&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>spiloFSGroup&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">the Persistent Volumes for the Spilo pods in the StatefulSet will be owned and writable by the group ID specified. This will override the spilo_fsgroup operator parameter&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>spiloRunAsGroup&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">sets the group ID which should be used in the container to run the process.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>spiloRunAsUser&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Sets the user ID which should be used in the container to run the process. This must be set to run the container without root.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#standby"
+>standby&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the creation of a standby cluster at the time of the creation of a new cluster&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#streams"
+>streams&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables change data capture streams for defined database tables&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#tde"
+>tde&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the activation of TDE if a new cluster is created&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>teamId&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">name of the team the cluster belongs to. Will be removed soon&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#tls"
+>tls&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Custom TLS certificate&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#tolerations"
+>tolerations&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields:&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>key, operator, value, effect and tolerationSeconds&lt;/td>
+ &lt;td>&lt;/td>
+ &lt;td>&lt;/td>
+ &lt;td>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/"
+>topologySpreadConstraints&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of a topologySpreadConstraint. See &lt;a
+ class="gdoc-markdown__link"
+ href="https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/"
+>K8s-Documentation&lt;/a>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>users&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">a map of usernames to user flags for the users that should be created in the cluster by the operator. See &lt;a
+ class="gdoc-markdown__link"
+ href="https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials/tree/main/cluster-tutorials/configure_users_and_databases"
+>tutorial&lt;/a>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>usersWithSecretRotation&lt;/td>
+ &lt;td style="text-align: center">list&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">list of users to enable credential rotation in K8s secrets. The rotation interval can only be configured globally.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>usersWithInPlaceSecretRotation&lt;/td>
+ &lt;td style="text-align: center">list&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">list of users to enable in-place password rotation in K8s secrets. The rotation interval can only be configured globally.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#volume"
+>volume&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">define the properties of the persistent storage that stores Postgres data&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="additionalvolumes"
+ >
+ additionalVolumes
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#additionalvolumes" class="gdoc-page__anchor clip flex align-center" title="Anchor to: additionalVolumes" aria-label="Anchor to: additionalVolumes" href="#additionalvolumes">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>name&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>mountPath&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>targetContainers&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>subPath&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>isSubPathExpr&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#volumeSource"
+>volumeSource&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="backup"
+ >
+ backup
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#backup" class="gdoc-page__anchor clip flex align-center" title="Anchor to: backup" aria-label="Anchor to: backup" href="#backup">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#pgbackrest"
+>pgbackrest&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="clone"
+ >
+ clone
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#clone" class="gdoc-page__anchor clip flex align-center" title="Anchor to: clone" aria-label="Anchor to: clone" href="#clone">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>cluster&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Name of the cluster to be cloned. Random value if the cluster does not exist locally.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#pgbackrest"
+>pgbackrest&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="connectionpooler"
+ >
+ connectionPooler
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#connectionpooler" class="gdoc-page__anchor clip flex align-center" title="Anchor to: connectionPooler" aria-label="Anchor to: connectionPooler" href="#connectionpooler">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>numberOfInstances&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Number of Pods per Pooler&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>mode&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">pooling mode for pgBouncer (session, transaction, statement)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>schema&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Schema for Pooler (Default: pooler)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>user&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Username for Pooler (Default: pooler)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>maxDBConnections&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">maxConnections to the DB-Pod(s)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#resources"
+>resources&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">CPU &amp;amp; Memory (Limit &amp;amp; Request) definition for the Pooler&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h2 id="hahahugoshortcode24s4hbhb"
+ >
+ &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+ &lt;/h2>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode24s4hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode24s4hbhb">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="env"
+ >
+ env
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#env" class="gdoc-page__anchor clip flex align-center" title="Anchor to: env" aria-label="Anchor to: env" href="#env">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>name&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Keyfield for the ENV-Entry&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>value&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Valuefield for the ENV-Entry&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="initcontainers"
+ >
+ initContainers
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#initcontainers" class="gdoc-page__anchor clip flex align-center" title="Anchor to: initContainers" aria-label="Anchor to: initContainers" href="#initcontainers">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>name&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Name for the container&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>image&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Docker-Image for container&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>command&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">to override CMD inside the container&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#env"
+>env&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows to add own Envs to the container&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#resources"
+>resources&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">CPU &amp;amp; Memory (Limit &amp;amp; Request) definition for the container&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="ports"
+>ports&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Define open ports for the container&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="monitor"
+ >
+ monitor
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#monitor" class="gdoc-page__anchor clip flex align-center" title="Anchor to: monitor" aria-label="Anchor to: monitor" href="#monitor">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>image&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Docker-Image for the metric exporter&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="patroni"
+ >
+ patroni
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#patroni" class="gdoc-page__anchor clip flex align-center" title="Anchor to: patroni" aria-label="Anchor to: patroni" href="#patroni">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>failsafe_mode&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Patroni failsafe_mode parameter value. See the &lt;a
+ class="gdoc-markdown__link"
+ href="https://patroni.readthedocs.io/en/master/dcs_failsafe_mode.html"
+>Patroni documentation&lt;/a> for more details.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>initdb&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">a map of key-value pairs describing initdb parameters&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>loop_wait&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Patroni &lt;code>loop_wait&lt;/code> parameter value, optional. The default is set by the PostgreSQL image.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>maximum_lag_on_failover&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Patroni &lt;code>maximum_lag_on_failover&lt;/code> parameter value, optional. The default is set by the PostgreSQL image.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#multisite"
+>multisite&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Multisite configuration - Check the &lt;a
+ class="gdoc-markdown__link"
+ href="CYBERTEC-pg-operator/multisite/"
+>Documentation&lt;/a> first&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pg_hba&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">list of custom pg_hba lines to replace default ones. One entry per item (example: - hostssl all all 0.0.0.0/0 scram-sha-256)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>retry_timeout&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Patroni &lt;code>retry_timeout&lt;/code> parameter value, optional. The default is set by the PostgreSQL image.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#slots"
+>slots&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">permanent replication slots that Patroni preserves after failover by re-creating them on the new primary immediately. after doing a promote. Use preferred slot-name as map-item&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>synchronous_mode&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">DPatroni &lt;code>synchronous_mode&lt;/code> parameter value, optional. The default is false.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>synchronous_mode_strict&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Patroni &lt;code>synchronous_mode_strict&lt;/code> parameter value, optional. The default is false.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>synchronous_node_count&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Patroni &lt;code>synchronous_node_count&lt;/code> parameter value, optional. The default is set to 1. Only used if &lt;code>synchronous_mode_strict&lt;/code> is true&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ttl&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Patroni &lt;code>ttl&lt;/code> parameter value, optional. The default is set by the PostgreSQL image.&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="postgresql"
+ >
+ PostgreSQL
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#postgresql" class="gdoc-page__anchor clip flex align-center" title="Anchor to: PostgreSQL" aria-label="Anchor to: PostgreSQL" href="#postgresql">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>parameters&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">PostgreSQL-Parameter as item (Example: max_connections: &amp;ldquo;100&amp;rdquo;). For help check out the &lt;a
+ class="gdoc-markdown__link"
+ href="https://pgconfigurator.cybertec.at"
+>CYBERTEC PostgreSQL Configurator&lt;/a>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>version&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">a map of key-value pairs describing initdb parameters&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="prepareddatabases"
+ >
+ preparedDatabases
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#prepareddatabases" class="gdoc-page__anchor clip flex align-center" title="Anchor to: preparedDatabases" aria-label="Anchor to: preparedDatabases" href="#prepareddatabases">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>defaultUsers&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Creates roles with &lt;code>LOGIN&lt;/code> permission and &lt;code>_user&lt;/code>suffix. Default: false&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>extensions&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Includes the Extensions as items (key:value). Key is the Name of the Extension and value the schema. Example: pgcrypto: public&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#schemas"
+>schemas&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Includes the schemanames as items.&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="resources"
+ >
+ resources
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#resources" class="gdoc-page__anchor clip flex align-center" title="Anchor to: resources" aria-label="Anchor to: resources" href="#resources">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#requests"
+>requests&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">cpu and memory definitons (request.cpu / request.memory)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#limits"
+>limits&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">cpu and memory definitons (limits.cpu / limits.memory)&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="sidecars"
+ >
+ sidecars
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#sidecars" class="gdoc-page__anchor clip flex align-center" title="Anchor to: sidecars" aria-label="Anchor to: sidecars" href="#sidecars">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>name&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Name for the container&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>image&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Docker-Image for container&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>command&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">to override CMD inside the container&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#env"
+>env&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows to add own Envs to the container&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#resources"
+>resources&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">CPU &amp;amp; Memory (Limit &amp;amp; Request) definition for the container&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="ports"
+>ports&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Define open ports for the container&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="standby"
+ >
+ standby
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#standby" class="gdoc-page__anchor clip flex align-center" title="Anchor to: standby" aria-label="Anchor to: standby" href="#standby">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>standby_host&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Endpoint of the primary cluster&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>standby_port&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">PostgreSQL port of the primary cluster&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="streams"
+ >
+ streams
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#streams" class="gdoc-page__anchor clip flex align-center" title="Anchor to: streams" aria-label="Anchor to: streams" href="#streams">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>applicationId&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">The application name to which the database and CDC belongs to.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>database&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Name of the database from where events will be published via Postgres&amp;rsquo; logical decoding feature.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tables&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Defines a map of table names and their properties (eventType, idColumn and payloadColumn).&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>batchSize&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Defines the size of batches in which events are consumed. Defaults to 1&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enableRecovery&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Flag to enable a dead letter queue recovery for all streams tables.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>filter&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Streamed events can be filtered by a jsonpath expression for each table.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>standby_port&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">PostgreSQL port of the primary cluster&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="tde"
+ >
+ tde
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#tde" class="gdoc-page__anchor clip flex align-center" title="Anchor to: tde" aria-label="Anchor to: tde" href="#tde">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>enable&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">enable TDE during initDB&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="tolerations"
+ >
+ tolerations
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#tolerations" class="gdoc-page__anchor clip flex align-center" title="Anchor to: tolerations" aria-label="Anchor to: tolerations" href="#tolerations">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>key&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Key for the taint attribute of the node&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>operator&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Comparison operator (Equal or Exists).&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>value&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Value of the taint (only relevant for ‘Equal’).&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>effect&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Specifies how the node handles the pod (NoExecute, NoSchedule, PreferNoSchedule)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>tolerationSeconds&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Specifies how long the pod tolerates the taint (only for NoExecute).&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="volume"
+ >
+ volume
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#volume" class="gdoc-page__anchor clip flex align-center" title="Anchor to: volume" aria-label="Anchor to: volume" href="#volume">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>size&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">the size of the target volume. Usual Kubernetes size modifiers, i.e. Gi or Mi, apply&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>storageClass&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">the name of the Kubernetes storage class to draw the persistent volume from. If empty K8s will choose the default StorageClass&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>subPath&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Subpath to use when mounting volume into PostgreSQL container.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>iops&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">When running the operator on AWS the latest generation of EBS volumes (gp3) allows for configuring the number of IOPS. Maximum is 16000&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>throughput&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">When running the operator on AWS the latest generation of EBS volumes (gp3) allows for configuring the throughput in MB/s. Maximum is 1000&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>selector&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">A label query over PVs to consider for binding. See the &lt;a
+ class="gdoc-markdown__link"
+ href="https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
+>Kubernetes documentation&lt;/a> for details on using matchLabels and matchExpressions&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="volumesource"
+ >
+ volumeSource
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#volumesource" class="gdoc-page__anchor clip flex align-center" title="Anchor to: volumeSource" aria-label="Anchor to: volumeSource" href="#volumesource">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>emptyDir&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">emptyDir: {}&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#volumeSource-PersistentVolumeClaim"
+>PersistentVolumeClaim&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">PersistentVolumeClaim-Objekt&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#volumeSource-configMap"
+>configMap&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">configMap-Objekt&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="volumesource-persistentvolumeclaim"
+ >
+ volumeSource-PersistentVolumeClaim
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#volumesource-persistentvolumeclaim" class="gdoc-page__anchor clip flex align-center" title="Anchor to: volumeSource-PersistentVolumeClaim" aria-label="Anchor to: volumeSource-PersistentVolumeClaim" href="#volumesource-persistentvolumeclaim">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>claimName&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Name of the PersistentVolumeClaim&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>readyOnly&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">PersistentVolumeClaim-Objekt&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="volumesource-configmap"
+ >
+ volumeSource-configMap
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#volumesource-configmap" class="gdoc-page__anchor clip flex align-center" title="Anchor to: volumeSource-configMap" aria-label="Anchor to: volumeSource-configMap" href="#volumesource-configmap">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>name&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Name of the Configmap&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="multisite"
+ >
+ multisite
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#multisite" class="gdoc-page__anchor clip flex align-center" title="Anchor to: multisite" aria-label="Anchor to: multisite" href="#multisite">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>enable&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Enable multisite-feature&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#etcd"
+>etcd&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>retry_timeout&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Patroni &lt;code>retry_timeout&lt;/code> parameter value for the global etcd, optional. The default is set by the PostgreSQL image.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>site&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Name for the site of this cluster&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>ttl&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Patroni &lt;code>ttl&lt;/code> parameter value for the global etcd, optional. The default is set by the PostgreSQL image.&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="slots"
+ >
+ slots
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#slots" class="gdoc-page__anchor clip flex align-center" title="Anchor to: slots" aria-label="Anchor to: slots" href="#slots">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>type&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Slot-Type (&lt;code>physical&lt;/code> or &lt;code>logical&lt;/code>)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>database&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Databasename - for logical replication only&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>plugin&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Plugin - for logical replication only&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h2 id="hahahugoshortcode24s22hbhb"
+ >
+ &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+ &lt;/h2>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode24s22hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode24s22hbhb">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="schemas"
+ >
+ schemas
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#schemas" class="gdoc-page__anchor clip flex align-center" title="Anchor to: schemas" aria-label="Anchor to: schemas" href="#schemas">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>defaultRoles&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Creates schema exclusiv roles with &lt;code>NOLOGIN&lt;/code> permission and &lt;code>_user&lt;/code>suffix Default: true&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>defaultUsers&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Creates schema exclusiv roles with &lt;code>LOGIN&lt;/code> permission and &lt;code>_user&lt;/code>suffix Default: false&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="etcd"
+ >
+ etcd
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#etcd" class="gdoc-page__anchor clip flex align-center" title="Anchor to: etcd" aria-label="Anchor to: etcd" href="#etcd">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>hosts&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">list of etcd hosts, including etcd-client-port (default: &lt;code>2379&lt;/code>), comma separated like in the etcd config&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>password&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Password for the global etcd&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>protocol&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Protocol for the global etcd (http or https)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>user&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Username for the global etcd&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="requests"
+ >
+ requests
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#requests" class="gdoc-page__anchor clip flex align-center" title="Anchor to: requests" aria-label="Anchor to: requests" href="#requests">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>cpu&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">cpu definitons Example: 1000m&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>memory&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">memory definitons Example: 1000Mi&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="limits"
+ >
+ limits
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#limits" class="gdoc-page__anchor clip flex align-center" title="Anchor to: limits" aria-label="Anchor to: limits" href="#limits">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>cpu&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">cpu definitons Example: 1000m&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>memory&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">memory definitons Example: 1000Mi&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="pgbackrest"
+ >
+ pgbackrest
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#pgbackrest" class="gdoc-page__anchor clip flex align-center" title="Anchor to: pgbackrest" aria-label="Anchor to: pgbackrest" href="#pgbackrest">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#configuration"
+>configuration&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>global&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>image&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#repos"
+>repos&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#resources"
+>resources&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">CPU &amp;amp; Memory (Limit &amp;amp; Request) definition for the pgBackRest container&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="configuration"
+ >
+ configuration
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#configuration" class="gdoc-page__anchor clip flex align-center" title="Anchor to: configuration" aria-label="Anchor to: configuration" href="#configuration">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>secret&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Secretname with the contained S3 credentials (AccessKey &amp;amp; SecretAccessKey) (Note: must be placed in the same namespace as the cluster)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#protection"
+>protection&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Enable Protection-Options&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="protection"
+ >
+ protection
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#protection" class="gdoc-page__anchor clip flex align-center" title="Anchor to: protection" aria-label="Anchor to: protection" href="#protection">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>restore&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">A restore is ignored as long as this option is set to true.&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="repos"
+ >
+ repos
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#repos" class="gdoc-page__anchor clip flex align-center" title="Anchor to: repos" aria-label="Anchor to: repos" href="#repos">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>name&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Name of the repository Required:Repo[1-4]&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>storage&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Defines the used backup-storage (Choose from List: pvc,s3,blob,gcs)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>resource&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Bucket-/Instance-/Storage- or PVC-Name&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>endpoint&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">The Endpoint for the choosen Storage (Not required for local storage)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>region&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Region for the choosen Storage (S3 only)&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#schedule"
+>schedule&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Object for defining automatic backups&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="schedule"
+ >
+ schedule
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#schedule" class="gdoc-page__anchor clip flex align-center" title="Anchor to: schedule" aria-label="Anchor to: schedule" href="#schedule">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>full&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">(Cron-Syntax) 	Define full backup&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>incr&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">(Cron-Syntax) 	Define incremental backup&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>diff&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">(Cron-Syntax) 	Define differential backup&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="status"
+ >
+ status
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#status" class="gdoc-page__anchor clip flex align-center" title="Anchor to: status" aria-label="Anchor to: status" href="#status">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>PostgresClusterStatus&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Shows the cluster status. Filled by the Operator&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a></description></item><item><title>Operator-Configuration</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/</guid><description>&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">default&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>enable_crd_registration&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>crd_categories&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">all&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enable_lazy_spilo_upgrade&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enable_pgversion_env_var&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enable_spilo_wal_path_combat&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>etcd_host&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>kubernetes_use_configmaps&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>docker_image&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>sidecars&lt;/td>
+ &lt;td style="text-align: center">list&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enable_shm_volume&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>workers&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">8&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>max_instances&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">-1&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>min_instances&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">-1&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>resync_period&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">30m&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>repair_period&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">5m&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>set_memory_request_to_limit&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>debug_logging&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enable_db_access&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>spilo_privileged&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>spilo_allow_privilege_escalation&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>watched_namespace&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">*&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="major-upgrade-specific"
+ >
+ major-upgrade-specific
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#major-upgrade-specific" class="gdoc-page__anchor clip flex align-center" title="Anchor to: major-upgrade-specific" aria-label="Anchor to: major-upgrade-specific" href="#major-upgrade-specific">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">default&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>major_version_upgrade_mode&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">off&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>major_version_upgrade_team_allow_list&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>minimal_major_version&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">9.6&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>target_major_version&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">14&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="aws-specific"
+ >
+ aws-specific
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#aws-specific" class="gdoc-page__anchor clip flex align-center" title="Anchor to: aws-specific" aria-label="Anchor to: aws-specific" href="#aws-specific">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">default&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>wal_s3_bucket&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>log_s3_bucket&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>kube_iam_role&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>aws_region&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>additional_secret_mount&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>additional_secret_mount_path&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enable_ebs_gp3_migration&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enable_ebs_gp3_migration_max_size&lt;/td>
+ &lt;td style="text-align: center">int&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="logical-backup-specific"
+ >
+ logical-backup-specific
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#logical-backup-specific" class="gdoc-page__anchor clip flex align-center" title="Anchor to: logical-backup-specific" aria-label="Anchor to: logical-backup-specific" href="#logical-backup-specific">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">default&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>logical_backup_docker_image&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>logical_backup_google_application_credentials&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>logical_backup_job_prefix&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>logical_backup_provider&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>logical_backup_s3_access_key_id&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>logical_backup_s3_bucket&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>logical_backup_s3_endpoint&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>logical_backup_s3_region&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>logical_backup_s3_secret_access_key&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>logical_backup_s3_sse&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>logical_backup_s3_retention_time&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>logical_backup_schedule&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">(Cron-Syntax)&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="team-api-specific"
+ >
+ team-api-specific
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#team-api-specific" class="gdoc-page__anchor clip flex align-center" title="Anchor to: team-api-specific" aria-label="Anchor to: team-api-specific" href="#team-api-specific">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">default&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>enable_teams_api&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>teams_api_url&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>teams_api_role_configuration&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enable_team_superuser&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>team_admin_role&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enable_admin_role_for_users&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pam_role_name&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>pam_configuration&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>protected_role_names&lt;/td>
+ &lt;td style="text-align: center">list&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>postgres_superuser_teams&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>role_deletion_suffix&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enable_team_member_deprecation&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enable_postgres_team_crd&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enable_postgres_team_crd_superusers&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>enable_team_id_clustername_prefix&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table></description></item></channel></rss>

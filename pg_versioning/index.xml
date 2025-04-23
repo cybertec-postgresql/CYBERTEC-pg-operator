@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>PG versioning on CYBERTEC-PG-Operator</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/</link><description>Recent content in PG versioning on CYBERTEC-PG-Operator</description><generator>Hugo</generator><language>en</language><lastBuildDate>Thu, 28 Dec 2023 14:26:51 +0100</lastBuildDate><atom:link href="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/index.xml" rel="self" type="application/rss+xml"/><item><title>Minor version update</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/minor_updates/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/minor_updates/</guid><description>&lt;p>Minor version updates for PostgreSQL are performed by updating the PostgreSQL container image in use.
+With the update object &lt;code>spec.dockerImage&lt;/code> of the cluster manifest, the operator takes over the update based on the rolling update strategy. This means that the pods are replaced one after the other, with the replicas being updated first and then the old primary after a switchover. The operational interruption should generally last less than 5 seconds (switchover time), but the clients must still reconnect.&lt;/p></description></item><item><title>Major version upgrade</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/</guid><description>&lt;p>CPO enables the use of the in-place upgrade, which makes it possible to upgrade a cluster to a new PG major. For this purpose, pg_upgrade is used in the background.&lt;/p>
+
+
+
+
+
+&lt;blockquote class="gdoc-hint info">
+ &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__text">Note that an in-place upgrade generates both a pod restore in the form of a rolling update and an operational interruption of the cluster during the actual execution of the restore.&lt;/div>
+&lt;/blockquote>
+
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h2 id="how-does-the-upgrade-work"
+ >
+ How does the upgrade work?
+ &lt;/h2>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#how-does-the-upgrade-work" class="gdoc-page__anchor clip flex align-center" title="Anchor to: How does the upgrade work?" aria-label="Anchor to: How does the upgrade work?" href="#how-does-the-upgrade-work">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h3 id="preconditions"
+ >
+ Preconditions:
+ &lt;/h3>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#preconditions" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Preconditions:" aria-label="Anchor to: Preconditions:" href="#preconditions">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;ol>
+&lt;li>Pod restart - Use the rolling update strategy to replace all pods based on the new ENV &lt;code>PGVERSION&lt;/code> with the version you want to update to.&lt;/li>
+&lt;li>Check - Check that the new &lt;code>PGVERSION&lt;/code> is larger than the previously used one.&lt;/li>
+&lt;li>Check whether the new &lt;code>PGVERSION&lt;/code> is larger than the previously used one and the maintenance mode of the cluster must be deactivated. In addition, the replicas should not have a high lag.&lt;/li>
+&lt;/ol>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h3 id="preliminary-checks"
+ >
+ Preliminary checks
+ &lt;/h3>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#preliminary-checks" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Preliminary checks" aria-label="Anchor to: Preliminary checks" href="#preliminary-checks">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;ol>
+&lt;li>use initdb to prepare a new data_dir (&lt;code>data_new&lt;/code>) based on the new &lt;code>PGVERSION&lt;/code>.&lt;/li>
+&lt;li>check the upgrade possibility with &lt;code>pg_upgrade --check&lt;/code>&lt;/li>
+&lt;/ol>
+
+
+
+
+
+&lt;blockquote class="gdoc-hint info">
+ &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__text">If one of the steps is aborted, a cleanup is performed&lt;/div>
+&lt;/blockquote>
+
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h3 id="prepare-the-upgrade"
+ >
+ Prepare the Upgrade
+ &lt;/h3>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#prepare-the-upgrade" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Prepare the Upgrade" aria-label="Anchor to: Prepare the Upgrade" href="#prepare-the-upgrade">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;ol>
+&lt;li>remove dependencies that can cause problems. For example, the extensions &lt;code>pg_stat_statements&lt;/code> and &lt;code>pgaudit&lt;/code>.&lt;/li>
+&lt;li>activate the maintenance mode of the cluster&lt;/li>
+&lt;li>terminate PostgreSQL in an orderly manner&lt;/li>
+&lt;li>check pg_controldata for the checkpoint position and wait until all replicas apply the latest checkpoint location&lt;/li>
+&lt;li>use port &lt;code>5432&lt;/code> for rsyncd and start it&lt;/li>
+&lt;/ol>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h3 id="start-the-upgrade"
+ >
+ Start the Upgrade
+ &lt;/h3>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#start-the-upgrade" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Start the Upgrade" aria-label="Anchor to: Start the Upgrade" href="#start-the-upgrade">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;ol>
+&lt;li>Call pg_upgrade -k to start the Upgrade
+
+
+
+
+
+&lt;blockquote class="gdoc-hint info">
+ &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__text">if the process failed, we need to rollback, if it was sucessful we&amp;rsquo;re reaching the point of no return&lt;/div>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>Rename the directories. &lt;code>data -&amp;gt; data_old&lt;/code> and &lt;code>data_new -&amp;gt; data&lt;/code>&lt;/li>
+&lt;li>Update the Patroni.config (&lt;code>postgres.yml&lt;/code>)&lt;/li>
+&lt;li>Call Checkpoint on every replica and trigger rsync on the Replicas&lt;/li>
+&lt;li>Wait for Replicas to complete rsxnc. &lt;code>Timeout: 300&lt;/code>&lt;/li>
+&lt;li>Stop rsyncd on Primary and remove ininitialize key from DCS, because its based on the old sysid&lt;/li>
+&lt;li>Start Patroni on the Primary and start the postgres locally&lt;/li>
+&lt;li>Reset custom staticstics, warmup the Memory and start Analyze in stages in separate threads&lt;/li>
+&lt;li>Wait for every Replica to become ready&lt;/li>
+&lt;li>Disable the maintenance mode for the Cluster&lt;/li>
+&lt;li>Restore custom statistics, analyze these tables and restore dropped objetcs from &lt;code>Prepare the upgrade&lt;/code>&lt;/li>
+&lt;/ol>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h3 id="completion-of-the-upgrade"
+ >
+ Completion of the upgrade
+ &lt;/h3>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#completion-of-the-upgrade" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Completion of the upgrade" aria-label="Anchor to: Completion of the upgrade" href="#completion-of-the-upgrade">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;ol>
+&lt;li>Drop directory &lt;code>data_old&lt;/code>&lt;/li>
+&lt;li>Trigger new Backup&lt;/li>
+&lt;/ol>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h3 id="how-a-rollback-is-working"
+ >
+ How a rollback is working?
+ &lt;/h3>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#how-a-rollback-is-working" class="gdoc-page__anchor clip flex align-center" title="Anchor to: How a rollback is working?" aria-label="Anchor to: How a rollback is working?" href="#how-a-rollback-is-working">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;ol>
+&lt;li>Stop rsynd if its running&lt;/li>
+&lt;li>Disable the maintenance mode for the Cluster&lt;/li>
+&lt;li>Drop directory &lt;code>data_new&lt;/code>&lt;/li>
+&lt;/ol>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h2 id="how-to-trigger-a-in-place-upgrade-with-cpo"
+ >
+ How to trigger a In-Place-Upgrade with cpo?
+ &lt;/h2>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#how-to-trigger-a-in-place-upgrade-with-cpo" class="gdoc-page__anchor clip flex align-center" title="Anchor to: How to trigger a In-Place-Upgrade with cpo?" aria-label="Anchor to: How to trigger a In-Place-Upgrade with cpo?" href="#how-to-trigger-a-in-place-upgrade-with-cpo">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;pre tabindex="0">&lt;code>spec:
+ postgresql:
+ version: &amp;#34;17&amp;#34;
+&lt;/code>&lt;/pre>&lt;p>To trigger an In-Place-Upgrade you have just to increase the parameter &lt;code>spec.postgresql.version&lt;/code>. If you choose a valid number the Operator will start with the prozedure, described above.&lt;/p></description></item></channel></rss>

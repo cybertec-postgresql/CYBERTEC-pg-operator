@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CPO on CYBERTEC-PG-Operator</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/</link><description>Recent content in CPO on CYBERTEC-PG-Operator</description><generator>Hugo</generator><language>en</language><lastBuildDate>Mon, 11 Mar 2024 14:26:51 +0100</lastBuildDate><atom:link href="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/index.xml" rel="self" type="application/rss+xml"/><item><title>The Project</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/project/</link><pubDate>Mon, 11 Mar 2024 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/project/</guid><description>&lt;p>The CYBERTEC PostgreSQL Operator (CPO) enables the simple provision and management of PostgreSQL clusters on Kubernetes. It reduces the administration effort and facilitates the management of single-node and HA clusters.&lt;/p>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h2 id="main-components"
+ >
+ Main components
+ &lt;/h2>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/project/#main-components" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Main components" aria-label="Anchor to: Main components" href="#main-components">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;ul>
+&lt;li>&lt;a
+ class="gdoc-markdown__link"
+ href="https://github.com/cybertec-postgresql/CYBERTEC-pg-operator"
+>CYBERTEC-pg-operator&lt;/a>: Kubernetes operator for the automation of PostgreSQL clusters.&lt;/li>
+&lt;li>&lt;a
+ class="gdoc-markdown__link"
+ href="https://github.com/cybertec-postgresql/CYBERTEC-pg-container"
+>CYBERTEC-pg-container&lt;/a>: Docker container suite for PostgreSQL, Patroni and etcd for the provision of HA clusters.&lt;/li>
+&lt;li>&lt;a
+ class="gdoc-markdown__link"
+ href="https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials"
+>CYBERTEC-operator-tutorials&lt;/a>: Tutorials and instructions for installing and using the operator.&lt;/li>
+&lt;/ul>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h2 id="features"
+ >
+ Features
+ &lt;/h2>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/project/#features" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Features" aria-label="Anchor to: Features" href="#features">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;ul>
+&lt;li>Cluster management:
+&lt;ul>
+&lt;li>Single-node and HA (High Availability) clusters via &lt;a
+ class="gdoc-markdown__link"
+ href="https://patroni.readthedocs.io/en/latest/"
+>Patroni&lt;/a>&lt;/li>
+&lt;li>Reduction of downtime thanks to redundancy, pod anti-affinity, auto-failover and self-healing&lt;/li>
+&lt;li>Automated failover&lt;/li>
+&lt;li>Live volume resize without pod restarts&lt;/li>
+&lt;li>Basic credential and user management on K8s, eases application deployments&lt;/li>
+&lt;li>Compatible with OpenShift and Rancher&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>PostgreSQL compatibility:
+&lt;ul>
+&lt;li>Supports PostgreSQL versions 13 to 17&lt;/li>
+&lt;li>Inplace upgrades for smooth version changes and minimal downtime&lt;/li>
+&lt;li>Extensive extension support, including pgAudit, TimescaleDB and PostGIS&lt;/li>
+&lt;li>Standby-Cluster&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Backup &amp;amp; Restore:
+&lt;ul>
+&lt;li>Integrated pgBackRest support&lt;/li>
+&lt;li>Automatic backups&lt;/li>
+&lt;li>Point-in-Time- and Snapshot-based Restores / Disaster Recovery&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Connection management:
+&lt;ul>
+&lt;li>pgBouncer for connection pooling&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Monitoring &amp;amp; alerting stack
+&lt;ul>
+&lt;li>Integrated metrics exporter&lt;/li>
+&lt;li>Prometheus, alert manager for metrics collection and alerting&lt;/li>
+&lt;li>Grafana for visual monitoring of the clusters&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Operator UI:
+&lt;ul>
+&lt;li>Web interface for managing clusters&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h2 id="installation"
+ >
+ Installation
+ &lt;/h2>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/project/#installation" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Installation" aria-label="Anchor to: Installation" href="#installation">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;p>Detailed instructions on installation and configuration can be found in the CYBERTEC operator tutorials and in the following chapters
+Example of installation via Helm:&lt;/p></description></item><item><title>Container Images</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/container_images/</link><pubDate>Mon, 11 Mar 2024 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/container_images/</guid><description>&lt;p>For each version of the operator and the required PostgreSQL and other required containers, the corresponding image is provided on Dockerhub.&lt;/p>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="operator-container-images"
+ >
+ Operator container images
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/container_images/#operator-container-images" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Operator container images" aria-label="Anchor to: Operator container images" href="#operator-container-images">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;p>The operator images are the central components that control the operation and administration of the PostgreSQL databases. These images are available in the following repository on DockerHub:&lt;/p></description></item></channel></rss>

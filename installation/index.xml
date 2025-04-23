@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Installation on CYBERTEC-PG-Operator</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/</link><description>Recent content in Installation on CYBERTEC-PG-Operator</description><generator>Hugo</generator><language>en</language><lastBuildDate>Tue, 07 Mar 2023 14:26:51 +0100</lastBuildDate><atom:link href="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/index.xml" rel="self" type="application/rss+xml"/><item><title>Setup local Kubernetes</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/dev-k8s/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/dev-k8s/</guid><description>&lt;p>There are various options for setting up a local Kubernetes environment. This chapter deals with the following two variants:&lt;/p>
+&lt;ul>
+&lt;li>minikube&lt;/li>
+&lt;li>crc (CodeReadyContainers from RedHat)&lt;/li>
+&lt;/ul>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h3 id="minikube"
+ >
+ Minikube
+ &lt;/h3>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/dev-k8s/#minikube" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Minikube" aria-label="Anchor to: Minikube" href="#minikube">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;p>Minikube is a tool that makes it possible to run Kubernetes locally on a single computer. It sets up a minimal but functional Kubernetes environment suitable for development and testing purposes. Minikube supports most Kubernetes features and provides an easy way to launch and manage Kubernetes clusters on local machines without the need for a complex cloud infrastructure.&lt;/p></description></item><item><title>Install CPO</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/install_operator/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/install_operator/</guid><description>&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h2 id="prerequisites"
+ >
+ Prerequisites
+ &lt;/h2>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/install_operator/#prerequisites" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Prerequisites" aria-label="Anchor to: Prerequisites" href="#prerequisites">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;p>For the installation you either need our CPO tutorial repository or you install CPO directly from our registry.&lt;!-- raw HTML omitted -->
+Exception: Installation via Operatorhub (Openshift only)&lt;/p>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h3 id="cpo-tutorial-repository"
+ >
+ CPO-Tutorial-Repository
+ &lt;/h3>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/install_operator/#cpo-tutorial-repository" class="gdoc-page__anchor clip flex align-center" title="Anchor to: CPO-Tutorial-Repository" aria-label="Anchor to: CPO-Tutorial-Repository" href="#cpo-tutorial-repository">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;p>To get started, you can fork our tutorial repository on Github and then download it.
+&lt;a
+ class="gdoc-markdown__link"
+ href="https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials/fork"
+>CYBERTEC-operator-tutorials&lt;/a>&lt;/p></description></item><item><title>Operator-Configuration</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/configuration_operator/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/configuration_operator/</guid><description>&lt;p>Users who are already used to working with PostgreSQL from Baremetal or VMs are already familiar with the need for various files to configure PostgreSQL. These include&lt;/p>
+&lt;ul>
+&lt;li>postgresql.conf&lt;/li>
+&lt;li>pg_hba.conf&lt;/li>
+&lt;li>&amp;hellip;&lt;/li>
+&lt;/ul>
+&lt;p>Although these files are available in the container, direct modification is not planned. As part of the declarative mode of operation of the operator, these files are defined via the operator. The modifying intervention within the container also represents a contradiction to the immutability of the container.&lt;/p></description></item></channel></rss>

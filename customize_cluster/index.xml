@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Customize Cluster on CYBERTEC-PG-Operator</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/</link><description>Recent content in Customize Cluster on CYBERTEC-PG-Operator</description><generator>Hugo</generator><language>en</language><lastBuildDate>Thu, 28 Dec 2023 14:26:51 +0100</lastBuildDate><atom:link href="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/index.xml" rel="self" type="application/rss+xml"/><item><title>Sidecars</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/sidecars/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/sidecars/</guid><description>&lt;p>Starting with the Single-Node-Cluster from the previous section, we want to modify the Instance a bit to see.&lt;/p>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h2 id="cpu-and-memory"
+ >
+ CPU and Memory
+ &lt;/h2>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/sidecars/#cpu-and-memory" class="gdoc-page__anchor clip flex align-center" title="Anchor to: CPU and Memory" aria-label="Anchor to: CPU and Memory" href="#cpu-and-memory">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;pre tabindex="0">&lt;code>spec:
+ resources:
+ limits:
+ cpu: 1000m
+ memory: 500Mi
+ requests:
+ cpu: 500m
+ memory: 500mi
+&lt;/code>&lt;/pre>&lt;p>Based on the ressources-Definiton we&amp;rsquo;re able to modify the reserved Hardware (requests) and the limits, which allows use to consume more than the reserved definitons if the k8s-worker has this hardware available. There are some Restrictions when modifiying the limits-section. Because of the behaviour of Databases we should never define a diff between requests.memory and limits.memory. A Database is after some time using all available Memory, for Cache and other things. Limits are optional and the worker node can force them back. forcing back memory will create big problems inside a database like creating corruption, forcing OutOfMemory-Killer and so on.
+CPU on the other side is a ressource we can use inside the limits definiton to allow our database using more cpu if needed and available.&lt;/p></description></item><item><title>Additional Volumes</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/additional-volumes/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/additional-volumes/</guid><description>&lt;pre tabindex="0">&lt;code> additionalVolumes:
+ - name: empty
+ mountPath: /opt/empty
+ targetContainers:
+ - all
+ volumeSource:
+ emptyDir: {}
+# - name: data
+# mountPath: /home/postgres/pgdata/partitions
+# targetContainers:
+# - postgres
+# volumeSource:
+# PersistentVolumeClaim:
+# claimName: pvc-postgresql-data-partitions
+# readyOnly: false
+# - name: conf
+# mountPath: /etc/telegraf
+# subPath: telegraf.conf
+# targetContainers:
+# - telegraf-sidecar
+# volumeSource:
+# configMap:
+# name: my-config-map
+&lt;/code>&lt;/pre></description></item></channel></rss>

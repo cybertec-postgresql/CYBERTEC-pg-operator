@@ -1292,6 +1292,23 @@ func generateSpiloReadinessProbe() *v1.Probe {
 	}
 }
 
+func generatePatroniLivenessProbe() *v1.Probe {
+	return &v1.Probe{
+		FailureThreshold: 6,
+		ProbeHandler: v1.ProbeHandler{
+			HTTPGet: &v1.HTTPGetAction{
+				Path:   "/health",
+				Port:   intstr.IntOrString{IntVal: patroni.ApiPort},
+				Scheme: v1.URISchemeHTTP,
+			},
+		},
+		InitialDelaySeconds: 30,
+		PeriodSeconds:       10,
+		TimeoutSeconds:      5,
+		SuccessThreshold:    1,
+	}
+}
+
 func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.StatefulSet, error) {
 
 	var (
@@ -1450,6 +1467,10 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	// Patroni responds 200 to probe only if it either owns the leader lock or postgres is running and DCS is accessible
 	if c.OpConfig.EnableReadinessProbe {
 		spiloContainer.ReadinessProbe = generateSpiloReadinessProbe()
+	}
+	//
+	if c.OpConfig.EnableLivenessProbe {
+		spiloContainer.LivenessProbe = generatePatroniLivenessProbe()
 	}
 
 	// generate container specs for sidecars specified in the cluster manifest

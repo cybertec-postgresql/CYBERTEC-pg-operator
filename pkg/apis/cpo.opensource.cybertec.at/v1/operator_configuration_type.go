@@ -102,6 +102,7 @@ type KubernetesMetaConfiguration struct {
 	PodManagementPolicy                      string              `json:"pod_management_policy,omitempty"`
 	PersistentVolumeClaimRetentionPolicy     map[string]string   `json:"persistent_volume_claim_retention_policy,omitempty"`
 	EnableReadinessProbe                     bool                `json:"enable_readiness_probe,omitempty"`
+	EnableLivenessProbe                      bool                `json:"enable_liveness_probe,omitempty"`
 	EnableCrossNamespaceSecret               bool                `json:"enable_cross_namespace_secret,omitempty"`
 }
 

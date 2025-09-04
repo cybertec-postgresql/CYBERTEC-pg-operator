@@ -1497,6 +1497,11 @@ func (in *Sidecar) DeepCopyInto(out *Sidecar) {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
+	if in.SecurityContext != nil {
+		in, out := &in.SecurityContext, &out.SecurityContext
+		*out = new(corev1.SecurityContext)
+		(*in).DeepCopyInto(*out)
+	}
 	return
 }
 

@@ -736,7 +736,7 @@ func (c *Cluster) generateSidecarContainers(sidecars []cpov1.Sidecar,
 }
 
 // adds common fields to sidecars
-func patchSidecarContainers(in []v1.Container, volumeMounts []v1.VolumeMount, superUserName string, credentialsSecretName string, logger *logrus.Entry) []v1.Container {
+func patchSidecarContainers(in []v1.Container, volumeMounts []v1.VolumeMount, superUserName string, credentialsSecretName string, logger *logrus.Entry, privilegedMode bool, privilegeEscalationMode *bool, additionalPodCapabilities *v1.Capabilities) []v1.Container {
 	result := []v1.Container{}
 
 	for _, container := range in {
@@ -777,6 +777,7 @@ func patchSidecarContainers(in []v1.Container, volumeMounts []v1.VolumeMount, su
 			},
 		}
 		container.Env = appendEnvVars(env, container.Env...)
+
 		result = append(result, container)
 	}
 
@@ -1243,6 +1244,7 @@ func getSidecarContainer(sidecar cpov1.Sidecar, index int, resources *v1.Resourc
 		Resources:       *resources,
 		Env:             sidecar.Env,
 		Ports:           sidecar.Ports,
+		SecurityContext: sidecar.SecurityContext,
 	}
 }
 
@@ -1527,7 +1529,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			containerName, containerName)
 	}
 
-	sidecarContainers = patchSidecarContainers(sidecarContainers, volumeMounts, c.OpConfig.SuperUsername, c.credentialSecretName(c.OpConfig.SuperUsername), c.logger)
+	sidecarContainers = patchSidecarContainers(sidecarContainers, volumeMounts, c.OpConfig.SuperUsername, c.credentialSecretName(c.OpConfig.SuperUsername), c.logger, c.OpConfig.Resources.SpiloPrivileged, c.OpConfig.Resources.SpiloAllowPrivilegeEscalation, generateCapabilities(c.OpConfig.AdditionalPodCapabilities))
 
 	tolerationSpec := tolerations(&spec.Tolerations, c.OpConfig.PodToleration)
 	topologySpreadConstraintsSpec := topologySpreadConstraints(&spec.TopologySpreadConstraints)
@@ -1536,7 +1538,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	podAnnotations := c.generatePodAnnotations(spec)
 
 	if spec.GetBackup().Pgbackrest != nil {
-		initContainers = append(initContainers, c.generatePgbackrestRestoreContainer(spec, repo_host_mode, volumeMounts, resourceRequirements))
+		initContainers = append(initContainers, c.generatePgbackrestRestoreContainer(spec, repo_host_mode, volumeMounts, resourceRequirements, c.OpConfig.Resources.SpiloPrivileged, c.OpConfig.Resources.SpiloAllowPrivilegeEscalation, generateCapabilities(c.OpConfig.AdditionalPodCapabilities)))
 
 		additionalVolumes = append(additionalVolumes, c.generatePgbackrestConfigVolume(spec.Backup.Pgbackrest, false))
 
@@ -1639,7 +1641,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	return statefulSet, nil
 }
 
-func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, repo_host_mode bool, volumeMounts []v1.VolumeMount, resourceRequirements *v1.ResourceRequirements) v1.Container {
+func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, repo_host_mode bool, volumeMounts []v1.VolumeMount, resourceRequirements *v1.ResourceRequirements, privilegedMode bool, privilegeEscalationMode *bool, additionalPodCapabilities *v1.Capabilities) v1.Container {
 	isOptional := true
 	pgbackrestRestoreEnvVars := []v1.EnvVar{
 		{
@@ -1719,6 +1721,12 @@ func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, r
 		Env:          pgbackrestRestoreEnvVars,
 		VolumeMounts: volumeMounts,
 		Resources:    *resourceRequirements,
+		SecurityContext: &v1.SecurityContext{
+			AllowPrivilegeEscalation: privilegeEscalationMode,
+			Privileged:               &privilegedMode,
+			ReadOnlyRootFilesystem:   util.False(),
+			Capabilities:             additionalPodCapabilities,
+		},
 	}
 }
 

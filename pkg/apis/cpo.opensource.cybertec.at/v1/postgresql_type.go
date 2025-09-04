@@ -222,6 +222,7 @@ type Sidecar struct {
 	Ports           []v1.ContainerPort  `json:"ports,omitempty"`
 	Env             []v1.EnvVar         `json:"env,omitempty"`
 	SecurityContext *v1.SecurityContext `json:"securityContext,omitempty"`
+	VolumeMounts    []v1.VolumeMount    `json:"volumeMounts,omitempty"`
 }
 
 // UserFlags defines flags (such as superuser, nologin) that could be assigned to individual users

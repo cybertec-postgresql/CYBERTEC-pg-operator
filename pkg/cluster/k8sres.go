@@ -874,7 +874,7 @@ func (c *Cluster) generatePodTemplate(
 		podSpec.PriorityClassName = priorityClassName
 	}
 
-	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars {
+	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars || c.OpConfig.ReadOnlyRootFilesystem {
 		addVarRunVolume(&podSpec)
 	}
 
@@ -1245,6 +1245,7 @@ func getSidecarContainer(sidecar cpov1.Sidecar, index int, resources *v1.Resourc
 		Env:             sidecar.Env,
 		Ports:           sidecar.Ports,
 		SecurityContext: sidecar.SecurityContext,
+		VolumeMounts:    sidecar.VolumeMounts,
 	}
 }
 
@@ -1440,6 +1441,15 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			spiloEnvVars = appendEnvVars(spiloEnvVars, env)
 		}
 		additionalVolumes = append(additionalVolumes, tlsVolumes...)
+	}
+	// if monitoring is enabled, add a empty volume
+	if c.Postgresql.Spec.Monitoring != nil {
+		additionalVolumes = append(additionalVolumes, cpov1.AdditionalVolume{
+			Name: "exporter-tmp",
+			VolumeSource: v1.VolumeSource{
+				EmptyDir: &v1.EmptyDirVolumeSource{},
+			},
+		})
 	}
 	repo_host_mode := false
 	// Add this envVar so that it is not added to the pgbackrest initcontainer

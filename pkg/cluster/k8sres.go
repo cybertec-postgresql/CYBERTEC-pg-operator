@@ -878,14 +878,12 @@ func (c *Cluster) generatePodTemplate(
 		addEmptyDirVolume(&podSpec, "exporter-tmp", "postgres-exporter", "/tmp")
 	}
 
-	var readOnly bool
 	if c.OpConfig.ReadOnlyRootFilesystem != nil {
-		readOnly = *c.OpConfig.ReadOnlyRootFilesystem
+		addRunVolume(&podSpec, "postgres-run", "postgres", "/run")
 	}
 
-	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars || readOnly {
+	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars {
 		addVarRunVolume(&podSpec)
-
 	}
 
 	if additionalSecretMount != "" {
@@ -2211,6 +2209,27 @@ func addShmVolume(podSpec *v1.PodSpec) {
 }
 
 func addEmptyDirVolume(podSpec *v1.PodSpec, volumeName string, containerName string, path string) {
+	vol := v1.Volume{
+		Name: volumeName,
+		VolumeSource: v1.VolumeSource{
+			EmptyDir: &v1.EmptyDirVolumeSource{},
+		},
+	}
+	podSpec.Volumes = append(podSpec.Volumes, vol)
+
+	mount := v1.VolumeMount{
+		Name:      vol.Name,
+		MountPath: path,
+	}
+
+	for i := range podSpec.Containers {
+		if podSpec.Containers[i].Name == containerName {
+			podSpec.Containers[i].VolumeMounts = append(podSpec.Containers[i].VolumeMounts, mount)
+		}
+	}
+}
+
+func addRunVolume(podSpec *v1.PodSpec, volumeName string, containerName string, path string) {
 	vol := v1.Volume{
 		Name: volumeName,
 		VolumeSource: v1.VolumeSource{

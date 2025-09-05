@@ -878,7 +878,12 @@ func (c *Cluster) generatePodTemplate(
 		addEmptyDirVolume(&podSpec, "exporter-tmp", "postgres-exporter", "/tmp")
 	}
 
-	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars || c.OpConfig.ReadOnlyRootFilesystem {
+	var readOnly bool
+	if c.OpConfig.ReadOnlyRootFilesystem != nil {
+		readOnly = *c.OpConfig.ReadOnlyRootFilesystem
+	}
+
+	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars || readOnly {
 		addVarRunVolume(&podSpec)
 
 	}

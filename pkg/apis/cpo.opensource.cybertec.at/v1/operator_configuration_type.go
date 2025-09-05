@@ -62,7 +62,7 @@ type KubernetesMetaConfiguration struct {
 	PodTerminateGracePeriod                Duration                     `json:"pod_terminate_grace_period,omitempty"`
 	SpiloPrivileged                        bool                         `json:"spilo_privileged,omitempty"`
 	SpiloAllowPrivilegeEscalation          *bool                        `json:"spilo_allow_privilege_escalation,omitempty"`
-	ReadOnlyRootFilesystem                 bool                         `json:"container_readonly_root_filesystem" default:"true"`
+	ReadOnlyRootFilesystem                 *bool                        `json:"container_readonly_root_filesystem" default:"true"`
 	SpiloRunAsUser                         *int64                       `json:"spilo_runasuser,omitempty"`
 	SpiloRunAsGroup                        *int64                       `json:"spilo_runasgroup,omitempty"`
 	SpiloFSGroup                           *int64                       `json:"spilo_fsgroup,omitempty"`

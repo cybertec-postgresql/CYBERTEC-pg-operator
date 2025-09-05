@@ -236,6 +236,11 @@ func (in *KubernetesMetaConfiguration) DeepCopyInto(out *KubernetesMetaConfigura
 		*out = new(bool)
 		**out = **in
 	}
+	if in.ReadOnlyRootFilesystem != nil {
+		in, out := &in.ReadOnlyRootFilesystem, &out.ReadOnlyRootFilesystem
+		*out = new(bool)
+		**out = **in
+	}
 	if in.SpiloRunAsUser != nil {
 		in, out := &in.SpiloRunAsUser, &out.SpiloRunAsUser
 		*out = new(int64)

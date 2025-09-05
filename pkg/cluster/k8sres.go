@@ -3327,6 +3327,9 @@ func (c *Cluster) generatePgbackrestJob(backup *cpov1.Pgbackrest, repo *cpov1.Re
 		nil,
 	)
 
+	// Patch securityContext - readOnlyRootFilesystem
+	pgbackrestContainer.SecurityContext.ReadOnlyRootFilesystem = util.True()
+
 	podAffinityTerm := v1.PodAffinityTerm{
 		LabelSelector: c.roleLabelsSelector(Master),
 		TopologyKey:   "kubernetes.io/hostname",

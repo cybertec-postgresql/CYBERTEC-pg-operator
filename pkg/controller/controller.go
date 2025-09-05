@@ -10,7 +10,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apiserver"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/cluster"
@@ -22,6 +21,8 @@ import (
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/ringlog"
+	"github.com/sirupsen/logrus"
+	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -72,6 +73,59 @@ type Controller struct {
 
 	PodServiceAccount            *v1.ServiceAccount
 	PodServiceAccountRoleBinding *rbacv1.RoleBinding
+
+	curReconcile sync.Map
+}
+
+// preparation for better reconcile
+type runningReconcile struct {
+	cancel context.CancelFunc
+}
+
+func (c *Controller) statefulSetDelete(obj interface{}) {
+	sts, ok := obj.(*appsv1.StatefulSet)
+	if !ok {
+		c.logger.Warn("statefulSetDelete: received object is not a StatefulSet")
+		return
+	}
+
+	clusterName, exists := sts.Labels[c.opConfig.ClusterNameLabel]
+	if !exists {
+		c.logger.Warnf("StatefulSet %s/%s has no cluster name label %q", sts.Namespace, sts.Name, c.opConfig.ClusterNameLabel)
+		return
+	}
+
+	c.logger.Infof("StatefulSet deleted: %s/%s, triggering reconcile", sts.Namespace, sts.Name)
+
+	// Vorherige laufende Reconcile abbrechen
+	if val, exists := c.curReconcile.Load(clusterName); exists {
+		c.logger.Infof("Aborting running reconcile for cluster %s", clusterName)
+		val.(runningReconcile).cancel()
+	}
+
+	// neuen Reconcile starten
+	ctx, cancel := context.WithCancel(context.Background())
+	c.curReconcile.Store(clusterName, runningReconcile{cancel: cancel})
+
+	go func() {
+		defer c.curReconcile.Delete(clusterName)
+		c.reconcileCluster(ctx, clusterName)
+	}()
+}
+
+func (c *Controller) reconcileCluster(ctx context.Context, clusterName string) {
+	c.logger.Infof("Starting reconcile for cluster %s", clusterName)
+
+	// Hier implementierst du das, was normal auch beim CRD-Reconcile passiert
+	// z.B. Cluster prüfen, StatefulSet erstellen, Pods erstellen etc.
+
+	select {
+	case <-ctx.Done():
+		c.logger.Infof("Reconcile for cluster %s canceled", clusterName)
+		return
+	default:
+		// continue normal reconcile
+	}
 }
 
 // NewController creates a new controller
@@ -398,6 +452,23 @@ func (c *Controller) initSharedInformers() {
 		})
 	}
 
+	// STS
+	statefulSetLW := &cache.ListWatch{
+		ListFunc:  c.statefulSetListFunc,
+		WatchFunc: c.statefulSetWatchFunc,
+	}
+
+	c.statefulSetInformer = cache.NewSharedIndexInformer(
+		statefulSetLW,
+		&appsv1.StatefulSet{},
+		constants.QueueResyncPeriodPod, // oder eigenes Intervall
+		cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc},
+	)
+
+	c.statefulSetInformer.AddEventHandler(cache.ResourceEventHandlerFuncs{
+		DeleteFunc: c.statefulSetDelete,
+	})
+
 	// Pods
 	podLw := &cache.ListWatch{
 		ListFunc:  c.podListFunc,
@@ -452,6 +523,12 @@ func (c *Controller) Run(stopCh <-chan struct{}, wg *sync.WaitGroup) {
 	}
 
 	wg.Add(5 + util.Bool2Int(c.opConfig.EnablePostgresTeamCRD))
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		c.statefulSetInformer.Run(stopCh)
+	}()
 	go c.runPodInformer(stopCh, wg)
 	go c.runPostgresqlInformer(stopCh, wg)
 	go c.clusterResync(stopCh, wg)

@@ -677,6 +677,7 @@ func generateContainer(
 	volumeMounts []v1.VolumeMount,
 	privilegedMode bool,
 	privilegeEscalationMode *bool,
+	readOnlyRootFilesystem *bool,
 	additionalPodCapabilities *v1.Capabilities,
 ) *v1.Container {
 	return &v1.Container{
@@ -703,7 +704,7 @@ func generateContainer(
 		SecurityContext: &v1.SecurityContext{
 			AllowPrivilegeEscalation: privilegeEscalationMode,
 			Privileged:               &privilegedMode,
-			ReadOnlyRootFilesystem:   util.False(),
+			ReadOnlyRootFilesystem:   readOnlyRootFilesystem,
 			Capabilities:             additionalPodCapabilities,
 		},
 	}
@@ -878,7 +879,7 @@ func (c *Cluster) generatePodTemplate(
 		addEmptyDirVolume(&podSpec, "exporter-tmp", "postgres-exporter", "/tmp")
 	}
 
-	if c.OpConfig.ReadOnlyRootFilesystem != nil {
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem {
 		addRunVolume(&podSpec, "postgres-run", "postgres", "/run")
 		addEmptyDirVolume(&podSpec, "postgres-tmp", "postgres", "/tmp")
 	}
@@ -997,6 +998,19 @@ func (c *Cluster) generateSpiloPodEnvVars(
 		{
 			Name:  "HUMAN_ROLE",
 			Value: c.OpConfig.PamRoleName,
+		},
+		// NSS WRAPPER
+		{
+			Name:  "LD_PRELOAD",
+			Value: "/usr/lib64/libnss_wrapper.so",
+		},
+		{
+			Name:  "NSS_WRAPPER_PASSWD",
+			Value: "/tmp/nss_wrapper/passwd",
+		},
+		{
+			Name:  "NSS_WRAPPER_GROUP",
+			Value: "/tmp/nss_wrapper/group",
 		},
 	}
 
@@ -1484,6 +1498,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		volumeMounts,
 		c.OpConfig.Resources.SpiloPrivileged,
 		c.OpConfig.Resources.SpiloAllowPrivilegeEscalation,
+		c.OpConfig.Resources.ReadOnlyRootFilesystem,
 		generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
 	)
 
@@ -1806,6 +1821,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 		volumeMounts,
 		c.OpConfig.Resources.SpiloPrivileged,
 		c.OpConfig.Resources.SpiloAllowPrivilegeEscalation,
+		c.OpConfig.Resources.ReadOnlyRootFilesystem,
 		generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
 	)
 
@@ -2818,6 +2834,7 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 		[]v1.VolumeMount{},
 		c.OpConfig.SpiloPrivileged, // use same value as for normal DB pods
 		c.OpConfig.SpiloAllowPrivilegeEscalation,
+		util.False(),
 		nil,
 	)
 
@@ -3344,6 +3361,7 @@ func (c *Cluster) generatePgbackrestJob(backup *cpov1.Pgbackrest, repo *cpov1.Re
 		[]v1.VolumeMount{},
 		c.OpConfig.SpiloPrivileged, // use same value as for normal DB pods
 		c.OpConfig.SpiloAllowPrivilegeEscalation,
+		c.OpConfig.Resources.ReadOnlyRootFilesystem,
 		nil,
 	)
 

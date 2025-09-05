@@ -38,7 +38,7 @@ type Resources struct {
 	SpiloPrivileged               bool                `name:"spilo_privileged" default:"false"`
 	SpiloAllowPrivilegeEscalation *bool               `name:"spilo_allow_privilege_escalation" default:"true"`
 	AdditionalPodCapabilities     []string            `name:"additional_pod_capabilities" default:""`
-	ReadOnlyRootFilesystem        *bool               `name:"container_readonly_root_filesystem" default:"true"`
+	ReadOnlyRootFilesystem        *bool               `name:"container_readonly_root_filesystem" default:"false"`
 	ClusterLabels                 map[string]string   `name:"cluster_labels" default:"application:cpo"`
 	InheritedLabels               []string            `name:"inherited_labels" default:""`
 	InheritedAnnotations          []string            `name:"inherited_annotations" default:""`

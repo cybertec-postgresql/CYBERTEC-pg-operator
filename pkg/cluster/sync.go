@@ -520,12 +520,6 @@ func (c *Cluster) syncStatefulSet() error {
 				ReadOnlyRootFilesystem:   util.True(),
 				Capabilities:             generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
 			},
-			VolumeMounts: []v1.VolumeMount{
-				{
-					Name:      "exporter-tmp",
-					MountPath: "/tmp",
-				},
-			},
 		}
 		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
 	}

@@ -874,8 +874,13 @@ func (c *Cluster) generatePodTemplate(
 		podSpec.PriorityClassName = priorityClassName
 	}
 
+	if c.Postgresql.Spec.Monitoring != nil {
+		addEmptyDirVolume(&podSpec, "exporter-tmp", "postgres-exporter", "/tmp")
+	}
+
 	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars || c.OpConfig.ReadOnlyRootFilesystem {
 		addVarRunVolume(&podSpec)
+
 	}
 
 	if additionalSecretMount != "" {
@@ -1443,14 +1448,16 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		additionalVolumes = append(additionalVolumes, tlsVolumes...)
 	}
 	// if monitoring is enabled, add a empty volume
-	if c.Postgresql.Spec.Monitoring != nil {
-		additionalVolumes = append(additionalVolumes, cpov1.AdditionalVolume{
-			Name: "exporter-tmp",
-			VolumeSource: v1.VolumeSource{
-				EmptyDir: &v1.EmptyDirVolumeSource{},
-			},
-		})
-	}
+	// if c.Postgresql.Spec.Monitoring != nil {
+	// 	additionalVolumes = append(additionalVolumes, cpov1.AdditionalVolume{
+	// 		Name:      "exporter-tmp",
+	// 		MountPath: "/tmp",
+	// 		VolumeSource: v1.VolumeSource{
+	// 			EmptyDir: &v1.EmptyDirVolumeSource{},
+	// 		},
+	// 		TargetContainers: []string{"postgres-exporter"},
+	// 	})
+	// }
 	repo_host_mode := false
 	// Add this envVar so that it is not added to the pgbackrest initcontainer
 	if specHasPgbackrestPVCRepo(spec) {
@@ -1734,7 +1741,7 @@ func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, r
 		SecurityContext: &v1.SecurityContext{
 			AllowPrivilegeEscalation: privilegeEscalationMode,
 			Privileged:               &privilegedMode,
-			ReadOnlyRootFilesystem:   util.False(),
+			ReadOnlyRootFilesystem:   util.True(),
 			Capabilities:             additionalPodCapabilities,
 		},
 	}
@@ -2196,6 +2203,27 @@ func addShmVolume(podSpec *v1.PodSpec) {
 	podSpec.Containers[postgresContainerIdx].VolumeMounts = mounts
 
 	podSpec.Volumes = volumes
+}
+
+func addEmptyDirVolume(podSpec *v1.PodSpec, volumeName string, containerName string, path string) {
+	vol := v1.Volume{
+		Name: volumeName,
+		VolumeSource: v1.VolumeSource{
+			EmptyDir: &v1.EmptyDirVolumeSource{},
+		},
+	}
+	podSpec.Volumes = append(podSpec.Volumes, vol)
+
+	mount := v1.VolumeMount{
+		Name:      vol.Name,
+		MountPath: path,
+	}
+
+	for i := range podSpec.Containers {
+		if podSpec.Containers[i].Name == containerName {
+			podSpec.Containers[i].VolumeMounts = append(podSpec.Containers[i].VolumeMounts, mount)
+		}
+	}
 }
 
 func addVarRunVolume(podSpec *v1.PodSpec) {

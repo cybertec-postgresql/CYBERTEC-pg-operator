@@ -164,7 +164,7 @@ func CreatePVCs(namespace string, clusterName string, labels labels.Set, n int, 
 				Labels:    labels,
 			},
 			Spec: v1.PersistentVolumeClaimSpec{
-				Resources: v1.ResourceRequirements{
+				Resources: v1.VolumeResourceRequirements{
 					Requests: v1.ResourceList{
 						v1.ResourceStorage: storage1Gi,
 					},
@@ -255,7 +255,7 @@ func initTestVolumesAndPods(client k8sutil.KubernetesClient, namespace, clustern
 				Labels:    labels,
 			},
 			Spec: v1.PersistentVolumeClaimSpec{
-				Resources: v1.ResourceRequirements{
+				Resources: v1.VolumeResourceRequirements{
 					Requests: v1.ResourceList{
 						v1.ResourceStorage: storage1Gi,
 					},

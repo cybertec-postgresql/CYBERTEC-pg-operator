@@ -1,6 +1,6 @@
 module github.com/cybertec-postgresql/cybertec-pg-operator/kubectl-pg
 
-go 1.24.2
+go 1.24.6
 
 require (
 	github.com/cybertec-postgresql/cybertec-pg-operator v0.8.2

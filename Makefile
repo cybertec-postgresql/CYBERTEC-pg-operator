@@ -23,6 +23,7 @@ DIRS := cmd pkg
 PKG := `go list ./... | grep -v /vendor/`
 
 BASE_IMAGE ?= rockylinux:9
+# BASE_IMAGE ?= rockylinux/rockylinux:10
 PACKAGER ?= dnf
 BUILD ?= 1
 ROOTPATH = $(GOPATH)/src/github.com/cybertec/cybertec-pg-operator
@@ -88,7 +89,7 @@ docker-local: build/cybertec-pg-operator
 
 
 indocker-race:
-	docker run --rm -v "${GOPATH}":"${GOPATH}" -e GOPATH="${GOPATH}" -e RACE=1 -w ${PWD} golang:1.21.7 bash -c "make linux"
+	docker run --rm -v "${GOPATH}":"${GOPATH}" -e GOPATH="${GOPATH}" -e RACE=1 -w ${PWD} golang:1.23.4 bash -c "make linux"
 
 push:
 	docker push "$(IMAGE):$(TAG)$(CDP_TAG)"
@@ -97,7 +98,7 @@ mocks:
 	GO111MODULE=on go generate ./...
 
 tools:
-	GO111MODULE=on go get -d k8s.io/client-go@kubernetes-1.28.7
+	GO111MODULE=on go get k8s.io/client-go@kubernetes-1.30.4
 	GO111MODULE=on go install github.com/golang/mock/mockgen@v1.6.0
 	GO111MODULE=on go mod tidy
 

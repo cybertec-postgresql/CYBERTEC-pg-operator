@@ -61,13 +61,13 @@ CPO enables the use of the in-place upgrade, which makes it possible to upgrade 
 ```
 spec:
   postgresql:
-    version: "17"
+    version: "18"
 ```
 To trigger an In-Place-Upgrade you have just to increase the parameter `spec.postgresql.version`. If you choose a valid number the Operator will start with the prozedure, described above. 
 
 ```sh
 kubectl patch postgresqls.cpo.opensource.cybertec.at cluster-1 --type='merge' -p \
-'{"spec":{"postgresql":{"version":"17"}}}'
+'{"spec":{"postgresql":{"version":"18"}}}'
 ```
 
 ## Upgrade on cloning

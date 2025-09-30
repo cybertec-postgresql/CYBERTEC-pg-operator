@@ -215,6 +215,11 @@ func (in *EtcdConfig) DeepCopyInto(out *EtcdConfig) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.CertSecretName != nil {
+		in, out := &in.CertSecretName, &out.CertSecretName
+		*out = new(string)
+		**out = **in
+	}
 	return
 }
 

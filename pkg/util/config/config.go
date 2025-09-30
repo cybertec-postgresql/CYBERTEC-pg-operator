@@ -170,10 +170,11 @@ type Multisite struct {
 }
 
 type Etcd struct {
-	Hosts    string `name:"multisite_etcd_hosts" default:""`
-	User     string `name:"multisite_etcd_user" default:""`
-	Password string `name:"multisite_etcd_password" default:""`
-	Protocol string `name:"multisite_etcd_protocol" default:"http"`
+	Hosts          string `name:"multisite_etcd_hosts" default:""`
+	User           string `name:"multisite_etcd_user" default:""`
+	Password       string `name:"multisite_etcd_password" default:""`
+	Protocol       string `name:"multisite_etcd_protocol" default:"http"`
+	CertSecretName string `name:"multisite_etcd_cert_secret_name" default:""`
 }
 
 // Config describes operator config

@@ -658,6 +658,9 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 											"protocol": {
 												Type: "string",
 											},
+											"certSecretName": {
+												Type: "string",
+											},
 										},
 									},
 									"ttl": {
@@ -2307,14 +2310,25 @@ var OperatorConfigCRDResourceValidation = apiextv1.CustomResourceValidation{
 							"site": {
 								Type: "string",
 							},
-							"etcd_host": {
-								Type: "string",
-							},
-							"etcd_user": {
-								Type: "string",
-							},
-							"etcd_password": {
-								Type: "string",
+							"etcd": {
+								Type: "object",
+								Properties: map[string]apiextv1.JSONSchemaProps{
+									"hosts": {
+										Type: "string",
+									},
+									"user": {
+										Type: "string",
+									},
+									"password": {
+										Type: "string",
+									},
+									"protocol": {
+										Type: "string",
+									},
+									"certSecretName": {
+										Type: "string",
+									},
+								},
 							},
 							"ttl": {
 								Type: "integer",

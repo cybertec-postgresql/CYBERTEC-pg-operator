@@ -361,12 +361,13 @@ key, operator, value, effect and tolerationSeconds |
 
 #### etcd
 
-| Name                           | Type    | required  | Description        |
-| ------------------------------ |:-------:| ---------:| ------------------:|
-| hosts                          | string  | true      | list of etcd hosts, including etcd-client-port (default: `2379`), comma separated like in the etcd config  |
-| password                       | string  | false     | Password for the global etcd |
-| protocol                       | string  | true      | Protocol for the global etcd (http or https) |
-| user                           | string  | false     | Username for the global etcd |
+| Name           |  Type  | required |                                                                                               Description |
+|----------------|:------:|---------:|----------------------------------------------------------------------------------------------------------:|
+| hosts          | string |     true | list of etcd hosts, including etcd-client-port (default: `2379`), comma separated like in the etcd config |
+| password       | string |    false |                                                                              Password for the global etcd |
+| protocol       | string |     true |                                                              Protocol for the global etcd (http or https) |
+| user           | string |    false |                                                                              Username for the global etcd |
+| certSecretName | string |    false |                   Secret for client certificates (tls.crt/key) and server certificate validation (ca.crt) |
 
 {{< back >}}
 

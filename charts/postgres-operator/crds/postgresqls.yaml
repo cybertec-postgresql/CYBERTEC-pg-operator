@@ -500,6 +500,8 @@ spec:
                             type: string
                           protocol:
                             type: string
+                          certSecretName:
+                            type: string
                       ttl:
                         type: integer
                       retry_timeout:

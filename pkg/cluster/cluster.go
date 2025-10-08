@@ -4,6 +4,7 @@ package cluster
 
 import (
 	"context"
+	"crypto/tls"
 	"database/sql"
 	"encoding/base64"
 	"encoding/json"
@@ -2015,11 +2016,22 @@ func (c *Cluster) getPasswordForUser(username string) (string, error) {
 			util.CoalesceStrPtr(msSpec.Etcd.Hosts, c.OpConfig.Multisite.Etcd.Hosts),
 			util.CoalesceStrPtr(msSpec.Etcd.Protocol, c.OpConfig.Multisite.Etcd.Protocol),
 		)
+		certSecretName := util.CoalesceStrPtr(msSpec.Etcd.CertSecretName, c.OpConfig.Multisite.Etcd.CertSecretName)
+		var tlsConfig *tls.Config
+		if certSecretName != "" {
+			var err error
+			tlsConfig, err = c.getTlsConfigFromCertSecret(certSecretName)
+			if err != nil {
+				return "", err
+			}
+		}
+
 		client, err := clientv3.New(clientv3.Config{
 			Endpoints:   endpoints,
 			Username:    util.CoalesceStrPtr(msSpec.Etcd.User, c.OpConfig.Multisite.Etcd.User),
 			Password:    util.CoalesceStrPtr(msSpec.Etcd.Password, c.OpConfig.Multisite.Etcd.Password),
 			DialTimeout: time.Duration(2) * time.Second,
+			TLS:         tlsConfig,
 		})
 		if err != nil {
 			return "", fmt.Errorf("unable to access multisite etcd: %s", err)

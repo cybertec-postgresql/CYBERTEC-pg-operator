@@ -288,6 +288,7 @@ func (c *Controller) importConfigurationFromCRD(fromCRD *cpov1.OperatorConfigura
 	result.Multisite.Etcd.User = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.User, "")
 	result.Multisite.Etcd.Password = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.Password, "")
 	result.Multisite.Etcd.Protocol = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.Protocol, "")
+	result.Multisite.Etcd.CertSecretName = util.CoalesceStrPtr(fromCRD.Multisite.Etcd.CertSecretName, "")
 	result.Multisite.TTL = util.CoalesceInt32(fromCRD.Multisite.TTL, k8sutil.Int32ToPointer(90))
 	result.Multisite.RetryTimeout = util.CoalesceInt32(fromCRD.Multisite.RetryTimeout, k8sutil.Int32ToPointer(40))
 

@@ -3,6 +3,8 @@ package cluster
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"fmt"
 	"path"
@@ -1433,7 +1435,9 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	}
 
 	if c.multisiteEnabled() {
-		spiloEnvVars = appendEnvVars(spiloEnvVars, c.generateMultisiteEnvVars()...)
+		multisiteEnvVars, multisiteVolumes := c.generateMultisiteEnvVars()
+		spiloEnvVars = appendEnvVars(spiloEnvVars, multisiteEnvVars...)
+		additionalVolumes = append(additionalVolumes, multisiteVolumes...)
 	}
 
 	// generate the spilo container
@@ -3387,7 +3391,7 @@ func (c *Cluster) getPgbackrestJobName(repoName string, backupType string) (jobN
 	return trimCronjobName(fmt.Sprintf("%s-%s-%s-%s", "pgbackrest", c.clusterName().Name, repoName, backupType))
 }
 
-func (c *Cluster) generateMultisiteEnvVars() []v1.EnvVar {
+func (c *Cluster) generateMultisiteEnvVars() ([]v1.EnvVar, []cpov1.AdditionalVolume) {
 	site, err := c.getPrimaryLoadBalancerIp()
 	if err != nil {
 		c.logger.Errorf("Error getting primary load balancer IP for %s: %s", c.Name, err)
@@ -3410,5 +3414,81 @@ func (c *Cluster) generateMultisiteEnvVars() []v1.EnvVar {
 		{Name: "UPDATE_CRD", Value: c.Namespace + "." + c.Name},
 		{Name: "CRD_UID", Value: string(c.UID)},
 	}
-	return envVars
+
+	certSecretName := util.CoalesceStrPtr(clsConf.Etcd.CertSecretName, c.OpConfig.Multisite.Etcd.CertSecretName)
+	volumes := make([]cpov1.AdditionalVolume, 0, 1)
+	if certSecretName != "" {
+
+		etcdCertMountPath := "/etcd-tls"
+		envVars = append(envVars, v1.EnvVar{Name: "MULTISITE_ETCD_CA_CERT", Value: etcdCertMountPath + "/ca.crt"})
+		envVars = append(envVars, v1.EnvVar{Name: "MULTISITE_ETCD_CERT", Value: etcdCertMountPath + "/tls.crt"})
+		envVars = append(envVars, v1.EnvVar{Name: "MULTISITE_ETCD_KEY", Value: etcdCertMountPath + "/tls.key"})
+		defaultMode := int32(0640)
+		volumes = append(volumes, cpov1.AdditionalVolume{
+			Name:      "multisite-etcd-certs",
+			MountPath: etcdCertMountPath,
+			VolumeSource: v1.VolumeSource{
+				Secret: &v1.SecretVolumeSource{
+					SecretName:  certSecretName,
+					DefaultMode: &defaultMode,
+				},
+			}})
+	}
+
+	return envVars, volumes
+}
+
+func (c *Cluster) getTlsConfigFromCertSecret(certSecretName string) (*tls.Config, error) {
+	secret := &v1.Secret{}
+	var notFoundErr error
+	err := retryutil.Retry(c.OpConfig.ResourceCheckInterval, c.OpConfig.ResourceCheckTimeout,
+		func() (bool, error) {
+			var err error
+			secret, err = c.KubeClient.Secrets(c.Namespace).Get(
+				context.TODO(),
+				certSecretName,
+				metav1.GetOptions{})
+			if err != nil {
+				if apierrors.IsNotFound(err) {
+					notFoundErr = err
+					return false, nil
+				}
+				return false, err
+			}
+			return true, nil
+		},
+	)
+	if notFoundErr != nil && err != nil {
+		err = errors.Wrap(notFoundErr, err.Error())
+	}
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get secret for TLS configuration")
+	}
+
+	var caPool *x509.CertPool
+	if caCert, ok := secret.Data["ca.crt"]; ok {
+		caPool = x509.NewCertPool()
+		if !caPool.AppendCertsFromPEM(caCert) {
+			return nil, fmt.Errorf("failed to append CA cert from secret %s", certSecretName)
+		}
+	}
+	clientCert, certPresent := secret.Data["tls.crt"]
+	clientKey, keyPresent := secret.Data["tls.key"]
+	var certificates []tls.Certificate
+	if certPresent && keyPresent {
+		cert, err := tls.X509KeyPair(clientCert, clientKey)
+		if err != nil {
+			c.logger.Warningf("failed to load TLS client certificate from secret %s: %s", certSecretName, err)
+		} else {
+			certificates = append(certificates, cert)
+		}
+	}
+
+	tlsConfig := &tls.Config{
+		RootCAs:      caPool,
+		Certificates: certificates,
+		MinVersion:   tls.VersionTLS12,
+	}
+
+	return tlsConfig, nil
 }

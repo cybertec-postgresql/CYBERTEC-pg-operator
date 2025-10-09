@@ -1,12 +1,16 @@
 package cluster
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 )
 
 // VersionMap Map of version numbers
@@ -18,6 +22,11 @@ var VersionMap = map[string]int{
 	"17": 170000,
 	"18": 180000,
 }
+
+const (
+	majorVersionUpgradeSuccessAnnotation = "last-major-upgrade-success"
+	majorVersionUpgradeFailureAnnotation = "last-major-upgrade-failure"
+)
 
 // IsBiggerPostgresVersion Compare two Postgres version numbers
 func IsBiggerPostgresVersion(old string, new string) bool {
@@ -53,6 +62,47 @@ func (c *Cluster) isUpgradeAllowedForTeam(owningTeam string) bool {
 	}
 
 	return util.SliceContains(allowedTeams, owningTeam)
+}
+
+func (c *Cluster) annotatePostgresResource(isSuccess bool) error {
+	annotations := make(map[string]string)
+	currentTime := metav1.Now().Format("2006-01-02T15:04:05Z")
+	if isSuccess {
+		annotations[majorVersionUpgradeSuccessAnnotation] = currentTime
+	} else {
+		annotations[majorVersionUpgradeFailureAnnotation] = currentTime
+	}
+	patchData, err := metaAnnotationsPatch(annotations)
+	if err != nil {
+		c.logger.Errorf("could not form patch for %s postgresql resource: %v", c.Name, err)
+		return err
+	}
+	_, err = c.KubeClient.Postgresqls(c.Namespace).Patch(context.Background(), c.Name, types.MergePatchType, patchData, metav1.PatchOptions{})
+	if err != nil {
+		c.logger.Errorf("failed to patch annotations to postgresql resource: %v", err)
+		return err
+	}
+	return nil
+}
+
+func (c *Cluster) removeFailuresAnnotation() error {
+	annotationToRemove := []map[string]string{
+		{
+			"op":   "remove",
+			"path": fmt.Sprintf("/metadata/annotations/%s", majorVersionUpgradeFailureAnnotation),
+		},
+	}
+	removePatch, err := json.Marshal(annotationToRemove)
+	if err != nil {
+		c.logger.Errorf("could not form removal patch for %s postgresql resource: %v", c.Name, err)
+		return err
+	}
+	_, err = c.KubeClient.Postgresqls(c.Namespace).Patch(context.Background(), c.Name, types.JSONPatchType, removePatch, metav1.PatchOptions{})
+	if err != nil {
+		c.logger.Errorf("failed to remove annotations from postgresql resource: %v", err)
+		return err
+	}
+	return nil
 }
 
 /*

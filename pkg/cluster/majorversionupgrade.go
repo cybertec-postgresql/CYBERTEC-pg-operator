@@ -105,6 +105,22 @@ func (c *Cluster) removeFailuresAnnotation() error {
 	return nil
 }
 
+func (c *Cluster) criticalOperationLabel(pods []v1.Pod, value *string) error {
+	metadataReq := map[string]map[string]map[string]*string{"metadata": {"labels": {"critical-operation": value}}}
+
+	patchReq, err := json.Marshal(metadataReq)
+	if err != nil {
+		return fmt.Errorf("could not marshal ObjectMeta: %v", err)
+	}
+	for _, pod := range pods {
+		_, err = c.KubeClient.Pods(c.Namespace).Patch(context.TODO(), pod.Name, types.StrategicMergePatchType, patchReq, metav1.PatchOptions{})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 /*
 Execute upgrade when mode is set to manual or full or when the owning team is allowed for upgrade (and mode is "off").
 

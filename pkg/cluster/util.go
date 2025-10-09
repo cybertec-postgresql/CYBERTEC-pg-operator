@@ -759,3 +759,24 @@ func (c *Cluster) multisiteEnabled() bool {
 	}
 	return enable != nil && *enable
 }
+
+func isInMaintenanceWindow(specMaintenanceWindows []cpov1.MaintenanceWindow) bool {
+	if len(specMaintenanceWindows) == 0 {
+		return true
+	}
+	now := time.Now()
+	currentDay := now.Weekday()
+	currentTime := now.Format("15:04")
+
+	for _, window := range specMaintenanceWindows {
+		startTime := window.StartTime.Format("15:04")
+		endTime := window.EndTime.Format("15:04")
+
+		if window.Everyday || window.Weekday == currentDay {
+			if currentTime >= startTime && currentTime <= endTime {
+				return true
+			}
+		}
+	}
+	return false
+}

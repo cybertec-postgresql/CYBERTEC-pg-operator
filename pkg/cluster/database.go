@@ -122,7 +122,7 @@ const (
 					ORDER BY data_time DESC
 					LIMIT 1;
 
-					IF last_entry_timestamp < NOW() - INTERVAL '5 minutes' THEN
+					IF last_entry_timestamp < NOW() - INTERVAL '5 minutes' AND NOT pg_is_in_recovery() THEN
 						DELETE FROM exporter.pgbackrestbackupinfo;
 					ELSE
 						RETURN;

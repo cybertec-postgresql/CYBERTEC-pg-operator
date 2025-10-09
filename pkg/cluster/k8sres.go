@@ -1465,17 +1465,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		}
 		additionalVolumes = append(additionalVolumes, tlsVolumes...)
 	}
-	// if monitoring is enabled, add a empty volume
-	// if c.Postgresql.Spec.Monitoring != nil {
-	// 	additionalVolumes = append(additionalVolumes, cpov1.AdditionalVolume{
-	// 		Name:      "exporter-tmp",
-	// 		MountPath: "/tmp",
-	// 		VolumeSource: v1.VolumeSource{
-	// 			EmptyDir: &v1.EmptyDirVolumeSource{},
-	// 		},
-	// 		TargetContainers: []string{"postgres-exporter"},
-	// 	})
-	// }
+
 	repo_host_mode := false
 	// Add this envVar so that it is not added to the pgbackrest initcontainer
 	if specHasPgbackrestPVCRepo(spec) {

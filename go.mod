@@ -3,6 +3,7 @@ module github.com/cybertec-postgresql/cybertec-pg-operator
 go 1.23.4
 
 require (
+	github.com/Masterminds/semver v1.5.0
 	github.com/aws/aws-sdk-go v1.55.8
 	github.com/golang/mock v1.6.0
 	github.com/lib/pq v1.10.4
@@ -33,7 +34,6 @@ require (
 )
 
 require (
-	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
 	github.com/evanphx/json-patch v4.12.0+incompatible // indirect

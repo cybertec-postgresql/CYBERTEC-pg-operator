@@ -1323,7 +1323,7 @@ func generatePatroniLivenessProbe() *v1.Probe {
 		FailureThreshold: 6,
 		ProbeHandler: v1.ProbeHandler{
 			HTTPGet: &v1.HTTPGetAction{
-				Path:   "/health",
+				Path:   "/liveness",
 				Port:   intstr.IntOrString{IntVal: patroni.ApiPort},
 				Scheme: v1.URISchemeHTTP,
 			},

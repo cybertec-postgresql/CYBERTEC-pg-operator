@@ -134,6 +134,41 @@ const (
 				);
 			END;
 			$$ LANGUAGE plpgsql;
+
+		CREATE OR REPLACE FUNCTION exporter.update_pgbackrest_info()
+			RETURNS VOID AS $$
+			DECLARE
+				last_entry_timestamp TIMESTAMP;
+				record_count INT;
+			BEGIN
+				IF pg_is_in_recovery() THEN
+					RAISE NOTICE 'Skipping pgbackrest_info update: running on a replica.';
+					RETURN;
+				END IF;
+
+				SELECT COUNT(*) INTO record_count
+				FROM exporter.pgbackrestbackupinfo;
+
+				IF record_count > 0 THEN
+					SELECT data_time INTO last_entry_timestamp
+					FROM exporter.pgbackrestbackupinfo
+					ORDER BY data_time DESC
+					LIMIT 1;
+
+					IF last_entry_timestamp >= NOW() - INTERVAL '5 minutes' THEN
+						RAISE NOTICE 'Skipping pgbackrest_info update: data does not need an update (last update at %).', last_entry_timestamp;
+						RETURN;
+					END IF;
+
+					DELETE FROM exporter.pgbackrestbackupinfo;
+				END IF;
+
+				EXECUTE format(
+					'COPY exporter.pgbackrestbackupinfo (data) FROM program ''pgbackrest info --output=json'' WITH (FORMAT text, DELIMITER ''|'')'
+				);
+			END;
+			$$ LANGUAGE plpgsql;
+
 	`
 )
 

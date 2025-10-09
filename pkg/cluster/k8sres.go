@@ -1695,6 +1695,18 @@ func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, r
 			},
 		)
 	}
+	if spec.TDE != nil && spec.TDE.Enable {
+		pgbackrestRestoreEnvVars = append(pgbackrestRestoreEnvVars, v1.EnvVar{Name: "TDE", Value: "true"})
+		pgbackrestRestoreEnvVars = append(pgbackrestRestoreEnvVars, v1.EnvVar{Name: "TDE_KEY", ValueFrom: &v1.EnvVarSource{
+			SecretKeyRef: &v1.SecretKeySelector{
+				LocalObjectReference: v1.LocalObjectReference{
+					Name: c.getTDESecretName(),
+				},
+				Key: "key",
+			},
+		},
+		})
+	}
 
 	return v1.Container{
 		Name:         constants.RestoreContainerName,

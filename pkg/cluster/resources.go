@@ -92,6 +92,12 @@ func (c *Cluster) createStatefulSet() (*appsv1.StatefulSet, error) {
 				},
 			},
 			Env: c.generateMonitoringEnvVars(),
+			SecurityContext: &v1.SecurityContext{
+				AllowPrivilegeEscalation: c.OpConfig.Resources.SpiloAllowPrivilegeEscalation,
+				Privileged:               &c.OpConfig.Resources.SpiloPrivileged,
+				ReadOnlyRootFilesystem:   util.True(),
+				Capabilities:             generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
+			},
 		}
 		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
 	}

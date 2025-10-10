@@ -38,6 +38,7 @@ type Resources struct {
 	SpiloPrivileged               bool                `name:"spilo_privileged" default:"false"`
 	SpiloAllowPrivilegeEscalation *bool               `name:"spilo_allow_privilege_escalation" default:"true"`
 	AdditionalPodCapabilities     []string            `name:"additional_pod_capabilities" default:""`
+	ReadOnlyRootFilesystem        *bool               `name:"container_readonly_root_filesystem" default:"false"`
 	ClusterLabels                 map[string]string   `name:"cluster_labels" default:"application:cpo"`
 	InheritedLabels               []string            `name:"inherited_labels" default:""`
 	InheritedAnnotations          []string            `name:"inherited_annotations" default:""`
@@ -249,6 +250,7 @@ type Config struct {
 	PodTerminateGracePeriod                  time.Duration     `name:"pod_terminate_grace_period" default:"5m"`
 	PodManagementPolicy                      string            `name:"pod_management_policy" default:"ordered_ready"`
 	EnableReadinessProbe                     bool              `name:"enable_readiness_probe" default:"false"`
+	EnableLivenessProbe                      bool              `name:"enable_liveness_probe" default:"true"`
 	ProtectedRoles                           []string          `name:"protected_role_names" default:"admin,cron_admin"`
 	PostgresSuperuserTeams                   []string          `name:"postgres_superuser_teams" default:""`
 	SetMemoryRequestToLimit                  bool              `name:"set_memory_request_to_limit" default:"false"`

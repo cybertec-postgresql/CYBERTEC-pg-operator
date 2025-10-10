@@ -241,6 +241,11 @@ func (in *KubernetesMetaConfiguration) DeepCopyInto(out *KubernetesMetaConfigura
 		*out = new(bool)
 		**out = **in
 	}
+	if in.ReadOnlyRootFilesystem != nil {
+		in, out := &in.ReadOnlyRootFilesystem, &out.ReadOnlyRootFilesystem
+		*out = new(bool)
+		**out = **in
+	}
 	if in.SpiloRunAsUser != nil {
 		in, out := &in.SpiloRunAsUser, &out.SpiloRunAsUser
 		*out = new(int64)
@@ -1498,6 +1503,18 @@ func (in *Sidecar) DeepCopyInto(out *Sidecar) {
 	if in.Env != nil {
 		in, out := &in.Env, &out.Env
 		*out = make([]corev1.EnvVar, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.SecurityContext != nil {
+		in, out := &in.SecurityContext, &out.SecurityContext
+		*out = new(corev1.SecurityContext)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.VolumeMounts != nil {
+		in, out := &in.VolumeMounts, &out.VolumeMounts
+		*out = make([]corev1.VolumeMount, len(*in))
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}

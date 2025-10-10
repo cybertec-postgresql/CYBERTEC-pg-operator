@@ -10,7 +10,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apiserver"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/cluster"
@@ -22,6 +21,7 @@ import (
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/ringlog"
+	"github.com/sirupsen/logrus"
 	v1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

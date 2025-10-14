@@ -1024,6 +1024,10 @@ func (c *Cluster) generateSpiloPodEnvVars(
 		envVars = append(envVars, v1.EnvVar{Name: "USE_PGBACKREST", Value: "true"})
 	}
 
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem {
+		envVars = append(envVars, v1.EnvVar{Name: "HOME", Value: "/home/postgres"})
+	}
+
 	if spec.TDE != nil && spec.TDE.Enable {
 		envVars = append(envVars, v1.EnvVar{Name: "TDE", Value: "true"})
 		// envVars = append(envVars, v1.EnvVar{Name: "PGENCRKEYCMD", Value: "/tmp/tde.sh"})

@@ -2250,6 +2250,13 @@ func addEmptyDirVolume(podSpec *v1.PodSpec, volumeName string, containerName str
 			podSpec.Containers[i].VolumeMounts = append(podSpec.Containers[i].VolumeMounts, mount)
 		}
 	}
+	if vol.Name == "postgres-tmp" && len(podSpec.InitContainers) > 0 {
+		for i := range podSpec.InitContainers {
+			if podSpec.InitContainers[i].Name == "pgbackrest-restore" {
+				podSpec.InitContainers[i].VolumeMounts = append(podSpec.InitContainers[i].VolumeMounts, mount)
+			}
+		}
+	}
 }
 
 func addRunVolume(podSpec *v1.PodSpec, volumeName string, containerName string, path string) {

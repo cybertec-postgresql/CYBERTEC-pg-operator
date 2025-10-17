@@ -886,6 +886,10 @@ func (c *Cluster) generatePodTemplate(
 		addEmptyDirVolume(&podSpec, "postgres-tmp", "postgres", "/tmp")
 	}
 
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && isRepoHost == true {
+		addEmptyDirVolume(&podSpec, "pgbackrest-tmp", "pgbackrest", "/tmp")
+	}
+
 	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars {
 		addVarRunVolume(&podSpec)
 	}
@@ -1022,6 +1026,10 @@ func (c *Cluster) generateSpiloPodEnvVars(
 
 	if spec.Backup != nil && spec.Backup.Pgbackrest != nil {
 		envVars = append(envVars, v1.EnvVar{Name: "USE_PGBACKREST", Value: "true"})
+	}
+
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem {
+		envVars = append(envVars, v1.EnvVar{Name: "HOME", Value: "/home/postgres"})
 	}
 
 	if spec.TDE != nil && spec.TDE.Enable {
@@ -2248,6 +2256,13 @@ func addEmptyDirVolume(podSpec *v1.PodSpec, volumeName string, containerName str
 	for i := range podSpec.Containers {
 		if podSpec.Containers[i].Name == containerName {
 			podSpec.Containers[i].VolumeMounts = append(podSpec.Containers[i].VolumeMounts, mount)
+		}
+	}
+	if vol.Name == "postgres-tmp" && len(podSpec.InitContainers) > 0 {
+		for i := range podSpec.InitContainers {
+			if podSpec.InitContainers[i].Name == "pgbackrest-restore" {
+				podSpec.InitContainers[i].VolumeMounts = append(podSpec.InitContainers[i].VolumeMounts, mount)
+			}
 		}
 	}
 }

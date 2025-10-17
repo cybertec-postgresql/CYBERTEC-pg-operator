@@ -886,6 +886,10 @@ func (c *Cluster) generatePodTemplate(
 		addEmptyDirVolume(&podSpec, "postgres-tmp", "postgres", "/tmp")
 	}
 
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && isRepoHost == true {
+		addEmptyDirVolume(&podSpec, "pgbackrest-tmp", "pgbackrest", "/tmp")
+	}
+
 	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars {
 		addVarRunVolume(&podSpec)
 	}

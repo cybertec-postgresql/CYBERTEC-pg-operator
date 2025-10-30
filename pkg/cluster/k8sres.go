@@ -335,10 +335,11 @@ func generateSpiloJSONConfiguration(pg *cpov1.PostgresqlParam, patroni *cpov1.Pa
 	pgVersion, err := strconv.Atoi(pg.PgVersion)
 	if err != nil {
 		fmt.Println("Problem to get PGVersion:", err)
-		pgVersion = 16
+		pgVersion = 18
 	}
 	if pgVersion > 14 {
 		config.Bootstrap.Initdb = []interface{}{map[string]string{"auth-host": "scram-sha-256"},
+			"data-checksums",
 			map[string]string{"auth-local": "trust"},
 			map[string]string{"encoding": "UTF8"},
 			map[string]string{"locale": "en_US.UTF-8"},

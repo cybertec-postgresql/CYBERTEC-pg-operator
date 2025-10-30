@@ -145,7 +145,7 @@ func (c *Cluster) majorVersionUpgrade() error {
 		return nil
 	}
 
-	pods, err := c.listPods()
+	pods, err := c.listPodsOfType(TYPE_POSTGRESQL)
 	if err != nil {
 		return err
 	}
@@ -213,7 +213,13 @@ func (c *Cluster) majorVersionUpgrade() error {
 		c.logger.Error("could not get members data from Patroni API, skipping major version upgrade")
 		return err
 	}
-	patroniVer, err := semver.NewVersion(patroniData.Patroni.Version)
+	patroniVersion := patroniData.Patroni.Version
+	parts := strings.Split(patroniVersion, ".")
+	if len(parts) > 3 {
+		patroniVersion = strings.Join(parts[:3], ".")
+	}
+	patroniVer, err := semver.NewVersion(patroniVersion)
+
 	if err != nil {
 		c.logger.Error("error parsing Patroni version")
 		patroniVer, _ = semver.NewVersion("3.0.4")
@@ -237,7 +243,7 @@ func (c *Cluster) majorVersionUpgrade() error {
 
 	isUpgradeSuccess := true
 	numberOfPods := len(pods)
-	if allRunning && masterPod != nil {
+	if allRunning {
 		c.logger.Infof("healthy cluster ready to upgrade, current: %d desired: %d", c.currentMajorVersion, desiredVersion)
 		if c.currentMajorVersion < desiredVersion {
 			defer func() error {

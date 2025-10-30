@@ -881,12 +881,12 @@ func (c *Cluster) generatePodTemplate(
 		addEmptyDirVolume(&podSpec, "exporter-tmp", "postgres-exporter", "/tmp")
 	}
 
-	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem {
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && !isRepoHost {
 		addRunVolume(&podSpec, "postgres-run", "postgres", "/run")
 		addEmptyDirVolume(&podSpec, "postgres-tmp", "postgres", "/tmp")
 	}
 
-	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && isRepoHost == true {
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && isRepoHost {
 		addEmptyDirVolume(&podSpec, "pgbackrest-tmp", "pgbackrest", "/tmp")
 	}
 

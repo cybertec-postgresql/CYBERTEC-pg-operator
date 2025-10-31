@@ -8,7 +8,7 @@ weight: 331
 
 | Name        | Type           | required  | Description        |
 | ----------- |:--------------:| ---------:| ------------------:|
-| apiVersion  | string         | true      | acid.zalando.do/v1 |
+| apiVersion  | string         | true      | cpo.opensource.cybertec.at/v1 |
 | kind        | string         | true      |                    |
 | metadata    | object         | true      |                    |
 | [spec](#spec)        | object         | true      |                    |

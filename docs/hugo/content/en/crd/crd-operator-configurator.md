@@ -35,8 +35,8 @@ weight: 332
 | ------------------------------------- |:-------:| --------:| ------------------:|
 | major_version_upgrade_mode            | string  | off      |  |
 | major_version_upgrade_team_allow_list | string  |          |  |
-| minimal_major_version                 | string  | 9.6      |  |
-| target_major_version                  | string  | 14       |  |
+| minimal_major_version                 | string  | 13       |  |
+| target_major_version                  | string  | 17       |  |
 
 #### aws-specific
 

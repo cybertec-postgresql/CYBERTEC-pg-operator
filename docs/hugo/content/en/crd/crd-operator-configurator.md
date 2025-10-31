@@ -5,29 +5,32 @@ draft: false
 weight: 332
 ---
 
-| Name                             | Type    | default  | Description        |
-| -------------------------------- |:-------:| --------:| ------------------:|
-| enable_crd_registration          | boolean | true     |  |
-| crd_categories                   | string  | all      |  |
-| enable_lazy_spilo_upgrade        | boolean | false    |  |
-| enable_pgversion_env_var         | boolean | true     |  |
-| enable_spilo_wal_path_combat     | boolean | false    |  |
-| etcd_host                        | string  |          |  |
-| kubernetes_use_configmaps        | boolean | false    |  |
-| docker_image                     | string  |          |  |
-| sidecars                         | list    |          |  |
-| enable_shm_volume                | boolean | true     |  |
-| workers                          | int     | 8        |  |
-| max_instances                    | int     | -1       |  |
-| min_instances                    | int     | -1       |  |
-| resync_period                    | string  | 30m      |  |
-| repair_period                    | string  |  5m      |  |
-| set_memory_request_to_limit      | boolean | false    |  |
-| debug_logging                    | boolean | true     |  |
-| enable_db_access                 | boolean | true     |  |
-| spilo_privileged                 | boolean | false    |  |
-| spilo_allow_privilege_escalation | boolean | true     |  |
-| watched_namespace                | string  | *        |  |
+| Name                              | Type    | default  | Description        |
+| --------------------------------- |:-------:| --------:| ------------------:|
+| enable_crd_registration           | boolean | true     |  |
+| crd_categories                    | string  | all      |  |
+| enable_lazy_spilo_upgrade         | boolean | false    |  |
+| enable_pgversion_env_var          | boolean | true     |  |
+| enable_spilo_wal_path_combat      | boolean | false    |  |
+| etcd_host                         | string  |          |  |
+| kubernetes_use_configmaps         | boolean | false    |  |
+| docker_image                      | string  |          |  |
+| sidecars                          | list    |          |  |
+| enable_shm_volume                 | boolean | true     |  |
+| workers                           | int     | 8        |  |
+| max_instances                     | int     | -1       |  |
+| min_instances                     | int     | -1       |  |
+| resync_period                     | string  | 30m      |  |
+| repair_period                     | string  |  5m      |  |
+| set_memory_request_to_limit       | boolean | false    |  |
+| debug_logging                     | boolean | true     |  |
+| enable_db_access                  | boolean | true     |  |
+| spilo_privileged                  | boolean | false    |  |
+| spilo_allow_privilege_escalation  | boolean | true     |  |
+| container_readonly_root_filesystem | boolean | false  |  |
+| enable_readiness_probe            | boolean | true     |  |
+| enable_liveness_probe             | boolean | false    |  |
+| watched_namespace                 | string  | *        |  |
 
 #### major-upgrade-specific
 

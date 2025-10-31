@@ -170,7 +170,7 @@ spec:
                     default: "13"
                   target_major_version:
                     type: string
-                    default: "17"
+                    default: "18"
               kubernetes:
                 type: object
                 properties:

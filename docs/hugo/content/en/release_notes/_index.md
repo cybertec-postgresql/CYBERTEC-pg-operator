@@ -4,6 +4,25 @@ date: 2024-03-11T14:26:51+01:00
 draft: false
 weight: 2500
 ---
+### 0.9.0
+
+#### Features
+- Adding PG18
+- 
+- Changed SecurityContext to readonly
+
+#### Fixes
+- pgBackRest Restore with TDE
+- Fix for Monitoring pgBackRest
+- Dependency updates and several small changes
+
+#### Supported Versions
+
+- PG: 13 - 17
+- Patroni: 4.0.5
+- pgBackRest: 2.54.2
+- Kubernetes: 1.21 - 1.32
+- Openshift: 4.8 - 4.18
 
 ### 0.8.3
 

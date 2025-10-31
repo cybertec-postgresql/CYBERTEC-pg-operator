@@ -216,7 +216,10 @@ spec:
                     default: true
                   enable_readiness_probe:
                     type: boolean
-                    default: false
+                    default: true
+                  enable_liveness_probe:
+                    type: boolean
+                    default: false                   
                   enable_sidecars:
                     type: boolean
                     default: true

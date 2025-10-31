@@ -16,10 +16,10 @@ kind: postgresql
 metadata:
   name: cluster-1
 spec:
-  dockerImage: "docker.io/cybertecpostgresql/cybertec-pg-container:postgres-17.6-1"
+  dockerImage: "docker.io/cybertecpostgresql/cybertec-pg-container:postgres-18.0-1"
   numberOfInstances: 1
   postgresql:
-    version: "17"
+    version: "18"
   resources:
     limits:
       cpu: 500m
@@ -30,7 +30,7 @@ spec:
   volume:
     size: 5Gi 
 ```
-Based on this Manifest the Operator will deploy a single-Node-Cluster based on the defined dockerImage and start the included Postgres-17-Server. 
+Based on this Manifest the Operator will deploy a single-Node-Cluster based on the defined dockerImage and start the included Postgres-18-Server. 
 Also created is a volume based on your default-storage Class. The Ressource-Definiton means, that we reserve a half cpu and a half GB Memory for this Cluster with the same Definition as limit.
 
 After some seconds we should see, that the operator creates our cluster based on the declared definitions.

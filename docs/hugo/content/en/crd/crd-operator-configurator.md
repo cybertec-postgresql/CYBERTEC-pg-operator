@@ -7,18 +7,18 @@ weight: 332
 
 #### CRD for kind OperatorConfiguration
 
-| Name        | Type           | required  | Description        |
-| ----------- |:--------------:| ---------:| ------------------:|
-| apiVersion  | string         | true      | cpo.opensource.cybertec.at/v1 |
-| kind        | string         | true      | OperatorConfiguration                  |
-| metadata    | object         | true      |                    |
-| [configuration](#configuration)        | object         | true      |                    |
+| Name        | Type                | required  | Description        |
+| ----------- |:-------------------:| ---------:| ------------------:|
+| apiVersion  | string              | true      | cpo.opensource.cybertec.at/v1 |
+| kind        | string              | true      | OperatorConfiguration                  |
+| metadata    | object              | true      |                    |
+| [configuration](#configuration) | object         | true      |                    |
 
 ---
 
 #### configuration
 
-| Name                                              | Type          | required  | Description        |
+| Name                                              | Type          | default   | Description        |
 | ------------------------------------------------- |:-------------:| ---------:| ------------------:|
 | [kubernetes](#kubernetes)                         | object        | true      |                    |
 | [users](#users)                                   | object        | true      |                    |
@@ -31,23 +31,24 @@ weight: 332
 | [debug](#debug)                                   | object        | true      |                    |
 | [logical_backup](#logical_backup)                 | object        | true      |                    |
 | [aws_or_gcp](#aws_or_gcp)                         | object        | true      |                    |
-| docker_image                                      | string        | true      |                    |
-| enable_crd_registration                           | boolean       | true      |                    |
-| enable_crd_validation                             | boolean       | true      |                    |
-| enable_lazy_spilo_upgrade                         | boolean       | true      |                    |
-| enable_pgversion_env_var                          | string        | true      |                    |
-| enable_shm_volume                                 | boolean       | true      |                    |
-| enable_spilo_wal_path_compat                      | string        | true      |                    |
+| [sidecars](#sidecars)                             | list          |           | Each item is of type [Container](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core) |
+| docker_image                                      | string        |           |                    |
+| enable_crd_registration                           | boolean       | `true`    | True, Operator updates the crd itself |
+| enable_crd_validation                             | boolean       | `true `   | deprecated         |
+| enable_lazy_spilo_upgrade                         | boolean       | `false `  | If true, update statefulset with new images without rolling update. |
+| enable_pgversion_env_var                          | boolean       | `true `   | Set PGVersion via ENV-Label. Changes can create issues |
+| enable_shm_volume                                 | boolean       | `true`    | True adds tmpfs-Volume to remove shm memory-limitations |
+| enable_spilo_wal_path_compat                      | boolean       | `false`   |                    |
 | enable_team_id_clustername_prefix                 | boolean       | true      |                    |
-| etcd_host                                         | string        | true      |                    |
-| kubernetes_use_configmaps                         | boolean       | true      |                    |
-| max_instances                                     | int           | true      |                    |
-| min_instances                                     | int           | true      |                    |
+| etcd_host                                         | string        |           |                    |
+| kubernetes_use_configmaps                         | boolean       | false     |                    |
+| max_instances                                     | int           | -1        |                    |
+| min_instances                                     | int           | -1        |                    |
 | postgres_pod_resources                            | string        | true      |                    |
-| repair_period                                     | string        | true      |                    |
-| resync_period                                     | string        | true      |                    |
-| set_memory_request_to_limit                       | boolean       | true      |                    |
-| workers                                           | int           | true      |                    |
+| repair_period                                     | string        | 5m        |                    |
+| resync_period                                     | string        | 30m       |                    |
+| set_memory_request_to_limit                       | boolean       | false     |                    |
+| workers                                           | int           | 8         |                    |
 
 {{< back >}}
 
@@ -55,17 +56,18 @@ weight: 332
 
 #### kubernetes
 
-| Name                                          | Type          | required  | Description        |
+| Name                                          | Type          | default   | Description        |
 | --------------------------------------------- |:-------------:| ---------:| ------------------:|
 | cluster_labels                                | map           | true      | a map of key-value pairs adding labels |
 | cluster_domain                                | string        | true      |                    |
 | cluster_name_label                            | string        | true      | default: cluster.cpo.opensource.cybertec.at/name |
-| container_readonly_root_filesystem            | boolean       | true      |  
+| container_readonly_root_filesystem            | boolean       | false     |  
 | enable_cross_namespace_secret                 | boolean       | true      |                    |
 | enable_init_containers                        | boolean       | true      |                    |
 | enable_pod_antiaffinity                       | boolean       | true      |                    |
 | enable_pod_disruption_budget                  | boolean       | true      |                    |
 | enable_readiness_probe                        | boolean       | true      |                    |
+| enable_liveness _probe                        | boolean       | false     |                    |
 | enable_sidecars                               | boolean       | true      |                    |
 | inherited_labels                              | list          | true      |                    |
 | master_pod_move_timeout                       | string        | true      |                    |
@@ -82,9 +84,9 @@ weight: 332
 | secret_name_template                          | string        | true      |                    |
 | share_pgsocket_with_sidecars                  | boolean       | true      |                    |
 | spilo_allow_privilege_escalation              | boolean       | true      |                    |
-| spilo_privileged                              | boolean       | true      |                    |
+| spilo_privileged                              | boolean       | false     |                    |
 | storage_resize_mode                           | string        | true      |                    |
-| watched_namespace                             | string        | true      |                    |
+| watched_namespace                             | string        | `*`         |                    |
 
 
 {{< back >}}
@@ -93,13 +95,13 @@ weight: 332
 
 #### users
 
-| Name                                          | Type          | required  | Description        |
+| Name                                          | Type          | default   | Description        |
 | --------------------------------------------- |:-------------:| ---------:| ------------------:|
-| enable_password_rotation                      | boolean       | true      |                    |
-| password_rotation_interval                    | int           | true      |                    |
-| password_rotation_user_retention              | int           | true      |                    |
-| replication_username                          | string        | true      |                    | 
-| super_username                                | string        | true      |                    | 
+| enable_password_rotation                      | boolean       | `false`   | password rotation by the Operator for all Login Roles excluding DB_Owner                   |
+| password_rotation_interval                    | int           | `90`      | Interval in days   |
+| password_rotation_user_retention              | int           | `180`     | To avoid a constantly growing number of new users due to password rotation, the operator deletes the created users after a certain number of days. The number can be configured with this parameter. However, the operator checks whether the retention policy is at least twice as long as the rotation interval and updates it to this minimum if this is not the case.                  |
+| replication_username                          | string        | `cpo_replication` | Name for the replication-user| 
+| super_username                                | string        | `postgres` | Name for the Superuser. Changes can create issues | 
 
 {{< back >}}
 
@@ -107,18 +109,18 @@ weight: 332
 
 #### connection_pooler
 
-| Name                                          | Type          | required  | Description        |
-| --------------------------------------------- |:-------------:| ---------:| ------------------:|
-| connection_pooler_default_cpu_request         | int           | true      |                    |
-| connection_pooler_default_cpu_limit           | string        | true      |                    | 
-| connection_pooler_default_memory_request      | string        | true      |                    | 
-| connection_pooler_default_memory_limit        | string        | true      |                    | 
-| connection_pooler_image                       | string        | true      |                    | 
-| connection_pooler_max_db_connections          | int           | true      |                    |
-| connection_pooler_mode                        | string        | true      |                    | 
-| connection_pooler_number_of_instances         | int           | true      |                    | 
-| connection_pooler_schema                      | string        | true      |                    | 
-| connection_pooler_user                        | int           | true      |                    |
+| Name                                          | Type          | default       | Description            |
+| --------------------------------------------- |:-------------:| -------------:| ----------------------:|
+| connection_pooler_default_cpu_request         | int           |               | CPU-Request for Pod    |
+| connection_pooler_default_cpu_limit           | string        |               | CPU-Limit for Pod      |
+| connection_pooler_default_memory_request      | string        |               | Memory-Request for Pod |
+| connection_pooler_default_memory_limit        | string        |               | Memory-Limit for Pod   |
+| connection_pooler_image                       | string        |               | Container-Image        | 
+| connection_pooler_max_db_connections          | int           | `60`          | Max Connections between DB and Pooler. Divided by the `connection_pooler_number_of_instances` |
+| connection_pooler_mode                        | string        | `transaction` | Pooler mode | 
+| connection_pooler_number_of_instances         | int           | `2`           | Number of Instances    | 
+| connection_pooler_schema                      | string        | `pooler`      | Schema to create needed Objects like lookup function | 
+| connection_pooler_user                        | int           | `pooler`      | Database-User for pooler |
 
 {{< back >}}
 
@@ -126,17 +128,30 @@ weight: 332
 
 #### logging_rest_api
 
-| Name                                          | Type          | required  | Description        |
+| Name                                          | Type          | default   | Description        |
 | --------------------------------------------- |:-------------:| ---------:| ------------------:|
-| api_port                                      | int           | true      |                    |
-| cluster_history_entries                       | int           | true      |                    | 
-| ring_log_lines                                | int           | true      |                    | 
+| api_port                                      | int           | `8080`    | REST-API port      |
+| cluster_history_entries                       | int           | `1000`    | Number of lines used to store cluster logs.                   | 
+| ring_log_lines                                | int           | `100`     | number of entries  | 
 
 {{< back >}}
 
 ---
 
 #### load_balancer
+
+| Name                                          | Type          | required  | Description        |
+| --------------------------------------------- |:-------------:| ---------:| ------------------:|
+| db_hosted_zone                                | string        |           |                    |
+| enable_master_load_balancer                   | boolean       |           |                    |
+| enable_master_pooler_load_balancer            | boolean       |           |                    | 
+| enable_replica_load_balancer                  | boolean       |           |                    | 
+| enable_replica_pooler_load_balancer           | boolean       |           |                    | 
+| external_traffic_policy                       | string        |           |                    | 
+| master_dns_name_format                        | string        |           |                    | 
+| master_legacy_dns_name_format                 | string        |           |                    | 
+| replica_legacy_dns_name_format                | string        |           |                    | 
+| replica_dns_name_format                       | string        |           |                    | 
 
 {{< back >}}
 
@@ -146,9 +161,9 @@ weight: 332
 
 | Name                                          | Type          | required  | Description        |
 | --------------------------------------------- |:-------------:| ---------:| ------------------:|
-| major_version_upgrade_mode                    | string        | true      |                    |
-| minimal_major_version                         | string        | true      |                    | 
-| target_major_version                          | string        | true      |                    | 
+| major_version_upgrade_mode                    | string        | `off`     |                    |
+| minimal_major_version                         | string        | `13`      |                    | 
+| target_major_version                          | string        | `18`      |                    | 
 
 {{< back >}}
 
@@ -156,11 +171,38 @@ weight: 332
 
 #### teams_api
 
+| Name                                          | Type          | default  | Description        |
+| --------------------------------------------- |:-------------:| ---------:| ------------------:|
+| enable_team_superuser                         | boolean       |           |                    |
+| teams_api_url                                 | string        |           |                    |
+| team_admin_role                               | string        |           |                    | 
+| enable_postgres_team_crd_superusers           | boolean       |           |                    | 
+| protected_role_names                          | list          |           |                    | 
+| pam_role_name                                 | string        |           |                    | 
+| pam_configuration                             | string        |           |                    | 
+| team_api_role_configuration                   | map           |           | a map of key-value pairs adding labels |
+| enable_teams_api                              | boolean       |           |                    | 
+| enable_team_member_deprecation                | boolean       |           |                    | 
+| enable_admin_role_for_users                   | boolean       |           |                    | 
+| role_deletion_suffix                          | string        |           |                    | 
+| enable_postgres_team_crd                      | boolean       |           |                    | 
+
 {{< back >}}
 
 ---
 
 #### timeouts
+
+| Name                                          | Type          | default   | Description        |
+| --------------------------------------------- |:-------------:| ---------:| ------------------:|
+| patroni_api_check_interval                    | string        |           |                    |
+| patroni_api_check_timeout                     | string        |           |                    |
+| pod_deletion_wait_timeout                     | string        |           |                    | 
+| pod_label_wait_timeout                        | string        |           |                    | 
+| ready_wait_interval                           | string        |           |                    | 
+| ready_wait_timeout                            | string        |           |                    | 
+| resource_check_interval                       | string        |           |                    | 
+| resource_check_timeout                        | string        |           |                    | 
 
 {{< back >}}
 
@@ -168,16 +210,25 @@ weight: 332
 
 #### debug
 
-| Name                                          | Type          | required  | Description        |
-| --------------------------------------------- |:-------------:| ---------:| ------------------:|
-| debug_logging                                 | boolean        | true      |                    |
-| enable_database_access                        | boolean        | true      |                    | 
+| Name                                          | Type           | default   | Description        |
+| --------------------------------------------- |:--------------:| ---------:| ------------------:|
+| debug_logging                                 | boolean        |           |                    |
+| enable_database_access                        | boolean        |           |                    | 
 
 {{< back >}}
 
 ---
 
-#### logical_backup
+#### logical_backup (deprecated)
+
+| Name                                          | Type          | default   | Description        |
+| --------------------------------------------- |:-------------:| ---------:| ------------------:|
+| logical_backup_docker_image                   | string        |           |                    |
+| logical_backup_job_prefix                     | string        |           |                    |
+| logical_backup_provider                       | string        |           |                    | 
+| logical_backup_s3_bucket                      | string        |           |                    | 
+| logical_backup_s3_sse                         | string        |           |                    | 
+| logical_backup_schedule                       | string        |           |                    | 
 
 {{< back >}}
 
@@ -185,94 +236,13 @@ weight: 332
 
 #### aws_or_gcp
 
+| Name                                          | Type          | default   | Description        |
+| --------------------------------------------- |:-------------:| ---------:| ------------------:|
+| additional_secret_mount_path                  | string        |           |                    |
+| aws_region                                    | string        |           |                    |
+| enable_ebs_gp3_migration                      | boolean       |           |                    | 
+| enable_ebs_gp3_migration_max_size             | int           |           |                    | 
+
 {{< back >}}
 
 ---
-
----
-
-| Name                              | Type    | default  | Description        |
-| --------------------------------- |:-------:| --------:| ------------------:|
-| enable_crd_registration           | boolean | true     |  |
-| crd_categories                    | string  | all      |  |
-| enable_lazy_spilo_upgrade         | boolean | false    |  |
-| enable_pgversion_env_var          | boolean | true     |  |
-| enable_spilo_wal_path_combat      | boolean | false    |  |
-| etcd_host                         | string  |          |  |
-| kubernetes_use_configmaps         | boolean | false    |  |
-| docker_image                      | string  |          |  |
-| sidecars                          | list    |          |  |
-| enable_shm_volume                 | boolean | true     |  |
-| workers                           | int     | 8        |  |
-| max_instances                     | int     | -1       |  |
-| min_instances                     | int     | -1       |  |
-| resync_period                     | string  | 30m      |  |
-| repair_period                     | string  |  5m      |  |
-| set_memory_request_to_limit       | boolean | false    |  |
-| debug_logging                     | boolean | true     |  |
-| enable_db_access                  | boolean | true     |  |
-| spilo_privileged                  | boolean | false    |  |
-| spilo_allow_privilege_escalation  | boolean | true     |  |
-| container_readonly_root_filesystem | boolean | false  |  |
-| enable_readiness_probe            | boolean | true     |  |
-| enable_liveness_probe             | boolean | false    |  |
-| watched_namespace                 | string  | *        |  |
-
-#### major-upgrade-specific
-
-| Name                                  | Type    | default  | Description        |
-| ------------------------------------- |:-------:| --------:| ------------------:|
-| major_version_upgrade_mode            | string  | off      |  |
-| major_version_upgrade_team_allow_list | string  |          |  |
-| minimal_major_version                 | string  | 13       |  |
-| target_major_version                  | string  | 17       |  |
-
-#### aws-specific
-
-| Name                                  | Type    | default  | Description        |
-| ------------------------------------- |:-------:| --------:| ------------------:|
-| wal_s3_bucket                         | string  |          |  |
-| log_s3_bucket                         | string  |          |  |
-| kube_iam_role                         | string  |          |  |
-| aws_region                            | string  |          |  |
-| additional_secret_mount               | string  |          |  |
-| additional_secret_mount_path          | string  |          |  |
-| enable_ebs_gp3_migration              | boolean |          |  |
-| enable_ebs_gp3_migration_max_size     | int     |          |  |
-
-#### logical-backup-specific
-
-| Name                                  | Type    | default  | Description        |
-| ------------------------------------- |:-------:| --------:| ------------------:|
-| logical_backup_docker_image           | string  |          |  |
-| logical_backup_google_application_credentials | string  |          |  |
-| logical_backup_job_prefix             | string  |          |  |
-| logical_backup_provider               | string  |          |  |
-| logical_backup_s3_access_key_id       | string  |          |  |
-| logical_backup_s3_bucket              | string  |          |  |
-| logical_backup_s3_endpoint            | string  |          |  |
-| logical_backup_s3_region              | string  |          |  |
-| logical_backup_s3_secret_access_key   | string  |          |  |
-| logical_backup_s3_sse                 | string  |          |  |
-| logical_backup_s3_retention_time      | string  |          |  |
-| logical_backup_schedule               | string  |          | (Cron-Syntax) |
-
-#### team-api-specific
-
-| Name                                  | Type    | default  | Description        |
-| ------------------------------------- |:-------:| --------:| ------------------:|
-| enable_teams_api                      | string  |          |  |
-| teams_api_url                         | string  |          |  |
-| teams_api_role_configuration          | string  |          |  |
-| enable_team_superuser                 | boolean |          |  |
-| team_admin_role                       | boolean |          |  |
-| enable_admin_role_for_users           | boolean |          |  |
-| pam_role_name                         | string  |          |  |
-| pam_configuration                     | string  |          |  |
-| protected_role_names                  | list    |          |  |
-| postgres_superuser_teams              | string  |          |  |
-| role_deletion_suffix                  | string  |          |  |
-| enable_team_member_deprecation        | boolean |          |  |
-| enable_postgres_team_crd              | boolean |          |  |
-| enable_postgres_team_crd_superusers   | boolean |          |  |
-| enable_team_id_clustername_prefix     | boolean |          |  |

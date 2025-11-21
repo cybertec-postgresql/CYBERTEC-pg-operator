@@ -176,6 +176,19 @@ func (c *Cluster) clusterNamespace() string {
 	return c.ObjectMeta.Namespace
 }
 
+func (c *Cluster) createOwnerReference() []metav1.OwnerReference {
+	return []metav1.OwnerReference{
+		{
+			APIVersion:         c.APIVersion,
+			Kind:               c.Kind,
+			Name:               c.Name,
+			UID:                c.UID,
+			Controller:         util.True(),
+			BlockOwnerDeletion: util.True(),
+		},
+	}
+}
+
 func (c *Cluster) teamName() string {
 	// TODO: check Teams API for the actual name (in case the user passes an integer Id).
 	return c.Spec.TeamID

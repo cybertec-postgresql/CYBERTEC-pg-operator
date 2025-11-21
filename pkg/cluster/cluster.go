@@ -184,7 +184,7 @@ func (c *Cluster) createOwnerReference() []metav1.OwnerReference {
 			Name:               c.Name,
 			UID:                c.UID,
 			Controller:         util.True(),
-			BlockOwnerDeletion: util.True(),
+			BlockOwnerDeletion: util.False(),
 		},
 	}
 }
@@ -662,6 +662,15 @@ func (c *Cluster) compareStatefulSetWith(oldSts, newSts *appsv1.StatefulSet) *co
 	}
 
 	return &compareStatefulsetResult{match: match, reasons: reasons, rollingUpdate: needsRollUpdate, replace: needsReplace}
+}
+
+func (c *Cluster) compareOwnerReferenceFromStatefulSet(current *appsv1.StatefulSet) bool {
+	for _, ref := range current.OwnerReferences {
+		if ref.UID == c.UID && ref.Controller != nil && *ref.Controller {
+			return true
+		}
+	}
+	return false
 }
 
 type containerCondition func(a, b v1.Container) bool

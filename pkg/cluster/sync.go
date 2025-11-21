@@ -582,6 +582,15 @@ func (c *Cluster) syncStatefulSet() error {
 			c.applyRestoreStatefulSetSyncOverrides(desiredSts, c.Statefulset)
 		}
 
+		// Check if OwnerReference still up to date - if not patch it
+		if !c.compareOwnerReferenceFromStatefulSet(c.Statefulset) {
+			patched, err := c.patchOwnerReference(c.Statefulset)
+			if err != nil {
+				return err
+			}
+			c.Statefulset = patched
+		}
+
 		cmp := c.compareStatefulSetWith(c.Statefulset, desiredSts)
 		if !cmp.match {
 			if cmp.rollingUpdate {
@@ -1600,6 +1609,15 @@ func (c *Cluster) syncPgbackrestRepoHostConfig(spec *cpov1.PostgresSpec) error {
 	desiredSts, err := c.generateRepoHostStatefulSet(spec)
 	if err != nil {
 		return fmt.Errorf("could not generate pgbackrest repo-host statefulset: %v", err)
+	}
+
+	// Check if OwnerReference still up to date - if not patch it
+	if !c.compareOwnerReferenceFromStatefulSet(curSts) {
+		patched, err := c.patchOwnerReference(curSts)
+		if err != nil {
+			return err
+		}
+		curSts = patched
 	}
 
 	cmp := c.compareStatefulSetWith(curSts, desiredSts)

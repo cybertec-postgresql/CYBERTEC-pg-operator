@@ -1660,10 +1660,11 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 
 	statefulSet := &appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:        c.statefulSetName(),
-			Namespace:   c.Namespace,
-			Labels:      c.labelsSetWithType(true, TYPE_POSTGRESQL),
-			Annotations: c.AnnotationsToPropagate(c.annotationsSet(nil)),
+			Name:            c.statefulSetName(),
+			Namespace:       c.Namespace,
+			Labels:          c.labelsSetWithType(true, TYPE_POSTGRESQL),
+			Annotations:     c.AnnotationsToPropagate(c.annotationsSet(nil)),
+			OwnerReferences: c.createOwnerReference(),
 		},
 		Spec: appsv1.StatefulSetSpec{
 			Replicas:                             &numberOfInstances,
@@ -1921,10 +1922,11 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 
 	statefulSet := &appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:        c.getPgbackrestRepoHostName(),
-			Namespace:   c.Namespace,
-			Labels:      repoHostLabels,
-			Annotations: c.AnnotationsToPropagate(c.annotationsSet(nil)),
+			Name:            c.getPgbackrestRepoHostName(),
+			Namespace:       c.Namespace,
+			Labels:          repoHostLabels,
+			Annotations:     c.AnnotationsToPropagate(c.annotationsSet(nil)),
+			OwnerReferences: c.createOwnerReference(),
 		},
 		Spec: appsv1.StatefulSetSpec{
 			Replicas:                             &numberOfInstances,

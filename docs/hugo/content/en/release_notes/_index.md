@@ -8,19 +8,24 @@ weight: 2500
 
 #### Features
 - Adding PG18
-- 
-- Changed SecurityContext to readonly
+- Liveness check added (can be activated via Operator Configuration)
+- ReadOnlyRootFilesystem added as SecurityContext (can be activated via Operator Configuration)
+
+#### Changes
+- Add OwnerReference for Statefulsets
+- Optimisations for major upgrade
 
 #### Fixes
+- cert-Handling for Multisite
 - pgBackRest Restore with TDE
 - Fix for Monitoring pgBackRest
 - Dependency updates and several small changes
 
 #### Supported Versions
 
-- PG: 13 - 17
-- Patroni: 4.0.5
-- pgBackRest: 2.54.2
+- PG: 13 - 18
+- Patroni: 4.1.0
+- pgBackRest: 2.57.0
 - Kubernetes: 1.21 - 1.32
 - Openshift: 4.8 - 4.18
 

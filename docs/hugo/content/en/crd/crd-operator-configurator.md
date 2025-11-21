@@ -86,7 +86,7 @@ weight: 332
 | spilo_allow_privilege_escalation              | boolean       | true      |                    |
 | spilo_privileged                              | boolean       | false     |                    |
 | storage_resize_mode                           | string        | true      |                    |
-| watched_namespace                             | string        | `*`         |                    |
+| watched_namespace                             | string        | `*`       |                    |
 
 
 {{< back >}}

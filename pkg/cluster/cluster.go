@@ -49,6 +49,11 @@ var (
 	patroniObjectSuffixes = []string{"leader", "config", "sync", "failover"}
 )
 
+const (
+	crAPIVersion = "cpo.opensource.cybertec.at/v1"
+	crKind       = "postgresql"
+)
+
 // Config contains operator-wide clients and configuration used from a cluster. TODO: remove struct duplication.
 type Config struct {
 	OpConfig                     config.Config
@@ -177,6 +182,10 @@ func (c *Cluster) clusterNamespace() string {
 }
 
 func (c *Cluster) createOwnerReference() []metav1.OwnerReference {
+	if c.APIVersion == "" || c.Kind == "" {
+		c.APIVersion = crAPIVersion
+		c.Kind = crKind
+	}
 	return []metav1.OwnerReference{
 		{
 			APIVersion:         c.APIVersion,

@@ -39,16 +39,16 @@ weight: 332
 | enable_pgversion_env_var                          | boolean       | `true `   | Set PGVersion via ENV-Label. Changes can create issues |
 | enable_shm_volume                                 | boolean       | `true`    | True adds tmpfs-Volume to remove shm memory-limitations |
 | enable_spilo_wal_path_compat                      | boolean       | `false`   |                    |
-| enable_team_id_clustername_prefix                 | boolean       | true      |                    |
-| etcd_host                                         | string        |           |                    |
-| kubernetes_use_configmaps                         | boolean       | false     |                    |
-| max_instances                                     | int           | -1        |                    |
-| min_instances                                     | int           | -1        |                    |
+| enable_team_id_clustername_prefix                 | boolean       | false     |                    |
+| etcd_host                                         | string        |           | Only required if the Kubernetes-native approach is not used. |
+| kubernetes_use_configmaps                         | boolean       | true      | Recommended! Uses configmaps for Patroni instead of entrypoints. |
+| max_instances                                     | int           | -1        | Maximum number of Postgres pods per cluster. |
+| min_instances                                     | int           | -1        | Minimal number of Postgres pods per cluster. |
 | postgres_pod_resources                            | string        | true      |                    |
-| repair_period                                     | string        | 5m        |                    |
-| resync_period                                     | string        | 30m       |                    |
+| repair_period                                     | string        | 5m        | Period between subsequent repair requests |
+| resync_period                                     | string        | 30m       | Period between subsequent resync requests |
 | set_memory_request_to_limit                       | boolean       | false     |                    |
-| workers                                           | int           | 8         |                    |
+| workers                                           | int           | 8         | Number of workers in the operator that simultaneously process tasks such as create/update/delete clusters |
 
 {{< back >}}
 
@@ -59,34 +59,34 @@ weight: 332
 | Name                                          | Type          | default     | Description        |
 | --------------------------------------------- |:-------------:| -----------:| ------------------:|
 | cluster_labels                                | map           |             | a map of key-value pairs adding labels |
-| cluster_domain                                | string        | `cluster.local`      |                    |
-| cluster_name_label                            | string        | `cluster.cpo.opensource.cybertec.at/name` |  |
-| container_readonly_root_filesystem            | boolean       | `false`     |                    |
-| enable_cross_namespace_secret                 | boolean       | `false`     |                    |
-| enable_init_containers                        | boolean       | `true`      |                    |
-| enable_pod_antiaffinity                       | boolean       | `true`      |                    |
-| enable_pod_disruption_budget                  | boolean       | `true`      |                    |
-| enable_readiness_probe                        | boolean       | `true`      |                    |
-| enable_liveness _probe                        | boolean       | `false`     |                    |
-| enable_sidecars                               | boolean       | `true`      |                    |
-| inherited_labels                              | list          |             |                    |
-| master_pod_move_timeout                       | string        | `20m`       |                    |
+| cluster_domain                                | string        | `cluster.local` | DNS domain used inside the K8s-Cluster. Used by the operator to communicate with clusters |
+| cluster_name_label                            | string        | `cluster.cpo.opensource.cybertec.at/name` | Label to identify all resources of a cluster |
+| container_readonly_root_filesystem            | boolean       | `false`     | Enables ReadOnlyRootFilesystem in the SecurityContext of the pods |
+| enable_cross_namespace_secret                 | boolean       | `false`     | Enables the storage of secrets in another namespace, provided that it is activated. The namespace is defined in the cluster manifest. |
+| enable_init_containers                        | boolean       | `true`      | Allows the definition of init containers in the cluster manifest |
+| enable_pod_antiaffinity                       | boolean       | `true`      | The pod anti-affinity rules are applied when activated. |
+| enable_pod_disruption_budget                  | boolean       | `true`      | Pod Disruption Budgets (PDB) are generated for clusters when activated. |
+| enable_readiness_probe                        | boolean       | `true`      | Operator adds readiness probe for resources when enabled |
+| enable_liveness _probe                        | boolean       | `false`     | Operator adds liveness probe for resources when enabled |
+| enable_sidecars                               | boolean       | `true`      | Allows the definition of sidecars in the cluster manifest |
+| inherited_labels                              | list          |             | Labels added to each resource |
+| master_pod_move_timeout                       | string        | `20m`       | Timeout for waiting for a primary pod to switch to another Kubernetes node. |
 | oauth_token_secret_name                       | string        | `postgresql-operator` |                    |
-| pdb_name_format                               | string        | `postgres-{cluster}-pdb` |                    |
-| pod_management_policy                         | string        | `true`      |                    |
-| pod_antiaffinity_topology_key                 | string        | `kubernetes.io/hostname` |                    |
+| pdb_name_format                               | string        | `postgres-{cluster}-pdb` | Naming scheme for generated pod disruption budgets (PDB) |
+| pod_management_policy                         | string        | `ordered_ready` | Pod-Management-Strategy for the [statefulset](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) |
+| pod_antiaffinity_topology_key                 | string        | `kubernetes.io/hostname` | Defines the anti-affinity [topology Key](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/) |
 | pod_antiaffinity_preferred_during_scheduling  | boolean       | `false`     |                    |
-| pod_role_label                                | string        | `member.cpo.opensource.cybertec.at/role` |                    |
+| pod_role_label                                | string        | `member.cpo.opensource.cybertec.at/role` | Defines the label for the pod-role|
 | pod_service_account_definition                | string        | `''`        |                    |
-| pod_service_account_name                      | string        | `cpo-pod`   |                    |
+| pod_service_account_name                      | string        | `cpo-pod`   | ServiceAccount used for all cluster-pods |
 | pod_service_account_role_binding_definition   | string        | `''`        |                    |
 | pod_terminate_grace_period                    | string        | `5m`        |                    |
 | secret_name_template                          | string        | `{username}.{cluster}.credentials.{tprkind}.{tprgroup}` |                    |
 | share_pgsocket_with_sidecars                  | boolean       | `false`     |                    |
-| spilo_allow_privilege_escalation              | boolean       | `false`     |                    |
-| spilo_privileged                              | boolean       | `false`     |                    |
+| spilo_allow_privilege_escalation              | boolean       | `false`     | Defines privilege-escalation attribut in SecurityContext |
+| spilo_privileged                              | boolean       | `false`     | Defines privileged attribut in SecurityContext |
 | storage_resize_mode                           | string        | `pvc`       |                    |
-| watched_namespace                             | string        | `*`         |                    |
+| watched_namespace                             | string        | `*`         | Operator watches for Objects in the defined Namespace. `*` means all, `` means only operator-namespace, `NAMESPACE_NAME` means specific namespace |
 
 
 {{< back >}}
@@ -142,16 +142,16 @@ weight: 332
 
 | Name                                          | Type          | default          | Description        |
 | --------------------------------------------- |:-------------:| ----------------:| ------------------:|
-| db_hosted_zone                                | string        | `db.example.com` |                    |
-| enable_master_load_balancer                   | boolean       | `false`          |                    |
-| enable_master_pooler_load_balancer            | boolean       | `false`          |                    | 
-| enable_replica_load_balancer                  | boolean       | `false`          |                    | 
-| enable_replica_pooler_load_balancer           | boolean       | `false`          |                    | 
-| external_traffic_policy                       | string        | `Cluster`        |                    | 
-| master_dns_name_format                        | string        | `{cluster}.{namespace}.{hostedzone}` |                    | 
-| master_legacy_dns_name_format                 | string        | `{cluster}.{team}.{hostedzone}`      |                    | 
-| replica_legacy_dns_name_format                | string        | `{cluster}-repl.{team}.{hostedzone}` |                    | 
-| replica_dns_name_format                       | string        | `{cluster}-repl.{namespace}.{hostedzone}` |                    | 
+| db_hosted_zone                                | string        | `db.example.com` | DNS-Definition for the Cluster DNS |
+| enable_master_load_balancer                   | boolean       | `false`          | Creates loadbalancer service for the primary pod, if enabled |
+| enable_master_pooler_load_balancer            | boolean       | `false`          | Creates loadbalancer service for the primary pooler, if enabled | 
+| enable_replica_load_balancer                  | boolean       | `false`          | Creates loadbalancer service for the replica pods, if enabled | 
+| enable_replica_pooler_load_balancer           | boolean       | `false`          | Creates loadbalancer service for the replica pooler, if enabled | 
+| external_traffic_policy                       | string        | `Cluster`        | Defines traffic policy for loadbalancers. Possible Values: `Cluster`, `local`| 
+| master_dns_name_format                        | string        | `{cluster}.{namespace}.{hostedzone}` | DNS-Format for the primary loadbalancer | 
+| replica_dns_name_format                       | string        | `{cluster}-repl.{namespace}.{hostedzone}` | DNS-Format for the replica loadbalancer | 
+| master_legacy_dns_name_format                 | string        | `{cluster}.{team}.{hostedzone}`      | deprecated | 
+| replica_legacy_dns_name_format                | string        | `{cluster}-repl.{team}.{hostedzone}` | deprecated | 
 
 {{< back >}}
 
@@ -161,9 +161,10 @@ weight: 332
 
 | Name                                          | Type          | default   | Description        |
 | --------------------------------------------- |:-------------:| ---------:| ------------------:|
-| major_version_upgrade_mode                    | string        | `manual`  |                    |
-| minimal_major_version                         | string        | `13`      |                    | 
-| target_major_version                          | string        | `18`      |                    | 
+| major_version_upgrade_mode                    | string        | `manual`  | Mode for Major-Upgrades. `manual` Upgrade triggert bei `PGVERSION`-defintion in Cluster-Manifest, `full` Upgrade triggert by the operator based on `target_major_version`, `off` The operator never triggers an upgrade. |
+| minimal_major_version                         | string        | `13`      | The minimum Postgres major version that will not be automatically `updated when major_version_upgrade_mode = full` | 
+| target_major_version                          | string        | `18`      | Target Postgres Major if the upgrade is triggered automatically via
+ `updated when major_version_upgrade_mode = full` | 
 
 {{< back >}}
 
@@ -212,8 +213,8 @@ weight: 332
 
 | Name                                          | Type           | default   | Description        |
 | --------------------------------------------- |:--------------:| ---------:| ------------------:|
-| debug_logging                                 | boolean        | `true`    |                    |
-| enable_database_access                        | boolean        | `true`    |                    | 
+| debug_logging                                 | boolean        | `true`    | Enable Debug-Logs  |
+| enable_database_access                        | boolean        | `true`    | Allows the Operator to connect to the database (to create users and for other actions) | 
 
 {{< back >}}
 
@@ -223,12 +224,12 @@ weight: 332
 
 | Name                                          | Type          | default       | Description        |
 | --------------------------------------------- |:-------------:| -------------:| ------------------:|
-| logical_backup_docker_image                   | string        |               |                    |
-| logical_backup_job_prefix                     | string        | `logical-backup-` |                    |
-| logical_backup_provider                       | string        | `s3`          |                    | 
-| logical_backup_s3_bucket                      | string        | `my-bucket-url` |                    | 
-| logical_backup_s3_sse                         | string        | `AES256`      |                    | 
-| logical_backup_schedule                       | string        | `30 00 * * *` |                    | 
+| logical_backup_docker_image                   | string        |               | deprecated         |
+| logical_backup_job_prefix                     | string        | `logical-backup-` | deprecated     |
+| logical_backup_provider                       | string        | `s3`          | deprecated         | 
+| logical_backup_s3_bucket                      | string        | `my-bucket-url` | deprecated       | 
+| logical_backup_s3_sse                         | string        | `AES256`      | deprecated         | 
+| logical_backup_schedule                       | string        | `30 00 * * *` | deprecated         | 
 
 {{< back >}}
 

@@ -27,10 +27,9 @@ WAL archives are pushed from the primary pod to the repo host.&lt;/p></descripti
 
 
 
-
-
 &lt;blockquote class="gdoc-hint important">
- &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa important" title="Important">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa important">&lt;/i>
+ &lt;span>Important&lt;/span>&lt;/div>
  &lt;div class="gdoc-hint__text">Precondition: a gcs-bucket and a priviledged role is needed for this chapter.&lt;/div>
 &lt;/blockquote>
 
@@ -65,10 +64,9 @@ WAL archives are pushed from the primary pod to the repo host.&lt;/p></descripti
 
 
 
-
-
 &lt;blockquote class="gdoc-hint important">
- &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa important" title="Important">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa important">&lt;/i>
+ &lt;span>Important&lt;/span>&lt;/div>
  &lt;div class="gdoc-hint__text">Precondition: a blob-storage-volume and a priviledged role is needed for this chapter.&lt;/div>
 &lt;/blockquote>
 

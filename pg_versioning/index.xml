@@ -3,10 +3,9 @@ With the update object &lt;code>spec.dockerImage&lt;/code> of the cluster manife
 
 
 
-
-
 &lt;blockquote class="gdoc-hint info">
- &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa info">&lt;/i>
+ &lt;span>Info&lt;/span>&lt;/div>
  &lt;div class="gdoc-hint__text">Note that an in-place upgrade generates both a pod restore in the form of a rolling update and an operational interruption of the cluster during the actual execution of the restore.&lt;/div>
 &lt;/blockquote>
 
@@ -49,10 +48,9 @@ With the update object &lt;code>spec.dockerImage&lt;/code> of the cluster manife
 
 
 
-
-
 &lt;blockquote class="gdoc-hint info">
- &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa info">&lt;/i>
+ &lt;span>Info&lt;/span>&lt;/div>
  &lt;div class="gdoc-hint__text">If one of the steps is aborted, a cleanup is performed&lt;/div>
 &lt;/blockquote>
 
@@ -86,10 +84,9 @@ With the update object &lt;code>spec.dockerImage&lt;/code> of the cluster manife
 
 
 
-
-
 &lt;blockquote class="gdoc-hint info">
- &lt;div class="gdoc-hint__title flex align-center">&lt;i class="fa info" title="Info">&lt;/i>&lt;/div>
+ &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa info">&lt;/i>
+ &lt;span>Info&lt;/span>&lt;/div>
  &lt;div class="gdoc-hint__text">if the process failed, we need to rollback, if it was sucessful we&amp;rsquo;re reaching the point of no return&lt;/div>
 &lt;/blockquote>
 &lt;/li>
@@ -142,5 +139,5 @@ With the update object &lt;code>spec.dockerImage&lt;/code> of the cluster manife
 &lt;/div>
 &lt;pre tabindex="0">&lt;code>spec:
  postgresql:
- version: &amp;#34;17&amp;#34;
+ version: &amp;#34;18&amp;#34;
 &lt;/code>&lt;/pre>&lt;p>To trigger an In-Place-Upgrade you have just to increase the parameter &lt;code>spec.postgresql.version&lt;/code>. If you choose a valid number the Operator will start with the prozedure, described above.&lt;/p></description></item></channel></rss>

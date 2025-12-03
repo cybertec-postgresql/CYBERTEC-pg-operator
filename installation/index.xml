@@ -36,10 +36,16 @@ Exception: Installation via Operatorhub (Openshift only)&lt;/p>
 &lt;a
  class="gdoc-markdown__link"
  href="https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials/fork"
->CYBERTEC-operator-tutorials&lt;/a>&lt;/p></description></item><item><title>Operator-Configuration</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/configuration_operator/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/configuration_operator/</guid><description>&lt;p>Users who are already used to working with PostgreSQL from Baremetal or VMs are already familiar with the need for various files to configure PostgreSQL. These include&lt;/p>
-&lt;ul>
-&lt;li>postgresql.conf&lt;/li>
-&lt;li>pg_hba.conf&lt;/li>
-&lt;li>&amp;hellip;&lt;/li>
-&lt;/ul>
-&lt;p>Although these files are available in the container, direct modification is not planned. As part of the declarative mode of operation of the operator, these files are defined via the operator. The modifying intervention within the container also represents a contradiction to the immutability of the container.&lt;/p></description></item></channel></rss>
+>CYBERTEC-operator-tutorials&lt;/a>&lt;/p></description></item><item><title>Operator-Configuration</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/configuration_operator/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/configuration_operator/</guid><description>&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h1 id="configuring-the-postgresql-operator"
+ >
+ Configuring the PostgreSQL Operator
+ &lt;/h1>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/configuration_operator/#configuring-the-postgresql-operator" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Configuring the PostgreSQL Operator" aria-label="Anchor to: Configuring the PostgreSQL Operator" href="#configuring-the-postgresql-operator">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>
+&lt;p>The PostgreSQL Operator is configured based on the custom resource type &lt;strong>&lt;code>OperatorConfiguration&lt;/code>&lt;/strong>.
+This resource allows you to control the behaviour of the operator in detail and adapt it to individual requirements.&lt;/p>
+&lt;p>The supplied &lt;strong>Helm chart&lt;/strong> already contains a &lt;strong>default configuration&lt;/strong> that is suitable for most use cases.
+These default values cover typical operating requirements and enable a quick start without additional adjustments.&lt;/p></description></item></channel></rss>

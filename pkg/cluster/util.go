@@ -269,9 +269,9 @@ func (c *Cluster) getTeamMembers(teamID string) ([]string, error) {
 	if teamID == "" {
 		msg := "no teamId specified"
 		if c.OpConfig.EnableTeamIdClusternamePrefix {
-			return nil, fmt.Errorf(msg)
+			return nil, fmt.Errorf("%s", msg)
 		}
-		c.logger.Warnf(msg)
+		c.logger.Warnf("%s", msg)
 		return nil, nil
 	}
 
@@ -758,4 +758,25 @@ func (c *Cluster) multisiteEnabled() bool {
 		enable = c.OpConfig.Multisite.Enable
 	}
 	return enable != nil && *enable
+}
+
+func isInMaintenanceWindow(specMaintenanceWindows []cpov1.MaintenanceWindow) bool {
+	if len(specMaintenanceWindows) == 0 {
+		return true
+	}
+	now := time.Now()
+	currentDay := now.Weekday()
+	currentTime := now.Format("15:04")
+
+	for _, window := range specMaintenanceWindows {
+		startTime := window.StartTime.Format("15:04")
+		endTime := window.EndTime.Format("15:04")
+
+		if window.Everyday || window.Weekday == currentDay {
+			if currentTime >= startTime && currentTime <= endTime {
+				return true
+			}
+		}
+	}
+	return false
 }

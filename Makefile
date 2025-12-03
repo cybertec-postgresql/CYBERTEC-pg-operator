@@ -22,7 +22,7 @@ VERSION ?= $(shell git describe --tags --always --dirty)
 DIRS := cmd pkg
 PKG := `go list ./... | grep -v /vendor/`
 
-BASE_IMAGE ?= rockylinux:9
+BASE_IMAGE ?= rockylinux/rockylinux:9
 # BASE_IMAGE ?= rockylinux/rockylinux:10
 PACKAGER ?= dnf
 BUILD ?= 1
@@ -89,7 +89,7 @@ docker-local: build/cybertec-pg-operator
 
 
 indocker-race:
-	docker run --rm -v "${GOPATH}":"${GOPATH}" -e GOPATH="${GOPATH}" -e RACE=1 -w ${PWD} golang:1.23.4 bash -c "make linux"
+	docker run --rm -v "${GOPATH}":"${GOPATH}" -e GOPATH="${GOPATH}" -e RACE=1 -w ${PWD} golang:1.25.2 bash -c "make linux"
 
 push:
 	docker push "$(IMAGE):$(TAG)$(CDP_TAG)"

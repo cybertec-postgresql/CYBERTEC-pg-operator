@@ -188,7 +188,7 @@ func (c *Cluster) enforceMinResourceLimits(resources *v1.ResourceRequirements) e
 		if isSmaller {
 			msg = fmt.Sprintf("defined CPU limit %s for %q container is below required minimum %s and will be increased",
 				cpuLimit.String(), constants.PostgresContainerName, minCPULimit)
-			c.logger.Warningf(msg)
+			c.logger.Warningf("%s", msg)
 			c.eventRecorder.Eventf(c.GetReference(), v1.EventTypeWarning, "ResourceLimits", msg)
 			resources.Limits[v1.ResourceCPU], _ = resource.ParseQuantity(minCPULimit)
 		}
@@ -205,7 +205,7 @@ func (c *Cluster) enforceMinResourceLimits(resources *v1.ResourceRequirements) e
 		if isSmaller {
 			msg = fmt.Sprintf("defined memory limit %s for %q container is below required minimum %s and will be increased",
 				memoryLimit.String(), constants.PostgresContainerName, minMemoryLimit)
-			c.logger.Warningf(msg)
+			c.logger.Warningf("%s", msg)
 			c.eventRecorder.Eventf(c.GetReference(), v1.EventTypeWarning, "ResourceLimits", msg)
 			resources.Limits[v1.ResourceMemory], _ = resource.ParseQuantity(minMemoryLimit)
 		}
@@ -335,10 +335,11 @@ func generateSpiloJSONConfiguration(pg *cpov1.PostgresqlParam, patroni *cpov1.Pa
 	pgVersion, err := strconv.Atoi(pg.PgVersion)
 	if err != nil {
 		fmt.Println("Problem to get PGVersion:", err)
-		pgVersion = 16
+		pgVersion = 18
 	}
 	if pgVersion > 14 {
 		config.Bootstrap.Initdb = []interface{}{map[string]string{"auth-host": "scram-sha-256"},
+			"data-checksums",
 			map[string]string{"auth-local": "trust"},
 			map[string]string{"encoding": "UTF8"},
 			map[string]string{"locale": "en_US.UTF-8"},
@@ -679,6 +680,7 @@ func generateContainer(
 	volumeMounts []v1.VolumeMount,
 	privilegedMode bool,
 	privilegeEscalationMode *bool,
+	readOnlyRootFilesystem *bool,
 	additionalPodCapabilities *v1.Capabilities,
 ) *v1.Container {
 	return &v1.Container{
@@ -705,7 +707,7 @@ func generateContainer(
 		SecurityContext: &v1.SecurityContext{
 			AllowPrivilegeEscalation: privilegeEscalationMode,
 			Privileged:               &privilegedMode,
-			ReadOnlyRootFilesystem:   util.False(),
+			ReadOnlyRootFilesystem:   readOnlyRootFilesystem,
 			Capabilities:             additionalPodCapabilities,
 		},
 	}
@@ -738,7 +740,7 @@ func (c *Cluster) generateSidecarContainers(sidecars []cpov1.Sidecar,
 }
 
 // adds common fields to sidecars
-func patchSidecarContainers(in []v1.Container, volumeMounts []v1.VolumeMount, superUserName string, credentialsSecretName string, logger *logrus.Entry) []v1.Container {
+func patchSidecarContainers(in []v1.Container, volumeMounts []v1.VolumeMount, superUserName string, credentialsSecretName string, logger *logrus.Entry, privilegedMode bool, privilegeEscalationMode *bool, additionalPodCapabilities *v1.Capabilities) []v1.Container {
 	result := []v1.Container{}
 
 	for _, container := range in {
@@ -779,6 +781,7 @@ func patchSidecarContainers(in []v1.Container, volumeMounts []v1.VolumeMount, su
 			},
 		}
 		container.Env = appendEnvVars(env, container.Env...)
+
 		result = append(result, container)
 	}
 
@@ -873,6 +876,19 @@ func (c *Cluster) generatePodTemplate(
 
 	if priorityClassName != "" {
 		podSpec.PriorityClassName = priorityClassName
+	}
+
+	if c.Postgresql.Spec.Monitoring != nil {
+		addEmptyDirVolume(&podSpec, "exporter-tmp", "postgres-exporter", "/tmp")
+	}
+
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && !isRepoHost {
+		addRunVolume(&podSpec, "postgres-run", "postgres", "/run")
+		addEmptyDirVolume(&podSpec, "postgres-tmp", "postgres", "/tmp")
+	}
+
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && isRepoHost {
+		addEmptyDirVolume(&podSpec, "pgbackrest-tmp", "pgbackrest", "/tmp")
 	}
 
 	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars {
@@ -990,6 +1006,19 @@ func (c *Cluster) generateSpiloPodEnvVars(
 			Name:  "HUMAN_ROLE",
 			Value: c.OpConfig.PamRoleName,
 		},
+		// NSS WRAPPER
+		{
+			Name:  "LD_PRELOAD",
+			Value: "/usr/lib64/libnss_wrapper.so",
+		},
+		{
+			Name:  "NSS_WRAPPER_PASSWD",
+			Value: "/tmp/nss_wrapper/passwd",
+		},
+		{
+			Name:  "NSS_WRAPPER_GROUP",
+			Value: "/tmp/nss_wrapper/group",
+		},
 	}
 
 	if c.OpConfig.EnableSpiloWalPathCompat {
@@ -998,6 +1027,10 @@ func (c *Cluster) generateSpiloPodEnvVars(
 
 	if spec.Backup != nil && spec.Backup.Pgbackrest != nil {
 		envVars = append(envVars, v1.EnvVar{Name: "USE_PGBACKREST", Value: "true"})
+	}
+
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem {
+		envVars = append(envVars, v1.EnvVar{Name: "HOME", Value: "/home/postgres"})
 	}
 
 	if spec.TDE != nil && spec.TDE.Enable {
@@ -1245,6 +1278,8 @@ func getSidecarContainer(sidecar cpov1.Sidecar, index int, resources *v1.Resourc
 		Resources:       *resources,
 		Env:             sidecar.Env,
 		Ports:           sidecar.Ports,
+		SecurityContext: sidecar.SecurityContext,
+		VolumeMounts:    sidecar.VolumeMounts,
 	}
 }
 
@@ -1291,6 +1326,23 @@ func generateSpiloReadinessProbe() *v1.Probe {
 		PeriodSeconds:       10,
 		SuccessThreshold:    1,
 		TimeoutSeconds:      5,
+	}
+}
+
+func generatePatroniLivenessProbe() *v1.Probe {
+	return &v1.Probe{
+		FailureThreshold: 6,
+		ProbeHandler: v1.ProbeHandler{
+			HTTPGet: &v1.HTTPGetAction{
+				Path:   "/liveness",
+				Port:   intstr.IntOrString{IntVal: patroni.ApiPort},
+				Scheme: v1.URISchemeHTTP,
+			},
+		},
+		InitialDelaySeconds: 30,
+		PeriodSeconds:       10,
+		TimeoutSeconds:      5,
+		SuccessThreshold:    1,
 	}
 }
 
@@ -1424,6 +1476,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		}
 		additionalVolumes = append(additionalVolumes, tlsVolumes...)
 	}
+
 	repo_host_mode := false
 	// Add this envVar so that it is not added to the pgbackrest initcontainer
 	if specHasPgbackrestPVCRepo(spec) {
@@ -1448,12 +1501,17 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		volumeMounts,
 		c.OpConfig.Resources.SpiloPrivileged,
 		c.OpConfig.Resources.SpiloAllowPrivilegeEscalation,
+		c.OpConfig.Resources.ReadOnlyRootFilesystem,
 		generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
 	)
 
 	// Patroni responds 200 to probe only if it either owns the leader lock or postgres is running and DCS is accessible
 	if c.OpConfig.EnableReadinessProbe {
 		spiloContainer.ReadinessProbe = generateSpiloReadinessProbe()
+	}
+	//
+	if c.OpConfig.EnableLivenessProbe {
+		spiloContainer.LivenessProbe = generatePatroniLivenessProbe()
 	}
 
 	// generate container specs for sidecars specified in the cluster manifest
@@ -1510,7 +1568,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 			containerName, containerName)
 	}
 
-	sidecarContainers = patchSidecarContainers(sidecarContainers, volumeMounts, c.OpConfig.SuperUsername, c.credentialSecretName(c.OpConfig.SuperUsername), c.logger)
+	sidecarContainers = patchSidecarContainers(sidecarContainers, volumeMounts, c.OpConfig.SuperUsername, c.credentialSecretName(c.OpConfig.SuperUsername), c.logger, c.OpConfig.Resources.SpiloPrivileged, c.OpConfig.Resources.SpiloAllowPrivilegeEscalation, generateCapabilities(c.OpConfig.AdditionalPodCapabilities))
 
 	tolerationSpec := tolerations(&spec.Tolerations, c.OpConfig.PodToleration)
 	topologySpreadConstraintsSpec := topologySpreadConstraints(&spec.TopologySpreadConstraints)
@@ -1519,7 +1577,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	podAnnotations := c.generatePodAnnotations(spec)
 
 	if spec.GetBackup().Pgbackrest != nil {
-		initContainers = append(initContainers, c.generatePgbackrestRestoreContainer(spec, repo_host_mode, volumeMounts, resourceRequirements))
+		initContainers = append(initContainers, c.generatePgbackrestRestoreContainer(spec, repo_host_mode, volumeMounts, resourceRequirements, c.OpConfig.Resources.SpiloPrivileged, c.OpConfig.Resources.SpiloAllowPrivilegeEscalation, generateCapabilities(c.OpConfig.AdditionalPodCapabilities)))
 
 		additionalVolumes = append(additionalVolumes, c.generatePgbackrestConfigVolume(spec.Backup.Pgbackrest, false))
 
@@ -1602,10 +1660,11 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 
 	statefulSet := &appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:        c.statefulSetName(),
-			Namespace:   c.Namespace,
-			Labels:      c.labelsSetWithType(true, TYPE_POSTGRESQL),
-			Annotations: c.AnnotationsToPropagate(c.annotationsSet(nil)),
+			Name:            c.statefulSetName(),
+			Namespace:       c.Namespace,
+			Labels:          c.labelsSetWithType(true, TYPE_POSTGRESQL),
+			Annotations:     c.AnnotationsToPropagate(c.annotationsSet(nil)),
+			OwnerReferences: c.createOwnerReference(),
 		},
 		Spec: appsv1.StatefulSetSpec{
 			Replicas:                             &numberOfInstances,
@@ -1622,7 +1681,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	return statefulSet, nil
 }
 
-func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, repo_host_mode bool, volumeMounts []v1.VolumeMount, resourceRequirements *v1.ResourceRequirements) v1.Container {
+func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, repo_host_mode bool, volumeMounts []v1.VolumeMount, resourceRequirements *v1.ResourceRequirements, privilegedMode bool, privilegeEscalationMode *bool, additionalPodCapabilities *v1.Capabilities) v1.Container {
 	isOptional := true
 	pgbackrestRestoreEnvVars := []v1.EnvVar{
 		{
@@ -1695,6 +1754,18 @@ func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, r
 			},
 		)
 	}
+	if spec.TDE != nil && spec.TDE.Enable {
+		pgbackrestRestoreEnvVars = append(pgbackrestRestoreEnvVars, v1.EnvVar{Name: "TDE", Value: "true"})
+		pgbackrestRestoreEnvVars = append(pgbackrestRestoreEnvVars, v1.EnvVar{Name: "TDE_KEY", ValueFrom: &v1.EnvVarSource{
+			SecretKeyRef: &v1.SecretKeySelector{
+				LocalObjectReference: v1.LocalObjectReference{
+					Name: c.getTDESecretName(),
+				},
+				Key: "key",
+			},
+		},
+		})
+	}
 
 	return v1.Container{
 		Name:         constants.RestoreContainerName,
@@ -1702,6 +1773,12 @@ func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, r
 		Env:          pgbackrestRestoreEnvVars,
 		VolumeMounts: volumeMounts,
 		Resources:    *resourceRequirements,
+		SecurityContext: &v1.SecurityContext{
+			AllowPrivilegeEscalation: privilegeEscalationMode,
+			Privileged:               &privilegedMode,
+			ReadOnlyRootFilesystem:   util.True(),
+			Capabilities:             additionalPodCapabilities,
+		},
 	}
 }
 
@@ -1760,6 +1837,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 		volumeMounts,
 		c.OpConfig.Resources.SpiloPrivileged,
 		c.OpConfig.Resources.SpiloAllowPrivilegeEscalation,
+		c.OpConfig.Resources.ReadOnlyRootFilesystem,
 		generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
 	)
 
@@ -1844,10 +1922,11 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 
 	statefulSet := &appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:        c.getPgbackrestRepoHostName(),
-			Namespace:   c.Namespace,
-			Labels:      repoHostLabels,
-			Annotations: c.AnnotationsToPropagate(c.annotationsSet(nil)),
+			Name:            c.getPgbackrestRepoHostName(),
+			Namespace:       c.Namespace,
+			Labels:          repoHostLabels,
+			Annotations:     c.AnnotationsToPropagate(c.annotationsSet(nil)),
+			OwnerReferences: c.createOwnerReference(),
 		},
 		Spec: appsv1.StatefulSetSpec{
 			Replicas:                             &numberOfInstances,
@@ -2161,6 +2240,55 @@ func addShmVolume(podSpec *v1.PodSpec) {
 	podSpec.Containers[postgresContainerIdx].VolumeMounts = mounts
 
 	podSpec.Volumes = volumes
+}
+
+func addEmptyDirVolume(podSpec *v1.PodSpec, volumeName string, containerName string, path string) {
+	vol := v1.Volume{
+		Name: volumeName,
+		VolumeSource: v1.VolumeSource{
+			EmptyDir: &v1.EmptyDirVolumeSource{},
+		},
+	}
+	podSpec.Volumes = append(podSpec.Volumes, vol)
+
+	mount := v1.VolumeMount{
+		Name:      vol.Name,
+		MountPath: path,
+	}
+
+	for i := range podSpec.Containers {
+		if podSpec.Containers[i].Name == containerName {
+			podSpec.Containers[i].VolumeMounts = append(podSpec.Containers[i].VolumeMounts, mount)
+		}
+	}
+	if vol.Name == "postgres-tmp" && len(podSpec.InitContainers) > 0 {
+		for i := range podSpec.InitContainers {
+			if podSpec.InitContainers[i].Name == "pgbackrest-restore" {
+				podSpec.InitContainers[i].VolumeMounts = append(podSpec.InitContainers[i].VolumeMounts, mount)
+			}
+		}
+	}
+}
+
+func addRunVolume(podSpec *v1.PodSpec, volumeName string, containerName string, path string) {
+	vol := v1.Volume{
+		Name: volumeName,
+		VolumeSource: v1.VolumeSource{
+			EmptyDir: &v1.EmptyDirVolumeSource{},
+		},
+	}
+	podSpec.Volumes = append(podSpec.Volumes, vol)
+
+	mount := v1.VolumeMount{
+		Name:      vol.Name,
+		MountPath: path,
+	}
+
+	for i := range podSpec.Containers {
+		if podSpec.Containers[i].Name == containerName {
+			podSpec.Containers[i].VolumeMounts = append(podSpec.Containers[i].VolumeMounts, mount)
+		}
+	}
 }
 
 func addVarRunVolume(podSpec *v1.PodSpec) {
@@ -2730,6 +2858,7 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 		[]v1.VolumeMount{},
 		c.OpConfig.SpiloPrivileged, // use same value as for normal DB pods
 		c.OpConfig.SpiloAllowPrivilegeEscalation,
+		util.False(),
 		nil,
 	)
 
@@ -3256,8 +3385,12 @@ func (c *Cluster) generatePgbackrestJob(backup *cpov1.Pgbackrest, repo *cpov1.Re
 		[]v1.VolumeMount{},
 		c.OpConfig.SpiloPrivileged, // use same value as for normal DB pods
 		c.OpConfig.SpiloAllowPrivilegeEscalation,
+		c.OpConfig.Resources.ReadOnlyRootFilesystem,
 		nil,
 	)
+
+	// Patch securityContext - readOnlyRootFilesystem
+	pgbackrestContainer.SecurityContext.ReadOnlyRootFilesystem = util.True()
 
 	podAffinityTerm := v1.PodAffinityTerm{
 		LabelSelector: c.roleLabelsSelector(Master),

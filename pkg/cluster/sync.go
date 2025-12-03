@@ -514,6 +514,12 @@ func (c *Cluster) syncStatefulSet() error {
 				},
 			},
 			Env: c.generateMonitoringEnvVars(),
+			SecurityContext: &v1.SecurityContext{
+				AllowPrivilegeEscalation: c.OpConfig.Resources.SpiloAllowPrivilegeEscalation,
+				Privileged:               &c.OpConfig.Resources.SpiloPrivileged,
+				ReadOnlyRootFilesystem:   util.True(),
+				Capabilities:             generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
+			},
 		}
 		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
 	}
@@ -574,6 +580,15 @@ func (c *Cluster) syncStatefulSet() error {
 
 		if c.restoreInProgress() {
 			c.applyRestoreStatefulSetSyncOverrides(desiredSts, c.Statefulset)
+		}
+
+		// Check if OwnerReference still up to date - if not patch it
+		if !c.compareOwnerReferenceFromStatefulSet(c.Statefulset) {
+			patched, err := c.patchOwnerReference(c.Statefulset)
+			if err != nil {
+				return err
+			}
+			c.Statefulset = patched
 		}
 
 		cmp := c.compareStatefulSetWith(c.Statefulset, desiredSts)
@@ -1093,7 +1108,7 @@ func (c *Cluster) updateSecret(
 	}
 
 	if updateSecret {
-		c.logger.Debugln(updateSecretMsg)
+		c.logger.Debugln("%s", updateSecretMsg)
 		if _, err = c.KubeClient.Secrets(secret.Namespace).Update(context.TODO(), secret, metav1.UpdateOptions{}); err != nil {
 			return fmt.Errorf("could not update secret %s: %v", secretName, err)
 		}
@@ -1594,6 +1609,15 @@ func (c *Cluster) syncPgbackrestRepoHostConfig(spec *cpov1.PostgresSpec) error {
 	desiredSts, err := c.generateRepoHostStatefulSet(spec)
 	if err != nil {
 		return fmt.Errorf("could not generate pgbackrest repo-host statefulset: %v", err)
+	}
+
+	// Check if OwnerReference still up to date - if not patch it
+	if !c.compareOwnerReferenceFromStatefulSet(curSts) {
+		patched, err := c.patchOwnerReference(curSts)
+		if err != nil {
+			return err
+		}
+		curSts = patched
 	}
 
 	cmp := c.compareStatefulSetWith(curSts, desiredSts)

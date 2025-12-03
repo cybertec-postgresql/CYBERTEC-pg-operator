@@ -168,7 +168,7 @@ spec:
                     default: "13"
                   target_major_version:
                     type: string
-                    default: "17"
+                    default: "18"
               kubernetes:
                 type: object
                 properties:
@@ -213,6 +213,9 @@ spec:
                     type: boolean
                     default: true
                   enable_readiness_probe:
+                    type: boolean
+                    default: true
+                  enable_liveness_probe:
                     type: boolean
                     default: false
                   enable_sidecars:

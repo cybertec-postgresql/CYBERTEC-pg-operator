@@ -40,7 +40,7 @@ configuration:
     # major_version_upgrade_team_allow_list:
     # - acid
     minimal_major_version: "13"
-    target_major_version: "17"
+    target_major_version: "18"
   kubernetes:
     # additional_pod_capabilities:
     # - "SYS_NICE"
@@ -60,7 +60,7 @@ configuration:
     enable_init_containers: true
     enable_pod_antiaffinity: false
     enable_pod_disruption_budget: true
-    enable_readiness_probe: false
+    enable_readiness_probe: true
     enable_sidecars: true
     # ignored_annotations:
     # - k8s.v1.cni.cncf.io/network-status

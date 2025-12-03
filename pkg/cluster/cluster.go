@@ -49,6 +49,11 @@ var (
 	patroniObjectSuffixes = []string{"leader", "config", "sync", "failover"}
 )
 
+const (
+	crAPIVersion = "cpo.opensource.cybertec.at/v1"
+	crKind       = "postgresql"
+)
+
 // Config contains operator-wide clients and configuration used from a cluster. TODO: remove struct duplication.
 type Config struct {
 	OpConfig                     config.Config
@@ -174,6 +179,23 @@ func (c *Cluster) clusterName() spec.NamespacedName {
 
 func (c *Cluster) clusterNamespace() string {
 	return c.ObjectMeta.Namespace
+}
+
+func (c *Cluster) createOwnerReference() []metav1.OwnerReference {
+	if c.APIVersion == "" || c.Kind == "" {
+		c.APIVersion = crAPIVersion
+		c.Kind = crKind
+	}
+	return []metav1.OwnerReference{
+		{
+			APIVersion:         c.APIVersion,
+			Kind:               c.Kind,
+			Name:               c.Name,
+			UID:                c.UID,
+			Controller:         util.True(),
+			BlockOwnerDeletion: util.False(),
+		},
+	}
 }
 
 func (c *Cluster) teamName() string {
@@ -651,6 +673,15 @@ func (c *Cluster) compareStatefulSetWith(oldSts, newSts *appsv1.StatefulSet) *co
 	return &compareStatefulsetResult{match: match, reasons: reasons, rollingUpdate: needsRollUpdate, replace: needsReplace}
 }
 
+func (c *Cluster) compareOwnerReferenceFromStatefulSet(current *appsv1.StatefulSet) bool {
+	for _, ref := range current.OwnerReferences {
+		if ref.UID == c.UID && ref.Controller != nil && *ref.Controller {
+			return true
+		}
+	}
+	return false
+}
+
 type containerCondition func(a, b v1.Container) bool
 
 type containerCheck struct {
@@ -677,6 +708,8 @@ func (c *Cluster) compareContainers(description string, setA, setB []v1.Containe
 			func(a, b v1.Container) bool { return a.Name != b.Name }),
 		newCheck("new statefulset %s's %s (index %d) readiness probe does not match the current one",
 			func(a, b v1.Container) bool { return !reflect.DeepEqual(a.ReadinessProbe, b.ReadinessProbe) }),
+		newCheck("new statefulset %s's %s (index %d) liveness probe does not match the current one",
+			func(a, b v1.Container) bool { return !reflect.DeepEqual(a.LivenessProbe, b.LivenessProbe) }),
 		newCheck("new statefulset %s's %s (index %d) ports do not match the current one",
 			func(a, b v1.Container) bool { return !comparePorts(a.Ports, b.Ports) }),
 		newCheck("new statefulset %s's %s (index %d) resources do not match the current ones",

@@ -2,6 +2,7 @@ package cluster
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -92,6 +93,12 @@ func (c *Cluster) createStatefulSet() (*appsv1.StatefulSet, error) {
 				},
 			},
 			Env: c.generateMonitoringEnvVars(),
+			SecurityContext: &v1.SecurityContext{
+				AllowPrivilegeEscalation: c.OpConfig.Resources.SpiloAllowPrivilegeEscalation,
+				Privileged:               &c.OpConfig.Resources.SpiloPrivileged,
+				ReadOnlyRootFilesystem:   util.True(),
+				Capabilities:             generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
+			},
 		}
 		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
 	}
@@ -164,6 +171,39 @@ func (c *Cluster) preScaleDown(newStatefulSet *appsv1.StatefulSet) error {
 	}
 
 	return nil
+}
+
+func (c *Cluster) patchOwnerReference(sts *appsv1.StatefulSet) (*appsv1.StatefulSet, error) {
+	c.setProcessName("patching ownerReference")
+
+	if sts == nil {
+		return nil, fmt.Errorf("there is no statefulset in the cluster")
+	}
+
+	statefulSetName := util.NameFromMeta(sts.ObjectMeta)
+	ownerRefs := c.createOwnerReference()
+
+	patchData, err := json.Marshal(map[string]interface{}{
+		"metadata": map[string]interface{}{
+			"ownerReferences": ownerRefs,
+		},
+	})
+	if err != nil {
+		return nil, fmt.Errorf("could not marshal patch for ownerReference: %w", err)
+	}
+
+	patched, err := c.KubeClient.StatefulSets(sts.Namespace).Patch(
+		context.TODO(),
+		sts.Name,
+		types.MergePatchType,
+		patchData,
+		metav1.PatchOptions{},
+	)
+	if err != nil {
+		return nil, fmt.Errorf("could not patch ownerReference for StatefulSet %q: %w", statefulSetName, err)
+	}
+
+	return patched, nil
 }
 
 func (c *Cluster) updateStatefulSet(newStatefulSet *appsv1.StatefulSet) error {

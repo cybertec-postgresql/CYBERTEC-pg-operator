@@ -53,7 +53,7 @@ This architecture forms the basis for a modern, highly available and scalable Po
 
 ## PostgreSQL features
 
-- PostgreSQL 13 to 17
+- PostgreSQL 13 to 18
 - Streaming replication via **Patroni**
 - Fully integrated backup & PITR with `pgBackRest` or `pg_basebackup`
 - Extensions like:
@@ -73,7 +73,8 @@ This architecture forms the basis for a modern, highly available and scalable Po
 | Release | PostgreSQL | pgBackRest | Patroni | Kubernetes | Go      |
 |---------|------------|------------|---------|------------|---------|
 | 0.8.0   | 13 - 17    | 2.53       | 4.0.2   | 1.21+      | 1.21.7  |
-| 0.8.3   | 13 - 17    | 2.54-2     | 4.0.5   | 1.21+      | 1.22.12 |
+| 0.8.3   | 13 - 17    | 2.54+      | 4.0.5   | 1.21+      | 1.22.12 |
+| 0.9.0   | 13 - 18    | 2.56+      | 4.1.0   | 1.21+      | 1.25.2  |
 
 --- 
 

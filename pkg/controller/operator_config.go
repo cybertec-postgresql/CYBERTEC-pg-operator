@@ -63,7 +63,7 @@ func (c *Controller) importConfigurationFromCRD(fromCRD *cpov1.OperatorConfigura
 	result.MajorVersionUpgradeMode = util.Coalesce(fromCRD.MajorVersionUpgrade.MajorVersionUpgradeMode, "off")
 	result.MajorVersionUpgradeTeamAllowList = fromCRD.MajorVersionUpgrade.MajorVersionUpgradeTeamAllowList
 	result.MinimalMajorVersion = util.Coalesce(fromCRD.MajorVersionUpgrade.MinimalMajorVersion, "13")
-	result.TargetMajorVersion = util.Coalesce(fromCRD.MajorVersionUpgrade.TargetMajorVersion, "17")
+	result.TargetMajorVersion = util.Coalesce(fromCRD.MajorVersionUpgrade.TargetMajorVersion, "18")
 
 	// kubernetes config
 	result.CustomPodAnnotations = fromCRD.Kubernetes.CustomPodAnnotations
@@ -75,6 +75,7 @@ func (c *Controller) importConfigurationFromCRD(fromCRD *cpov1.OperatorConfigura
 	result.PodTerminateGracePeriod = util.CoalesceDuration(time.Duration(fromCRD.Kubernetes.PodTerminateGracePeriod), "5m")
 	result.SpiloPrivileged = fromCRD.Kubernetes.SpiloPrivileged
 	result.SpiloAllowPrivilegeEscalation = util.CoalesceBool(fromCRD.Kubernetes.SpiloAllowPrivilegeEscalation, util.True())
+	result.ReadOnlyRootFilesystem = util.CoalesceBool(fromCRD.Kubernetes.ReadOnlyRootFilesystem, util.False())
 	result.SpiloRunAsUser = fromCRD.Kubernetes.SpiloRunAsUser
 	result.SpiloRunAsGroup = fromCRD.Kubernetes.SpiloRunAsGroup
 	result.SpiloFSGroup = fromCRD.Kubernetes.SpiloFSGroup
@@ -121,6 +122,7 @@ func (c *Controller) importConfigurationFromCRD(fromCRD *cpov1.OperatorConfigura
 	result.PodManagementPolicy = util.Coalesce(fromCRD.Kubernetes.PodManagementPolicy, "ordered_ready")
 	result.PersistentVolumeClaimRetentionPolicy = fromCRD.Kubernetes.PersistentVolumeClaimRetentionPolicy
 	result.EnableReadinessProbe = fromCRD.Kubernetes.EnableReadinessProbe
+	result.EnableLivenessProbe = fromCRD.Kubernetes.EnableLivenessProbe
 	result.MasterPodMoveTimeout = util.CoalesceDuration(time.Duration(fromCRD.Kubernetes.MasterPodMoveTimeout), "10m")
 	result.EnablePodAntiAffinity = fromCRD.Kubernetes.EnablePodAntiAffinity
 	result.PodAntiAffinityTopologyKey = util.Coalesce(fromCRD.Kubernetes.PodAntiAffinityTopologyKey, "kubernetes.io/hostname")

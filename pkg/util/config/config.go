@@ -38,6 +38,7 @@ type Resources struct {
 	SpiloPrivileged               bool                `name:"spilo_privileged" default:"false"`
 	SpiloAllowPrivilegeEscalation *bool               `name:"spilo_allow_privilege_escalation" default:"true"`
 	AdditionalPodCapabilities     []string            `name:"additional_pod_capabilities" default:""`
+	ReadOnlyRootFilesystem        *bool               `name:"container_readonly_root_filesystem" default:"false"`
 	ClusterLabels                 map[string]string   `name:"cluster_labels" default:"application:cpo"`
 	InheritedLabels               []string            `name:"inherited_labels" default:""`
 	InheritedAnnotations          []string            `name:"inherited_annotations" default:""`
@@ -248,7 +249,8 @@ type Config struct {
 	TeamAPIRoleConfiguration                 map[string]string `name:"team_api_role_configuration" default:"log_statement:all"`
 	PodTerminateGracePeriod                  time.Duration     `name:"pod_terminate_grace_period" default:"5m"`
 	PodManagementPolicy                      string            `name:"pod_management_policy" default:"ordered_ready"`
-	EnableReadinessProbe                     bool              `name:"enable_readiness_probe" default:"false"`
+	EnableReadinessProbe                     bool              `name:"enable_readiness_probe" default:"true"`
+	EnableLivenessProbe                      bool              `name:"enable_liveness_probe" default:"false"`
 	ProtectedRoles                           []string          `name:"protected_role_names" default:"admin,cron_admin"`
 	PostgresSuperuserTeams                   []string          `name:"postgres_superuser_teams" default:""`
 	SetMemoryRequestToLimit                  bool              `name:"set_memory_request_to_limit" default:"false"`
@@ -260,7 +262,7 @@ type Config struct {
 	MajorVersionUpgradeMode                  string            `name:"major_version_upgrade_mode" default:"off"`
 	MajorVersionUpgradeTeamAllowList         []string          `name:"major_version_upgrade_team_allow_list" default:""`
 	MinimalMajorVersion                      string            `name:"minimal_major_version" default:"13"`
-	TargetMajorVersion                       string            `name:"target_major_version" default:"17"`
+	TargetMajorVersion                       string            `name:"target_major_version" default:"18"`
 	PatroniAPICheckInterval                  time.Duration     `name:"patroni_api_check_interval" default:"1s"`
 	PatroniAPICheckTimeout                   time.Duration     `name:"patroni_api_check_timeout" default:"5s"`
 	EnablePatroniFailsafeMode                *bool             `name:"enable_patroni_failsafe_mode" default:"false"`

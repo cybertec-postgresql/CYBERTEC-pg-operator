@@ -113,6 +113,11 @@ const (
 				last_entry_timestamp TIMESTAMP;
 				record_count INT;
 			BEGIN
+				IF pg_is_in_recovery() THEN
+					RAISE NOTICE 'Skipping pgbackrest_info update: running on a replica.';
+					RETURN;
+				END IF;
+
 				SELECT COUNT(*) INTO record_count
 				FROM exporter.pgbackrestbackupinfo;
 
@@ -122,11 +127,12 @@ const (
 					ORDER BY data_time DESC
 					LIMIT 1;
 
-					IF last_entry_timestamp < NOW() - INTERVAL '5 minutes' THEN
-						DELETE FROM exporter.pgbackrestbackupinfo;
-					ELSE
+					IF last_entry_timestamp >= NOW() - INTERVAL '5 minutes' THEN
+						RAISE NOTICE 'Skipping pgbackrest_info update: data does not need an update (last update at %).', last_entry_timestamp;
 						RETURN;
 					END IF;
+
+					DELETE FROM exporter.pgbackrestbackupinfo;
 				END IF;
 
 				EXECUTE format(
@@ -134,6 +140,7 @@ const (
 				);
 			END;
 			$$ LANGUAGE plpgsql;
+
 	`
 )
 

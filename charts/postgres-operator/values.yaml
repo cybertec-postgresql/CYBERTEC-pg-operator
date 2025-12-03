@@ -91,7 +91,7 @@ configMajorVersionUpgrade:
   # minimal Postgres major version that will not automatically be upgraded
   minimal_major_version: "13"
   # target Postgres major version when upgrading clusters automatically
-  target_major_version: "17"
+  target_major_version: "18"
 
 configKubernetes:
   # list of additional capabilities for postgres container
@@ -130,7 +130,7 @@ configKubernetes:
   # toggles PDB to set to MinAvailabe 0 or 1
   enable_pod_disruption_budget: true
   # toogles readiness probe for database pods
-  enable_readiness_probe: false
+  enable_readiness_probe: true
   # enables sidecar containers to run alongside Spilo in the same pod
   enable_sidecars: true
 

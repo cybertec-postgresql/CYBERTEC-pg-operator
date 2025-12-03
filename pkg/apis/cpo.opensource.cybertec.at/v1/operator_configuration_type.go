@@ -50,7 +50,7 @@ type MajorVersionUpgradeConfiguration struct {
 	MajorVersionUpgradeMode          string   `json:"major_version_upgrade_mode" default:"off"` // off - no actions, manual - manifest triggers action, full - manifest and minimal version violation trigger upgrade
 	MajorVersionUpgradeTeamAllowList []string `json:"major_version_upgrade_team_allow_list,omitempty"`
 	MinimalMajorVersion              string   `json:"minimal_major_version" default:"13"`
-	TargetMajorVersion               string   `json:"target_major_version" default:"17"`
+	TargetMajorVersion               string   `json:"target_major_version" default:"18"`
 }
 
 // KubernetesMetaConfiguration defines k8s conf required for all Postgres clusters and the operator itself
@@ -62,6 +62,7 @@ type KubernetesMetaConfiguration struct {
 	PodTerminateGracePeriod                Duration                     `json:"pod_terminate_grace_period,omitempty"`
 	SpiloPrivileged                        bool                         `json:"spilo_privileged,omitempty"`
 	SpiloAllowPrivilegeEscalation          *bool                        `json:"spilo_allow_privilege_escalation,omitempty"`
+	ReadOnlyRootFilesystem                 *bool                        `json:"container_readonly_root_filesystem" default:"false"`
 	SpiloRunAsUser                         *int64                       `json:"spilo_runasuser,omitempty"`
 	SpiloRunAsGroup                        *int64                       `json:"spilo_runasgroup,omitempty"`
 	SpiloFSGroup                           *int64                       `json:"spilo_fsgroup,omitempty"`
@@ -102,6 +103,7 @@ type KubernetesMetaConfiguration struct {
 	PodManagementPolicy                      string              `json:"pod_management_policy,omitempty"`
 	PersistentVolumeClaimRetentionPolicy     map[string]string   `json:"persistent_volume_claim_retention_policy,omitempty"`
 	EnableReadinessProbe                     bool                `json:"enable_readiness_probe,omitempty"`
+	EnableLivenessProbe                      bool                `json:"enable_liveness_probe,omitempty"`
 	EnableCrossNamespaceSecret               bool                `json:"enable_cross_namespace_secret,omitempty"`
 }
 

@@ -4,7 +4,7 @@ date: 2024-03-11T14:26:51+01:00
 draft: false
 weight: 1
 ---
-Current Release: 0.8.3 (04.04.2025) [Release Notes](release_notes)
+Current Release: 0.9.0 (31.10.2025) [Release Notes](release_notes)
 
 <img src="https://raw.githubusercontent.com/cybertec-postgresql/CYBERTEC-pg-operator/fac724618ea1395ed49cb1db7f3429f5b4324337/docs/diagrams/cpo_logo.svg" alt="drawing" width="350" />
 
@@ -21,8 +21,8 @@ The following features characterise our operator:
 - Reduction of downtime thanks to redundancy, pod anti-affinity, auto-failover and self-healing
 
 CPO is tested on the following platforms: 
-- Kubernetes: 1.21 - 1.28
-- Openshift: 4.8 - 4.13 
+- Kubernetes: 1.21 - 1.32
+- Openshift: 4.8 - 4.19 
 - Rancher
 - AWS EKS
 - Azure AKS

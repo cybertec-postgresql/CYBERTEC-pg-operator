@@ -4,6 +4,34 @@ date: 2024-03-11T14:26:51+01:00
 draft: false
 weight: 2500
 ---
+### 0.9.0
+
+#### Features
+- Adding PG18
+- Liveness check added (can be activated via Operator Configuration)
+- ReadOnlyRootFilesystem added as SecurityContext (can be activated via Operator Configuration)
+
+#### Changes
+- Add OwnerReference for Statefulsets
+- Optimisations for major upgrade
+- Statefulsert receives OwnerReference to the CR
+
+#### Fixes
+- cert-Handling for Multisite
+- pgBackRest Restore with TDE
+- Fix for Monitoring pgBackRest
+- Dependency updates and several small changes
+
+#### Notification of upcoming deprecation
+- PG13 has reached its EoL 
+
+#### Supported Versions
+
+- PG: 13 - 18
+- Patroni: 4.1.0
+- pgBackRest: 2.57.0
+- Kubernetes: 1.21 - 1.32
+- Openshift: 4.8 - 4.18
 
 ### 0.8.3
 

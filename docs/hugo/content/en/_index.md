@@ -4,7 +4,7 @@ date: 2024-03-11T14:26:51+01:00
 draft: false
 weight: 1
 ---
-Current Release: 0.9.0 (31.10.2025) [Release Notes](release_notes)
+Current Release: 0.9.0 (3.12.2025) [Release Notes](release_notes)
 
 <img src="https://raw.githubusercontent.com/cybertec-postgresql/CYBERTEC-pg-operator/fac724618ea1395ed49cb1db7f3429f5b4324337/docs/diagrams/cpo_logo.svg" alt="drawing" width="350" />
 

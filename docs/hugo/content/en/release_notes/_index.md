@@ -14,12 +14,16 @@ weight: 2500
 #### Changes
 - Add OwnerReference for Statefulsets
 - Optimisations for major upgrade
+- Statefulsert receives OwnerReference to the CR
 
 #### Fixes
 - cert-Handling for Multisite
 - pgBackRest Restore with TDE
 - Fix for Monitoring pgBackRest
 - Dependency updates and several small changes
+
+#### Notification of upcoming deprecation
+- PG13 has reached its EoL 
 
 #### Supported Versions
 

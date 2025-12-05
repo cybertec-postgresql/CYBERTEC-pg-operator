@@ -10,7 +10,7 @@ require (
 	github.com/motomux/pretty v0.0.0-20161209205251-b2aad2c9a95d
 	github.com/pkg/errors v0.9.1
 	github.com/r3labs/diff v1.1.0
-	github.com/sirupsen/logrus v1.9.0
+	github.com/sirupsen/logrus v1.9.1
 	github.com/stretchr/testify v1.8.4
 	go.etcd.io/etcd/client/v3 v3.5.4
 	golang.org/x/crypto v0.41.0

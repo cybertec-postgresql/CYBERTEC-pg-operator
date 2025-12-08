@@ -882,13 +882,13 @@ func (c *Cluster) generatePodTemplate(
 		addEmptyDirVolume(&podSpec, "exporter-tmp", "postgres-exporter", "/tmp")
 	}
 
-	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && !isRepoHost {
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && !strings.Contains(spiloContainer.Name, "pgbackrest") {
 		addRunVolume(&podSpec, "postgres-run", "postgres", "/run")
 		addEmptyDirVolume(&podSpec, "postgres-tmp", "postgres", "/tmp")
 	}
 
-	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && isRepoHost {
-		addEmptyDirVolume(&podSpec, "pgbackrest-tmp", "pgbackrest", "/tmp")
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && strings.Contains(spiloContainer.Name, "pgbackrest") {
+		addEmptyDirVolume(&podSpec, "pgbackrest-tmp", spiloContainer.Name, "/tmp")
 	}
 
 	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars {

@@ -878,13 +878,12 @@ func (c *Cluster) generatePodTemplate(
 		podSpec.PriorityClassName = priorityClassName
 	}
 
-	if c.Postgresql.Spec.Monitoring != nil {
-		addEmptyDirVolume(&podSpec, "exporter-tmp", "postgres-exporter", "/tmp")
-	}
-
-	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && !strings.Contains(spiloContainer.Name, "pgbackrest") {
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && spiloContainer.Name == "postgres" {
 		addRunVolume(&podSpec, "postgres-run", "postgres", "/run")
 		addEmptyDirVolume(&podSpec, "postgres-tmp", "postgres", "/tmp")
+		if c.Postgresql.Spec.Monitoring != nil {
+			addEmptyDirVolume(&podSpec, "exporter-tmp", "postgres-exporter", "/tmp")
+		}
 	}
 
 	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && strings.Contains(spiloContainer.Name, "pgbackrest") {

@@ -694,6 +694,19 @@ spec:
                             type: string
                           recoveryEventType:
                             type: string
+              tde:
+                nullable: true
+                properties:
+                  enable:
+                    type: boolean
+                  keybits: 
+                    type: integer
+                    format: int32
+                    default: 256
+                    enum:
+                      - 128
+                      - 192
+                      - 256
               teamId:
                 type: string
               tls:

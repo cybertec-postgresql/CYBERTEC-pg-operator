@@ -65,26 +65,30 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 		}, k8sutil.KubernetesClient{}, cpov1.Postgresql{}, logger, eventRecorder)
 
 	tests := []struct {
-		subtest  string
-		pgParam  *cpov1.PostgresqlParam
-		patroni  *cpov1.Patroni
-		opConfig *config.Config
-		result   string
+		subtest   string
+		pgParam   *cpov1.PostgresqlParam
+		patroni   *cpov1.Patroni
+		opConfig  *config.Config
+		tdeConfig TDEConfig
+		result    string
 	}{
 		{
 			subtest: "Patroni default configuration",
-			pgParam: &cpov1.PostgresqlParam{PgVersion: "15"},
+			pgParam: &cpov1.PostgresqlParam{PgVersion: "17"},
 			patroni: &cpov1.Patroni{},
 			opConfig: &config.Config{
 				Auth: config.Auth{
 					PamRoleName: "humans",
 				},
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/15/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{}}}`,
+			tdeConfig: TDEConfig{
+				Enabled: false,
+			},
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{}}}`,
 		},
 		{
 			subtest: "Patroni configured",
-			pgParam: &cpov1.PostgresqlParam{PgVersion: "15"},
+			pgParam: &cpov1.PostgresqlParam{PgVersion: "17"},
 			patroni: &cpov1.Patroni{
 				InitDB: map[string]string{
 					"encoding":       "UTF8",
@@ -107,11 +111,14 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 					PamRoleName: "humans",
 				},
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/15/bin","pg_hba":["hostssl all all 0.0.0.0/0 scram-sha-256","host    all all 0.0.0.0/0 scram-sha-256"]},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"},"data-checksums",{"encoding":"UTF8"},{"locale":"en_US.UTF-8"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"ttl":30,"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"synchronous_mode":true,"synchronous_mode_strict":true,"synchronous_node_count":1,"slots":{"permanent_logical_1":{"database":"foo","plugin":"pgoutput","type":"logical"}},"failsafe_mode":true}}}`,
+			tdeConfig: TDEConfig{
+				Enabled: false,
+			},
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin","pg_hba":["hostssl all all 0.0.0.0/0 scram-sha-256","host    all all 0.0.0.0/0 scram-sha-256"]},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"},"data-checksums",{"encoding":"UTF8"},{"locale":"en_US.UTF-8"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"ttl":30,"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"synchronous_mode":true,"synchronous_mode_strict":true,"synchronous_node_count":1,"slots":{"permanent_logical_1":{"database":"foo","plugin":"pgoutput","type":"logical"}},"failsafe_mode":true}}}`,
 		},
 		{
 			subtest: "Patroni failsafe_mode configured globally",
-			pgParam: &cpov1.PostgresqlParam{PgVersion: "15"},
+			pgParam: &cpov1.PostgresqlParam{PgVersion: "17"},
 			patroni: &cpov1.Patroni{},
 			opConfig: &config.Config{
 				Auth: config.Auth{
@@ -119,11 +126,14 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 				},
 				EnablePatroniFailsafeMode: util.True(),
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/15/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"failsafe_mode":true}}}`,
+			tdeConfig: TDEConfig{
+				Enabled: false,
+			},
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"failsafe_mode":true}}}`,
 		},
 		{
 			subtest: "Patroni failsafe_mode configured globally, disabled for cluster",
-			pgParam: &cpov1.PostgresqlParam{PgVersion: "15"},
+			pgParam: &cpov1.PostgresqlParam{PgVersion: "17"},
 			patroni: &cpov1.Patroni{
 				FailsafeMode: util.False(),
 			},
@@ -133,11 +143,14 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 				},
 				EnablePatroniFailsafeMode: util.True(),
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/15/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"failsafe_mode":false}}}`,
+			tdeConfig: TDEConfig{
+				Enabled: false,
+			},
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"failsafe_mode":false}}}`,
 		},
 		{
 			subtest: "Patroni failsafe_mode disabled globally, configured for cluster",
-			pgParam: &cpov1.PostgresqlParam{PgVersion: "15"},
+			pgParam: &cpov1.PostgresqlParam{PgVersion: "17"},
 			patroni: &cpov1.Patroni{
 				FailsafeMode: util.True(),
 			},
@@ -147,12 +160,30 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 				},
 				EnablePatroniFailsafeMode: util.False(),
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/15/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"failsafe_mode":true}}}`,
+			tdeConfig: TDEConfig{
+				Enabled: false,
+			},
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"failsafe_mode":true}}}`,
+		},
+		{
+			subtest: "TDE enabled with 256 bits",
+			pgParam: &cpov1.PostgresqlParam{PgVersion: "17"},
+			patroni: &cpov1.Patroni{},
+			opConfig: &config.Config{
+				Auth: config.Auth{
+					PamRoleName: "humans",
+				},
+			},
+			tdeConfig: TDEConfig{
+				Enabled: true,
+				KeyBits: "256",
+			},
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"},{"encryption-key-command": "/tmp/tde.sh"},{"key-bits":"256"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{}}}`,
 		},
 	}
 	for _, tt := range tests {
 		cluster.OpConfig = *tt.opConfig
-		result, err := generateSpiloJSONConfiguration(tt.pgParam, tt.patroni, tt.opConfig, false, logger)
+		result, err := generateSpiloJSONConfiguration(tt.pgParam, tt.patroni, tt.opConfig, tt.tdeConfig, logger)
 		if err != nil {
 			t.Errorf("Unexpected error: %v", err)
 		}

@@ -83,6 +83,11 @@ type spiloConfiguration struct {
 	Bootstrap            pgBootstrap            `json:"bootstrap"`
 }
 
+type TDEConfig struct {
+	Enabled bool
+	KeyBits string
+}
+
 func (c *Cluster) statefulSetName() string {
 	return c.Name
 }
@@ -327,7 +332,7 @@ func (c *Cluster) generateResourceRequirements(
 	return &result, nil
 }
 
-func generateSpiloJSONConfiguration(pg *cpov1.PostgresqlParam, patroni *cpov1.Patroni, opConfig *config.Config, enableTDE bool, logger *logrus.Entry) (string, error) {
+func generateSpiloJSONConfiguration(pg *cpov1.PostgresqlParam, patroni *cpov1.Patroni, opConfig *config.Config, tdeOptions TDEConfig, logger *logrus.Entry) (string, error) {
 	config := spiloConfiguration{}
 
 	config.Bootstrap = pgBootstrap{}
@@ -350,8 +355,9 @@ func generateSpiloJSONConfiguration(pg *cpov1.PostgresqlParam, patroni *cpov1.Pa
 			map[string]string{"auth-local": "trust"}}
 	}
 
-	if enableTDE {
+	if tdeOptions.Enabled {
 		config.Bootstrap.Initdb = append(config.Bootstrap.Initdb, map[string]string{"encryption-key-command": "/tmp/tde.sh"})
+		config.Bootstrap.Initdb = append(config.Bootstrap.Initdb, map[string]string{"key-bits": tdeOptions.KeyBits})
 	}
 
 	initdbOptionNames := []string{}
@@ -1392,11 +1398,20 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		}
 	}
 
-	enableTDE := false
+	// Keybits must be converted to strings for initdb processing.
+	tdeOptions := TDEConfig{Enabled: false}
 	if spec.TDE != nil && spec.TDE.Enable {
-		enableTDE = true
+		tdeOptions.Enabled = true
+		tdeOptions.KeyBits = strconv.Itoa(256)
+		ptr := c.Postgresql.Spec.TDE.Keybits
+		if ptr != nil {
+			val := *ptr
+			if val == 128 || val == 192 {
+				tdeOptions.KeyBits = fmt.Sprintf("%d", val)
+			}
+		}
 	}
-	spiloConfiguration, err := generateSpiloJSONConfiguration(&spec.PostgresqlParam, &spec.Patroni, &c.OpConfig, enableTDE, c.logger)
+	spiloConfiguration, err := generateSpiloJSONConfiguration(&spec.PostgresqlParam, &spec.Patroni, &c.OpConfig, tdeOptions, c.logger)
 	if err != nil {
 		return nil, fmt.Errorf("could not generate Spilo JSON configuration: %v", err)
 	}

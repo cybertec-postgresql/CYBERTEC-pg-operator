@@ -1684,14 +1684,16 @@ func (c *Cluster) syncPgbackrestJob(forceRemove bool) error {
 func (c *Cluster) createTDESecret() error {
 	c.logger.Info("creating TDE secret")
 	c.setProcessName("creating TDE secret")
-	var bits int32 = 256
+
+	var bits int32 = 128
 	ptr := c.Postgresql.Spec.TDE.Keybits
 	if ptr != nil {
 		val := *ptr
-		if val == 128 || val == 192 {
+		if val == 256 || val == 192 {
 			bits = val
 		}
 	}
+
 	generatedKey := make([]byte, (bits / 8))
 	rand.Read(generatedKey)
 
@@ -1706,15 +1708,19 @@ func (c *Cluster) createTDESecret() error {
 		},
 	}
 	secret, err := c.KubeClient.Secrets(generatedSecret.Namespace).Create(context.TODO(), &generatedSecret, metav1.CreateOptions{})
+
 	if err == nil {
 		c.Secrets[secret.UID] = secret
 		c.logger.Debugf("created new secret %s, namespace: %s, uid: %s", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, secret.UID)
-	}
-	if k8sutil.ResourceAlreadyExists(err) {
-		c.logger.Warningf("TDE secret already exists, skip key generation and use existing one.")
 	} else {
-		return fmt.Errorf("could not create secret for TDE %s: in namespace %s: %v", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, err)
+
+		if k8sutil.ResourceAlreadyExists(err) {
+			c.logger.Warningf("TDE secret already exists, skip key generation and use existing one.")
+		} else {
+			return fmt.Errorf("could not create secret for TDE %s: in namespace %s: %v", generatedSecret.Name, generatedSecret.Namespace, err)
+		}
 	}
+
 	return nil
 }
 

@@ -1444,6 +1444,18 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							"enable": {
 								Type: "boolean",
 							},
+							"keybits": {
+								Type:   "integer",
+								Format: "int32",
+								Enum: []apiextv1.JSON{
+									{Raw: []byte("128")},
+									{Raw: []byte("192")},
+									{Raw: []byte("256")},
+								},
+								Default: &apiextv1.JSON{
+									Raw: []byte("128"),
+								},
+							},
 						},
 					},
 					"monitor": {

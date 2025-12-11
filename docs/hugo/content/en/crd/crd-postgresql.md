@@ -57,7 +57,7 @@ weight: 331
 | spiloRunAsUser                 | int     | false     | Sets the user ID which should be used in the container to run the process. This must be set to run the container without root. |
 | [standby](#standby)            | map     | false     | Enables the creation of a standby cluster at the time of the creation of a new cluster |
 | [streams](#streams)            | array   | false     | Enables change data capture streams for defined database tables |
-| [tde](#tde)                    | map     | false     | Enables the activation of TDE if a new cluster is created |
+| [tde](#tde)                    | map     | false     | Enables TDE and allows you to define options such as key bits. |
 | teamId                         | string  | true      | name of the team the cluster belongs to. Will be removed soon |
 | [tls](#tls)                    | map     | false     | Custom TLS certificate |
 | [tolerations](#tolerations)    | array    | false    | a list of tolerations that apply to the cluster pods. Each element of that list is a dictionary with the following fields: 
@@ -256,9 +256,10 @@ key, operator, value, effect and tolerationSeconds |
 
 #### tde
 
-| Name                           | Type    | required  | Description        |
-| ------------------------------ |:-------:| ---------:| ------------------:|
-| enable                         | boolean | true      | enable TDE during initDB  |
+| Name                           | Type    | default   | Description               |
+| ------------------------------ |:-------:| ---------:| -------------------------:|
+| enable                         | boolean | false     | enable TDE during initDB  |
+| keybits                        | integer | 256       | used to specify the key length in bits. Accepted values are 128, 192 and 256 (default). More Informations: [PGEE-Documentation](https://repository.cybertec.at/doc/18ee/encryption.html) |
 
 {{< back >}}
 

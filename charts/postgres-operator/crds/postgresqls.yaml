@@ -702,7 +702,7 @@ spec:
                   keybits: 
                     type: integer
                     format: int32
-                    default: 256
+                    default: 128
                     enum:
                       - 128
                       - 192

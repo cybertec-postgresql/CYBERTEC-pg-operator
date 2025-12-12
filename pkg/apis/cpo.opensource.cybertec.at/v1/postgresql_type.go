@@ -316,7 +316,8 @@ type Configuration struct {
 }
 
 type TDE struct {
-	Enable bool `json:"enable"`
+	Enable  bool   `json:"enable"`
+	Keybits *int32 `json:"keybits"`
 }
 
 // Monitoring Sidecar defines a container to be run in the same pod as the Postgres container.

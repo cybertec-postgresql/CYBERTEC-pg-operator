@@ -84,16 +84,15 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 			tdeConfig: TDEConfig{
 				Enabled: false,
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{}}}`,
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},"data-checksums",{"auth-local":"trust"},{"encoding":"UTF8"},{"locale":"en_US.UTF-8"},{"locale-provider":"icu"},{"icu-locale":"en_US"}],"users":null,"dcs":{}}}`,
 		},
 		{
 			subtest: "Patroni configured",
 			pgParam: &cpov1.PostgresqlParam{PgVersion: "17"},
 			patroni: &cpov1.Patroni{
 				InitDB: map[string]string{
-					"encoding":       "UTF8",
-					"locale":         "en_US.UTF-8",
-					"data-checksums": "true",
+					"encoding": "UTF8",
+					"locale":   "en_US.UTF-8",
 				},
 				PgHba:                 []string{"hostssl all all 0.0.0.0/0 scram-sha-256", "host    all all 0.0.0.0/0 scram-sha-256"},
 				TTL:                   30,
@@ -114,7 +113,7 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 			tdeConfig: TDEConfig{
 				Enabled: false,
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin","pg_hba":["hostssl all all 0.0.0.0/0 scram-sha-256","host    all all 0.0.0.0/0 scram-sha-256"]},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"},"data-checksums",{"encoding":"UTF8"},{"locale":"en_US.UTF-8"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"ttl":30,"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"synchronous_mode":true,"synchronous_mode_strict":true,"synchronous_node_count":1,"slots":{"permanent_logical_1":{"database":"foo","plugin":"pgoutput","type":"logical"}},"failsafe_mode":true}}}`,
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin","pg_hba":["hostssl all all 0.0.0.0/0 scram-sha-256","host    all all 0.0.0.0/0 scram-sha-256"]},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},"data-checksums",{"auth-local":"trust"},{"encoding":"UTF8"},{"locale":"en_US.UTF-8"},{"locale-provider":"icu"},{"icu-locale":"en_US"}],"users":null,"dcs":{"ttl":30,"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"synchronous_mode":true,"synchronous_mode_strict":true,"synchronous_node_count":1,"slots":{"permanent_logical_1":{"database":"foo","plugin":"pgoutput","type":"logical"}},"failsafe_mode":true}}}`,
 		},
 		{
 			subtest: "Patroni failsafe_mode configured globally",
@@ -129,7 +128,7 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 			tdeConfig: TDEConfig{
 				Enabled: false,
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"failsafe_mode":true}}}`,
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},"data-checksums",{"auth-local":"trust"},{"encoding":"UTF8"},{"locale":"en_US.UTF-8"},{"locale-provider":"icu"},{"icu-locale":"en_US"}],"users":null,"dcs":{"failsafe_mode":true}}}`,
 		},
 		{
 			subtest: "Patroni failsafe_mode configured globally, disabled for cluster",
@@ -146,7 +145,7 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 			tdeConfig: TDEConfig{
 				Enabled: false,
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"failsafe_mode":false}}}`,
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},"data-checksums",{"auth-local":"trust"},{"encoding":"UTF8"},{"locale":"en_US.UTF-8"},{"locale-provider":"icu"},{"icu-locale":"en_US"}],"users":null,"dcs":{"failsafe_mode":false}}}`,
 		},
 		{
 			subtest: "Patroni failsafe_mode disabled globally, configured for cluster",
@@ -163,7 +162,7 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 			tdeConfig: TDEConfig{
 				Enabled: false,
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"failsafe_mode":true}}}`,
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},"data-checksums",{"auth-local":"trust"},{"encoding":"UTF8"},{"locale":"en_US.UTF-8"},{"locale-provider":"icu"},{"icu-locale":"en_US"}],"users":null,"dcs":{"failsafe_mode":true}}}`,
 		},
 		{
 			subtest: "TDE enabled with 256 bits",
@@ -178,7 +177,7 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 				Enabled: true,
 				KeyBits: "256",
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"},{"encryption-key-command": "/tmp/tde.sh"},{"key-bits":"256"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{}}}`,
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},"data-checksums",{"auth-local":"trust"},{"encoding":"UTF8"},{"locale":"en_US.UTF-8"},{"locale-provider":"icu"},{"icu-locale":"en_US"},{"encryption-key-command":"/tmp/tde.sh"},{"key-bits":"256"}],"users":null,"dcs":{}}}`,
 		},
 	}
 	for _, tt := range tests {

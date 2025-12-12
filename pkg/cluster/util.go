@@ -205,7 +205,7 @@ func logNiceDiff(log *logrus.Entry, old, new interface{}) {
 	nice := nicediff.Diff(string(o), string(n), true)
 	for _, s := range strings.Split(nice, "\n") {
 		// " is not needed in the value to understand
-		log.Debugf(strings.ReplaceAll(s, "\"", ""))
+		log.Debugf("%s", strings.ReplaceAll(s, "\"", ""))
 	}
 }
 
@@ -512,8 +512,6 @@ func (c *Cluster) waitForPrimaryLoadBalancerIp() error {
 			}
 			return len(svc.Status.LoadBalancer.Ingress) > 0, nil
 		})
-
-	return nil
 }
 
 func (c *Cluster) getPrimaryLoadBalancerIp() (string, error) {

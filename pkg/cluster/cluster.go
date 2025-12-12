@@ -2071,7 +2071,9 @@ func (c *Cluster) getPasswordForUser(username string) (string, error) {
 		}
 		c.multisiteClient = client
 	}
-	reqTimeoutCtx, _ := context.WithTimeout(context.TODO(), time.Duration(2)*time.Second)
+	reqTimeoutCtx, cancel := context.WithTimeout(context.TODO(), time.Duration(2)*time.Second)
+	defer cancel()
+
 	credentialsKey := fmt.Sprintf("/multisite/%s/%s/credentials/%s", c.Namespace, c.Name, username)
 	response, err := c.multisiteClient.Get(reqTimeoutCtx, credentialsKey)
 	if err != nil {

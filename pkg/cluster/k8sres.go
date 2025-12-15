@@ -2826,7 +2826,7 @@ func (c *Cluster) generatePodDisruptionBudget() *policyv1.PodDisruptionBudget {
 		Spec: policyv1.PodDisruptionBudgetSpec{
 			MinAvailable: &minAvailable,
 			Selector: &metav1.LabelSelector{
-				MatchLabels: c.roleLabelsSet(false, Master),
+				MatchLabels: c.labelsSetWithType(false, "postgresql"), //c.roleLabelsSet(false, Master),
 			},
 		},
 	}

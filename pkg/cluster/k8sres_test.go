@@ -84,16 +84,15 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 			tdeConfig: TDEConfig{
 				Enabled: false,
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{}}}`,
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},"data-checksums",{"auth-local":"trust"},{"encoding":"UTF8"},{"locale":"en_US.UTF-8"},{"locale-provider":"icu"},{"icu-locale":"en_US"}],"users":null,"dcs":{}}}`,
 		},
 		{
 			subtest: "Patroni configured",
 			pgParam: &cpov1.PostgresqlParam{PgVersion: "17"},
 			patroni: &cpov1.Patroni{
 				InitDB: map[string]string{
-					"encoding":       "UTF8",
-					"locale":         "en_US.UTF-8",
-					"data-checksums": "true",
+					"encoding": "UTF8",
+					"locale":   "en_US.UTF-8",
 				},
 				PgHba:                 []string{"hostssl all all 0.0.0.0/0 scram-sha-256", "host    all all 0.0.0.0/0 scram-sha-256"},
 				TTL:                   30,
@@ -114,7 +113,7 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 			tdeConfig: TDEConfig{
 				Enabled: false,
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin","pg_hba":["hostssl all all 0.0.0.0/0 scram-sha-256","host    all all 0.0.0.0/0 scram-sha-256"]},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"},"data-checksums",{"encoding":"UTF8"},{"locale":"en_US.UTF-8"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"ttl":30,"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"synchronous_mode":true,"synchronous_mode_strict":true,"synchronous_node_count":1,"slots":{"permanent_logical_1":{"database":"foo","plugin":"pgoutput","type":"logical"}},"failsafe_mode":true}}}`,
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin","pg_hba":["hostssl all all 0.0.0.0/0 scram-sha-256","host    all all 0.0.0.0/0 scram-sha-256"]},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},"data-checksums",{"auth-local":"trust"},{"encoding":"UTF8"},{"locale":"en_US.UTF-8"},{"locale-provider":"icu"},{"icu-locale":"en_US"}],"users":null,"dcs":{"ttl":30,"loop_wait":10,"retry_timeout":10,"maximum_lag_on_failover":33554432,"synchronous_mode":true,"synchronous_mode_strict":true,"synchronous_node_count":1,"slots":{"permanent_logical_1":{"database":"foo","plugin":"pgoutput","type":"logical"}},"failsafe_mode":true}}}`,
 		},
 		{
 			subtest: "Patroni failsafe_mode configured globally",
@@ -129,7 +128,7 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 			tdeConfig: TDEConfig{
 				Enabled: false,
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"failsafe_mode":true}}}`,
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},"data-checksums",{"auth-local":"trust"},{"encoding":"UTF8"},{"locale":"en_US.UTF-8"},{"locale-provider":"icu"},{"icu-locale":"en_US"}],"users":null,"dcs":{"failsafe_mode":true}}}`,
 		},
 		{
 			subtest: "Patroni failsafe_mode configured globally, disabled for cluster",
@@ -146,7 +145,7 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 			tdeConfig: TDEConfig{
 				Enabled: false,
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"failsafe_mode":false}}}`,
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},"data-checksums",{"auth-local":"trust"},{"encoding":"UTF8"},{"locale":"en_US.UTF-8"},{"locale-provider":"icu"},{"icu-locale":"en_US"}],"users":null,"dcs":{"failsafe_mode":false}}}`,
 		},
 		{
 			subtest: "Patroni failsafe_mode disabled globally, configured for cluster",
@@ -163,7 +162,7 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 			tdeConfig: TDEConfig{
 				Enabled: false,
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{"failsafe_mode":true}}}`,
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},"data-checksums",{"auth-local":"trust"},{"encoding":"UTF8"},{"locale":"en_US.UTF-8"},{"locale-provider":"icu"},{"icu-locale":"en_US"}],"users":null,"dcs":{"failsafe_mode":true}}}`,
 		},
 		{
 			subtest: "TDE enabled with 256 bits",
@@ -178,7 +177,7 @@ func TestGenerateSpiloJSONConfiguration(t *testing.T) {
 				Enabled: true,
 				KeyBits: "256",
 			},
-			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},{"auth-local":"trust"},{"encryption-key-command": "/tmp/tde.sh"},{"key-bits":"256"}],"users":{"humans":{"password":"","options":["CREATEDB","NOLOGIN"]}},"dcs":{}}}`,
+			result: `{"postgresql":{"bin_dir":"/usr/lib/postgresql/17/bin"},"bootstrap":{"initdb":[{"auth-host":"scram-sha-256"},"data-checksums",{"auth-local":"trust"},{"encoding":"UTF8"},{"locale":"en_US.UTF-8"},{"locale-provider":"icu"},{"icu-locale":"en_US"},{"encryption-key-command":"/tmp/tde.sh"},{"key-bits":"256"}],"users":null,"dcs":{}}}`,
 		},
 	}
 	for _, tt := range tests {
@@ -530,67 +529,67 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 	}
 	expectedSpiloWalPathCompat := []ExpectedValue{
 		{
-			envIndex:       12,
+			envIndex:       15,
 			envVarConstant: "ENABLE_WAL_PATH_COMPAT",
 			envVarValue:    "true",
 		},
 	}
 	expectedValuesS3Bucket := []ExpectedValue{
 		{
-			envIndex:       15,
+			envIndex:       18,
 			envVarConstant: "WAL_S3_BUCKET",
 			envVarValue:    "global-s3-bucket",
 		},
 		{
-			envIndex:       16,
+			envIndex:       19,
 			envVarConstant: "WAL_BUCKET_SCOPE_SUFFIX",
 			envVarValue:    fmt.Sprintf("/%s", dummyUUID),
 		},
 		{
-			envIndex:       17,
+			envIndex:       20,
 			envVarConstant: "WAL_BUCKET_SCOPE_PREFIX",
 			envVarValue:    "",
 		},
 	}
 	expectedValuesGCPCreds := []ExpectedValue{
 		{
-			envIndex:       15,
+			envIndex:       18,
 			envVarConstant: "WAL_GS_BUCKET",
 			envVarValue:    "global-gs-bucket",
 		},
 		{
-			envIndex:       16,
+			envIndex:       19,
 			envVarConstant: "WAL_BUCKET_SCOPE_SUFFIX",
 			envVarValue:    fmt.Sprintf("/%s", dummyUUID),
 		},
 		{
-			envIndex:       17,
+			envIndex:       20,
 			envVarConstant: "WAL_BUCKET_SCOPE_PREFIX",
 			envVarValue:    "",
 		},
 		{
-			envIndex:       18,
+			envIndex:       21,
 			envVarConstant: "GOOGLE_APPLICATION_CREDENTIALS",
 			envVarValue:    "some-path-to-credentials",
 		},
 	}
 	expectedS3BucketConfigMap := []ExpectedValue{
 		{
-			envIndex:       17,
+			envIndex:       20,
 			envVarConstant: "wal_s3_bucket",
 			envVarValue:    "global-s3-bucket-configmap",
 		},
 	}
 	expectedCustomS3BucketSpec := []ExpectedValue{
 		{
-			envIndex:       15,
+			envIndex:       18,
 			envVarConstant: "WAL_S3_BUCKET",
 			envVarValue:    "custom-s3-bucket",
 		},
 	}
 	expectedCustomVariableSecret := []ExpectedValue{
 		{
-			envIndex:       16,
+			envIndex:       19,
 			envVarConstant: "custom_variable",
 			envVarValueRef: &v1.EnvVarSource{
 				SecretKeyRef: &v1.SecretKeySelector{
@@ -604,72 +603,72 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 	}
 	expectedCustomVariableConfigMap := []ExpectedValue{
 		{
-			envIndex:       16,
+			envIndex:       19,
 			envVarConstant: "custom_variable",
 			envVarValue:    "configmap-test",
 		},
 	}
 	expectedCustomVariableSpec := []ExpectedValue{
 		{
-			envIndex:       15,
+			envIndex:       18,
 			envVarConstant: "CUSTOM_VARIABLE",
 			envVarValue:    "spec-env-test",
 		},
 	}
 	expectedCloneEnvSpec := []ExpectedValue{
 		{
-			envIndex:       16,
+			envIndex:       19,
 			envVarConstant: "CLONE_WALE_S3_PREFIX",
 			envVarValue:    "s3://another-bucket",
 		},
 		{
-			envIndex:       19,
+			envIndex:       22,
 			envVarConstant: "CLONE_WAL_BUCKET_SCOPE_PREFIX",
 			envVarValue:    "",
 		},
 		{
-			envIndex:       20,
+			envIndex:       23,
 			envVarConstant: "CLONE_AWS_ENDPOINT",
 			envVarValue:    "s3.eu-central-1.amazonaws.com",
 		},
 	}
 	expectedCloneEnvSpecEnv := []ExpectedValue{
 		{
-			envIndex:       15,
+			envIndex:       18,
 			envVarConstant: "CLONE_WAL_BUCKET_SCOPE_PREFIX",
 			envVarValue:    "test-cluster",
 		},
 		{
-			envIndex:       17,
+			envIndex:       20,
 			envVarConstant: "CLONE_WALE_S3_PREFIX",
 			envVarValue:    "s3://another-bucket",
 		},
 		{
-			envIndex:       21,
+			envIndex:       24,
 			envVarConstant: "CLONE_AWS_ENDPOINT",
 			envVarValue:    "s3.eu-central-1.amazonaws.com",
 		},
 	}
 	expectedCloneEnvConfigMap := []ExpectedValue{
 		{
-			envIndex:       16,
+			envIndex:       19,
 			envVarConstant: "CLONE_WAL_S3_BUCKET",
 			envVarValue:    "global-s3-bucket",
 		},
 		{
-			envIndex:       17,
+			envIndex:       20,
 			envVarConstant: "CLONE_WAL_BUCKET_SCOPE_SUFFIX",
 			envVarValue:    fmt.Sprintf("/%s", dummyUUID),
 		},
 		{
-			envIndex:       21,
+			envIndex:       24,
 			envVarConstant: "clone_aws_endpoint",
 			envVarValue:    "s3.eu-west-1.amazonaws.com",
 		},
 	}
 	expectedCloneEnvSecret := []ExpectedValue{
 		{
-			envIndex:       21,
+			envIndex:       24,
 			envVarConstant: "clone_aws_access_key_id",
 			envVarValueRef: &v1.EnvVarSource{
 				SecretKeyRef: &v1.SecretKeySelector{
@@ -683,12 +682,12 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 	}
 	expectedStandbyEnvSecret := []ExpectedValue{
 		{
-			envIndex:       15,
+			envIndex:       18,
 			envVarConstant: "STANDBY_WALE_GS_PREFIX",
 			envVarValue:    "gs://some/path/",
 		},
 		{
-			envIndex:       20,
+			envIndex:       23,
 			envVarConstant: "standby_google_application_credentials",
 			envVarValueRef: &v1.EnvVarSource{
 				SecretKeyRef: &v1.SecretKeySelector{

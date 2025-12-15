@@ -2132,7 +2132,7 @@ func (c *Cluster) generatePodAnnotations(spec *cpov1.PostgresSpec) map[string]st
 	for k, v := range c.OpConfig.CustomPodAnnotations {
 		annotations[k] = v
 	}
-	if spec != nil || spec.PodAnnotations != nil {
+	if spec != nil && spec.PodAnnotations != nil {
 		for k, v := range spec.PodAnnotations {
 			annotations[k] = v
 		}

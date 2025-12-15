@@ -566,6 +566,11 @@ func (c *Cluster) compareStatefulSetWith(oldSts, newSts *appsv1.StatefulSet) *co
 		needsRollUpdate = true
 		reasons = append(reasons, "new statefulset's serviceAccountName service account name does not match the current one")
 	}
+	if oldSts.Spec.ServiceName != newSts.Spec.ServiceName {
+		needsReplace = true
+		needsRollUpdate = true
+		reasons = append(reasons, "new statefulset's serviceName does not match the current one")
+	}
 	if *oldSts.Spec.Template.Spec.TerminationGracePeriodSeconds != *newSts.Spec.Template.Spec.TerminationGracePeriodSeconds {
 		needsReplace = true
 		needsRollUpdate = true

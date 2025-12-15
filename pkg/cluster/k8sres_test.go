@@ -2238,7 +2238,7 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 		// With multiple instances.
 		{
 			New(
-				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name", PodRoleLabel: "member.cpo.opensource.cybertec.at/role"}, PDBNameFormat: "postgres-{cluster}-pdb"}},
+				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name", PodRoleLabel: "member.cpo.opensource.cybertec.at/type"}, PDBNameFormat: "postgres-{cluster}-pdb"}},
 				k8sutil.KubernetesClient{},
 				cpov1.Postgresql{
 					ObjectMeta: metav1.ObjectMeta{Name: "myapp-database", Namespace: "myapp"},
@@ -2254,7 +2254,7 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 				Spec: policyv1.PodDisruptionBudgetSpec{
 					MinAvailable: util.ToIntStr(1),
 					Selector: &metav1.LabelSelector{
-						MatchLabels: map[string]string{"member.cpo.opensource.cybertec.at/role": "master", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
+						MatchLabels: map[string]string{"member.cpo.opensource.cybertec.at/type": "postgresql", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
 					},
 				},
 			},
@@ -2262,7 +2262,7 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 		// With zero instances.
 		{
 			New(
-				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name", PodRoleLabel: "member.cpo.opensource.cybertec.at/role"}, PDBNameFormat: "postgres-{cluster}-pdb"}},
+				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name", PodRoleLabel: "member.cpo.opensource.cybertec.at/type"}, PDBNameFormat: "postgres-{cluster}-pdb"}},
 				k8sutil.KubernetesClient{},
 				cpov1.Postgresql{
 					ObjectMeta: metav1.ObjectMeta{Name: "myapp-database", Namespace: "myapp"},
@@ -2278,7 +2278,7 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 				Spec: policyv1.PodDisruptionBudgetSpec{
 					MinAvailable: util.ToIntStr(0),
 					Selector: &metav1.LabelSelector{
-						MatchLabels: map[string]string{"member.cpo.opensource.cybertec.at/role": "master", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
+						MatchLabels: map[string]string{"member.cpo.opensource.cybertec.at/type": "postgresql", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
 					},
 				},
 			},
@@ -2286,7 +2286,7 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 		// With PodDisruptionBudget disabled.
 		{
 			New(
-				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name", PodRoleLabel: "member.cpo.opensource.cybertec.at/role"}, PDBNameFormat: "postgres-{cluster}-pdb", EnablePodDisruptionBudget: util.False()}},
+				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name", PodRoleLabel: "member.cpo.opensource.cybertec.at/type"}, PDBNameFormat: "postgres-{cluster}-pdb", EnablePodDisruptionBudget: util.False()}},
 				k8sutil.KubernetesClient{},
 				cpov1.Postgresql{
 					ObjectMeta: metav1.ObjectMeta{Name: "myapp-database", Namespace: "myapp"},
@@ -2302,7 +2302,7 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 				Spec: policyv1.PodDisruptionBudgetSpec{
 					MinAvailable: util.ToIntStr(0),
 					Selector: &metav1.LabelSelector{
-						MatchLabels: map[string]string{"member.cpo.opensource.cybertec.at/role": "master", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
+						MatchLabels: map[string]string{"member.cpo.opensource.cybertec.at/type": "postgresql", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
 					},
 				},
 			},
@@ -2310,7 +2310,7 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 		// With non-default PDBNameFormat and PodDisruptionBudget explicitly enabled.
 		{
 			New(
-				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name", PodRoleLabel: "member.cpo.opensource.cybertec.at/role"}, PDBNameFormat: "postgres-{cluster}-databass-budget", EnablePodDisruptionBudget: util.True()}},
+				Config{OpConfig: config.Config{Resources: config.Resources{ClusterNameLabel: "cluster.cpo.opensource.cybertec.at/name", PodRoleLabel: "member.cpo.opensource.cybertec.at/type"}, PDBNameFormat: "postgres-{cluster}-databass-budget", EnablePodDisruptionBudget: util.True()}},
 				k8sutil.KubernetesClient{},
 				cpov1.Postgresql{
 					ObjectMeta: metav1.ObjectMeta{Name: "myapp-database", Namespace: "myapp"},
@@ -2326,7 +2326,7 @@ func TestGeneratePodDisruptionBudget(t *testing.T) {
 				Spec: policyv1.PodDisruptionBudgetSpec{
 					MinAvailable: util.ToIntStr(1),
 					Selector: &metav1.LabelSelector{
-						MatchLabels: map[string]string{"member.cpo.opensource.cybertec.at/role": "master", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
+						MatchLabels: map[string]string{"member.cpo.opensource.cybertec.at/type": "postgresql", "cluster.cpo.opensource.cybertec.at/name": "myapp-database"},
 					},
 				},
 			},

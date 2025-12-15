@@ -2812,7 +2812,7 @@ func (c *Cluster) generatePodDisruptionBudget() *policyv1.PodDisruptionBudget {
 	pdbEnabled := c.OpConfig.EnablePodDisruptionBudget
 
 	// if PodDisruptionBudget is disabled or if there are no DB pods, set the budget to 0.
-	if (pdbEnabled != nil && !(*pdbEnabled)) || c.Spec.NumberOfInstances <= 0 {
+	if (pdbEnabled != nil && !(*pdbEnabled)) || c.Spec.NumberOfInstances <= 1 {
 		minAvailable = intstr.FromInt(0)
 	}
 
@@ -2826,7 +2826,7 @@ func (c *Cluster) generatePodDisruptionBudget() *policyv1.PodDisruptionBudget {
 		Spec: policyv1.PodDisruptionBudgetSpec{
 			MinAvailable: &minAvailable,
 			Selector: &metav1.LabelSelector{
-				MatchLabels: c.roleLabelsSet(false, Master),
+				MatchLabels: c.labelsSetWithType(false, "postgresql"), //c.roleLabelsSet(false, Master),
 			},
 		},
 	}

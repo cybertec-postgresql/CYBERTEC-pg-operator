@@ -1683,7 +1683,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		Spec: appsv1.StatefulSetSpec{
 			Replicas:                             &numberOfInstances,
 			Selector:                             c.labelsSelector(TYPE_POSTGRESQL),
-			ServiceName:                          c.serviceName(Master),
+			ServiceName:                          c.serviceName(ClusterPods),
 			Template:                             *podTemplate,
 			VolumeClaimTemplates:                 []v1.PersistentVolumeClaim{*volumeClaimTemplate},
 			UpdateStrategy:                       updateStrategy,
@@ -3253,7 +3253,7 @@ func (c *Cluster) generatePgbackrestRepoHostConfigmap() (*v1.ConfigMap, error) {
 			}
 			n := c.Postgresql.Spec.NumberOfInstances
 			for j := int32(0); j < n; j++ {
-				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host = " + c.clusterName().Name + "-" + fmt.Sprintf("%d", j) + "." + c.clusterName().Name + "." + c.Namespace + ".svc." + c.OpConfig.ClusterDomain
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host = " + c.clusterName().Name + "-" + fmt.Sprintf("%d", j) + "." + c.serviceName(ClusterPods) + "." + c.Namespace + ".svc." + c.OpConfig.ClusterDomain
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-ca-file = /etc/pgbackrest/certs/pgbackrest.ca-roots"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-cert-file = /etc/pgbackrest/certs/pgbackrest-repo-host.crt"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-key-file = /etc/pgbackrest/certs/pgbackrest-repo-host.key"

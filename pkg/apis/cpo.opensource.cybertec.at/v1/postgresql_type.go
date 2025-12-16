@@ -221,6 +221,7 @@ type Sidecar struct {
 	DockerImage     string              `json:"image,omitempty"`
 	Ports           []v1.ContainerPort  `json:"ports,omitempty"`
 	Env             []v1.EnvVar         `json:"env,omitempty"`
+	ReadinessProbe  *v1.Probe           `json:"readinessProbe,omitempty"`
 	SecurityContext *v1.SecurityContext `json:"securityContext,omitempty"`
 	VolumeMounts    []v1.VolumeMount    `json:"volumeMounts,omitempty"`
 }

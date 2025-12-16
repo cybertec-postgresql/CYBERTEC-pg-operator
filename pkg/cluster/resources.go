@@ -68,6 +68,42 @@ func (c *Cluster) listResources() error {
 	return nil
 }
 
+func hasSidecar(sidecars []cpov1.Sidecar, name string) bool {
+	for _, s := range sidecars {
+		if s.Name == name {
+			return true
+		}
+	}
+	return false
+}
+
+func (c *Cluster) generateExporterSidecar() *cpov1.Sidecar {
+	monitor := c.Spec.Monitoring
+	sidecar := &cpov1.Sidecar{
+		Name:        "postgres-exporter",
+		DockerImage: monitor.Image,
+		Ports: []v1.ContainerPort{
+			{
+				ContainerPort: monitorPort,
+				Protocol:      v1.ProtocolTCP,
+			},
+		},
+		Env: c.generateMonitoringEnvVars(),
+		SecurityContext: &v1.SecurityContext{
+			AllowPrivilegeEscalation: c.OpConfig.Resources.SpiloAllowPrivilegeEscalation,
+			Privileged:               &c.OpConfig.Resources.SpiloPrivileged,
+			ReadOnlyRootFilesystem:   util.True(),
+			Capabilities:             generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
+		},
+	}
+
+	if c.OpConfig.EnableReadinessProbe {
+		sidecar.ReadinessProbe = generateExporterReadinessProbe()
+	}
+
+	return sidecar
+}
+
 func (c *Cluster) createStatefulSet() (*appsv1.StatefulSet, error) {
 	c.setProcessName("creating statefulset")
 	// check if it's allowed that spec contains initContainers
@@ -82,25 +118,11 @@ func (c *Cluster) createStatefulSet() (*appsv1.StatefulSet, error) {
 	}
 
 	if c.Spec.Monitoring != nil {
-		monitor := c.Spec.Monitoring
-		sidecar := &cpov1.Sidecar{
-			Name:        "postgres-exporter",
-			DockerImage: monitor.Image,
-			Ports: []v1.ContainerPort{
-				{
-					ContainerPort: monitorPort,
-					Protocol:      v1.ProtocolTCP,
-				},
-			},
-			Env: c.generateMonitoringEnvVars(),
-			SecurityContext: &v1.SecurityContext{
-				AllowPrivilegeEscalation: c.OpConfig.Resources.SpiloAllowPrivilegeEscalation,
-				Privileged:               &c.OpConfig.Resources.SpiloPrivileged,
-				ReadOnlyRootFilesystem:   util.True(),
-				Capabilities:             generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
-			},
+		if exporterSidecar := c.generateExporterSidecar(); exporterSidecar != nil {
+			if !hasSidecar(c.Spec.Sidecars, "postgres-exporter") {
+				c.Spec.Sidecars = append(c.Spec.Sidecars, *exporterSidecar)
+			}
 		}
-		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
 	}
 
 	statefulSetSpec, err := c.generateStatefulSet(&c.Spec)

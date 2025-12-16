@@ -1169,6 +1169,13 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 
 	}()
 
+	// Ensure the cluster has a leader
+	if err := c.waitForLeader(60 * time.Second); err != nil {
+		c.logger.Infof("Postgres not yet ready for writes (Patroni leader election pending?). Skipping DB sync until next loop: %v", err)
+		updateFailed = true
+		return nil
+	}
+
 	// Roles and Databases
 	if !userInitFailed && !(c.databaseAccessDisabled() || c.getNumberOfInstances(&c.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress()) {
 		c.logger.Debugf("syncing roles")
@@ -1205,12 +1212,16 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 
 	// Check if we need to call addMonitoringPermissions-func
 	if c.Spec.Monitoring != nil && newSpec.Spec.Monitoring != nil && oldSpec.Spec.Monitoring == nil {
-		c.addMonitoringPermissions()
+		if err := c.addMonitoringPermissions(); err != nil {
+			c.logger.Errorf("could not add monitoring permissions: %v", err)
+			updateFailed = true
+		}
 	}
 	// Check if Monitoring-Secret needs to be removed
 	if newSpec.Spec.Monitoring == nil && oldSpec.Spec.Monitoring != nil {
 		if err := c.deleteMonitoringSecret(); err != nil {
-			return fmt.Errorf("could not remove the Monitoring secret: %v", err)
+			c.logger.Errorf("could not remove the Monitoring secret: %v", err)
+			updateFailed = true
 		}
 	}
 

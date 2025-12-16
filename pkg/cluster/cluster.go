@@ -1169,6 +1169,13 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 
 	}()
 
+	// Ensure the cluster has a leader
+	if err := c.waitForLeader(60 * time.Second); err != nil {
+		c.logger.Infof("Postgres not yet ready for writes (Patroni leader election pending?). Skipping DB sync until next loop: %v", err)
+		updateFailed = true
+		return nil
+	}
+
 	// Roles and Databases
 	if !userInitFailed && !(c.databaseAccessDisabled() || c.getNumberOfInstances(&c.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress()) {
 		c.logger.Debugf("syncing roles")
@@ -1205,12 +1212,16 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 
 	// Check if we need to call addMonitoringPermissions-func
 	if c.Spec.Monitoring != nil && newSpec.Spec.Monitoring != nil && oldSpec.Spec.Monitoring == nil {
-		c.addMonitoringPermissions()
+		if err := c.addMonitoringPermissions(); err != nil {
+			c.logger.Errorf("could not add monitoring permissions: %v", err)
+			updateFailed = true
+		}
 	}
 	// Check if Monitoring-Secret needs to be removed
 	if newSpec.Spec.Monitoring == nil && oldSpec.Spec.Monitoring != nil {
 		if err := c.deleteMonitoringSecret(); err != nil {
-			return fmt.Errorf("could not remove the Monitoring secret: %v", err)
+			c.logger.Errorf("could not remove the Monitoring secret: %v", err)
+			updateFailed = true
 		}
 	}
 
@@ -1270,6 +1281,42 @@ func syncResources(a, b *v1.ResourceRequirements) bool {
 	}
 
 	return false
+}
+
+func (c *Cluster) waitForLeader(timeout time.Duration) error {
+	c.logger.Debugf("waiting up to %v for Patroni leader...", timeout)
+
+	deadline := time.Now().Add(timeout)
+	ticker := time.NewTicker(2 * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ticker.C:
+			if time.Now().After(deadline) {
+				return fmt.Errorf("timeout waiting for Patroni leader")
+			}
+
+			pods, err := c.listPodsOfType(TYPE_POSTGRESQL)
+			if err != nil {
+				continue
+			}
+
+			for _, pod := range pods {
+				isLeader, err := c.patroni.IsLeader(&pod)
+
+				if err != nil {
+					c.logger.Debugf("check leader failed for %s: %v", pod.Name, err)
+					continue
+				}
+
+				if isLeader {
+					c.logger.Infof("Patroni leader found: %s. Proceeding with DB sync.", pod.Name)
+					return nil
+				}
+			}
+		}
+	}
 }
 
 // Delete deletes the cluster and cleans up all objects associated with it (including statefulsets).

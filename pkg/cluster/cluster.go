@@ -1272,6 +1272,42 @@ func syncResources(a, b *v1.ResourceRequirements) bool {
 	return false
 }
 
+func (c *Cluster) waitForLeader(timeout time.Duration) error {
+	c.logger.Debugf("waiting up to %v for Patroni leader...", timeout)
+
+	deadline := time.Now().Add(timeout)
+	ticker := time.NewTicker(2 * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ticker.C:
+			if time.Now().After(deadline) {
+				return fmt.Errorf("timeout waiting for Patroni leader")
+			}
+
+			pods, err := c.listPodsOfType(TYPE_POSTGRESQL)
+			if err != nil {
+				continue
+			}
+
+			for _, pod := range pods {
+				isLeader, err := c.patroni.IsLeader(&pod)
+
+				if err != nil {
+					c.logger.Debugf("check leader failed for %s: %v", pod.Name, err)
+					continue
+				}
+
+				if isLeader {
+					c.logger.Infof("Patroni leader found: %s. Proceeding with DB sync.", pod.Name)
+					return nil
+				}
+			}
+		}
+	}
+}
+
 // Delete deletes the cluster and cleans up all objects associated with it (including statefulsets).
 // The deletion order here is somewhat significant, because Patroni, when running with the Kubernetes
 // DCS, reuses the master's endpoint to store the leader related metadata. If we remove the endpoint

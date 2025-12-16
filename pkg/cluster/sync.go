@@ -261,21 +261,45 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		return err
 	}
 
+	// Check if Cluster has an Leader
+	needDBAccess := !(c.databaseAccessDisabled() || c.getNumberOfInstances(&newSpec.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress())
 	// create database objects unless we are running without pods or disabled that feature explicitly
-	if !(c.databaseAccessDisabled() || c.getNumberOfInstances(&newSpec.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress()) {
+	if needDBAccess {
+		if err := c.waitForLeader(60 * time.Second); err != nil {
+			c.logger.Infof("Postgres not yet ready for writes (Patroni leader election pending?). Skipping DB sync until next loop: %v", err)
+			return nil
+		}
+
 		c.logger.Debug("syncing roles")
 		if err = c.syncRoles(); err != nil {
 			c.logger.Errorf("could not sync roles: %v", err)
 		}
+
 		c.logger.Debug("syncing databases")
 		if err = c.syncDatabases(); err != nil {
 			c.logger.Errorf("could not sync databases: %v", err)
 		}
+
 		c.logger.Debug("syncing prepared databases with schemas")
 		if err = c.syncPreparedDatabases(); err != nil {
 			c.logger.Errorf("could not sync prepared database: %v", err)
 		}
 	}
+
+	// if !(c.databaseAccessDisabled() || c.getNumberOfInstances(&newSpec.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress()) {
+	// 	c.logger.Debug("syncing roles")
+	// 	if err = c.syncRoles(); err != nil {
+	// 		c.logger.Errorf("could not sync roles: %v", err)
+	// 	}
+	// 	c.logger.Debug("syncing databases")
+	// 	if err = c.syncDatabases(); err != nil {
+	// 		c.logger.Errorf("could not sync databases: %v", err)
+	// 	}
+	// 	c.logger.Debug("syncing prepared databases with schemas")
+	// 	if err = c.syncPreparedDatabases(); err != nil {
+	// 		c.logger.Errorf("could not sync prepared database: %v", err)
+	// 	}
+	// }
 
 	// sync connection pooler
 	if _, err = c.syncConnectionPooler(&oldSpec, newSpec, c.installLookupFunction); err != nil {

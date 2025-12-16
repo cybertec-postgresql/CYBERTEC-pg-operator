@@ -14,8 +14,8 @@ import (
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
 	httpclient "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/httpclient"
 
-	"github.com/sirupsen/logrus"
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/sirupsen/logrus"
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -25,6 +25,7 @@ const (
 	clusterPath  = "/cluster"
 	statusPath   = "/patroni"
 	restartPath  = "/restart"
+	leaderPath   = "/leader"
 	ApiPort      = 8008
 	timeout      = 30 * time.Second
 )
@@ -38,6 +39,7 @@ type Interface interface {
 	Restart(server *v1.Pod) error
 	GetConfig(server *v1.Pod) (cpov1.Patroni, map[string]string, error)
 	SetConfig(server *v1.Pod, config map[string]interface{}) error
+	IsLeader(server *v1.Pod) (bool, error)
 }
 
 // Patroni API client
@@ -150,7 +152,7 @@ func (p *Patroni) Switchover(master *v1.Pod, candidate string) error {
 
 //TODO: add an option call /patroni to check if it is necessary to restart the server
 
-//SetPostgresParameters sets Postgres options via Patroni patch API call.
+// SetPostgresParameters sets Postgres options via Patroni patch API call.
 func (p *Patroni) SetPostgresParameters(server *v1.Pod, parameters map[string]string) error {
 	buf := &bytes.Buffer{}
 	err := json.NewEncoder(buf).Encode(map[string]map[string]interface{}{"postgresql": {"parameters": parameters}})
@@ -164,7 +166,7 @@ func (p *Patroni) SetPostgresParameters(server *v1.Pod, parameters map[string]st
 	return p.httpPostOrPatch(http.MethodPatch, apiURLString+configPath, buf)
 }
 
-//SetConfig sets Patroni options via Patroni patch API call.
+// SetConfig sets Patroni options via Patroni patch API call.
 func (p *Patroni) SetConfig(server *v1.Pod, config map[string]interface{}) error {
 	buf := &bytes.Buffer{}
 	err := json.NewEncoder(buf).Encode(config)
@@ -319,4 +321,25 @@ func (p *Patroni) GetMemberData(server *v1.Pod) (MemberData, error) {
 	}
 
 	return data, nil
+}
+
+// Call leader-Endpoint (expecting statuscode 200 or 503)
+func (p *Patroni) IsLeader(server *v1.Pod) (bool, error) {
+	apiURLString, err := apiURL(server)
+	if err != nil {
+		return false, err
+	}
+
+	resp, err := p.httpClient.Get(apiURLString + leaderPath)
+	if err != nil {
+		return false, fmt.Errorf("request failed: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// 200 = Leader, 503 = Replica
+	if resp.StatusCode == http.StatusOK {
+		return true, nil
+	}
+
+	return false, nil
 }

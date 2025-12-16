@@ -909,8 +909,8 @@ func (c *Cluster) checkAndSetGlobalPostgreSQLConfiguration(pod *v1.Pod, effectiv
 
 	// compare effective and desired parameters under postgresql section in Patroni config
 	for desiredOption, desiredValue := range desiredPgParameters {
-		effectiveValue := effectivePgParameters[desiredOption]
-		if isBootstrapOnlyParameter(desiredOption) && (effectiveValue != desiredValue) {
+		effectiveValue, exists := effectivePgParameters[desiredOption]
+		if isBootstrapOnlyParameter(desiredOption) && (!exists || effectiveValue != desiredValue) {
 			parametersToSet[desiredOption] = desiredValue
 			if util.SliceContains(requirePrimaryRestartWhenDecreased, desiredOption) {
 				effectiveValueNum, errConv := strconv.Atoi(effectiveValue)

@@ -1283,6 +1283,7 @@ func getSidecarContainer(sidecar cpov1.Sidecar, index int, resources *v1.Resourc
 		Resources:       *resources,
 		Env:             sidecar.Env,
 		Ports:           sidecar.Ports,
+		ReadinessProbe:  sidecar.ReadinessProbe,
 		SecurityContext: sidecar.SecurityContext,
 		VolumeMounts:    sidecar.VolumeMounts,
 	}
@@ -1317,13 +1318,30 @@ func extractPgVersionFromBinPath(binPath string, template string) (string, error
 	return fmt.Sprintf("%v", pgVersion), nil
 }
 
-func generateSpiloReadinessProbe() *v1.Probe {
+func generatePatroniReadinessProbe() *v1.Probe {
 	return &v1.Probe{
 		FailureThreshold: 3,
 		ProbeHandler: v1.ProbeHandler{
 			HTTPGet: &v1.HTTPGetAction{
 				Path:   "/readiness",
 				Port:   intstr.IntOrString{IntVal: patroni.ApiPort},
+				Scheme: v1.URISchemeHTTP,
+			},
+		},
+		InitialDelaySeconds: 6,
+		PeriodSeconds:       10,
+		SuccessThreshold:    1,
+		TimeoutSeconds:      5,
+	}
+}
+
+func generateExporterReadinessProbe() *v1.Probe {
+	return &v1.Probe{
+		FailureThreshold: 3,
+		ProbeHandler: v1.ProbeHandler{
+			HTTPGet: &v1.HTTPGetAction{
+				Path:   "/",
+				Port:   intstr.IntOrString{IntVal: 9187},
 				Scheme: v1.URISchemeHTTP,
 			},
 		},
@@ -1521,7 +1539,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 
 	// Patroni responds 200 to probe only if it either owns the leader lock or postgres is running and DCS is accessible
 	if c.OpConfig.EnableReadinessProbe {
-		spiloContainer.ReadinessProbe = generateSpiloReadinessProbe()
+		spiloContainer.ReadinessProbe = generatePatroniReadinessProbe()
 	}
 	//
 	if c.OpConfig.EnableLivenessProbe {

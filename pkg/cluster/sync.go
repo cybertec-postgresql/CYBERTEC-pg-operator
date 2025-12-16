@@ -502,27 +502,15 @@ func (c *Cluster) syncStatefulSet() error {
 	if err != nil {
 		c.logger.Warnf("could not list pods of the statefulset: %v", err)
 	}
-	if c.Spec.Monitoring != nil { // XXX: Why are we generating a sidecar in the sync code?
-		monitor := c.Spec.Monitoring
-		sidecar := &cpov1.Sidecar{
-			Name:        "postgres-exporter",
-			DockerImage: monitor.Image,
-			Ports: []v1.ContainerPort{
-				{
-					ContainerPort: monitorPort,
-					Protocol:      v1.ProtocolTCP,
-				},
-			},
-			Env: c.generateMonitoringEnvVars(),
-			SecurityContext: &v1.SecurityContext{
-				AllowPrivilegeEscalation: c.OpConfig.Resources.SpiloAllowPrivilegeEscalation,
-				Privileged:               &c.OpConfig.Resources.SpiloPrivileged,
-				ReadOnlyRootFilesystem:   util.True(),
-				Capabilities:             generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
-			},
+
+	if c.Spec.Monitoring != nil {
+		if exporterSidecar := c.generateExporterSidecar(); exporterSidecar != nil {
+			if !hasSidecar(c.Spec.Sidecars, "postgres-exporter") {
+				c.Spec.Sidecars = append(c.Spec.Sidecars, *exporterSidecar)
+			}
 		}
-		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
 	}
+
 	// NB: Be careful to consider the codepath that acts on podsRollingUpdateRequired before returning early.
 	sset, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.statefulSetName(), metav1.GetOptions{})
 	if err != nil {

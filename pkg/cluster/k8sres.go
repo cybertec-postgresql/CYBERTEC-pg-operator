@@ -2392,7 +2392,7 @@ func (c *Cluster) addAdditionalVolumes(podSpec *v1.PodSpec,
 		mountPaths[additionalVolume.MountPath] = additionalVolume
 	}
 
-	c.logger.Infof("Mount additional volumes: %+v", additionalVolumes)
+	// c.logger.Debugf("Mount additional volumes: %+v", additionalVolumes)
 
 	addMountsToMatchedContainers(podSpec.Containers, additionalVolumes)
 	addMountsToMatchedContainers(podSpec.InitContainers, additionalVolumes)

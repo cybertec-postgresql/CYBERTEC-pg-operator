@@ -352,6 +352,7 @@ func generateSpiloJSONConfiguration(pg *cpov1.PostgresqlParam, patroni *cpov1.Pa
 			map[string]string{"icu-locale": "en_US"}}
 	} else {
 		config.Bootstrap.Initdb = []interface{}{map[string]string{"auth-host": "scram-sha-256"},
+			"data-checksums",
 			map[string]string{"auth-local": "trust"}}
 	}
 

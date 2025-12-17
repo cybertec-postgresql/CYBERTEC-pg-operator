@@ -1609,7 +1609,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	podAnnotations := c.generatePodAnnotations(spec)
 
 	if spec.GetBackup().Pgbackrest != nil {
-		initContainers = append(initContainers, c.generatePgbackrestRestoreContainer(spec, repo_host_mode, volumeMounts, resourceRequirements, c.OpConfig.Resources.SpiloPrivileged, c.OpConfig.Resources.SpiloAllowPrivilegeEscalation, generateCapabilities(c.OpConfig.AdditionalPodCapabilities)))
+		initContainers = append(initContainers, c.generatePgbackrestRestoreContainer(spec, repo_host_mode, volumeMounts, resourceRequirements, c.OpConfig.Resources.SpiloPrivileged, c.OpConfig.Resources.SpiloAllowPrivilegeEscalation, c.OpConfig.Resources.ReadOnlyRootFilesystem, generateCapabilities(c.OpConfig.AdditionalPodCapabilities)))
 
 		additionalVolumes = append(additionalVolumes, c.generatePgbackrestConfigVolume(spec.Backup.Pgbackrest, false))
 
@@ -1713,7 +1713,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	return statefulSet, nil
 }
 
-func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, repo_host_mode bool, volumeMounts []v1.VolumeMount, resourceRequirements *v1.ResourceRequirements, privilegedMode bool, privilegeEscalationMode *bool, additionalPodCapabilities *v1.Capabilities) v1.Container {
+func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, repo_host_mode bool, volumeMounts []v1.VolumeMount, resourceRequirements *v1.ResourceRequirements, privilegedMode bool, privilegeEscalationMode *bool, readOnlyRootFilesystem *bool, additionalPodCapabilities *v1.Capabilities) v1.Container {
 	isOptional := true
 	pgbackrestRestoreEnvVars := []v1.EnvVar{
 		{
@@ -1808,7 +1808,7 @@ func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, r
 		SecurityContext: &v1.SecurityContext{
 			AllowPrivilegeEscalation: privilegeEscalationMode,
 			Privileged:               &privilegedMode,
-			ReadOnlyRootFilesystem:   util.True(),
+			ReadOnlyRootFilesystem:   readOnlyRootFilesystem,
 			Capabilities:             additionalPodCapabilities,
 		},
 	}

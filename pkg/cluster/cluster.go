@@ -1170,14 +1170,15 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	}()
 
 	// Ensure the cluster has a leader
+	leaderNotReady := false
 	if err := c.waitForLeader(60 * time.Second); err != nil {
 		c.logger.Infof("Postgres not yet ready for writes (Patroni leader election pending?). Skipping DB sync until next loop: %v", err)
 		updateFailed = true
-		return nil
+		leaderNotReady = true
 	}
 
 	// Roles and Databases
-	if !userInitFailed && !(c.databaseAccessDisabled() || c.getNumberOfInstances(&c.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress()) {
+	if !leaderNotReady && !userInitFailed && !(c.databaseAccessDisabled() || c.getNumberOfInstances(&c.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress()) {
 		c.logger.Debugf("syncing roles")
 		if err := c.syncRoles(); err != nil {
 			c.logger.Errorf("could not sync roles: %v", err)
@@ -1211,7 +1212,7 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	}
 
 	// Check if we need to call addMonitoringPermissions-func
-	if c.Spec.Monitoring != nil && newSpec.Spec.Monitoring != nil && oldSpec.Spec.Monitoring == nil {
+	if c.Spec.Monitoring != nil {
 		if err := c.addMonitoringPermissions(); err != nil {
 			c.logger.Errorf("could not add monitoring permissions: %v", err)
 			updateFailed = true

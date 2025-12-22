@@ -263,12 +263,13 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 
 	// Check if Cluster has an Leader
 	needDBAccess := !(c.databaseAccessDisabled() || c.getNumberOfInstances(&newSpec.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress())
+	leaderNotReady := false
+	if err := c.waitForLeader(60 * time.Second); err != nil {
+		c.logger.Infof("Postgres not yet ready for writes (Patroni leader election pending?). Skipping DB sync until next loop: %v", err)
+		leaderNotReady = true
+	}
 	// create database objects unless we are running without pods or disabled that feature explicitly
-	if needDBAccess {
-		if err := c.waitForLeader(60 * time.Second); err != nil {
-			c.logger.Infof("Postgres not yet ready for writes (Patroni leader election pending?). Skipping DB sync until next loop: %v", err)
-			return nil
-		}
+	if needDBAccess && !leaderNotReady {
 
 		c.logger.Debug("syncing roles")
 		if err = c.syncRoles(); err != nil {

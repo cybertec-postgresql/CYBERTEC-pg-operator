@@ -318,9 +318,11 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	// If we are requested to replace database contents with a restore only do so after we have everything
 	// properly set up, but before we try to run the upgrade.
 	restoreId := newSpec.Spec.GetBackup().GetRestoreID()
-	if c.restoreInProgress() || c.Status.RestoreID != restoreId {
-		if err := c.processRestore(newSpec); err != nil {
-			return fmt.Errorf("restoring backup failed: %v", err)
+	if restoreId != "" && newSpec.Status.RestoreID != restoreId {
+		if c.restoreInProgress() || c.Status.RestoreID != restoreId {
+			if err := c.processRestore(newSpec); err != nil {
+				return fmt.Errorf("restoring backup failed: %v", err)
+			}
 		}
 	}
 

@@ -9,9 +9,9 @@ This chapter describes the use of pgBackRest in combination with Google Cloud St
 
 {{< hint type=important >}} Precondition: a gcs-bucket and a priviledged role is needed for this chapter. {{< /hint >}}
 
-### Create a gcs-bucket on the google cloud console
+<!-- ### Create a gcs-bucket on the google cloud console
 
-### Create a priviledged service-role
+### Create a priviledged service-role -->
 
 ### Modifying the Cluster 
 As soon as all requirements are met:

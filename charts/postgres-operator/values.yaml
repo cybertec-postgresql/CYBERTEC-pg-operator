@@ -131,6 +131,8 @@ configKubernetes:
   enable_pod_disruption_budget: true
   # toogles readiness probe for database pods
   enable_readiness_probe: true
+  # toogles liveness probe for database pods
+  enable_liveness_probe: false 
   # enables sidecar containers to run alongside Spilo in the same pod
   enable_sidecars: true
 
@@ -203,7 +205,9 @@ configKubernetes:
 
   # group ID with write-access to volumes (required to run Spilo as non-root process)
   # spilo_fsgroup: 103
-
+  
+  # whether the containers should run with readonly_root_filesystem
+  readonly_root_filesystem: true
   # whether the Spilo container should run in privileged mode
   spilo_privileged: false
   # whether the Spilo container should run with additional permissions other than parent.

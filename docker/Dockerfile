@@ -1,5 +1,4 @@
 ARG BASE_IMAGE 
-#=registry.opensource.zalan.do/library/alpine-3.15:latest
 ARG VERSION=latest
 
 FROM ${BASE_IMAGE} as builder
@@ -21,12 +20,8 @@ LABEL maintainer="Opensource @ CYBERTEC <cpo-community@googlegroups.com>"
 
 # We need root certificates to deal with teams api over https
 RUN ${PACKAGER} -y update && ${PACKAGER} -y install ca-certificates && ${PACKAGER} clean all;
-#RUN apk --no-cache add ca-certificates
 
 COPY --from=builder /go/src/github.com/cybertec-postgresql/cybertec-pg-operator/build/* /
-
-# RUN addgroup -g 1000 pgo
-# RUN adduser -D -u 1000 -G pgo -g 'Postgres Operator' pgo
 
 RUN groupadd -g 1000 cpo
 RUN useradd cpo -u 1000 -g 1000

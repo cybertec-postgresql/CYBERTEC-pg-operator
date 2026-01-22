@@ -5,12 +5,44 @@ draft: false
 weight: 2120
 ---
 
-CPO enables the use of the in-place upgrade, which makes it possible to upgrade a cluster to a new PG major. For this purpose, pg_upgrade is used in the background.
+The CYBERTEC PostgreSQL Operator (CPO) enables in-place upgrades, allowing you to upgrade a cluster to a new PostgreSQL major version. This process utilizes pg_upgrade in the background to minimize downtime and data movement.
 
-{{< hint type=info >}}Note that an in-place upgrade generates both a pod restore in the form of a rolling update and an operational interruption of the cluster during the actual execution of the restore.{{< /hint >}}
+{{< hint type=info >}} Note: An in-place upgrade triggers a pod restart (rolling update) and causes a brief operational interruption during the actual execution of the data migration. {{< /hint >}}
+
+## How to trigger an In-Place Upgrade ##
+
+To trigger the upgrade, simply increase the version number in your cluster manifest. If the version is valid, the Operator automatically initiates the procedure described below.
+
+```
+spec:
+  postgresql:
+    version: "18"
+```
+You can also apply this change via kubectl:
+
+```sh
+kubectl patch postgresqls.cpo.opensource.cybertec.at cluster-1 --type='merge' -p \
+'{"spec":{"postgresql":{"version":"18"}}}'
+```
+
+## Alternative Upgrade Methods ##
+
+###  Upgrade on cloning
+When cloning, the new cluster manifest must have a higher version number than the source cluster and is created from a base backup. Depending on the cluster size, the downtime can be considerable in this case, as write operations in the database should be stopped and all WAL files should be archived first before cloning is started. Therefore, only use cloning to test major version upgrades and to check the compatibility of your app with the Postgres server of a higher version.
+
+### manual upgrade via the PostgreSQL container 
+
+In this scenario the major version could then be run by a user from within the primary pod. Exec into the container and run:
+
+```
+python3 /scripts/inplace_upgrade.py N
+```
+where `N` is the number of members of your cluster (see `numberOfInstances`). The upgrade is usually fast, well under one minute for most DBs. 
+
+{{< hint type=Info >}}Note, that changes become irrevertible once pg_upgrade is called.{{< /hint >}}
 
 
-## How does the upgrade work?
+## Under the Hood: How the Upgrade Works ##
 
 ### Preconditions:
 1. Pod restart - Use the rolling update strategy to replace all pods based on the new ENV `PGVERSION` with the version you want to update to.
@@ -54,34 +86,3 @@ CPO enables the use of the in-place upgrade, which makes it possible to upgrade 
 1. Stop rsynd if its running
 2. Disable the maintenance mode for the Cluster
 3. Drop directory `data_new`
-
-
-## How to trigger a In-Place-Upgrade with cpo?
-
-```
-spec:
-  postgresql:
-    version: "18"
-```
-To trigger an In-Place-Upgrade you have just to increase the parameter `spec.postgresql.version`. If you choose a valid number the Operator will start with the prozedure, described above. 
-
-```sh
-kubectl patch postgresqls.cpo.opensource.cybertec.at cluster-1 --type='merge' -p \
-'{"spec":{"postgresql":{"version":"18"}}}'
-```
-
-## Upgrade on cloning
-
-When cloning, the new cluster manifest must have a higher version number than the source cluster and is created from a base backup. Depending on the cluster size, the downtime can be considerable in this case, as write operations in the database should be stopped and all WAL files should be archived first before cloning is started. Therefore, only use cloning to test major version upgrades and to check the compatibility of your app with the Postgres server of a higher version.
-
-## manual upgrade via the PostgreSQL container 
-
-In this scenario the major version could then be run by a user from within the primary pod. Exec into the container and run:
-
-```
-python3 /scripts/inplace_upgrade.py N
-```
-
-where `N` is the number of members of your cluster (see `numberOfInstances`). The upgrade is usually fast, well under one minute for most DBs. 
-
-{{< hint type=Info >}}Note, that changes become irrevertible once pg_upgrade is called.{{< /hint >}}

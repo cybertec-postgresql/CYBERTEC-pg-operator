@@ -52,10 +52,10 @@ helm install -n cpo cpo helm/operator/.
 
 The installation uses a standard configuration. On the following page you will find more information on how to [configure cpo](/documentation/how-to-use/configuration/) and thus adapt it to your requirements.
 
-### Apply
+<!-- ### Apply
 
 The installation uses a standard configuration. On the following page you will find more information on how to [configure cpo](/documentation/how-to-use/configuration/) and thus adapt it to your requirements.
 
 ### Operatorhub
 
-The installation uses a standard configuration. On the following page you will find more information on how to [configure cpo](/documentation/how-to-use/configuration/) and thus adapt it to your requirements.
+The installation uses a standard configuration. On the following page you will find more information on how to [configure cpo](/documentation/how-to-use/configuration/) and thus adapt it to your requirements. -->

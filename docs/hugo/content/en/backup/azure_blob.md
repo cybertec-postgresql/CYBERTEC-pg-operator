@@ -9,9 +9,9 @@ This chapter describes the use of pgBackRest in combination with Azure Blob Stor
 
 {{< hint type=important >}} Precondition: a blob-storage-volume and a priviledged role is needed for this chapter. {{< /hint >}}
 
-### Create a blob-storage-volume on the Azure console
+<!-- ### Create a blob-storage-volume on the Azure console
 
-### Create a priviledged service-role
+### Create a priviledged service-role -->
 
 ### Modifying the Cluster 
 As soon as all requirements are met:

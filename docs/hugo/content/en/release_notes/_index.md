@@ -4,6 +4,37 @@ date: 2024-03-11T14:26:51+01:00
 draft: false
 weight: 2500
 ---
+### 0.9.1 ###
+
+#### Features
+- Key bits for TDE can now be defined. See [TDE-Documentation](tde)
+
+#### Changes
+- Cluster Reconcile changes for Restore and Monitoring
+- Ensure Checksums are always enabled, when creating new cluster
+- Improvements on SecurityContext
+- Package Updates
+- ReadinessProbe for Exporter
+
+#### Fixes
+- Wait for Leader fix, to ensure operator waits for Leader during Rolling Update
+- Ensure empty-Parameters synced (Fix for set_user)
+- Ensure Statefulset-Recreation is done if servicename changed
+- Fix PDB-Defintion and Changes
+- Fix an Servicename Issue
+- Internal Fixes on Test-Functions
+
+#### Notification of upcoming deprecation
+- PG13 has reached its EoL 
+
+#### Supported Versions
+
+- PG: 13 - 18
+- Patroni: 4.1.0
+- pgBackRest: 2.57.0 - 2.58.0
+- Kubernetes: 1.21 - 1.32
+- Openshift: 4.8 - 4.18
+
 ### 0.9.0
 
 #### Features

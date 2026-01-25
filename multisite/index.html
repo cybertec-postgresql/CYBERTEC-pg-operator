@@ -45,17 +45,19 @@
 <label><span class=flex><a href=/CYBERTEC-pg-operator/extensions/pg17/ class=gdoc-nav__entry>PostgreSQL 17</a></span></label></li></ul></li><li><input type=checkbox class=hidden>
 <label><span class=flex><a href=/CYBERTEC-pg-operator/monitoring/ class=gdoc-nav__entry>Monitoring</a></span></label></li><li><input type=checkbox class=hidden>
 <label><span class=flex><a href=/CYBERTEC-pg-operator/clone-cluster/ class=gdoc-nav__entry>Clone Cluster</a></span></label></li><li><input type=checkbox class=hidden>
-<label><span class=flex><a href=/CYBERTEC-pg-operator/standby-cluster/ class=gdoc-nav__entry>Standby Cluster</a></span></label></li><li><input type=checkbox class=gdoc-nav__toggle id=navtree-ac191e39>
-<label for=navtree-ac191e39 class="flex justify-between align-center"><span class=flex>PG versioning</span><svg class="gdoc-icon toggle gdoc_keyboard_arrow_left"><use xlink:href="#gdoc_keyboard_arrow_left"/></svg><svg class="gdoc-icon toggle gdoc_keyboard_arrow_down"><use xlink:href="#gdoc_keyboard_arrow_down"/></svg></label><ul class=gdoc-nav__list><li><input type=checkbox class=hidden>
-<label><span class=flex><a href=/CYBERTEC-pg-operator/pg_versioning/minor_updates/ class=gdoc-nav__entry>Minor version update</a></span></label></li><li><input type=checkbox class=hidden>
-<label><span class=flex><a href=/CYBERTEC-pg-operator/pg_versioning/major_upgrades/ class=gdoc-nav__entry>Major version upgrade</a></span></label></li></ul></li><li><input type=checkbox class=hidden>
+<label><span class=flex><a href=/CYBERTEC-pg-operator/standby-cluster/ class=gdoc-nav__entry>Standby Cluster</a></span></label></li><li><input type=checkbox class=gdoc-nav__toggle id=navtree-f4da7df1>
+<label for=navtree-f4da7df1 class="flex justify-between align-center"><span class=flex>Lifecycle</span><svg class="gdoc-icon toggle gdoc_keyboard_arrow_left"><use xlink:href="#gdoc_keyboard_arrow_left"/></svg><svg class="gdoc-icon toggle gdoc_keyboard_arrow_down"><use xlink:href="#gdoc_keyboard_arrow_down"/></svg></label><ul class=gdoc-nav__list><li><input type=checkbox class=hidden>
+<label><span class=flex><a href=/CYBERTEC-pg-operator/lifecycle/operator_updates/ class=gdoc-nav__entry>Updating the Operator</a></span></label></li><li><input type=checkbox class=hidden>
+<label><span class=flex><a href=/CYBERTEC-pg-operator/lifecycle/minor_updates/ class=gdoc-nav__entry>Minor version update</a></span></label></li><li><input type=checkbox class=hidden>
+<label><span class=flex><a href=/CYBERTEC-pg-operator/lifecycle/major_upgrades/ class=gdoc-nav__entry>Major version upgrade</a></span></label></li></ul></li><li><input type=checkbox class=hidden>
 <label><span class=flex><a href=/CYBERTEC-pg-operator/multisite/ class="gdoc-nav__entry is-active">Multisite</a></span></label></li><li><input type=checkbox class=hidden>
 <label><span class=flex><a href=/CYBERTEC-pg-operator/tde/ class=gdoc-nav__entry>TDE</a></span></label></li><li><input type=checkbox class=hidden>
 <label><span class=flex><a href=/CYBERTEC-pg-operator/tutorials/ class=gdoc-nav__entry>Tutorials</a></span></label></li><li><input type=checkbox class=gdoc-nav__toggle id=navtree-d2a9dc20>
 <label for=navtree-d2a9dc20 class="flex justify-between align-center"><span class=flex>References</span><svg class="gdoc-icon toggle gdoc_keyboard_arrow_left"><use xlink:href="#gdoc_keyboard_arrow_left"/></svg><svg class="gdoc-icon toggle gdoc_keyboard_arrow_down"><use xlink:href="#gdoc_keyboard_arrow_down"/></svg></label><ul class=gdoc-nav__list><li><input type=checkbox class=hidden>
 <label><span class=flex><a href=/CYBERTEC-pg-operator/crd/crd-postgresql/ class=gdoc-nav__entry>PostgreSQL</a></span></label></li><li><input type=checkbox class=hidden>
 <label><span class=flex><a href=/CYBERTEC-pg-operator/crd/crd-operator-configurator/ class=gdoc-nav__entry>Operator-Configuration</a></span></label></li></ul></li><li><input type=checkbox class=hidden>
-<label><span class=flex><a href=/CYBERTEC-pg-operator/release_notes/ class=gdoc-nav__entry>Release-Notes</a></span></label></li></ul></section><section class=gdoc-nav--more><h4>More</h4><ul class=gdoc-nav__list><li><input type=checkbox class=hidden>
+<label><span class=flex><a href=/CYBERTEC-pg-operator/release_notes/ class=gdoc-nav__entry>Release-Notes</a></span></label></li><li><input type=checkbox class=hidden>
+<label><span class=flex><a href=/CYBERTEC-pg-operator/contribution/ class=gdoc-nav__entry>Contribution</a></span></label></li></ul></section><section class=gdoc-nav--more><h4>More</h4><ul class=gdoc-nav__list><li><input type=checkbox class=hidden>
 <label><span class=flex><svg class="gdoc-icon cybertec"><use xlink:href="#cybertec"/></svg>
 <a href=https://www.cybertec-postgresql.com class=gdoc-nav__entry>CYBERTEC</a></span></label></li><li><input type=checkbox class=hidden>
 <label><span class=flex><svg class="gdoc-icon cpo"><use xlink:href="#cpo"/></svg>
@@ -406,7 +408,7 @@ sudo ip route add 192.168.49.0/24 via 192.168.2.11 dev eth1
 </span></span></code></pre></div><p>Then check what external ip got assigned to the service (should be the first IP from the range given above).</p><pre tabindex=0><code>kubectl get svc/hello-blue-whale-svc
 </code></pre><p>And then from the other host use curl to see if the service can be accessed.</p><pre tabindex=0><code>curl -v http://192.168.49.100/
 </code></pre><p>Other hosts on the same network can have the same routes added to access services in the clusters. If access from
-other networks is needed, then the chosen subnets need to be routed to these VMs across your network.</p></article><div class="gdoc-page__footer flex flex-wrap justify-between"><span class=gdoc-page__nav><a class="gdoc-page__nav--prev flex align-center" href=/CYBERTEC-pg-operator/pg_versioning/major_upgrades/ title="Major version upgrade"><i class=gdoc-icon>gdoc_arrow_left_alt</i>
+other networks is needed, then the chosen subnets need to be routed to these VMs across your network.</p></article><div class="gdoc-page__footer flex flex-wrap justify-between"><span class=gdoc-page__nav><a class="gdoc-page__nav--prev flex align-center" href=/CYBERTEC-pg-operator/lifecycle/major_upgrades/ title="Major version upgrade"><i class=gdoc-icon>gdoc_arrow_left_alt</i>
 Major version upgrade
 </a></span><span class=gdoc-page__nav__product>A product of CYBERTEC</span>
 <span class=gdoc-page__nav><a class="gdoc-page__nav--next flex align-center" href=/CYBERTEC-pg-operator/tde/ title=TDE>TDE

@@ -352,7 +352,7 @@
 >tde&lt;/a>&lt;/td>
  &lt;td style="text-align: center">map&lt;/td>
  &lt;td style="text-align: right">false&lt;/td>
- &lt;td style="text-align: right">Enables the activation of TDE if a new cluster is created&lt;/td>
+ &lt;td style="text-align: right">Enables TDE and allows you to define options such as key bits.&lt;/td>
  &lt;/tr>
  &lt;tr>
  &lt;td>teamId&lt;/td>
@@ -623,11 +623,11 @@
  &lt;/tbody>
 &lt;/table>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h2 id="hahahugoshortcode20s4hbhb"
+ &lt;h2 id="hahahugoshortcode22s4hbhb"
  >
  &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
  &lt;/h2>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode20s4hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode20s4hbhb">
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode22s4hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode22s4hbhb">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
 &lt;/div>
@@ -1174,7 +1174,7 @@
  &lt;tr>
  &lt;th>Name&lt;/th>
  &lt;th style="text-align: center">Type&lt;/th>
- &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">default&lt;/th>
  &lt;th style="text-align: right">Description&lt;/th>
  &lt;/tr>
  &lt;/thead>
@@ -1182,8 +1182,17 @@
  &lt;tr>
  &lt;td>enable&lt;/td>
  &lt;td style="text-align: center">boolean&lt;/td>
- &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
  &lt;td style="text-align: right">enable TDE during initDB&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>keybits&lt;/td>
+ &lt;td style="text-align: center">integer&lt;/td>
+ &lt;td style="text-align: right">256&lt;/td>
+ &lt;td style="text-align: right">used to specify the key length in bits. Accepted values are 128, 192 and 256 (default). More Informations: &lt;a
+ class="gdoc-markdown__link"
+ href="https://repository.cybertec.at/doc/18ee/encryption.html"
+>PGEE-Documentation&lt;/a>&lt;/td>
  &lt;/tr>
  &lt;/tbody>
 &lt;/table>
@@ -1511,11 +1520,11 @@
  &lt;/tbody>
 &lt;/table>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h2 id="hahahugoshortcode20s22hbhb"
+ &lt;h2 id="hahahugoshortcode22s22hbhb"
  >
  &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
  &lt;/h2>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode20s22hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode20s22hbhb">
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode22s22hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode22s22hbhb">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
 &lt;/div>

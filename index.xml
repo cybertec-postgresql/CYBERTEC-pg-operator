@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CPO (CYBERTEC-PG-Operator) on CYBERTEC-PG-Operator</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/</link><description>Recent content in CPO (CYBERTEC-PG-Operator) on CYBERTEC-PG-Operator</description><generator>Hugo</generator><language>en</language><lastBuildDate>Mon, 11 Mar 2024 14:26:51 +0100</lastBuildDate><atom:link href="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/index.xml" rel="self" type="application/rss+xml"/><item><title>Introduction</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/introduction/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/introduction/</guid><description>&lt;p>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CPO (CYBERTEC-PG-Operator) on CYBERTEC-PG-Operator</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/</link><description>Recent content in CPO (CYBERTEC-PG-Operator) on CYBERTEC-PG-Operator</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sun, 28 Dec 2025 14:26:51 +0100</lastBuildDate><atom:link href="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/index.xml" rel="self" type="application/rss+xml"/><item><title>Introduction</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/introduction/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/introduction/</guid><description>&lt;p>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&lt;/p>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h3 id="backups-with-pgbackrest"
  >
@@ -41,8 +41,20 @@ CPU on the other side is a ressource we can use inside the limits definiton to a
  &lt;/a>
 &lt;/div>
 &lt;p>When using block storage, the operator creates an additional pod that acts as a repo host. Based on a TLS connection, the repo host obtains the data for the Backup from the current primary of the cluster, which is compressed before being sent.
-WAL archives are pushed from the primary pod to the repo host.&lt;/p></description></item><item><title>via S3</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/aws/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/aws/</guid><description>&lt;p>This chapter describes the use of pgBackRest in combination with with AWS S3 or S3-compatible storage such as MinIO, Cloudian HyperStore or SwiftStack. It is not absolutely necessary to operate a Kubernetes on the AWS Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.&lt;/p>
-&lt;p>This Chapter will use AWS S3 for the example, the usage of different s3-compatible Storage is similiar.&lt;/p></description></item><item><title>Software-Components</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/architecture/compontens/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/architecture/compontens/</guid><description>&lt;p>Various software components are used to operate CPO. This chapter lists the most important components and their respective purposes.&lt;/p>
+WAL archives are pushed from the primary pod to the repo host.&lt;/p></description></item><item><title>via S3</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/aws/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/aws/</guid><description>&lt;p>This chapter describes the use of pgBackRest in combination with AWS S3 or S3-compatible storage such as MinIO, Cloudian HyperStore, or SwiftStack. While it is not mandatory to operate Kubernetes on the AWS Cloud Platform, the efficiency and duration of a backup depend on the network connection to your storage provider.&lt;/p>
+
+
+
+&lt;blockquote class="gdoc-hint important">
+ &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa important">&lt;/i>
+ &lt;span>Important&lt;/span>&lt;/div>
+ &lt;div class="gdoc-hint__text">Precondition: A S3 bucket and a privileged role/user with valid credentials are required before proceeding.&lt;/div>
+&lt;/blockquote>
+
+&lt;ol>
+&lt;li>Create the Authentication Secret&lt;/li>
+&lt;/ol>
+&lt;p>The operator needs access to your S3 bucket. The credentials and the encryption passphrase are stored in a Kubernetes Secret. This is most easily done by creating a file named s3.conf:&lt;/p></description></item><item><title>Software-Components</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/architecture/compontens/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/architecture/compontens/</guid><description>&lt;p>Various software components are used to operate CPO. This chapter lists the most important components and their respective purposes.&lt;/p>
 &lt;p>Basically, the CPO project focusses on the main tasks of each individual component. This means that each component does what it does best and only that.
 In addition to reliable operation, this should also ensure efficient development and project management that utilises existing approaches rather than fighting against them.&lt;/p>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
@@ -88,24 +100,6 @@ In addition to reliable operation, this should also ensure efficient development
 &lt;/blockquote>
 
 &lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h3 id="create-a-gcs-bucket-on-the-google-cloud-console"
- >
- Create a gcs-bucket on the google cloud console
- &lt;/h3>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/gcs/#create-a-gcs-bucket-on-the-google-cloud-console" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create a gcs-bucket on the google cloud console" aria-label="Anchor to: Create a gcs-bucket on the google cloud console" href="#create-a-gcs-bucket-on-the-google-cloud-console">
- &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
- &lt;/a>
-&lt;/div>
-&lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h3 id="create-a-priviledged-service-role"
- >
- Create a priviledged service-role
- &lt;/h3>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/gcs/#create-a-priviledged-service-role" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create a priviledged service-role" aria-label="Anchor to: Create a priviledged service-role" href="#create-a-priviledged-service-role">
- &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
- &lt;/a>
-&lt;/div>
-&lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h3 id="modifying-the-cluster"
  >
  Modifying the Cluster
@@ -126,24 +120,6 @@ In addition to reliable operation, this should also ensure efficient development
  &lt;div class="gdoc-hint__text">Precondition: a blob-storage-volume and a priviledged role is needed for this chapter.&lt;/div>
 &lt;/blockquote>
 
-&lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h3 id="create-a-blob-storage-volume-on-the-azure-console"
- >
- Create a blob-storage-volume on the Azure console
- &lt;/h3>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/azure_blob/#create-a-blob-storage-volume-on-the-azure-console" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create a blob-storage-volume on the Azure console" aria-label="Anchor to: Create a blob-storage-volume on the Azure console" href="#create-a-blob-storage-volume-on-the-azure-console">
- &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
- &lt;/a>
-&lt;/div>
-&lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h3 id="create-a-priviledged-service-role"
- >
- Create a priviledged service-role
- &lt;/h3>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/azure_blob/#create-a-priviledged-service-role" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Create a priviledged service-role" aria-label="Anchor to: Create a priviledged service-role" href="#create-a-priviledged-service-role">
- &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
- &lt;/a>
-&lt;/div>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h3 id="modifying-the-cluster"
  >
@@ -698,7 +674,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
 >tde&lt;/a>&lt;/td>
  &lt;td style="text-align: center">map&lt;/td>
  &lt;td style="text-align: right">false&lt;/td>
- &lt;td style="text-align: right">Enables the activation of TDE if a new cluster is created&lt;/td>
+ &lt;td style="text-align: right">Enables TDE and allows you to define options such as key bits.&lt;/td>
  &lt;/tr>
  &lt;tr>
  &lt;td>teamId&lt;/td>
@@ -969,11 +945,11 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;/tbody>
 &lt;/table>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h2 id="hahahugoshortcode20s4hbhb"
+ &lt;h2 id="hahahugoshortcode22s4hbhb"
  >
  &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
  &lt;/h2>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode20s4hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode20s4hbhb">
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode22s4hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode22s4hbhb">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
 &lt;/div>
@@ -1520,7 +1496,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;tr>
  &lt;th>Name&lt;/th>
  &lt;th style="text-align: center">Type&lt;/th>
- &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">default&lt;/th>
  &lt;th style="text-align: right">Description&lt;/th>
  &lt;/tr>
  &lt;/thead>
@@ -1528,8 +1504,17 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;tr>
  &lt;td>enable&lt;/td>
  &lt;td style="text-align: center">boolean&lt;/td>
- &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
  &lt;td style="text-align: right">enable TDE during initDB&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>keybits&lt;/td>
+ &lt;td style="text-align: center">integer&lt;/td>
+ &lt;td style="text-align: right">256&lt;/td>
+ &lt;td style="text-align: right">used to specify the key length in bits. Accepted values are 128, 192 and 256 (default). More Informations: &lt;a
+ class="gdoc-markdown__link"
+ href="https://repository.cybertec.at/doc/18ee/encryption.html"
+>PGEE-Documentation&lt;/a>&lt;/td>
  &lt;/tr>
  &lt;/tbody>
 &lt;/table>
@@ -1857,11 +1842,11 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;/tbody>
 &lt;/table>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h2 id="hahahugoshortcode20s22hbhb"
+ &lt;h2 id="hahahugoshortcode22s22hbhb"
  >
  &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
  &lt;/h2>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode20s22hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode20s22hbhb">
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode22s22hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode22s22hbhb">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
 &lt;/div>
@@ -5412,146 +5397,46 @@ These default values cover typical operating requirements and enable a quick sta
  &lt;td>PostGIS topology spatial types and functions&lt;/td>
  &lt;/tr>
  &lt;/tbody>
-&lt;/table></description></item><item><title>Minor version update</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/minor_updates/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/minor_updates/</guid><description>&lt;p>Minor version updates for PostgreSQL are performed by updating the PostgreSQL container image in use.
-With the update object &lt;code>spec.dockerImage&lt;/code> of the cluster manifest, the operator takes over the update based on the rolling update strategy. This means that the pods are replaced one after the other, with the replicas being updated first and then the old primary after a switchover. The operational interruption should generally last less than 5 seconds (switchover time), but the clients must still reconnect.&lt;/p></description></item><item><title>Major version upgrade</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/</guid><description>&lt;p>CPO enables the use of the in-place upgrade, which makes it possible to upgrade a cluster to a new PG major. For this purpose, pg_upgrade is used in the background.&lt;/p>
+&lt;/table></description></item><item><title>Updating the Operator</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/operator_updates/</link><pubDate>Sun, 28 Dec 2025 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/operator_updates/</guid><description>&lt;p>This chapter describes the recommended process for updating the CYBERTEC PostgreSQL Operator (CPO). To ensure a smooth transition and compatibility with new features, updates should be performed using our official Helm repository.&lt;/p>
 
 
 
-&lt;blockquote class="gdoc-hint info">
- &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa info">&lt;/i>
- &lt;span>Info&lt;/span>&lt;/div>
- &lt;div class="gdoc-hint__text">Note that an in-place upgrade generates both a pod restore in the form of a rolling update and an operational interruption of the cluster during the actual execution of the restore.&lt;/div>
+&lt;blockquote class="gdoc-hint important">
+ &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa important">&lt;/i>
+ &lt;span>Important&lt;/span>&lt;/div>
+ &lt;div class="gdoc-hint__text">CRD Update Requirement: Due to how Helm handles the crds/ directory, helm upgrade will not automatically update or patch existing Custom Resource Definitions (CRDs). You must manually apply the updated CRDs before upgrading the Helm release.&lt;/div>
 &lt;/blockquote>
 
 &lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h2 id="how-does-the-upgrade-work"
+ &lt;h2 id="using-helm-chart"
  >
- How does the upgrade work?
+ Using Helm-Chart
  &lt;/h2>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#how-does-the-upgrade-work" class="gdoc-page__anchor clip flex align-center" title="Anchor to: How does the upgrade work?" aria-label="Anchor to: How does the upgrade work?" href="#how-does-the-upgrade-work">
- &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
- &lt;/a>
-&lt;/div>
-&lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h3 id="preconditions"
- >
- Preconditions:
- &lt;/h3>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#preconditions" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Preconditions:" aria-label="Anchor to: Preconditions:" href="#preconditions">
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/operator_updates/#using-helm-chart" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Using Helm-Chart" aria-label="Anchor to: Using Helm-Chart" href="#using-helm-chart">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
 &lt;/div>
 &lt;ol>
-&lt;li>Pod restart - Use the rolling update strategy to replace all pods based on the new ENV &lt;code>PGVERSION&lt;/code> with the version you want to update to.&lt;/li>
-&lt;li>Check - Check that the new &lt;code>PGVERSION&lt;/code> is larger than the previously used one.&lt;/li>
-&lt;li>Check whether the new &lt;code>PGVERSION&lt;/code> is larger than the previously used one and the maintenance mode of the cluster must be deactivated. In addition, the replicas should not have a high lag.&lt;/li>
+&lt;li>Update the Helm Repository&lt;/li>
 &lt;/ol>
-&lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h3 id="preliminary-checks"
- >
- Preliminary checks
- &lt;/h3>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#preliminary-checks" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Preliminary checks" aria-label="Anchor to: Preliminary checks" href="#preliminary-checks">
- &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
- &lt;/a>
-&lt;/div>
-&lt;ol>
-&lt;li>use initdb to prepare a new data_dir (&lt;code>data_new&lt;/code>) based on the new &lt;code>PGVERSION&lt;/code>.&lt;/li>
-&lt;li>check the upgrade possibility with &lt;code>pg_upgrade --check&lt;/code>&lt;/li>
-&lt;/ol>
+&lt;p>First, ensure your local Helm chart cache is up to date with the latest versions from the CYBERTEC repository:&lt;/p></description></item><item><title>Minor version update</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/minor_updates/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/minor_updates/</guid><description>&lt;p>Minor version updates for PostgreSQL are performed by updating the PostgreSQL container image in use.
+With the update object &lt;code>spec.dockerImage&lt;/code> of the cluster manifest, the operator takes over the update based on the rolling update strategy. This means that the pods are replaced one after the other, with the replicas being updated first and then the old primary after a switchover. The operational interruption should generally last less than 5 seconds (switchover time), but the clients must still reconnect.&lt;/p></description></item><item><title>Major version upgrade</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/major_upgrades/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/major_upgrades/</guid><description>&lt;p>The CYBERTEC PostgreSQL Operator (CPO) enables in-place upgrades, allowing you to upgrade a cluster to a new PostgreSQL major version. This process utilizes pg_upgrade in the background to minimize downtime and data movement.&lt;/p>
 
 
 
 &lt;blockquote class="gdoc-hint info">
  &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa info">&lt;/i>
  &lt;span>Info&lt;/span>&lt;/div>
- &lt;div class="gdoc-hint__text">If one of the steps is aborted, a cleanup is performed&lt;/div>
+ &lt;div class="gdoc-hint__text">Note: An in-place upgrade triggers a pod restart (rolling update) and causes a brief operational interruption during the actual execution of the data migration.&lt;/div>
 &lt;/blockquote>
 
 &lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h3 id="prepare-the-upgrade"
+ &lt;h2 id="how-to-trigger-an-in-place-upgrade"
  >
- Prepare the Upgrade
- &lt;/h3>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#prepare-the-upgrade" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Prepare the Upgrade" aria-label="Anchor to: Prepare the Upgrade" href="#prepare-the-upgrade">
- &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
- &lt;/a>
-&lt;/div>
-&lt;ol>
-&lt;li>remove dependencies that can cause problems. For example, the extensions &lt;code>pg_stat_statements&lt;/code> and &lt;code>pgaudit&lt;/code>.&lt;/li>
-&lt;li>activate the maintenance mode of the cluster&lt;/li>
-&lt;li>terminate PostgreSQL in an orderly manner&lt;/li>
-&lt;li>check pg_controldata for the checkpoint position and wait until all replicas apply the latest checkpoint location&lt;/li>
-&lt;li>use port &lt;code>5432&lt;/code> for rsyncd and start it&lt;/li>
-&lt;/ol>
-&lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h3 id="start-the-upgrade"
- >
- Start the Upgrade
- &lt;/h3>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#start-the-upgrade" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Start the Upgrade" aria-label="Anchor to: Start the Upgrade" href="#start-the-upgrade">
- &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
- &lt;/a>
-&lt;/div>
-&lt;ol>
-&lt;li>Call pg_upgrade -k to start the Upgrade
-
-
-
-&lt;blockquote class="gdoc-hint info">
- &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa info">&lt;/i>
- &lt;span>Info&lt;/span>&lt;/div>
- &lt;div class="gdoc-hint__text">if the process failed, we need to rollback, if it was sucessful we&amp;rsquo;re reaching the point of no return&lt;/div>
-&lt;/blockquote>
-&lt;/li>
-&lt;li>Rename the directories. &lt;code>data -&amp;gt; data_old&lt;/code> and &lt;code>data_new -&amp;gt; data&lt;/code>&lt;/li>
-&lt;li>Update the Patroni.config (&lt;code>postgres.yml&lt;/code>)&lt;/li>
-&lt;li>Call Checkpoint on every replica and trigger rsync on the Replicas&lt;/li>
-&lt;li>Wait for Replicas to complete rsxnc. &lt;code>Timeout: 300&lt;/code>&lt;/li>
-&lt;li>Stop rsyncd on Primary and remove ininitialize key from DCS, because its based on the old sysid&lt;/li>
-&lt;li>Start Patroni on the Primary and start the postgres locally&lt;/li>
-&lt;li>Reset custom staticstics, warmup the Memory and start Analyze in stages in separate threads&lt;/li>
-&lt;li>Wait for every Replica to become ready&lt;/li>
-&lt;li>Disable the maintenance mode for the Cluster&lt;/li>
-&lt;li>Restore custom statistics, analyze these tables and restore dropped objetcs from &lt;code>Prepare the upgrade&lt;/code>&lt;/li>
-&lt;/ol>
-&lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h3 id="completion-of-the-upgrade"
- >
- Completion of the upgrade
- &lt;/h3>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#completion-of-the-upgrade" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Completion of the upgrade" aria-label="Anchor to: Completion of the upgrade" href="#completion-of-the-upgrade">
- &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
- &lt;/a>
-&lt;/div>
-&lt;ol>
-&lt;li>Drop directory &lt;code>data_old&lt;/code>&lt;/li>
-&lt;li>Trigger new Backup&lt;/li>
-&lt;/ol>
-&lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h3 id="how-a-rollback-is-working"
- >
- How a rollback is working?
- &lt;/h3>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#how-a-rollback-is-working" class="gdoc-page__anchor clip flex align-center" title="Anchor to: How a rollback is working?" aria-label="Anchor to: How a rollback is working?" href="#how-a-rollback-is-working">
- &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
- &lt;/a>
-&lt;/div>
-&lt;ol>
-&lt;li>Stop rsynd if its running&lt;/li>
-&lt;li>Disable the maintenance mode for the Cluster&lt;/li>
-&lt;li>Drop directory &lt;code>data_new&lt;/code>&lt;/li>
-&lt;/ol>
-&lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h2 id="how-to-trigger-a-in-place-upgrade-with-cpo"
- >
- How to trigger a In-Place-Upgrade with cpo?
+ How to trigger an In-Place Upgrade
  &lt;/h2>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/pg_versioning/major_upgrades/#how-to-trigger-a-in-place-upgrade-with-cpo" class="gdoc-page__anchor clip flex align-center" title="Anchor to: How to trigger a In-Place-Upgrade with cpo?" aria-label="Anchor to: How to trigger a In-Place-Upgrade with cpo?" href="#how-to-trigger-a-in-place-upgrade-with-cpo">
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/major_upgrades/#how-to-trigger-an-in-place-upgrade" class="gdoc-page__anchor clip flex align-center" title="Anchor to: How to trigger an In-Place Upgrade" aria-label="Anchor to: How to trigger an In-Place Upgrade" href="#how-to-trigger-an-in-place-upgrade">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
 &lt;/div>
-&lt;pre tabindex="0">&lt;code>spec:
- postgresql:
- version: &amp;#34;18&amp;#34;
-&lt;/code>&lt;/pre>&lt;p>To trigger an In-Place-Upgrade you have just to increase the parameter &lt;code>spec.postgresql.version&lt;/code>. If you choose a valid number the Operator will start with the prozedure, described above.&lt;/p></description></item></channel></rss>
+&lt;p>To trigger the upgrade, simply increase the version number in your cluster manifest. If the version is valid, the Operator automatically initiates the procedure described below.&lt;/p></description></item></channel></rss>

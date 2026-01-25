@@ -12,11 +12,11 @@
 #  my-annotation: value
 
 cluster:
-  dockerImage: docker.io/cybertecpostgresql/cybertec-pg-container:postgres-18.0-1
+  dockerImage: containers.cybertec.at/cybertec-pg-container/postgres:rocky9-18.1-1
   numberOfInstances: 2
 
   postgresql:
-    version: "17"
+    version: "18"
     #parameters:
     #  work_mem: "40MB"
 
@@ -25,7 +25,7 @@ cluster:
   #  value: custom
 
   volume:
-    size: 1Gi
+    size: 5Gi
     #storageClass: my-storage
     #selector:
     #  matchExpressions:
@@ -45,7 +45,7 @@ cluster:
 
   resources:
     requests:
-      cpu: 10m
+      cpu: 100m
       memory: 100Mi
     limits:
       cpu: 500m
@@ -63,13 +63,19 @@ cluster:
     failsafe_mode: false
     initdb:
       encoding: "UTF8"
-      locale: "C.UTF-8"
-      data-checksums: "true"
+      locale: "en_US.UTF-8"
+      locale-provider: "icu"
+      icu-locale: "en_US"
     pg_hba:
-    - local   all         all               trust
-    - local   replication standby           trust
-    - host    replication standby all       scram-sha-256
-    - host    all         all     all       scram-sha-256
+      - local     all             all                                 trust
+      - hostssl   all             +cpo_pam            127.0.0.1/32    pam
+      - host      all             all                 127.0.0.1/32    scram-sha-256
+      - hostssl   all             +cpo_pam            ::1/128         pam
+      - host      all             all                 ::1/128         scram-sha-256
+      - local     replication     cpo_replication                     trust
+      - hostssl   replication     cpo_replication     all             scram-sha-256
+      - hostnossl all             all                 all             reject
+      - hostssl   all             all                 all             scram-sha-256
     #slots:
     #  permanent_physical_1:
     #    type: physical
@@ -95,9 +101,13 @@ cluster:
     synchronous_node_count: 1
     maximum_lag_on_failover: 33554432
 
+  #monitor:
+  #  image: "containers.cybertec.at/cybertec-pg-container/exporter:rocky9-18.1-2"
+
+
   #backup:
   #  pgbackrest:
-  #    image: "docker.io/cybertecpostgresql/cybertec-pg-container:pgbackrest-17.0-1"
+  #    image: "containers.cybertec.at/cybertec-pg-container/pgbackrest:rocky9-18.1-1"
   #    configuration:
   #      secret: "xyz"
   #      protection:
@@ -123,7 +133,11 @@ cluster:
   #      id: "unique restore identifier"
   #      repo: repo1
   #      options:
-  #        target-time: "2023-01-02 03:04:05+06"
+  #        target-time: "2026-01-02 03:04:05+01"
+
+  #tde: # Only usable if you have an active PGEE subscription and access to the PGEE images, which must be entered under cluster.dockerImage.
+  #  enable: true
+  #  keybits: 256
 
   #users:  # Application/Robot users
   #  appadmin:
@@ -179,7 +193,7 @@ cluster:
   #  cluster: name-of-cluster-to-clone
 
   #connectionPooler:
-  #  dockerImage: docker.io/cybertecpostgresql/cybertec-pg-container:pgbouncer-1.23-2
+  #  dockerImage: containers-cybertec.at/cybertec-pg-container/pgbouncer:rocky9-1.25-1
   #  numberOfInstances: 2
   #  mode: transaction # session/transaction mode pooling
   #  schema: "pooler"

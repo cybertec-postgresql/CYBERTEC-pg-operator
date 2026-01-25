@@ -83,6 +83,11 @@ type spiloConfiguration struct {
 	Bootstrap            pgBootstrap            `json:"bootstrap"`
 }
 
+type TDEConfig struct {
+	Enabled bool
+	KeyBits string
+}
+
 func (c *Cluster) statefulSetName() string {
 	return c.Name
 }
@@ -327,7 +332,7 @@ func (c *Cluster) generateResourceRequirements(
 	return &result, nil
 }
 
-func generateSpiloJSONConfiguration(pg *cpov1.PostgresqlParam, patroni *cpov1.Patroni, opConfig *config.Config, enableTDE bool, logger *logrus.Entry) (string, error) {
+func generateSpiloJSONConfiguration(pg *cpov1.PostgresqlParam, patroni *cpov1.Patroni, opConfig *config.Config, tdeOptions TDEConfig, logger *logrus.Entry) (string, error) {
 	config := spiloConfiguration{}
 
 	config.Bootstrap = pgBootstrap{}
@@ -347,11 +352,13 @@ func generateSpiloJSONConfiguration(pg *cpov1.PostgresqlParam, patroni *cpov1.Pa
 			map[string]string{"icu-locale": "en_US"}}
 	} else {
 		config.Bootstrap.Initdb = []interface{}{map[string]string{"auth-host": "scram-sha-256"},
+			"data-checksums",
 			map[string]string{"auth-local": "trust"}}
 	}
 
-	if enableTDE {
+	if tdeOptions.Enabled {
 		config.Bootstrap.Initdb = append(config.Bootstrap.Initdb, map[string]string{"encryption-key-command": "/tmp/tde.sh"})
+		config.Bootstrap.Initdb = append(config.Bootstrap.Initdb, map[string]string{"key-bits": tdeOptions.KeyBits})
 	}
 
 	initdbOptionNames := []string{}
@@ -878,17 +885,16 @@ func (c *Cluster) generatePodTemplate(
 		podSpec.PriorityClassName = priorityClassName
 	}
 
-	if c.Postgresql.Spec.Monitoring != nil {
-		addEmptyDirVolume(&podSpec, "exporter-tmp", "postgres-exporter", "/tmp")
-	}
-
-	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && !isRepoHost {
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && spiloContainer.Name == "postgres" {
 		addRunVolume(&podSpec, "postgres-run", "postgres", "/run")
 		addEmptyDirVolume(&podSpec, "postgres-tmp", "postgres", "/tmp")
+		if c.Postgresql.Spec.Monitoring != nil {
+			addEmptyDirVolume(&podSpec, "exporter-tmp", "postgres-exporter", "/tmp")
+		}
 	}
 
-	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && isRepoHost {
-		addEmptyDirVolume(&podSpec, "pgbackrest-tmp", "pgbackrest", "/tmp")
+	if c.OpConfig.ReadOnlyRootFilesystem != nil && *c.OpConfig.ReadOnlyRootFilesystem && strings.Contains(spiloContainer.Name, "pgbackrest") {
+		addEmptyDirVolume(&podSpec, "pgbackrest-tmp", spiloContainer.Name, "/tmp")
 	}
 
 	if sharePgSocketWithSidecars != nil && *sharePgSocketWithSidecars {
@@ -1278,6 +1284,7 @@ func getSidecarContainer(sidecar cpov1.Sidecar, index int, resources *v1.Resourc
 		Resources:       *resources,
 		Env:             sidecar.Env,
 		Ports:           sidecar.Ports,
+		ReadinessProbe:  sidecar.ReadinessProbe,
 		SecurityContext: sidecar.SecurityContext,
 		VolumeMounts:    sidecar.VolumeMounts,
 	}
@@ -1312,13 +1319,30 @@ func extractPgVersionFromBinPath(binPath string, template string) (string, error
 	return fmt.Sprintf("%v", pgVersion), nil
 }
 
-func generateSpiloReadinessProbe() *v1.Probe {
+func generatePatroniReadinessProbe() *v1.Probe {
 	return &v1.Probe{
 		FailureThreshold: 3,
 		ProbeHandler: v1.ProbeHandler{
 			HTTPGet: &v1.HTTPGetAction{
 				Path:   "/readiness",
 				Port:   intstr.IntOrString{IntVal: patroni.ApiPort},
+				Scheme: v1.URISchemeHTTP,
+			},
+		},
+		InitialDelaySeconds: 6,
+		PeriodSeconds:       10,
+		SuccessThreshold:    1,
+		TimeoutSeconds:      5,
+	}
+}
+
+func generateExporterReadinessProbe() *v1.Probe {
+	return &v1.Probe{
+		FailureThreshold: 3,
+		ProbeHandler: v1.ProbeHandler{
+			HTTPGet: &v1.HTTPGetAction{
+				Path:   "/",
+				Port:   intstr.IntOrString{IntVal: 9187},
 				Scheme: v1.URISchemeHTTP,
 			},
 		},
@@ -1393,11 +1417,20 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		}
 	}
 
-	enableTDE := false
+	// Keybits must be converted to strings for initdb processing.
+	tdeOptions := TDEConfig{Enabled: false}
 	if spec.TDE != nil && spec.TDE.Enable {
-		enableTDE = true
+		tdeOptions.Enabled = true
+		tdeOptions.KeyBits = strconv.Itoa(256)
+		ptr := c.Postgresql.Spec.TDE.Keybits
+		if ptr != nil {
+			val := *ptr
+			if val == 128 || val == 192 {
+				tdeOptions.KeyBits = fmt.Sprintf("%d", val)
+			}
+		}
 	}
-	spiloConfiguration, err := generateSpiloJSONConfiguration(&spec.PostgresqlParam, &spec.Patroni, &c.OpConfig, enableTDE, c.logger)
+	spiloConfiguration, err := generateSpiloJSONConfiguration(&spec.PostgresqlParam, &spec.Patroni, &c.OpConfig, tdeOptions, c.logger)
 	if err != nil {
 		return nil, fmt.Errorf("could not generate Spilo JSON configuration: %v", err)
 	}
@@ -1507,7 +1540,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 
 	// Patroni responds 200 to probe only if it either owns the leader lock or postgres is running and DCS is accessible
 	if c.OpConfig.EnableReadinessProbe {
-		spiloContainer.ReadinessProbe = generateSpiloReadinessProbe()
+		spiloContainer.ReadinessProbe = generatePatroniReadinessProbe()
 	}
 	//
 	if c.OpConfig.EnableLivenessProbe {
@@ -1577,7 +1610,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	podAnnotations := c.generatePodAnnotations(spec)
 
 	if spec.GetBackup().Pgbackrest != nil {
-		initContainers = append(initContainers, c.generatePgbackrestRestoreContainer(spec, repo_host_mode, volumeMounts, resourceRequirements, c.OpConfig.Resources.SpiloPrivileged, c.OpConfig.Resources.SpiloAllowPrivilegeEscalation, generateCapabilities(c.OpConfig.AdditionalPodCapabilities)))
+		initContainers = append(initContainers, c.generatePgbackrestRestoreContainer(spec, repo_host_mode, volumeMounts, resourceRequirements, c.OpConfig.Resources.SpiloPrivileged, c.OpConfig.Resources.SpiloAllowPrivilegeEscalation, c.OpConfig.Resources.ReadOnlyRootFilesystem, generateCapabilities(c.OpConfig.AdditionalPodCapabilities)))
 
 		additionalVolumes = append(additionalVolumes, c.generatePgbackrestConfigVolume(spec.Backup.Pgbackrest, false))
 
@@ -1669,7 +1702,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		Spec: appsv1.StatefulSetSpec{
 			Replicas:                             &numberOfInstances,
 			Selector:                             c.labelsSelector(TYPE_POSTGRESQL),
-			ServiceName:                          c.serviceName(Master),
+			ServiceName:                          c.serviceName(ClusterPods),
 			Template:                             *podTemplate,
 			VolumeClaimTemplates:                 []v1.PersistentVolumeClaim{*volumeClaimTemplate},
 			UpdateStrategy:                       updateStrategy,
@@ -1681,7 +1714,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	return statefulSet, nil
 }
 
-func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, repo_host_mode bool, volumeMounts []v1.VolumeMount, resourceRequirements *v1.ResourceRequirements, privilegedMode bool, privilegeEscalationMode *bool, additionalPodCapabilities *v1.Capabilities) v1.Container {
+func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, repo_host_mode bool, volumeMounts []v1.VolumeMount, resourceRequirements *v1.ResourceRequirements, privilegedMode bool, privilegeEscalationMode *bool, readOnlyRootFilesystem *bool, additionalPodCapabilities *v1.Capabilities) v1.Container {
 	isOptional := true
 	pgbackrestRestoreEnvVars := []v1.EnvVar{
 		{
@@ -1776,7 +1809,7 @@ func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, r
 		SecurityContext: &v1.SecurityContext{
 			AllowPrivilegeEscalation: privilegeEscalationMode,
 			Privileged:               &privilegedMode,
-			ReadOnlyRootFilesystem:   util.True(),
+			ReadOnlyRootFilesystem:   readOnlyRootFilesystem,
 			Capabilities:             additionalPodCapabilities,
 		},
 	}
@@ -2118,7 +2151,7 @@ func (c *Cluster) generatePodAnnotations(spec *cpov1.PostgresSpec) map[string]st
 	for k, v := range c.OpConfig.CustomPodAnnotations {
 		annotations[k] = v
 	}
-	if spec != nil || spec.PodAnnotations != nil {
+	if spec != nil && spec.PodAnnotations != nil {
 		for k, v := range spec.PodAnnotations {
 			annotations[k] = v
 		}
@@ -2378,7 +2411,7 @@ func (c *Cluster) addAdditionalVolumes(podSpec *v1.PodSpec,
 		mountPaths[additionalVolume.MountPath] = additionalVolume
 	}
 
-	c.logger.Infof("Mount additional volumes: %+v", additionalVolumes)
+	// c.logger.Debugf("Mount additional volumes: %+v", additionalVolumes)
 
 	addMountsToMatchedContainers(podSpec.Containers, additionalVolumes)
 	addMountsToMatchedContainers(podSpec.InitContainers, additionalVolumes)
@@ -2798,7 +2831,7 @@ func (c *Cluster) generatePodDisruptionBudget() *policyv1.PodDisruptionBudget {
 	pdbEnabled := c.OpConfig.EnablePodDisruptionBudget
 
 	// if PodDisruptionBudget is disabled or if there are no DB pods, set the budget to 0.
-	if (pdbEnabled != nil && !(*pdbEnabled)) || c.Spec.NumberOfInstances <= 0 {
+	if (pdbEnabled != nil && !(*pdbEnabled)) || c.Spec.NumberOfInstances <= 1 {
 		minAvailable = intstr.FromInt(0)
 	}
 
@@ -2812,7 +2845,7 @@ func (c *Cluster) generatePodDisruptionBudget() *policyv1.PodDisruptionBudget {
 		Spec: policyv1.PodDisruptionBudgetSpec{
 			MinAvailable: &minAvailable,
 			Selector: &metav1.LabelSelector{
-				MatchLabels: c.roleLabelsSet(false, Master),
+				MatchLabels: c.labelsSetWithType(false, "postgresql"), //c.roleLabelsSet(false, Master),
 			},
 		},
 	}
@@ -3239,7 +3272,7 @@ func (c *Cluster) generatePgbackrestRepoHostConfigmap() (*v1.ConfigMap, error) {
 			}
 			n := c.Postgresql.Spec.NumberOfInstances
 			for j := int32(0); j < n; j++ {
-				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host = " + c.clusterName().Name + "-" + fmt.Sprintf("%d", j) + "." + c.clusterName().Name + "." + c.Namespace + ".svc." + c.OpConfig.ClusterDomain
+				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host = " + c.clusterName().Name + "-" + fmt.Sprintf("%d", j) + "." + c.serviceName(ClusterPods) + "." + c.Namespace + ".svc." + c.OpConfig.ClusterDomain
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-ca-file = /etc/pgbackrest/certs/pgbackrest.ca-roots"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-cert-file = /etc/pgbackrest/certs/pgbackrest-repo-host.crt"
 				config += "\npg" + fmt.Sprintf("%d", j+1) + "-host-key-file = /etc/pgbackrest/certs/pgbackrest-repo-host.key"

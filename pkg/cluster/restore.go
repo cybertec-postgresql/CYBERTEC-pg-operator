@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
+
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	spc "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
@@ -13,7 +15,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/types"
-	"strings"
 )
 
 const (
@@ -198,7 +199,7 @@ func (c *Cluster) generatePgbackrestRestoreConfigmap(restore *cpov1.Restore) (*v
 
 	optionsArray := make([]string, 0)
 	for key, value := range restore.Options {
-		optionsArray = append(optionsArray, fmt.Sprintf("--%s=%s", key, value))
+		optionsArray = append(optionsArray, fmt.Sprintf("--%s=\"%s\"", key, value))
 	}
 	options := strings.Join(optionsArray, " ")
 	data["restore_command"] = fmt.Sprintf(" --repo=%v %s",

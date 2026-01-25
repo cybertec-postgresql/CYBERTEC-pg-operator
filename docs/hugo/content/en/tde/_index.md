@@ -27,7 +27,7 @@ Further information on TDE and PGEE can be found here: [CYBERTEC TDE](https://ww
 
 ## Securing clusters with TDE
 
-The CYBERTEC pg operator, together with Patroni, takes over the setup and administration of the TDE functionality in conjunction with the cost-effective PGEE containers
+The CYBERTEC-pg-operator, together with Patroni, takes over the setup and administration of the TDE functionality in conjunction with the cost-effective PGEE containers
 
 ### Preconditions
 - CYBERTEC-pgee-container
@@ -36,7 +36,7 @@ The CYBERTEC pg operator, together with Patroni, takes over the setup and admini
 ### Deploy a TDE-Cluster
 
 Setting up a TDE cluster is basically the same as setting up a conventional cluster. 
-The only difference is the defined Postgres. container and the object TDE.enabled: true, which instructs the operator to initialise the database with the TDE functionality.
+The only difference is the defined Postgres-container and the object TDE.enabled: true, which instructs the operator to initialise the database with the TDE functionality.
 
 ```yaml
 apiVersion: cpo.opensource.cybertec.at/v1
@@ -58,20 +58,65 @@ spec:
       memory: 500Mi
   tde:
     enable: true
+    keybits: 256
   teamId: acid
   volume:
     size: 5Gi
 ```
 - `dockerImage` - Must contain a PostgreSQL image of the pgee container suite
 - `tde.enabled`- initialises the DB with TDE
+- `tde.keybits`- Defines keylength in bits. Possible Values: 128,192,256 Default: 256
 
 {{< hint type=important >}} Please note that the activation of TDE is only possible when creating new clusters. Subsequent activation is not possible. {{< /hint >}}
+
+### Key-Management
+
+For TDE, we or the operator must work with the required encryption key. The key is transferred to the Postgres containers using a secret. There are two basic options for the necessary key management.
+
+#### Automatic key generation (default)
+If no existing secret is provided, the operator automatically generates a cryptographically secure key when creating a new cluster. This is stored in the secret in the cluster's namespace.
+
+It is important to note for key management that TDE allows you to choose from the available key lengths (128 bit, 192 bit, 256 bit). By default, the operator chooses 256 bit. The keybits parameter allows you to adjust this if desired. See [CRD](crd/crd-postgresql).
+Further information on TDE can also be found in the [PGEE-Documentation](https://repository.cybertec.at/doc/18ee/encryption.html)
+
+#### Use of your own keys (Bring Your Own Key)
+You have the option of defining your own encryption key before the cluster is created.
+To do this, create a secret with the desired key in advance.
+When starting, the operator checks whether a corresponding secret already exists and uses this instead of a newly generated key.
+Use case: This enables the integration of external secret store solutions (e.g. HashiCorp Vault) to stream or synchronise keys directly into the Kubernetes secret.
+
+{{< hint type=important >}} If you provide your own key, you must ensure that the length of the key (in bytes) matches the configured keybits exactly. 
+| keybits  | Keylength (Byte) | Notes          |
+| -------- |:----------------:| --------------:|
+| 128      | 16 Byte          |                |
+| 192      | 24 Byte	        |                |
+| 256      | 32 Byte          | (Default)      |
+
+A discrepancy between the configured bit length and the actual byte length of the provided key will result in errors when starting the database.
+{{< /hint >}}
+
+The secret name follows the following fixed naming convention: [CLUSTERNAME]-tde
+
+```yaml
+kind: Secret
+apiVersion: v1
+metadata:
+  name: [CLUSTERNAME]-tde
+stringData:
+  key: [TDE-KEY]
+type: Opaque
+```
 
 ### Check TDE-Status
 
 ```sh
+
+sh-5.1$ /usr/pgsql-17/bin/pg_controldata  | grep -i "Encryption"
+Data encryption:                      on
+Encryption key length:                128
+
 [postgres@tde-cluster-1-0 ~]$ psql
-psql (17.4 EE 1.4.1)
+psql (18.1 EE 1.5.0, server 17.7 EE 1.4.4)
  ____   ____ _____ _____
 |  _ \ / ___| ____| ____|
 | |_) | |  _|  _| |  _|

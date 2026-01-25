@@ -1,18 +1,27 @@
-## Problem description
+## Description
+## Type of Change
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Documentation update
 
 
-
-## Linked issues
-
-
+## Linked Issues
+---
 
 ## Checklist
 
-Thanks for submitting a pull request to the Postgres Operator project.
-Please, ensure your contribution matches the following items:
+Thanks for submitting a pull request to the CYBERTEC-pg-operator project!
+Please ensure your contribution matches the following items:
 
-- [ ] Your go code is [formatted](https://blog.golang.org/gofmt). Your IDE should do it automatically for you.
-- [ ] You have updated [generated code](https://github.com/zalando/postgres-operator/blob/master/docs/developer.md#code-generation) when introducing new fields to the `acid.zalan.do` api package.
-- [ ] New [configuration options](https://github.com/zalando/postgres-operator/blob/master/docs/developer.md#introduce-additional-configuration-parameters) are reflected in CRD validation, helm charts and sample manifests.
-- [ ] New functionality is covered by [unit](https://github.com/zalando/postgres-operator/blob/master/docs/developer.md#unit-tests) and/or [e2e](https://github.com/zalando/postgres-operator/blob/master/docs/developer.md#end-to-end-tests) tests.
-- [ ] You have checked existing open PRs for possible overlay and referenced them.
+- [ ] **Code Formatting:** My code follows the Go formatting standards. (Your IDE should do this automatically, or run `go fmt`).
+- [ ] **Generated Code:** I have updated [generated code](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/contribution#code-generation) (clientset, deepcopy) when introducing new fields to the `cpo.opensource.cybertec.at` API package.
+- [ ] **Configuration & CRDs:** New [configuration options](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/contribution#introduce-additional-configuration-parameters) are reflected in:
+    - [ ] The Go struct definitions
+    - [ ] The CRD validation manifests (YAML)
+    - [ ] The Helm Charts
+    - [ ] The sample manifests
+- [ ] **Tests:** New functionality is covered by [unit tests](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/contribution#unit-tests) and/or [e2e tests](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/contribution#end-to-end-tests).
+- [ ] **Existing PRs:** I have checked existing open PRs to ensure there are no duplicates or conflicts.
+
+## How has this been tested?

@@ -1,19 +1,14 @@
 #!/bin/bash
 
-export DEBIAN_FRONTEND=noninteractive
-
 arch=$(dpkg --print-architecture)
 
 set -ex
 
 # Install dependencies
 
-# apt-get update
-# apt-get install -y wget
-
 (
     cd /tmp
-    wget -q "https://go.dev/dl/go1.25.2.linux-${arch}.tar.gz" -O go.tar.gz
+    wget -q "https://go.dev/dl/go1.25.6.linux-${arch}.tar.gz" -O go.tar.gz
     tar -xf go.tar.gz
     mv go /usr/local
     ln -s /usr/local/go/bin/go /usr/bin/go

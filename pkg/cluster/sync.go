@@ -261,21 +261,46 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		return err
 	}
 
+	// Check if Cluster has an Leader
+	needDBAccess := !(c.databaseAccessDisabled() || c.getNumberOfInstances(&newSpec.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress())
+	leaderNotReady := false
+	if err := c.waitForLeader(60 * time.Second); err != nil {
+		c.logger.Infof("Postgres not yet ready for writes (Patroni leader election pending?). Skipping DB sync until next loop: %v", err)
+		leaderNotReady = true
+	}
 	// create database objects unless we are running without pods or disabled that feature explicitly
-	if !(c.databaseAccessDisabled() || c.getNumberOfInstances(&newSpec.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress()) {
+	if needDBAccess && !leaderNotReady {
+
 		c.logger.Debug("syncing roles")
 		if err = c.syncRoles(); err != nil {
 			c.logger.Errorf("could not sync roles: %v", err)
 		}
+
 		c.logger.Debug("syncing databases")
 		if err = c.syncDatabases(); err != nil {
 			c.logger.Errorf("could not sync databases: %v", err)
 		}
+
 		c.logger.Debug("syncing prepared databases with schemas")
 		if err = c.syncPreparedDatabases(); err != nil {
 			c.logger.Errorf("could not sync prepared database: %v", err)
 		}
 	}
+
+	// if !(c.databaseAccessDisabled() || c.getNumberOfInstances(&newSpec.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress()) {
+	// 	c.logger.Debug("syncing roles")
+	// 	if err = c.syncRoles(); err != nil {
+	// 		c.logger.Errorf("could not sync roles: %v", err)
+	// 	}
+	// 	c.logger.Debug("syncing databases")
+	// 	if err = c.syncDatabases(); err != nil {
+	// 		c.logger.Errorf("could not sync databases: %v", err)
+	// 	}
+	// 	c.logger.Debug("syncing prepared databases with schemas")
+	// 	if err = c.syncPreparedDatabases(); err != nil {
+	// 		c.logger.Errorf("could not sync prepared database: %v", err)
+	// 	}
+	// }
 
 	// sync connection pooler
 	if _, err = c.syncConnectionPooler(&oldSpec, newSpec, c.installLookupFunction); err != nil {
@@ -293,9 +318,11 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	// If we are requested to replace database contents with a restore only do so after we have everything
 	// properly set up, but before we try to run the upgrade.
 	restoreId := newSpec.Spec.GetBackup().GetRestoreID()
-	if c.restoreInProgress() || c.Status.RestoreID != restoreId {
-		if err := c.processRestore(newSpec); err != nil {
-			return fmt.Errorf("restoring backup failed: %v", err)
+	if restoreId != "" && newSpec.Status.RestoreID != restoreId {
+		if c.restoreInProgress() || c.Status.RestoreID != restoreId {
+			if err := c.processRestore(newSpec); err != nil {
+				return fmt.Errorf("restoring backup failed: %v", err)
+			}
 		}
 	}
 
@@ -502,27 +529,15 @@ func (c *Cluster) syncStatefulSet() error {
 	if err != nil {
 		c.logger.Warnf("could not list pods of the statefulset: %v", err)
 	}
-	if c.Spec.Monitoring != nil { // XXX: Why are we generating a sidecar in the sync code?
-		monitor := c.Spec.Monitoring
-		sidecar := &cpov1.Sidecar{
-			Name:        "postgres-exporter",
-			DockerImage: monitor.Image,
-			Ports: []v1.ContainerPort{
-				{
-					ContainerPort: monitorPort,
-					Protocol:      v1.ProtocolTCP,
-				},
-			},
-			Env: c.generateMonitoringEnvVars(),
-			SecurityContext: &v1.SecurityContext{
-				AllowPrivilegeEscalation: c.OpConfig.Resources.SpiloAllowPrivilegeEscalation,
-				Privileged:               &c.OpConfig.Resources.SpiloPrivileged,
-				ReadOnlyRootFilesystem:   util.True(),
-				Capabilities:             generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
-			},
+
+	if c.Spec.Monitoring != nil {
+		if exporterSidecar := c.generateExporterSidecar(); exporterSidecar != nil {
+			if !hasSidecar(c.Spec.Sidecars, "postgres-exporter") {
+				c.Spec.Sidecars = append(c.Spec.Sidecars, *exporterSidecar)
+			}
 		}
-		c.Spec.Sidecars = append(c.Spec.Sidecars, *sidecar) //populate the sidecar spec so that the sidecar is automatically created
 	}
+
 	// NB: Be careful to consider the codepath that acts on podsRollingUpdateRequired before returning early.
 	sset, err := c.KubeClient.StatefulSets(c.Namespace).Get(context.TODO(), c.statefulSetName(), metav1.GetOptions{})
 	if err != nil {
@@ -909,8 +924,8 @@ func (c *Cluster) checkAndSetGlobalPostgreSQLConfiguration(pod *v1.Pod, effectiv
 
 	// compare effective and desired parameters under postgresql section in Patroni config
 	for desiredOption, desiredValue := range desiredPgParameters {
-		effectiveValue := effectivePgParameters[desiredOption]
-		if isBootstrapOnlyParameter(desiredOption) && (effectiveValue != desiredValue) {
+		effectiveValue, exists := effectivePgParameters[desiredOption]
+		if isBootstrapOnlyParameter(desiredOption) && (!exists || effectiveValue != desiredValue) {
 			parametersToSet[desiredOption] = desiredValue
 			if util.SliceContains(requirePrimaryRestartWhenDecreased, desiredOption) {
 				effectiveValueNum, errConv := strconv.Atoi(effectiveValue)
@@ -1108,7 +1123,7 @@ func (c *Cluster) updateSecret(
 	}
 
 	if updateSecret {
-		c.logger.Debugln("%s", updateSecretMsg)
+		c.logger.Debugf("%s", updateSecretMsg)
 		if _, err = c.KubeClient.Secrets(secret.Namespace).Update(context.TODO(), secret, metav1.UpdateOptions{}); err != nil {
 			return fmt.Errorf("could not update secret %s: %v", secretName, err)
 		}
@@ -1684,7 +1699,17 @@ func (c *Cluster) syncPgbackrestJob(forceRemove bool) error {
 func (c *Cluster) createTDESecret() error {
 	c.logger.Info("creating TDE secret")
 	c.setProcessName("creating TDE secret")
-	generatedKey := make([]byte, 16)
+
+	var bits int32 = 128
+	ptr := c.Postgresql.Spec.TDE.Keybits
+	if ptr != nil {
+		val := *ptr
+		if val == 256 || val == 192 {
+			bits = val
+		}
+	}
+
+	generatedKey := make([]byte, (bits / 8))
 	rand.Read(generatedKey)
 
 	generatedSecret := v1.Secret{
@@ -1698,11 +1723,17 @@ func (c *Cluster) createTDESecret() error {
 		},
 	}
 	secret, err := c.KubeClient.Secrets(generatedSecret.Namespace).Create(context.TODO(), &generatedSecret, metav1.CreateOptions{})
+
 	if err == nil {
 		c.Secrets[secret.UID] = secret
 		c.logger.Debugf("created new secret %s, namespace: %s, uid: %s", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, secret.UID)
 	} else {
-		return fmt.Errorf("could not create secret for TDE %s: in namespace %s: %v", util.NameFromMeta(secret.ObjectMeta), generatedSecret.Namespace, err)
+
+		if k8sutil.ResourceAlreadyExists(err) {
+			c.logger.Warningf("TDE secret already exists, skip key generation and use existing one.")
+		} else {
+			return fmt.Errorf("could not create secret for TDE %s: in namespace %s: %v", generatedSecret.Name, generatedSecret.Namespace, err)
+		}
 	}
 
 	return nil

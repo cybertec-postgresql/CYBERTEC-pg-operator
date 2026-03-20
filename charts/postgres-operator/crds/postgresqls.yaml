@@ -206,6 +206,12 @@ spec:
                     type: string
                   user:
                     type: string
+                  env:
+                    type: array
+                    nullable: true
+                    items:
+                      type: object
+                      x-kubernetes-preserve-unknown-fields: true
               databases:
                 type: object
                 additionalProperties:
@@ -375,6 +381,18 @@ spec:
                 type: object
                 additionalProperties:
                   type: string
+              monitor:
+                nullable: true
+                properties:
+                  image:
+                    type: string
+                  env:
+                    type: array
+                    nullable: true
+                    items:
+                      type: object
+                      x-kubernetes-preserve-unknown-fields: true
+                type: object
               nodeAffinity:
                 type: object
                 properties:
@@ -553,6 +571,12 @@ spec:
                     type: object
                     additionalProperties:
                       type: string
+                  env:
+                    type: array
+                    nullable: true
+                    items:
+                      type: object
+                      x-kubernetes-preserve-unknown-fields: true
               preparedDatabases:
                 type: object
                 additionalProperties:
@@ -976,6 +1000,12 @@ spec:
                               memory:
                                 type: string
                                 pattern: '^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$'
+                      env:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                          x-kubernetes-preserve-unknown-fields: true
                     required:
                       - image
                       - repos

@@ -3,8 +3,10 @@ package cluster
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/Masterminds/semver"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
@@ -28,6 +30,8 @@ const (
 	majorVersionUpgradeSuccessAnnotation = "last-major-upgrade-success"
 	majorVersionUpgradeFailureAnnotation = "last-major-upgrade-failure"
 )
+
+var errUpgradePrepNotReady = errors.New("cluster not ready for upgrade")
 
 // IsBiggerPostgresVersion Compare two Postgres version numbers
 func IsBiggerPostgresVersion(old string, new string) bool {
@@ -232,12 +236,14 @@ func (c *Cluster) majorVersionUpgrade() error {
 			continue
 		}
 		if checkStreaming && member.State != "streaming" {
-			c.logger.Infof("skipping major version upgrade, replica %s is not streaming from primary", member.Name)
-			return nil
+			// c.logger.Infof("skipping major version upgrade, replica %s is not streaming from primary", member.Name)
+			// return nil
+			return fmt.Errorf("%w: replica %s is not streaming (state: %s)", errUpgradePrepNotReady, member.Name, member.State)
 		}
 		if member.Lag > 16*1024*1024 {
-			c.logger.Infof("skipping major version upgrade, replication lag on member %s is too high", member.Name)
-			return nil
+			// c.logger.Infof("skipping major version upgrade, replication lag on member %s is too high", member.Name)
+			// return nil
+			return fmt.Errorf("%w: replication lag on member %s is too high (%d bytes)", errUpgradePrepNotReady, member.Name, member.Lag)
 		}
 	}
 
@@ -246,11 +252,10 @@ func (c *Cluster) majorVersionUpgrade() error {
 	if allRunning {
 		c.logger.Infof("healthy cluster ready to upgrade, current: %d desired: %d", c.currentMajorVersion, desiredVersion)
 		if c.currentMajorVersion < desiredVersion {
-			defer func() error {
-				if err = c.criticalOperationLabel(pods, nil); err != nil {
-					return fmt.Errorf("failed to remove critical-operation label: %s", err)
+			defer func() {
+				if err := c.criticalOperationLabel(pods, nil); err != nil {
+					c.logger.Errorf("failed to remove critical-operation label: %v", err)
 				}
-				return nil
 			}()
 			val := "true"
 			if err = c.criticalOperationLabel(pods, &val); err != nil {
@@ -260,9 +265,9 @@ func (c *Cluster) majorVersionUpgrade() error {
 			podName := &spec.NamespacedName{Namespace: masterPod.Namespace, Name: masterPod.Name}
 			c.logger.Infof("triggering major version upgrade on pod %s of %d pods", masterPod.Name, numberOfPods)
 			c.eventRecorder.Eventf(c.GetReference(), v1.EventTypeNormal, "Major Version Upgrade", "starting major version upgrade on pod %s of %d pods", masterPod.Name, numberOfPods)
-			upgradeCommand := fmt.Sprintf("set -o pipefail && /usr/bin/python3 /scripts/inplace_upgrade.py %d 2>&1 | tee last_upgrade.log", numberOfPods)
+			upgradeCommand := fmt.Sprintf("set -o pipefail && /usr/local/bin/python3 /scripts/inplace_upgrade.py %d 2>&1 | tee last_upgrade.log", numberOfPods)
 
-			c.logger.Debug("checking if the spilo image runs with root or non-root (check for user id=0)")
+			c.logger.Debug("checking if the container runs with root or non-root (check for user id=0)")
 			resultIdCheck, errIdCheck := c.ExecCommand(podName, "/bin/bash", "-c", "/usr/bin/id -u")
 			if errIdCheck != nil {
 				c.eventRecorder.Eventf(c.GetReference(), v1.EventTypeWarning, "Major Version Upgrade", "checking user id to run upgrade from %d to %d FAILED: %v", c.currentMajorVersion, desiredVersion, errIdCheck)
@@ -293,4 +298,27 @@ func (c *Cluster) majorVersionUpgrade() error {
 	}
 
 	return nil
+}
+
+func (c *Cluster) executeMajorVersionUpgrade() error {
+	maxRetries := 6
+	var lastErr error
+
+	for i := 0; i < maxRetries; i++ {
+		lastErr = c.majorVersionUpgrade()
+		if lastErr == nil {
+			return nil
+		}
+
+		if errors.Is(lastErr, errUpgradePrepNotReady) {
+			c.logger.Warnf("Major version upgrade deferred (attempt %d/%d): %v. Retrying in 15s...", i+1, maxRetries, lastErr)
+
+			if i < maxRetries-1 {
+				time.Sleep(15 * time.Second)
+				continue
+			}
+		}
+		return lastErr
+	}
+	return lastErr
 }

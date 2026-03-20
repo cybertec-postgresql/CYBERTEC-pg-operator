@@ -172,6 +172,7 @@ func generateSerialNumber() (*big.Int, error) {
 // Unlike the update, sync does not error out if some objects do not exist and takes care of creating them.
 func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	var err error
+	syncFailed := false
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -326,9 +327,21 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		}
 	}
 
-	// Major version upgrade must only run after success of all earlier operations, must remain last item in sync
-	if err := c.majorVersionUpgrade(); err != nil {
-		c.logger.Errorf("major version upgrade failed: %v", err)
+	if err != nil {
+		syncFailed = true
+	}
+	if !syncFailed {
+		err = c.executeMajorVersionUpgrade()
+		if err != nil {
+			c.logger.Errorf("major version upgrade failed after retries: %v", err)
+			syncFailed = true
+		}
+	}
+
+	if syncFailed {
+		c.logger.Errorf("Update for cluster %s/%s finished with errors..", c.Namespace, c.Name)
+	} else {
+		c.logger.Infof("Update for cluster %s/%s completed successfully.", c.Namespace, c.Name)
 	}
 
 	return err

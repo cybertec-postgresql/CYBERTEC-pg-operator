@@ -759,6 +759,16 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 									},
 								},
 							},
+							"env": {
+								Type:     "array",
+								Nullable: true,
+								Items: &apiextv1.JSONSchemaPropsOrArray{
+									Schema: &apiextv1.JSONSchemaProps{
+										Type:                   "object",
+										XPreserveUnknownFields: util.True(),
+									},
+								},
+							},
 						},
 					},
 					"preparedDatabases": {
@@ -1378,6 +1388,16 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 															},
 														},
 													},
+													"env": {
+														Type:     "array",
+														Nullable: true,
+														Items: &apiextv1.JSONSchemaPropsOrArray{
+															Schema: &apiextv1.JSONSchemaProps{
+																Type:                   "object",
+																XPreserveUnknownFields: util.True(),
+															},
+														},
+													},
 												},
 											},
 										},
@@ -1464,6 +1484,16 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 						Properties: map[string]apiextv1.JSONSchemaProps{
 							"image": {
 								Type: "string",
+							},
+							"env": {
+								Type:     "array",
+								Nullable: true,
+								Items: &apiextv1.JSONSchemaPropsOrArray{
+									Schema: &apiextv1.JSONSchemaProps{
+										Type:                   "object",
+										XPreserveUnknownFields: util.True(),
+									},
+								},
 							},
 						},
 					},
@@ -2310,6 +2340,16 @@ var OperatorConfigCRDResourceValidation = apiextv1.CustomResourceValidation{
 							},
 							"connection_pooler_user": {
 								Type: "string",
+							},
+							"env": {
+								Type:     "array",
+								Nullable: true,
+								Items: &apiextv1.JSONSchemaPropsOrArray{
+									Schema: &apiextv1.JSONSchemaProps{
+										Type:                   "object",
+										XPreserveUnknownFields: util.True(),
+									},
+								},
 							},
 						},
 					},

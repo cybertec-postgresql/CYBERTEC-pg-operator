@@ -1662,7 +1662,7 @@ func (c *Cluster) syncPgbackrestJob(forceRemove bool) error {
 				for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
 					for name, schedule := range repo.Schedule {
 						if rep == repo.Name && name == schedul {
-							job, err := c.generatePgbackrestJob(c.Postgresql.Spec.Backup.Pgbackrest, &repo, name, schedule)
+							job, err := c.generatePgbackrestJob(&c.Postgresql.Spec, c.Postgresql.Spec.Backup.Pgbackrest, &repo, name, schedule)
 							if err != nil {
 								return fmt.Errorf("could not generate pgbackrest job: %v", err)
 							}

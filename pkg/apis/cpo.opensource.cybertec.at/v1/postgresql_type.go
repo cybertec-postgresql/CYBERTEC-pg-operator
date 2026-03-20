@@ -154,6 +154,7 @@ type AdditionalVolume struct {
 type PostgresqlParam struct {
 	PgVersion  string            `json:"version"`
 	Parameters map[string]string `json:"parameters,omitempty"`
+	Env        []v1.EnvVar       `json:"env,omitempty"`
 }
 
 // ResourceDescription describes CPU and memory resources defined for a cluster.
@@ -246,12 +247,13 @@ type PostgresStatus struct {
 // makes sense to expose. E.g. pool size (min/max boundaries), max client
 // connections etc.
 type ConnectionPooler struct {
-	NumberOfInstances *int32 `json:"numberOfInstances,omitempty"`
-	Schema            string `json:"schema,omitempty"`
-	User              string `json:"user,omitempty"`
-	Mode              string `json:"mode,omitempty"`
-	DockerImage       string `json:"dockerImage,omitempty"`
-	MaxDBConnections  *int32 `json:"maxDBConnections,omitempty"`
+	NumberOfInstances *int32      `json:"numberOfInstances,omitempty"`
+	Schema            string      `json:"schema,omitempty"`
+	User              string      `json:"user,omitempty"`
+	Mode              string      `json:"mode,omitempty"`
+	DockerImage       string      `json:"dockerImage,omitempty"`
+	MaxDBConnections  *int32      `json:"maxDBConnections,omitempty"`
+	Env               []v1.EnvVar `json:"env,omitempty"`
 
 	*Resources `json:"resources,omitempty"`
 }
@@ -285,6 +287,7 @@ type Pgbackrest struct {
 	Restore       Restore           `json:"restore"`
 	Configuration Configuration     `json:"configuration"`
 	Resources     *Resources        `json:"resources,omitempty"`
+	Env           []v1.EnvVar       `json:"env,omitempty"`
 }
 
 type PgbackrestClone struct {
@@ -323,7 +326,8 @@ type TDE struct {
 
 // Monitoring Sidecar defines a container to be run in the same pod as the Postgres container.
 type Monitoring struct {
-	Image string `json:"image,omitempty"`
+	Image string      `json:"image,omitempty"`
+	Env   []v1.EnvVar `json:"env,omitempty"`
 }
 
 // Multisite enables cross Kubernetes replication coordinated via etcd

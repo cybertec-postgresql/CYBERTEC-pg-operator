@@ -218,7 +218,7 @@ func (c *Cluster) getConnectionPoolerEnvVars() []v1.EnvVar {
 	minSize := defaultSize / 2
 	reserveSize := minSize
 
-	return []v1.EnvVar{
+	envVars := []v1.EnvVar{
 		{
 			Name:  "CONNECTION_POOLER_PORT",
 			Value: fmt.Sprint(pgPort),
@@ -248,6 +248,17 @@ func (c *Cluster) getConnectionPoolerEnvVars() []v1.EnvVar {
 			Value: fmt.Sprint(maxDBConn),
 		},
 	}
+
+	// fetch connection_pooler-specific variables that will override all subsequent global variables
+	if len(connectionPoolerSpec.Env) > 0 {
+		envVars = appendEnvVars(envVars, connectionPoolerSpec.Env...)
+	}
+	// fetch cluster-specific variables that will override all subsequent global variables
+	if len(spec.Env) > 0 {
+		envVars = appendEnvVars(envVars, spec.Env...)
+	}
+
+	return envVars
 }
 
 func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (

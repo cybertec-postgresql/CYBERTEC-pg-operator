@@ -1081,6 +1081,10 @@ func (c *Cluster) generateSpiloPodEnvVars(
 		envVars = append(envVars, v1.EnvVar{Name: "KUBERNETES_USE_CONFIGMAPS", Value: "true"})
 	}
 
+	// fetch postgres-specific variables that will override all subsequent global variables
+	if len(spec.PostgresqlParam.Env) > 0 {
+		envVars = appendEnvVars(envVars, spec.Env...)
+	}
 	// fetch cluster-specific variables that will override all subsequent global variables
 	if len(spec.Env) > 0 {
 		envVars = appendEnvVars(envVars, spec.Env...)

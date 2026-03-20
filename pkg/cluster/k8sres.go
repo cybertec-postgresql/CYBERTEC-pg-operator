@@ -3143,8 +3143,8 @@ func (c *Cluster) getMonitoringSecretName() string {
 		"tprgroup", cpo.GroupName)
 }
 
-func (c *Cluster) generateMonitoringEnvVars() []v1.EnvVar {
-	env := []v1.EnvVar{
+func (c *Cluster) generateMonitoringEnvVars(spec *cpov1.PostgresSpec, monitor *cpov1.Monitoring) []v1.EnvVar {
+	envVars := []v1.EnvVar{
 		{
 			Name:  "DATA_SOURCE_URI",
 			Value: "localhost:5432/postgres?sslmode=disable",
@@ -3165,7 +3165,17 @@ func (c *Cluster) generateMonitoringEnvVars() []v1.EnvVar {
 			},
 		},
 	}
-	return env
+
+	// fetch monitoring-specific variables that will override all subsequent global variables
+	if len(monitor.Env) > 0 {
+		envVars = appendEnvVars(envVars, monitor.Env...)
+	}
+	// fetch cluster-specific variables that will override all subsequent global variables
+	if len(spec.Env) > 0 {
+		envVars = appendEnvVars(envVars, spec.Env...)
+	}
+
+	return envVars
 }
 
 func (c *Cluster) getPgbackrestRestoreConfigmapName() (jobName string) {

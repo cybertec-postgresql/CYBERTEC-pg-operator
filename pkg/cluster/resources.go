@@ -88,7 +88,7 @@ func (c *Cluster) generateExporterSidecar() *cpov1.Sidecar {
 				Protocol:      v1.ProtocolTCP,
 			},
 		},
-		Env: c.generateMonitoringEnvVars(),
+		Env: c.generateMonitoringEnvVars(&c.Postgresql.Spec, monitor),
 		SecurityContext: &v1.SecurityContext{
 			AllowPrivilegeEscalation: c.OpConfig.Resources.SpiloAllowPrivilegeEscalation,
 			Privileged:               &c.OpConfig.Resources.SpiloPrivileged,

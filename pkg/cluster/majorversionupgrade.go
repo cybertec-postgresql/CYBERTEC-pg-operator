@@ -265,8 +265,7 @@ func (c *Cluster) majorVersionUpgrade() error {
 			podName := &spec.NamespacedName{Namespace: masterPod.Namespace, Name: masterPod.Name}
 			c.logger.Infof("triggering major version upgrade on pod %s of %d pods", masterPod.Name, numberOfPods)
 			c.eventRecorder.Eventf(c.GetReference(), v1.EventTypeNormal, "Major Version Upgrade", "starting major version upgrade on pod %s of %d pods", masterPod.Name, numberOfPods)
-			upgradeCommand := fmt.Sprintf("set -o pipefail && /usr/local/bin/python3 /scripts/inplace_upgrade.py %d 2>&1 | tee last_upgrade.log", numberOfPods)
-
+			upgradeCommand := fmt.Sprintf("/usr/local/bin/python3 /scripts/inplace_upgrade.py %d 2>&1", numberOfPods)
 			c.logger.Debug("checking if the container runs with root or non-root (check for user id=0)")
 			resultIdCheck, errIdCheck := c.ExecCommand(podName, "/bin/bash", "-c", "/usr/bin/id -u")
 			if errIdCheck != nil {
@@ -274,26 +273,39 @@ func (c *Cluster) majorVersionUpgrade() error {
 			}
 
 			resultIdCheck = strings.TrimSuffix(resultIdCheck, "\n")
-			var result, scriptErrMsg string
+			var result string
+
 			if resultIdCheck != "0" {
 				c.logger.Infof("user id was identified as: %s, hence default user is non-root already", resultIdCheck)
 				result, err = c.ExecCommand(podName, "/bin/bash", "-c", upgradeCommand)
-				scriptErrMsg, _ = c.ExecCommand(podName, "/bin/bash", "-c", "tail -n 1 last_upgrade.log")
 			} else {
 				c.logger.Infof("user id was identified as: %s, using su to reach the postgres user", resultIdCheck)
 				result, err = c.ExecCommand(podName, "/bin/su", "postgres", "-c", upgradeCommand)
-				scriptErrMsg, _ = c.ExecCommand(podName, "/bin/bash", "-c", "tail -n 1 last_upgrade.log")
 			}
+
 			if err != nil {
 				isUpgradeSuccess = false
 				c.annotatePostgresResource(isUpgradeSuccess)
-				c.eventRecorder.Eventf(c.GetReference(), v1.EventTypeWarning, "Major Version Upgrade", "upgrade from %d to %d FAILED: %v", c.currentMajorVersion, desiredVersion, scriptErrMsg)
-				return fmt.Errorf("%s", scriptErrMsg)
+
+				finalErrorMsg := strings.TrimSpace(result)
+				if finalErrorMsg == "" {
+					finalErrorMsg = err.Error()
+				}
+
+				lines := strings.Split(finalErrorMsg, "\n")
+				if len(lines) > 5 {
+					finalErrorMsg = strings.Join(lines[len(lines)-5:], " | ")
+				}
+
+				c.logger.Errorf("Major upgrade failed: %v", err)
+				c.eventRecorder.Eventf(c.GetReference(), v1.EventTypeWarning, "Major Version Upgrade", "upgrade from %d to %d FAILED: %s", c.currentMajorVersion, desiredVersion, finalErrorMsg)
+
+				return fmt.Errorf("upgrade script failed: %s", finalErrorMsg)
 			}
 
 			c.annotatePostgresResource(isUpgradeSuccess)
 			c.logger.Infof("upgrade action triggered and command completed: %s", result[:100])
-			c.eventRecorder.Eventf(c.GetReference(), v1.EventTypeNormal, "Major Version Upgrade", "upgrade from %d to %d finished", c.currentMajorVersion, desiredVersion)
+			c.eventRecorder.Eventf(c.GetReference(), v1.EventTypeNormal, "Major Version Upgrade", "major version upgrade from version %d to version %d was successfully completed.", c.currentMajorVersion, desiredVersion)
 		}
 	}
 

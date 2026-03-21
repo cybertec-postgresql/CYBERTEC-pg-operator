@@ -31,6 +31,7 @@ CPO relies on pgBouncer, a popular and above all lightweight open source tool. p
 - connection_poole.max_db_connections - How many connections the pooler can max hold. This value is divided among the pooler pods. Default is 60 which will make up 30 connections per pod for the default setup with two instances.
 - connection_pooler.mode - Defines pooler mode. Available Value:  `session`,  `transaction` or `statement`. Default is `transaction`.
 - connection_pooler.resources - Hardware definition for the pooler pods
+- env: Allows you to add custom environment variables
 
 - enableConnectionPooler - Defines whether poolers for read/write access should be created based on the spec.connectionPooler definition. 
 - enableReplicaConnectionPooler- Defines whether poolers for read-only access should be created based on the spec.connectionPooler definition. 
@@ -38,6 +39,9 @@ CPO relies on pgBouncer, a popular and above all lightweight open source tool. p
 ```
 spec:
   connectionPooler:
+    env:
+      - name: POOLER_ENV
+        value: 'custom value'
     mode: transaction
     numberOfInstances: 2
     resources:

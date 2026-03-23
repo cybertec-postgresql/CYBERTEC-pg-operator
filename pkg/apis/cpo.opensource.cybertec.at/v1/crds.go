@@ -348,6 +348,14 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 									},
 								},
 							},
+							"labels": {
+								Type: "array",
+								Items: &apiextv1.JSONSchemaPropsOrArray{
+									Schema: &apiextv1.JSONSchemaProps{
+										Type: "string",
+									},
+								},
+							},
 						},
 					},
 					"databases": {
@@ -392,6 +400,14 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							Schema: &apiextv1.JSONSchemaProps{
 								Type:                   "object",
 								XPreserveUnknownFields: util.True(),
+							},
+						},
+					},
+					"labels": {
+						Type: "array",
+						Items: &apiextv1.JSONSchemaPropsOrArray{
+							Schema: &apiextv1.JSONSchemaProps{
+								Type: "string",
 							},
 						},
 					},
@@ -776,6 +792,14 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 									Schema: &apiextv1.JSONSchemaProps{
 										Type:                   "object",
 										XPreserveUnknownFields: util.True(),
+									},
+								},
+							},
+							"labels": {
+								Type: "array",
+								Items: &apiextv1.JSONSchemaPropsOrArray{
+									Schema: &apiextv1.JSONSchemaProps{
+										Type: "string",
 									},
 								},
 							},
@@ -1463,6 +1487,14 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 											},
 										},
 									},
+									"labels": {
+										Type: "array",
+										Items: &apiextv1.JSONSchemaPropsOrArray{
+											Schema: &apiextv1.JSONSchemaProps{
+												Type: "string",
+											},
+										},
+									},
 								},
 							},
 						},
@@ -1502,6 +1534,14 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 									Schema: &apiextv1.JSONSchemaProps{
 										Type:                   "object",
 										XPreserveUnknownFields: util.True(),
+									},
+								},
+							},
+							"labels": {
+								Type: "array",
+								Items: &apiextv1.JSONSchemaPropsOrArray{
+									Schema: &apiextv1.JSONSchemaProps{
+										Type: "string",
 									},
 								},
 							},

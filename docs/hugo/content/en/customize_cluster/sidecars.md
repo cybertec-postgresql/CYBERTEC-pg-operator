@@ -2,7 +2,7 @@
 title: "Sidecars"
 date: 2023-12-28T14:26:51+01:00
 draft: false
-weight: 1
+weight: 2
 ---
 Starting with the Single-Node-Cluster from the previous section, we want to modify the Instance a bit to see. 
 ## CPU and Memory

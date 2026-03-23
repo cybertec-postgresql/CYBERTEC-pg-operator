@@ -1537,14 +1537,6 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 									},
 								},
 							},
-							"labels": {
-								Type: "array",
-								Items: &apiextv1.JSONSchemaPropsOrArray{
-									Schema: &apiextv1.JSONSchemaProps{
-										Type: "string",
-									},
-								},
-							},
 						},
 					},
 				},

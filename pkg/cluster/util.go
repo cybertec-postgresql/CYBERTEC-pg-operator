@@ -556,6 +556,11 @@ func (c *Cluster) labelsSetWithType(shouldAddExtraLabels bool, typeLabel PodType
 			for _, label := range c.Postgresql.Spec.PostgresqlParam.Labels {
 				lbls[label.Name] = label.Value
 			}
+			if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
+				for _, label := range c.Postgresql.Spec.Backup.Pgbackrest.Labels {
+					lbls[label.Name] = label.Value
+				}
+			}
 
 		case TYPE_REPOSITORY, TYPE_BACKUP_JOB:
 			if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {

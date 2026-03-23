@@ -548,6 +548,30 @@ func (c *Cluster) labelsSetWithType(shouldAddExtraLabels bool, typeLabel PodType
 	}
 
 	if shouldAddExtraLabels {
+		for _, label := range c.Postgresql.Spec.Labels {
+			lbls[label.Name] = label.Value
+		}
+		switch typeLabel {
+		case TYPE_POSTGRESQL:
+			for _, label := range c.Postgresql.Spec.PostgresqlParam.Labels {
+				lbls[label.Name] = label.Value
+			}
+
+		case TYPE_REPOSITORY, TYPE_BACKUP_JOB:
+			if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
+				for _, label := range c.Postgresql.Spec.Backup.Pgbackrest.Labels {
+					lbls[label.Name] = label.Value
+				}
+			}
+
+		case TYPE_POOLER:
+			if c.Postgresql.Spec.ConnectionPooler != nil {
+				for _, label := range c.Postgresql.Spec.ConnectionPooler.Labels {
+					lbls[label.Name] = label.Value
+				}
+			}
+		}
+
 		// enables filtering resources owned by a team
 		lbls["team"] = c.Postgresql.Spec.TeamID
 

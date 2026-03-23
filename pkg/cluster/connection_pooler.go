@@ -2,7 +2,9 @@ package cluster
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"reflect"
 	"strings"
 	"time"
 
@@ -683,14 +685,19 @@ func updateConnectionPoolerDeployment(KubeClient k8sutil.KubernetesClient, newDe
 		return nil, fmt.Errorf("there is no connection pooler in the cluster")
 	}
 
-	patchData, err := specPatch(newDeployment.Spec)
+	// Wir erstellen ein kombiniertes Patch-Objekt
+	patch := map[string]interface{}{
+		"metadata": map[string]interface{}{
+			"labels": newDeployment.Labels,
+		},
+		"spec": newDeployment.Spec,
+	}
+
+	patchData, err := json.Marshal(patch)
 	if err != nil {
 		return nil, fmt.Errorf("could not form patch for the connection pooler deployment: %v", err)
 	}
 
-	// An update probably requires RetryOnConflict, but since only one operator
-	// worker at one time will try to update it chances of conflicts are
-	// minimal.
 	deployment, err := KubeClient.
 		Deployments(newDeployment.Namespace).Patch(
 		context.TODO(),
@@ -1009,47 +1016,31 @@ func (c *Cluster) syncConnectionPoolerWorker(oldSpec, newSpec *cpov1.Postgresql,
 		c.ConnectionPooler[role].Deployment = deployment
 		// actual synchronization
 
-		var oldConnectionPooler *cpov1.ConnectionPooler
-
-		if oldSpec != nil {
-			oldConnectionPooler = oldSpec.Spec.ConnectionPooler
-		}
-
-		newConnectionPooler := newSpec.Spec.ConnectionPooler
-		// sync implementation below assumes that both old and new specs are
-		// not nil, but it can happen. To avoid any confusion like updating a
-		// deployment because the specification changed from nil to an empty
-		// struct (that was initialized somewhere before) replace any nil with
-		// an empty spec.
-		if oldConnectionPooler == nil {
-			oldConnectionPooler = &cpov1.ConnectionPooler{}
-		}
-
-		if newConnectionPooler == nil {
-			newConnectionPooler = &cpov1.ConnectionPooler{}
+		desired, err := c.generateConnectionPoolerDeployment(c.ConnectionPooler[role])
+		if err != nil {
+			return NoSync, fmt.Errorf("could not generate desired deployment: %v", err)
 		}
 
 		var specSync bool
 		var specReason []string
 
+		labelsSync := !reflect.DeepEqual(deployment.Labels, desired.Labels)
+		if labelsSync {
+			syncReason = append(syncReason, "labels changed")
+		}
+
 		if oldSpec != nil {
-			specSync, specReason = needSyncConnectionPoolerSpecs(oldConnectionPooler, newConnectionPooler, c.logger)
+			specSync, specReason = needSyncConnectionPoolerSpecs(oldSpec.Spec.ConnectionPooler, newSpec.Spec.ConnectionPooler, c.logger)
 			syncReason = append(syncReason, specReason...)
 		}
 
-		defaultsSync, defaultsReason := c.needSyncConnectionPoolerDefaults(&c.Config, newConnectionPooler, deployment)
+		defaultsSync, defaultsReason := c.needSyncConnectionPoolerDefaults(&c.Config, newSpec.Spec.ConnectionPooler, deployment)
 		syncReason = append(syncReason, defaultsReason...)
 
-		if specSync || defaultsSync {
-			c.logger.Infof("update connection pooler deployment %s, reason: %+v",
-				c.connectionPoolerName(role), syncReason)
-			newDeployment, err = c.generateConnectionPoolerDeployment(c.ConnectionPooler[role])
-			if err != nil {
-				return syncReason, fmt.Errorf("could not generate deployment for connection pooler: %v", err)
-			}
+		if labelsSync || specSync || defaultsSync {
+			c.logger.Infof("update connection pooler deployment %s, reason: %+v", c.connectionPoolerName(role), syncReason)
 
-			deployment, err = updateConnectionPoolerDeployment(c.KubeClient, newDeployment)
-
+			deployment, err = updateConnectionPoolerDeployment(c.KubeClient, desired)
 			if err != nil {
 				return syncReason, err
 			}

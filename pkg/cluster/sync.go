@@ -172,6 +172,7 @@ func generateSerialNumber() (*big.Int, error) {
 // Unlike the update, sync does not error out if some objects do not exist and takes care of creating them.
 func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	var err error
+	var syncErrors []error
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -234,7 +235,8 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	if err = c.syncStatefulSet(); err != nil {
 		if !k8sutil.ResourceAlreadyExists(err) {
 			err = fmt.Errorf("could not sync statefulsets: %v", err)
-			return err
+			syncErrors = append(syncErrors, err)
+			// return err
 		}
 	}
 
@@ -304,7 +306,9 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 
 	// sync connection pooler
 	if _, err = c.syncConnectionPooler(&oldSpec, newSpec, c.installLookupFunction); err != nil {
-		return fmt.Errorf("could not sync connection pooler: %v", err)
+		// return fmt.Errorf("could not sync connection pooler: %v", err)
+		err = fmt.Errorf("could not sync connection pooler: %v", err)
+		syncErrors = append(syncErrors, err)
 	}
 
 	if len(c.Spec.Streams) > 0 {
@@ -331,7 +335,11 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		c.logger.Errorf("major version upgrade failed: %v", err)
 	}
 
-	return err
+	if len(syncErrors) > 0 {
+		return fmt.Errorf("multiple sync errors: %v", syncErrors)
+	}
+	return nil
+	// return err
 }
 
 func (c *Cluster) deletePgbackrestRepoHostObjects() error {

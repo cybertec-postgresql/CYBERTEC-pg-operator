@@ -349,10 +349,12 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 								},
 							},
 							"labels": {
-								Type: "array",
+								Type:     "array",
+								Nullable: true,
 								Items: &apiextv1.JSONSchemaPropsOrArray{
 									Schema: &apiextv1.JSONSchemaProps{
-										Type: "string",
+										Type:                   "object",
+										XPreserveUnknownFields: util.True(),
 									},
 								},
 							},
@@ -404,10 +406,12 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 						},
 					},
 					"labels": {
-						Type: "array",
+						Type:     "array",
+						Nullable: true,
 						Items: &apiextv1.JSONSchemaPropsOrArray{
 							Schema: &apiextv1.JSONSchemaProps{
-								Type: "string",
+								Type:                   "object",
+								XPreserveUnknownFields: util.True(),
 							},
 						},
 					},
@@ -796,10 +800,12 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 								},
 							},
 							"labels": {
-								Type: "array",
+								Type:     "array",
+								Nullable: true,
 								Items: &apiextv1.JSONSchemaPropsOrArray{
 									Schema: &apiextv1.JSONSchemaProps{
-										Type: "string",
+										Type:                   "object",
+										XPreserveUnknownFields: util.True(),
 									},
 								},
 							},
@@ -1488,10 +1494,12 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 										},
 									},
 									"labels": {
-										Type: "array",
+										Type:     "array",
+										Nullable: true,
 										Items: &apiextv1.JSONSchemaPropsOrArray{
 											Schema: &apiextv1.JSONSchemaProps{
-												Type: "string",
+												Type:                   "object",
+												XPreserveUnknownFields: util.True(),
 											},
 										},
 									},

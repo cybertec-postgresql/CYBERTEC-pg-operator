@@ -213,11 +213,10 @@ spec:
                       type: object
                       x-kubernetes-preserve-unknown-fields: true
                   labels:
-                    type: array
+                    type: object
                     nullable: true
-                    items:
-                      type: object
-                      x-kubernetes-preserve-unknown-fields: true
+                    additionalProperties:
+                      type: string
               databases:
                 type: object
                 additionalProperties:
@@ -584,11 +583,10 @@ spec:
                       type: object
                       x-kubernetes-preserve-unknown-fields: true
                   labels:
-                    type: array
+                    type: object
                     nullable: true
-                    items:
-                      type: object
-                      x-kubernetes-preserve-unknown-fields: true
+                    additionalProperties:
+                      type: string
               preparedDatabases:
                 type: object
                 additionalProperties:
@@ -1019,11 +1017,10 @@ spec:
                           type: object
                           x-kubernetes-preserve-unknown-fields: true
                       labels:
-                        type: array
+                        type: object
                         nullable: true
-                        items:
-                          type: object
-                          x-kubernetes-preserve-unknown-fields: true
+                        additionalProperties:
+                          type: string
                     required:
                       - image
                       - repos

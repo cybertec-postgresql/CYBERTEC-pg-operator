@@ -398,7 +398,7 @@ func (c *Cluster) waitStatefulsetReady() error {
 	return retryutil.Retry(c.OpConfig.ResourceCheckInterval, c.OpConfig.ResourceCheckTimeout,
 		func() (bool, error) {
 			listOptions := metav1.ListOptions{
-				LabelSelector: c.labelsSetWithType(false, TYPE_POSTGRESQL).String(),
+				LabelSelector: c.labelsSetWithType(false, TYPE_POSTGRESQL, false).String(),
 			}
 			ss, err := c.KubeClient.StatefulSets(c.Namespace).List(context.TODO(), listOptions)
 			if err != nil {
@@ -417,7 +417,7 @@ func (c *Cluster) _waitPodLabelsReady(anyReplica bool) error {
 	var (
 		podsNumber int
 	)
-	ls := c.labelsSetWithType(false, TYPE_POSTGRESQL)
+	ls := c.labelsSetWithType(false, TYPE_POSTGRESQL, false)
 	namespace := c.Namespace
 
 	listOptions := metav1.ListOptions{
@@ -534,53 +534,26 @@ func (c *Cluster) getPrimaryLoadBalancerIp() (string, error) {
 // For backward compatibility, shouldAddExtraLabels must be false
 // when listing k8s objects. See operator PR #252
 func (c *Cluster) labelsSet(shouldAddExtraLabels bool) labels.Set {
-	return c.labelsSetWithType(shouldAddExtraLabels, "")
+	return c.labelsSetWithType(shouldAddExtraLabels, "", false)
 }
 
-func (c *Cluster) labelsSetWithType(shouldAddExtraLabels bool, typeLabel PodType) labels.Set {
+func (c *Cluster) labelsSetWithType(shouldAddExtraLabels bool, typeLabel PodType, isPod bool) labels.Set {
 	lbls := make(map[string]string)
+
+	// Basic Labels
 	for k, v := range c.OpConfig.ClusterLabels {
 		lbls[k] = v
 	}
 	lbls[c.OpConfig.ClusterNameLabel] = c.Name
+
 	if typeLabel != "" {
 		lbls["member.cpo.opensource.cybertec.at/type"] = string(typeLabel)
 	}
 
+	// extraLabels (inherited_labels, ...)
 	if shouldAddExtraLabels {
-		for _, label := range c.Postgresql.Spec.Labels {
-			lbls[label.Name] = label.Value
-		}
-		switch typeLabel {
-		case TYPE_POSTGRESQL:
-			for _, label := range c.Postgresql.Spec.PostgresqlParam.Labels {
-				lbls[label.Name] = label.Value
-			}
-			if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
-				for _, label := range c.Postgresql.Spec.Backup.Pgbackrest.Labels {
-					lbls[label.Name] = label.Value
-				}
-			}
-
-		case TYPE_REPOSITORY, TYPE_BACKUP_JOB:
-			if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
-				for _, label := range c.Postgresql.Spec.Backup.Pgbackrest.Labels {
-					lbls[label.Name] = label.Value
-				}
-			}
-
-		case TYPE_POOLER:
-			if c.Postgresql.Spec.ConnectionPooler != nil {
-				for _, label := range c.Postgresql.Spec.ConnectionPooler.Labels {
-					lbls[label.Name] = label.Value
-				}
-			}
-		}
-
-		// enables filtering resources owned by a team
 		lbls["team"] = c.Postgresql.Spec.TeamID
 
-		// allow to inherit certain labels from the 'postgres' object
 		if spec, err := c.GetSpec(); err == nil {
 			for k, v := range spec.ObjectMeta.Labels {
 				for _, match := range c.OpConfig.InheritedLabels {
@@ -594,21 +567,52 @@ func (c *Cluster) labelsSetWithType(shouldAddExtraLabels bool, typeLabel PodType
 		}
 	}
 
+	// add custom labels
+	if isPod && typeLabel != "" {
+		// global labels
+		for _, label := range c.Postgresql.Spec.Labels {
+			lbls[label.Name] = label.Value
+		}
+		switch typeLabel {
+		case TYPE_POSTGRESQL:
+			// pg-specific labels
+			for _, label := range c.Postgresql.Spec.PostgresqlParam.Labels {
+				lbls[label.Name] = label.Value
+			}
+
+		case TYPE_REPOSITORY, TYPE_BACKUP_JOB:
+			if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
+				// backup-specific labels
+				for _, label := range c.Postgresql.Spec.Backup.Pgbackrest.Labels {
+					lbls[label.Name] = label.Value
+				}
+			}
+
+		case TYPE_POOLER:
+			if c.Postgresql.Spec.ConnectionPooler != nil {
+				// pooler-specific labels
+				for _, label := range c.Postgresql.Spec.ConnectionPooler.Labels {
+					lbls[label.Name] = label.Value
+				}
+			}
+		}
+	}
+
 	return labels.Set(lbls)
 }
 
 func (c *Cluster) labelsSelector(typeLabel PodType) *metav1.LabelSelector {
 	return &metav1.LabelSelector{
-		MatchLabels:      c.labelsSetWithType(false, typeLabel),
+		MatchLabels:      c.labelsSetWithType(false, typeLabel, false),
 		MatchExpressions: nil,
 	}
 }
 
 func (c *Cluster) roleLabelsSelector(role PostgresRole) *metav1.LabelSelector {
-	lbls := c.labelsSetWithType(false, TYPE_POSTGRESQL)
+	lbls := c.labelsSetWithType(false, TYPE_POSTGRESQL, false)
 	lbls[c.OpConfig.PodRoleLabel] = string(role)
 	return &metav1.LabelSelector{
-		MatchLabels:      c.labelsSetWithType(false, TYPE_POSTGRESQL),
+		MatchLabels:      c.labelsSetWithType(false, TYPE_POSTGRESQL, false),
 		MatchExpressions: nil,
 	}
 }
@@ -621,7 +625,7 @@ func (c *Cluster) roleLabelsSet(shouldAddExtraLabels bool, role PostgresRole) la
 		lbls = c.labelsSet(shouldAddExtraLabels) //c.labelsSetWithType(shouldAddExtraLabels, TYPE_POSTGRESQL)
 		lbls[c.OpConfig.PodRoleLabel] = string(role)
 	} else {
-		lbls = c.labelsSetWithType(shouldAddExtraLabels, "")
+		lbls = c.labelsSetWithType(shouldAddExtraLabels, "", false)
 	}
 	return lbls
 }

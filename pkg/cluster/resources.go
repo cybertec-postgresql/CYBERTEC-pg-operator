@@ -241,25 +241,37 @@ func (c *Cluster) updateStatefulSet(newStatefulSet *appsv1.StatefulSet) error {
 			c.logger.Warningf("could not scale down: %v", err)
 		}
 	}
-	c.logger.Debugf("updating statefulset")
 
-	patchData, err := specPatch(newStatefulSet.Spec)
-	if err != nil {
-		return fmt.Errorf("could not form patch for the statefulset %q: %v", statefulSetName, err)
-	}
-
-	statefulSet, err := c.KubeClient.StatefulSets(c.Statefulset.Namespace).Patch(
+	currentSts, err := c.KubeClient.StatefulSets(c.Statefulset.Namespace).Get(
 		context.TODO(),
 		c.Statefulset.Name,
-		types.MergePatchType,
-		patchData,
-		metav1.PatchOptions{},
-		"")
+		metav1.GetOptions{},
+	)
 	if err != nil {
-		return fmt.Errorf("could not patch statefulset spec %q: %v", statefulSetName, err)
+		return fmt.Errorf("could not get current statefulset %q: %v", statefulSetName, err)
 	}
 
-	c.Statefulset = statefulSet
+	c.logger.Debugf("updating statefulset %q via full update to sync labels", statefulSetName)
+
+	currentSts.Labels = newStatefulSet.Labels
+	currentSts.Annotations = newStatefulSet.Annotations
+
+	currentSts.Spec.Replicas = newStatefulSet.Spec.Replicas
+	currentSts.Spec.Template = newStatefulSet.Spec.Template
+	currentSts.Spec.UpdateStrategy = newStatefulSet.Spec.UpdateStrategy
+	currentSts.Spec.PodManagementPolicy = newStatefulSet.Spec.PodManagementPolicy
+	currentSts.Spec.PersistentVolumeClaimRetentionPolicy = newStatefulSet.Spec.PersistentVolumeClaimRetentionPolicy
+
+	updatedSts, err := c.KubeClient.StatefulSets(currentSts.Namespace).Update(
+		context.TODO(),
+		currentSts,
+		metav1.UpdateOptions{},
+	)
+	if err != nil {
+		return fmt.Errorf("could not update statefulset spec %q: %v", statefulSetName, err)
+	}
+
+	c.Statefulset = updatedSts
 
 	return nil
 }

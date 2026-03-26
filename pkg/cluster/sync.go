@@ -1198,7 +1198,7 @@ func (c *Cluster) rotatePasswordInSecret(
 			// when password of connection pooler is rotated in place, pooler pods have to be replaced
 			if roleOrigin == spec.RoleOriginConnectionPooler {
 				listOptions := metav1.ListOptions{
-					LabelSelector: c.poolerLabelsSet(true).String(),
+					LabelSelector: c.poolerLabelsSet(true, false).String(),
 				}
 				poolerPods, err := c.listPoolerPods(listOptions)
 				if err != nil {

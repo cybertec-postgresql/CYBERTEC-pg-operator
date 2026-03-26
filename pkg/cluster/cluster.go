@@ -526,8 +526,8 @@ func (c *Cluster) compareStatefulSetWith(oldSts, newSts *appsv1.StatefulSet) *co
 
 	reasons := make([]string, 0)
 	var match, needsRollUpdate, needsReplace bool
-
 	match = true
+
 	//TODO: improve me
 	if *oldSts.Spec.Replicas != *newSts.Spec.Replicas {
 		match = false
@@ -593,11 +593,10 @@ func (c *Cluster) compareStatefulSetWith(oldSts, newSts *appsv1.StatefulSet) *co
 		reasons = append(reasons, "new statefulset's pod topologySpreadConstraints does not match the current one")
 	}
 
-	// Some generated fields like creationTimestamp make it not possible to use DeepCompare on Spec.Template.ObjectMeta
 	if !reflect.DeepEqual(oldSts.Spec.Template.Labels, newSts.Spec.Template.Labels) {
-		needsReplace = true
+		match = false
 		needsRollUpdate = true
-		reasons = append(reasons, "new statefulset's metadata labels does not match the current one")
+		reasons = append(reasons, "new statefulset's pod template labels do not match the current one")
 	}
 	if (oldSts.Spec.Selector != nil) && (newSts.Spec.Selector != nil) {
 		if !reflect.DeepEqual(oldSts.Spec.Selector.MatchLabels, newSts.Spec.Selector.MatchLabels) {
@@ -1020,6 +1019,32 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 		syncStatefulSet = true
 	}
 
+	// Label-check for pg-pods
+	pgLabelsChanged := !reflect.DeepEqual(oldSpec.Spec.Labels, newSpec.Spec.Labels) ||
+		!reflect.DeepEqual(oldSpec.Spec.PostgresqlParam.Labels, newSpec.Spec.PostgresqlParam.Labels)
+
+	if pgLabelsChanged {
+		c.logger.Infof("Labels for Postgres changed, forcing StatefulSet sync")
+		syncStatefulSet = true
+	}
+
+	// Label-check for pgbackrest-pods
+	var oldRepoL, newRepoL []v1.EnvVar
+
+	if oldSpec.Spec.Backup != nil && oldSpec.Spec.Backup.Pgbackrest != nil {
+		oldRepoL = oldSpec.Spec.Backup.Pgbackrest.Labels
+	}
+	if newSpec.Spec.Backup != nil && newSpec.Spec.Backup.Pgbackrest != nil {
+		newRepoL = newSpec.Spec.Backup.Pgbackrest.Labels
+	}
+
+	repoLabelsChanged := !reflect.DeepEqual(oldSpec.Spec.Labels, newSpec.Spec.Labels) ||
+		!reflect.DeepEqual(oldRepoL, newRepoL)
+
+	if repoLabelsChanged {
+		c.logger.Infof("Labels for pgBackRest changed, forcing Statefulset and Cronjob sync")
+	}
+
 	//sync sts when there is a change in the pgbackrest secret, since we need to mount this
 	if newSpec.Spec.Backup != nil && oldSpec.Spec.Backup != nil &&
 		newSpec.Spec.Backup.Pgbackrest != nil && oldSpec.Spec.Backup.Pgbackrest != nil &&
@@ -1029,7 +1054,16 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 
 	// Pgbackrest backup job
 	func() {
-		if specHasPgbackrestPVCRepo(&newSpec.Spec) || specHasPgbackrestPVCRepo(&oldSpec.Spec) {
+
+		repoLabelsChanged := !reflect.DeepEqual(oldSpec.Spec.Labels, newSpec.Spec.Labels)
+		if oldSpec.Spec.Backup != nil && newSpec.Spec.Backup != nil &&
+			oldSpec.Spec.Backup.Pgbackrest != nil && newSpec.Spec.Backup.Pgbackrest != nil {
+			if !reflect.DeepEqual(oldSpec.Spec.Backup.Pgbackrest.Labels, newSpec.Spec.Backup.Pgbackrest.Labels) {
+				repoLabelsChanged = true
+			}
+		}
+
+		if specHasPgbackrestPVCRepo(&newSpec.Spec) || specHasPgbackrestPVCRepo(&oldSpec.Spec) || repoLabelsChanged {
 			if err := c.syncPgbackrestRepoHostConfig(&newSpec.Spec); err != nil {
 				updateFailed = true
 				return
@@ -1044,10 +1078,12 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 			}
 
 			c.logger.Info("a pgbackrest config has been successfully created")
-			if err := c.syncPgbackrestJob(false); err != nil {
-				err = fmt.Errorf("could not create a k8s cron job for pgbackrest: %v", err)
-				updateFailed = true
-				return
+			if repoLabelsChanged || !reflect.DeepEqual(oldSpec.Spec.Backup, newSpec.Spec.Backup) {
+				if err := c.syncPgbackrestJob(false); err != nil {
+					err = fmt.Errorf("could not create a k8s cron job for pgbackrest: %v", err)
+					updateFailed = true
+					return
+				}
 			}
 			c.logger.Info("a k8s cron job for pgbackrest has been successfully created")
 		} else if oldSpec.Spec.GetBackup().Pgbackrest != nil {
@@ -1113,13 +1149,6 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 				c.logger.Errorf("could not sync statefulsets: %v", err)
 				updateFailed = true
 			}
-			// TODO: avoid generating the StatefulSet object twice by passing it to syncStatefulSet
-			if err := c.syncStatefulSet(); err != nil {
-				c.logger.Errorf("could not sync statefulsets: %v", err)
-				updateFailed = true
-				return
-			}
-
 		}
 	}()
 

@@ -1642,7 +1642,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
-		c.labelsSetWithType(true, TYPE_POSTGRESQL),
+		c.labelsSetWithType(true, TYPE_POSTGRESQL, true),
 		c.annotationsSet(podAnnotations),
 		spiloContainer,
 		initContainers,
@@ -1711,7 +1711,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		ObjectMeta: metav1.ObjectMeta{
 			Name:            c.statefulSetName(),
 			Namespace:       c.Namespace,
-			Labels:          c.labelsSetWithType(true, TYPE_POSTGRESQL),
+			Labels:          c.labelsSetWithType(true, TYPE_POSTGRESQL, false),
 			Annotations:     c.AnnotationsToPropagate(c.annotationsSet(nil)),
 			OwnerReferences: c.createOwnerReference(),
 		},
@@ -1909,12 +1909,11 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	effectivePodPriorityClassName := util.Coalesce(spec.PodPriorityClassName, c.OpConfig.PodPriorityClassName)
 
 	podAnnotations := c.generatePodAnnotations(spec)
-	repoHostLabels := c.labelsSetWithType(true, TYPE_REPOSITORY)
 
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
-		repoHostLabels,
+		c.labelsSetWithType(true, TYPE_REPOSITORY, true),
 		c.annotationsSet(podAnnotations),
 		repoContainer,
 		initContainers,
@@ -1986,7 +1985,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 		ObjectMeta: metav1.ObjectMeta{
 			Name:            c.getPgbackrestRepoHostName(),
 			Namespace:       c.Namespace,
-			Labels:          repoHostLabels,
+			Labels:          c.labelsSetWithType(true, TYPE_REPOSITORY, false),
 			Annotations:     c.AnnotationsToPropagate(c.annotationsSet(nil)),
 			OwnerReferences: c.createOwnerReference(),
 		},
@@ -2545,7 +2544,7 @@ func (c *Cluster) generateSingleUserSecret(namespace string, pgUser spec.PgUser)
 	lbls := c.labelsSet(true)
 
 	if username == constants.ConnectionPoolerUserName {
-		lbls = c.connectionPoolerLabels("", false).MatchLabels
+		lbls = c.connectionPoolerLabels(false, "", false).MatchLabels
 	}
 
 	secret := v1.Secret{
@@ -2874,7 +2873,7 @@ func (c *Cluster) generatePodDisruptionBudget() *policyv1.PodDisruptionBudget {
 		Spec: policyv1.PodDisruptionBudgetSpec{
 			MinAvailable: &minAvailable,
 			Selector: &metav1.LabelSelector{
-				MatchLabels: c.labelsSetWithType(false, "postgresql"), //c.roleLabelsSet(false, Master),
+				MatchLabels: c.labelsSetWithType(false, "postgresql", false), //c.roleLabelsSet(false, Master),
 			},
 		},
 	}
@@ -2938,7 +2937,7 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 	// re-use the method that generates DB pod templates
 	if podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
-		c.labelsSetWithType(true, TYPE_LOGICAL_BACKUP),
+		c.labelsSetWithType(true, TYPE_LOGICAL_BACKUP, false),
 		annotations,
 		logicalBackupContainer,
 		[]v1.Container{},
@@ -2991,7 +2990,7 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        c.getLogicalBackupJobName(),
 			Namespace:   c.Namespace,
-			Labels:      c.labelsSetWithType(true, TYPE_LOGICAL_BACKUP),
+			Labels:      c.labelsSetWithType(true, TYPE_LOGICAL_BACKUP, false),
 			Annotations: c.annotationsSet(nil),
 		},
 		Spec: batchv1.CronJobSpec{
@@ -3482,7 +3481,7 @@ func (c *Cluster) generatePgbackrestJob(spec *cpov1.PostgresSpec, backup *cpov1.
 	// re-use the method that generates DB pod templates
 	if podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
-		c.labelsSetWithType(true, TYPE_BACKUP_JOB),
+		c.labelsSetWithType(true, TYPE_BACKUP_JOB, true),
 		annotations,
 		pgbackrestContainer,
 		[]v1.Container{},
@@ -3534,7 +3533,7 @@ func (c *Cluster) generatePgbackrestJob(spec *cpov1.PostgresSpec, backup *cpov1.
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        c.getPgbackrestJobName(repo.Name, backupType),
 			Namespace:   c.Namespace,
-			Labels:      c.labelsSetWithType(true, TYPE_BACKUP_JOB),
+			Labels:      c.labelsSetWithType(true, TYPE_BACKUP_JOB, false),
 			Annotations: c.annotationsSet(nil),
 		},
 		Spec: batchv1.CronJobSpec{
@@ -3553,7 +3552,7 @@ func (c *Cluster) generatePgbackrestBackupJobEnvVars(spec *cpov1.PostgresSpec, r
 	if repo.Storage == "pvc" {
 		// With a PVC based repo the backup command needs to run on the repository system
 		// due to pgbackrest limitations
-		selector = c.labelsSetWithType(false, TYPE_REPOSITORY).String()
+		selector = c.labelsSetWithType(false, TYPE_REPOSITORY, false).String()
 		targetContainer = constants.RepoContainerName
 	}
 

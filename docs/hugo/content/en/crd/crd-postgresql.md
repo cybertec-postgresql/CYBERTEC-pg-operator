@@ -37,6 +37,7 @@ weight: 331
 | enableShmVolume                | boolean | false     | Start a database pod without limitations on shm memory. By default Docker limit /dev/shm to 64M (see e.g. the docker issue, which could be not enough if PostgreSQL uses parallel workers heavily. If this option is present and value is true, to the target database pod will be mounted a new tmpfs volume to remove this limitation. |
 | [env](#env)                    | array   | false     | Allows you to add custom environment variables to all cluster containers |
 | [initContainers](#initcontainers) | array   | false    | Enables the definition of init-containers |
+| [labels](#labels)              | array   | false     | Allows you to add custom labels to all cluster pods |
 | logicalBackupSchedule          | string  | false     | Enables the scheduling of logical backups based on cron-syntax. Example: `30 00 * * *` |
 | maintenanceWindows             | array   | false     | Enables the definition of maintenance windows for the cluster. Example: `Sat:00:00-04:00` |
 | masterServiceAnnotations       | map     | false     | Enables the definition of annotations for the Primary Service |
@@ -114,6 +115,8 @@ key, operator, value, effect and tolerationSeconds |
 | Name                           | Type    | required  | Description        |
 | ------------------------------ |:-------:| ---------:| ------------------:|
 | [env](#env)                    | array   | false     | Allows you to add custom environment variables to connection-pooler containers |
+| [labels](#labels)              | array   | false     | Allows you to add custom labels to connection-pooler pods |
+| dockerImage                    | string  | true      | Defines the used pgbouncer container image for this cluster |
 | numberOfInstances              | int     | true      | Number of Pods per Pooler  |
 | mode                           | string  | true      | pooling mode for pgBouncer (session, transaction, statement) |
 | schema                         | string  | true      | Schema for Pooler (Default: pooler) |
@@ -145,6 +148,17 @@ key, operator, value, effect and tolerationSeconds |
 | [env](#env)                    | array   | false     | Allows to add own Envs to the container |
 | [resources](#resources)        | map     | false     | CPU & Memory (Limit & Request) definition for the container  |
 | [ports](ports)                 | array   | false     | Define open ports for the container  |
+
+{{< back >}}
+
+---
+
+#### labels
+
+| Name                           | Type    | required  | Description        |
+| ------------------------------ |:-------:| ---------:| ------------------:|
+| name                           | string  | true      | Keyfield for the label-Entry  |
+| value                          | string  | true      | Valuefield for the label-Entry  |
 
 {{< back >}}
 
@@ -187,6 +201,7 @@ key, operator, value, effect and tolerationSeconds |
 | Name                           | Type    | required  | Description        |
 | ------------------------------ |:-------:| ---------:| ------------------:|
 | [env](#env)                    | array   | false     | Allows you to add custom environment variables to all postgresql containers |
+| [labels](#labels)              | array   | false     | Allows you to add custom labels to poostgresql pods |
 | parameters                     | map     | false     | PostgreSQL-Parameter as item (Example: max_connections: "100"). For help check out the [CYBERTEC PostgreSQL Configurator](https://pgconfigurator.cybertec.at)  |
 | version                        | string  | false     | a map of key-value pairs describing initdb parameters  |
 
@@ -407,6 +422,7 @@ key, operator, value, effect and tolerationSeconds |
 | [env](#env)                    | array   | false     | Allows you to add custom environment variables to all pgbackrest containers |
 | global                         | object  | false     |  |
 | image                          | string  | true      |  |
+| [labels](#labels)              | array   | false     | Allows you to add custom labels to pgbackrest pods |
 | [repos](#repos)                | array   | true      |  |
 | [resources](#resources)        | object  | false     | CPU & Memory (Limit & Request) definition for the pgBackRest container|
 

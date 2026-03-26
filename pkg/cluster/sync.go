@@ -189,6 +189,26 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		}
 	}()
 
+	// Label-check for pg-pods
+	pgLabelsChanged := !reflect.DeepEqual(oldSpec.Spec.Labels, newSpec.Spec.Labels) ||
+		!reflect.DeepEqual(oldSpec.Spec.PostgresqlParam.Labels, newSpec.Spec.PostgresqlParam.Labels)
+
+	// Label-check for pgbackrest-pods
+	var oldRepoL, newRepoL map[string]string
+	if oldSpec.Spec.Backup != nil && oldSpec.Spec.Backup.Pgbackrest != nil {
+		oldRepoL = oldSpec.Spec.Backup.Pgbackrest.Labels
+	}
+	if newSpec.Spec.Backup != nil && newSpec.Spec.Backup.Pgbackrest != nil {
+		newRepoL = newSpec.Spec.Backup.Pgbackrest.Labels
+	}
+
+	repoLabelsChanged := !reflect.DeepEqual(oldSpec.Spec.Labels, newSpec.Spec.Labels) ||
+		!reflect.DeepEqual(oldRepoL, newRepoL)
+
+	if pgLabelsChanged || repoLabelsChanged {
+		c.logger.Infof("Labels drift detected in Sync: pgLabelsChanged=%v, repoLabelsChanged=%v", pgLabelsChanged, repoLabelsChanged)
+	}
+
 	// Make sure we know about any in progress restores before touching other stuff
 	if err = c.refreshRestoreConfigMap(); err != nil {
 		return fmt.Errorf("error refreshing restore configmap: %v", err)
@@ -210,13 +230,13 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		return err
 	}
 
-	if err = c.syncPgbackrestConfig(); err != nil {
-		err = fmt.Errorf("could not sync pgbackrest repo-host config: %v", err)
+	if err = c.syncPgbackrestRepoHostConfig(&c.Spec); err != nil {
+		err = fmt.Errorf("could not sync pgbackrest config: %v", err)
 		return err
 	}
 
 	if err = c.syncPgbackrestRepoHostConfig(&c.Spec); err != nil {
-		err = fmt.Errorf("could not sync pgbackrest config: %v", err)
+		err = fmt.Errorf("could not sync pgbackrest repo-host config: %v", err)
 		return err
 	}
 

@@ -89,13 +89,14 @@ type PostgresSpec struct {
 	AdditionalVolumes             []AdditionalVolume `json:"additionalVolumes,omitempty"`
 	Streams                       []Stream           `json:"streams,omitempty"`
 	Env                           []v1.EnvVar        `json:"env,omitempty"`
+	Labels                        []v1.EnvVar        `name:"labels" default:""`
+	Backup                        *Backup            `json:"backup,omitempty"`
+	TDE                           *TDE               `json:"tde,omitempty"`
+	Monitoring                    *Monitoring        `json:"monitor,omitempty"`
 
 	// deprecated json tags
 	InitContainersOld       []v1.Container `json:"init_containers,omitempty"`
 	PodPriorityClassNameOld string         `json:"pod_priority_class_name,omitempty"`
-	Backup                  *Backup        `json:"backup,omitempty"`
-	TDE                     *TDE           `json:"tde,omitempty"`
-	Monitoring              *Monitoring    `json:"monitor,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -155,6 +156,7 @@ type PostgresqlParam struct {
 	PgVersion  string            `json:"version"`
 	Parameters map[string]string `json:"parameters,omitempty"`
 	Env        []v1.EnvVar       `json:"env,omitempty"`
+	Labels     []v1.EnvVar       `name:"labels" default:""`
 }
 
 // ResourceDescription describes CPU and memory resources defined for a cluster.
@@ -254,6 +256,7 @@ type ConnectionPooler struct {
 	DockerImage       string      `json:"dockerImage,omitempty"`
 	MaxDBConnections  *int32      `json:"maxDBConnections,omitempty"`
 	Env               []v1.EnvVar `json:"env,omitempty"`
+	Labels            []v1.EnvVar `name:"labels" default:""`
 
 	*Resources `json:"resources,omitempty"`
 }
@@ -288,6 +291,7 @@ type Pgbackrest struct {
 	Configuration Configuration     `json:"configuration"`
 	Resources     *Resources        `json:"resources,omitempty"`
 	Env           []v1.EnvVar       `json:"env,omitempty"`
+	Labels        []v1.EnvVar       `name:"labels" default:""`
 }
 
 type PgbackrestClone struct {

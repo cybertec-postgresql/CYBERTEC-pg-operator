@@ -23,6 +23,7 @@ import (
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/retryutil"
 	batchv1 "k8s.io/api/batch/v1"
 	v1 "k8s.io/api/core/v1"
 	policyv1 "k8s.io/api/policy/v1"
@@ -1675,16 +1676,53 @@ func (c *Cluster) syncPgbackrestJob(forceRemove bool) error {
 								return fmt.Errorf("could not generate pgbackrest job: %v", err)
 							}
 							remove = false
-							if _, err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Get(context.TODO(), c.getPgbackrestJobName(repo.Name, name), metav1.GetOptions{}); err == nil {
-								if err := c.patchPgbackrestJob(job); err != nil {
-									return fmt.Errorf("could not update a pgbackrest cronjob: %v", err)
+
+							currentJob, err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Get(context.TODO(), c.getPgbackrestJobName(repo.Name, name), metav1.GetOptions{})
+
+							if err == nil {
+								if !reflect.DeepEqual(currentJob.Spec.JobTemplate.Spec.Selector, job.Spec.JobTemplate.Spec.Selector) {
+									c.logger.Warningf("selector changed for pgbackrest cronjob %s, recreating to avoid immutable field error", job.Name)
+
+									err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Delete(context.TODO(), job.Name, metav1.DeleteOptions{})
+									if err != nil && !k8sutil.ResourceNotFound(err) {
+										return fmt.Errorf("could not delete pgbackrest cronjob for recreation: %v", err)
+									}
+
+									err = retryutil.Retry(c.OpConfig.ResourceCheckInterval, c.OpConfig.ResourceCheckTimeout,
+										func() (bool, error) {
+											_, err2 := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Get(context.TODO(), job.Name, metav1.GetOptions{})
+											return k8sutil.ResourceNotFound(err2), nil
+										})
+									if err != nil {
+										return fmt.Errorf("timeout waiting for pgbackrest cronjob deletion: %v", err)
+									}
+
+									if err := c.createPgbackrestJob(job); err != nil {
+										return fmt.Errorf("could not recreate pgbackrest cronjob: %v", err)
+									}
+									c.logger.Infof("pgbackrest cronjob for %v %v has been successfully recreated", rep, schedul)
+
+								} else {
+									currentJob.Labels = job.Labels
+									currentJob.Annotations = job.Annotations
+									currentJob.Spec.Schedule = job.Spec.Schedule
+									currentJob.Spec.JobTemplate.ObjectMeta.Labels = job.Spec.JobTemplate.ObjectMeta.Labels
+									currentJob.Spec.JobTemplate.Spec.Template.ObjectMeta.Labels = job.Spec.JobTemplate.Spec.Template.ObjectMeta.Labels
+									currentJob.Spec.JobTemplate.Spec.Template.Spec = job.Spec.JobTemplate.Spec.Template.Spec
+
+									_, err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Update(context.TODO(), currentJob, metav1.UpdateOptions{})
+									if err != nil {
+										return fmt.Errorf("could not update pgbackrest cronjob via Update call: %v", err)
+									}
+									c.logger.Infof("pgbackrest cronjob for %v %v has been successfully updated (history preserved)", rep, schedul)
 								}
-								c.logger.Infof("pgbackrest cronjob for %v %v has been successfully updated", rep, schedul)
-							} else {
+							} else if k8sutil.ResourceNotFound(err) {
 								if err := c.createPgbackrestJob(job); err != nil {
 									return fmt.Errorf("could not create a pgbackrest cronjob: %v", err)
 								}
 								c.logger.Infof("pgbackrest cronjob for %v %v has been successfully created", rep, schedul)
+							} else {
+								return fmt.Errorf("could not get pgbackrest cronjob: %v", err)
 							}
 						}
 					}

@@ -349,12 +349,12 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 								},
 							},
 							"labels": {
-								Type:     "array",
+								Type:     "object",
 								Nullable: true,
-								Items: &apiextv1.JSONSchemaPropsOrArray{
+								AdditionalProperties: &apiextv1.JSONSchemaPropsOrBool{
+									Allows: true,
 									Schema: &apiextv1.JSONSchemaProps{
-										Type:                   "object",
-										XPreserveUnknownFields: util.True(),
+										Type: "string",
 									},
 								},
 							},
@@ -406,12 +406,12 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 						},
 					},
 					"labels": {
-						Type:     "array",
+						Type:     "object",
 						Nullable: true,
-						Items: &apiextv1.JSONSchemaPropsOrArray{
+						AdditionalProperties: &apiextv1.JSONSchemaPropsOrBool{
+							Allows: true,
 							Schema: &apiextv1.JSONSchemaProps{
-								Type:                   "object",
-								XPreserveUnknownFields: util.True(),
+								Type: "string",
 							},
 						},
 					},
@@ -800,12 +800,12 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 								},
 							},
 							"labels": {
-								Type:     "array",
+								Type:     "object",
 								Nullable: true,
-								Items: &apiextv1.JSONSchemaPropsOrArray{
+								AdditionalProperties: &apiextv1.JSONSchemaPropsOrBool{
+									Allows: true,
 									Schema: &apiextv1.JSONSchemaProps{
-										Type:                   "object",
-										XPreserveUnknownFields: util.True(),
+										Type: "string",
 									},
 								},
 							},
@@ -1494,12 +1494,12 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 										},
 									},
 									"labels": {
-										Type:     "array",
+										Type:     "object",
 										Nullable: true,
-										Items: &apiextv1.JSONSchemaPropsOrArray{
+										AdditionalProperties: &apiextv1.JSONSchemaPropsOrBool{
+											Allows: true,
 											Schema: &apiextv1.JSONSchemaProps{
-												Type:                   "object",
-												XPreserveUnknownFields: util.True(),
+												Type: "string",
 											},
 										},
 									},

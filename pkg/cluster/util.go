@@ -570,29 +570,29 @@ func (c *Cluster) labelsSetWithType(shouldAddExtraLabels bool, typeLabel PodType
 	// add custom labels
 	if isPod && typeLabel != "" {
 		// global labels
-		for _, label := range c.Postgresql.Spec.Labels {
-			lbls[label.Name] = label.Value
+		for k, v := range c.Postgresql.Spec.Labels {
+			lbls[k] = v
 		}
 		switch typeLabel {
 		case TYPE_POSTGRESQL:
 			// pg-specific labels
-			for _, label := range c.Postgresql.Spec.PostgresqlParam.Labels {
-				lbls[label.Name] = label.Value
+			for k, v := range c.Postgresql.Spec.PostgresqlParam.Labels {
+				lbls[k] = v
 			}
 
 		case TYPE_REPOSITORY, TYPE_BACKUP_JOB:
 			if c.Postgresql.Spec.Backup != nil && c.Postgresql.Spec.Backup.Pgbackrest != nil {
 				// backup-specific labels
-				for _, label := range c.Postgresql.Spec.Backup.Pgbackrest.Labels {
-					lbls[label.Name] = label.Value
+				for k, v := range c.Postgresql.Spec.Backup.Pgbackrest.Labels {
+					lbls[k] = v
 				}
 			}
 
 		case TYPE_POOLER:
 			if c.Postgresql.Spec.ConnectionPooler != nil {
 				// pooler-specific labels
-				for _, label := range c.Postgresql.Spec.ConnectionPooler.Labels {
-					lbls[label.Name] = label.Value
+				for k, v := range c.Postgresql.Spec.ConnectionPooler.Labels {
+					lbls[k] = v
 				}
 			}
 		}

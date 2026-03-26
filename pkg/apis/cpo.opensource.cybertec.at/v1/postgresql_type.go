@@ -89,7 +89,7 @@ type PostgresSpec struct {
 	AdditionalVolumes             []AdditionalVolume `json:"additionalVolumes,omitempty"`
 	Streams                       []Stream           `json:"streams,omitempty"`
 	Env                           []v1.EnvVar        `json:"env,omitempty"`
-	Labels                        []v1.EnvVar        `name:"labels" default:""`
+	Labels                        map[string]string  `json:"labels,omitempty" name:"labels" default:""`
 	Backup                        *Backup            `json:"backup,omitempty"`
 	TDE                           *TDE               `json:"tde,omitempty"`
 	Monitoring                    *Monitoring        `json:"monitor,omitempty"`
@@ -156,7 +156,7 @@ type PostgresqlParam struct {
 	PgVersion  string            `json:"version"`
 	Parameters map[string]string `json:"parameters,omitempty"`
 	Env        []v1.EnvVar       `json:"env,omitempty"`
-	Labels     []v1.EnvVar       `name:"labels" default:""`
+	Labels     map[string]string `json:"labels,omitempty" name:"labels" default:""`
 }
 
 // ResourceDescription describes CPU and memory resources defined for a cluster.
@@ -249,14 +249,14 @@ type PostgresStatus struct {
 // makes sense to expose. E.g. pool size (min/max boundaries), max client
 // connections etc.
 type ConnectionPooler struct {
-	NumberOfInstances *int32      `json:"numberOfInstances,omitempty"`
-	Schema            string      `json:"schema,omitempty"`
-	User              string      `json:"user,omitempty"`
-	Mode              string      `json:"mode,omitempty"`
-	DockerImage       string      `json:"dockerImage,omitempty"`
-	MaxDBConnections  *int32      `json:"maxDBConnections,omitempty"`
-	Env               []v1.EnvVar `json:"env,omitempty"`
-	Labels            []v1.EnvVar `name:"labels" default:""`
+	NumberOfInstances *int32            `json:"numberOfInstances,omitempty"`
+	Schema            string            `json:"schema,omitempty"`
+	User              string            `json:"user,omitempty"`
+	Mode              string            `json:"mode,omitempty"`
+	DockerImage       string            `json:"dockerImage,omitempty"`
+	MaxDBConnections  *int32            `json:"maxDBConnections,omitempty"`
+	Env               []v1.EnvVar       `json:"env,omitempty"`
+	Labels            map[string]string `json:"labels,omitempty" name:"labels" default:""`
 
 	*Resources `json:"resources,omitempty"`
 }
@@ -291,7 +291,7 @@ type Pgbackrest struct {
 	Configuration Configuration     `json:"configuration"`
 	Resources     *Resources        `json:"resources,omitempty"`
 	Env           []v1.EnvVar       `json:"env,omitempty"`
-	Labels        []v1.EnvVar       `name:"labels" default:""`
+	Labels        map[string]string `json:"labels,omitempty" name:"labels" default:""`
 }
 
 type PgbackrestClone struct {

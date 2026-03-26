@@ -42,6 +42,8 @@ spec:
     env:
       - name: POOLER_ENV
         value: 'custom value'
+    labels:
+      custom_pooler_label: 'custom value'
     mode: transaction
     numberOfInstances: 2
     resources:

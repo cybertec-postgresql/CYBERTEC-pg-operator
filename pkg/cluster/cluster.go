@@ -1029,7 +1029,7 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	}
 
 	// Label-check for pgbackrest-pods
-	var oldRepoL, newRepoL []v1.EnvVar
+	var oldRepoL, newRepoL map[string]string
 
 	if oldSpec.Spec.Backup != nil && oldSpec.Spec.Backup.Pgbackrest != nil {
 		oldRepoL = oldSpec.Spec.Backup.Pgbackrest.Labels

@@ -13,9 +13,9 @@ The variables are defined within the Custom Resource (CR). The following logic a
 | :--- | :--- | :--- |
 | `spec.env` | **Global** | These ENVs are inherited by **all** containers within the cluster (PostgreSQL, Backup, Monitoring, etc.). |
 | `spec.postgresql.env` | **PostgreSQL** | These ENVs apply exclusively to the **PostgreSQL containers**. |
-| `spec.backup.pgbackrest.env` | **PostgreSQL** | These ENVs apply exclusively to the **Backup containers**. |
-| `spec.monitor.env` | **PostgreSQL** | These ENVs apply exclusively to the **ConnectionPooler containers**. |
-| `spec.connectionPooler.env` | **PostgreSQL** | These ENVs apply exclusively to the **Monitoring sidecars**. |
+| `spec.backup.pgbackrest.env` | **pgBackRest** | These ENVs apply exclusively to the **Backup containers**. |
+| `spec.monitor.env` | **Exporter-Sidecar** | These ENVs apply exclusively to the **ConnectionPooler containers**. |
+| `spec.connectionPooler.env` | **ConnectionPooler** | These ENVs apply exclusively to the **Monitoring sidecars**. |
 
 {{< hint type=Warning >}}Updating the ENVs triggers a rolling update to the respective containers.{{< /hint >}}
 

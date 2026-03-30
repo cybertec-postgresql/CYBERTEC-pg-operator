@@ -1623,6 +1623,12 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		additionalVolumes = append(additionalVolumes, c.generatePgbackrestCloneConfigVolumes(spec.Clone)...)
 	}
 
+	if c.Spec.Monitoring != nil && c.Spec.Monitoring.CustomQueries != "" {
+		if queryVol := c.generateCustomQueriesVolume(c.Spec.Monitoring.CustomQueries); queryVol != nil {
+			additionalVolumes = append(additionalVolumes, *queryVol)
+		}
+	}
+
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
@@ -2141,6 +2147,24 @@ func (c *Cluster) generateCertSecretVolume() cpov1.AdditionalVolume {
 					},
 					},
 				},
+			},
+		},
+	}
+}
+
+func (c *Cluster) generateCustomQueriesVolume(customQueryConfigMap string) *cpov1.AdditionalVolume {
+	defaultMode := int32(0640)
+	return &cpov1.AdditionalVolume{
+		Name:             "custom-queries-vol",
+		MountPath:        "/postgres_exporter/custom_queries",
+		SubPath:          "",
+		TargetContainers: []string{"postgres-exporter"},
+		VolumeSource: v1.VolumeSource{
+			ConfigMap: &v1.ConfigMapVolumeSource{
+				LocalObjectReference: v1.LocalObjectReference{
+					Name: customQueryConfigMap,
+				},
+				DefaultMode: &defaultMode,
 			},
 		},
 	}

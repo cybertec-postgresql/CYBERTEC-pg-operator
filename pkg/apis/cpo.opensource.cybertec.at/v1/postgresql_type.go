@@ -323,7 +323,8 @@ type TDE struct {
 
 // Monitoring Sidecar defines a container to be run in the same pod as the Postgres container.
 type Monitoring struct {
-	Image string `json:"image,omitempty"`
+	Image         string `json:"image,omitempty"`
+	CustomQueries string `json:"customQueries,omitempty"`
 }
 
 // Multisite enables cross Kubernetes replication coordinated via etcd

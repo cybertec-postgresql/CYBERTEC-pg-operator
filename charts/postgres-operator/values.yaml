@@ -207,7 +207,7 @@ configKubernetes:
   # spilo_fsgroup: 103
   
   # whether the containers should run with readonly_root_filesystem
-  readonly_root_filesystem: true
+  container_readonly_root_filesystem: true
   # whether the Spilo container should run in privileged mode
   spilo_privileged: false
   # whether the Spilo container should run with additional permissions other than parent.

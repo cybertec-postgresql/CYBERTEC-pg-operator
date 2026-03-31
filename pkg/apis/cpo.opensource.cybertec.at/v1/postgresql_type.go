@@ -182,6 +182,7 @@ type Patroni struct {
 	SynchronousNodeCount  uint32                       `json:"synchronous_node_count,omitempty" defaults:"1"`
 	Multisite             *Multisite                   `json:"multisite,omitempty"`
 	FailsafeMode          *bool                        `json:"failsafe_mode,omitempty"`
+	Log                   *PatroniLog                  `json:"log,omitempty"`
 }
 
 // StandbyDescription contains remote primary config or s3/gs wal path
@@ -341,4 +342,12 @@ type EtcdConfig struct {
 	Password       *string `json:"password,omitempty"`
 	Protocol       *string `json:"protocol,omitempty"`
 	CertSecretName *string `json:"certSecretName,omitempty"`
+}
+
+type PatroniLog struct {
+	Type                     string            `json:"type,omitempty"`
+	Level                    string            `json:"level,omitempty"`
+	TracebackLevel           string            `json:"traceback_level,omitempty"`
+	StaticFields             map[string]string `json:"static_fields,omitempty"`
+	DeduplicateHeartbeatLogs *bool             `json:"deduplicate_heartbeat_logs,omitempty"`
 }

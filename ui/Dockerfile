@@ -38,4 +38,4 @@ ARG VERSION=dev
 RUN sed -i "s/__version__ = .*/__version__ = '${VERSION}'/" /operator_ui/__init__.py
 
 WORKDIR /
-CMD ["/usr/bin/python3", "-m", "operator_ui"]
+CMD ["/usr/local/bin/python3", "-m", "operator_ui"]

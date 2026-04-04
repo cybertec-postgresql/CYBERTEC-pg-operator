@@ -185,14 +185,16 @@ type Patroni struct {
 	SynchronousNodeCount  uint32                       `json:"synchronous_node_count,omitempty" defaults:"1"`
 	Multisite             *Multisite                   `json:"multisite,omitempty"`
 	FailsafeMode          *bool                        `json:"failsafe_mode,omitempty"`
+	Log                   *PatroniLog                  `json:"log,omitempty"`
 }
 
 // StandbyDescription contains remote primary config or s3/gs wal path
 type StandbyDescription struct {
-	S3WalPath   string `json:"s3_wal_path,omitempty"`
-	GSWalPath   string `json:"gs_wal_path,omitempty"`
-	StandbyHost string `json:"standby_host,omitempty"`
-	StandbyPort string `json:"standby_port,omitempty"`
+	S3WalPath              string `json:"s3_wal_path,omitempty"`
+	GSWalPath              string `json:"gs_wal_path,omitempty"`
+	StandbyHost            string `json:"standby_host,omitempty"`
+	StandbyPort            string `json:"standby_port,omitempty"`
+	StandbyPrimarySlotName string `json:"standby_primary_slot_name,omitempty"`
 }
 
 // TLSDescription specs TLS properties
@@ -330,8 +332,9 @@ type TDE struct {
 
 // Monitoring Sidecar defines a container to be run in the same pod as the Postgres container.
 type Monitoring struct {
-	Image string      `json:"image,omitempty"`
-	Env   []v1.EnvVar `json:"env,omitempty"`
+	Image         string      `json:"image,omitempty"`
+	CustomQueries string      `json:"customQueries,omitempty"`
+	Env           []v1.EnvVar `json:"env,omitempty"`
 }
 
 // Multisite enables cross Kubernetes replication coordinated via etcd
@@ -349,4 +352,12 @@ type EtcdConfig struct {
 	Password       *string `json:"password,omitempty"`
 	Protocol       *string `json:"protocol,omitempty"`
 	CertSecretName *string `json:"certSecretName,omitempty"`
+}
+
+type PatroniLog struct {
+	Type                     string            `json:"type,omitempty"`
+	Level                    string            `json:"level,omitempty"`
+	TracebackLevel           string            `json:"traceback_level,omitempty"`
+	StaticFields             map[string]string `json:"static_fields,omitempty"`
+	DeduplicateHeartbeatLogs *bool             `json:"deduplicate_heartbeat_logs,omitempty"`
 }

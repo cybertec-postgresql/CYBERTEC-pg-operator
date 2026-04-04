@@ -3,6 +3,7 @@ package cluster
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"strings"
 	"time"
 
@@ -110,9 +111,9 @@ func (c *Cluster) poolerUser(spec *cpov1.PostgresSpec) string {
 }
 
 // when listing pooler k8s objects
-func (c *Cluster) poolerLabelsSet(addExtraLabels bool) labels.Set {
+func (c *Cluster) poolerLabelsSet(addExtraLabels bool, isPod bool) labels.Set {
 
-	poolerLabels := c.labelsSet(addExtraLabels)
+	poolerLabels := c.labelsSetWithType(addExtraLabels, TYPE_POOLER, isPod)
 	// TODO should be config values
 	poolerLabels["application"] = "db-connection-pooler"
 	return poolerLabels
@@ -124,8 +125,8 @@ func (c *Cluster) poolerLabelsSet(addExtraLabels bool) labels.Set {
 // have e.g. different `application` label, so that recreatePod operation will
 // not interfere with it (it lists all the pods via labels, and if there would
 // be no difference, it will recreate also pooler pods).
-func (c *Cluster) connectionPoolerLabels(role PostgresRole, addExtraLabels bool) *metav1.LabelSelector {
-	poolerLabelsSet := c.poolerLabelsSet(addExtraLabels)
+func (c *Cluster) connectionPoolerLabels(addExtraLabels bool, role PostgresRole, isPod bool) *metav1.LabelSelector {
+	poolerLabelsSet := c.poolerLabelsSet(addExtraLabels, isPod)
 
 	// TODO should be config values
 	poolerLabelsSet["connection-pooler"] = c.connectionPoolerName(role)
@@ -218,7 +219,7 @@ func (c *Cluster) getConnectionPoolerEnvVars() []v1.EnvVar {
 	minSize := defaultSize / 2
 	reserveSize := minSize
 
-	return []v1.EnvVar{
+	envVars := []v1.EnvVar{
 		{
 			Name:  "CONNECTION_POOLER_PORT",
 			Value: fmt.Sprint(pgPort),
@@ -248,6 +249,17 @@ func (c *Cluster) getConnectionPoolerEnvVars() []v1.EnvVar {
 			Value: fmt.Sprint(maxDBConn),
 		},
 	}
+
+	// fetch connection_pooler-specific variables that will override all subsequent global variables
+	if len(connectionPoolerSpec.Env) > 0 {
+		envVars = appendEnvVars(envVars, connectionPoolerSpec.Env...)
+	}
+	// fetch cluster-specific variables that will override all subsequent global variables
+	if len(spec.Env) > 0 {
+		envVars = appendEnvVars(envVars, spec.Env...)
+	}
+
+	return envVars
 }
 
 func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (
@@ -399,7 +411,7 @@ func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (
 
 	podTemplate := &v1.PodTemplateSpec{
 		ObjectMeta: metav1.ObjectMeta{
-			Labels:      c.connectionPoolerLabels(role, true).MatchLabels,
+			Labels:      c.connectionPoolerLabels(true, role, true).MatchLabels,
 			Namespace:   c.Namespace,
 			Annotations: c.annotationsSet(c.generatePodAnnotations(spec)),
 		},
@@ -416,7 +428,7 @@ func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (
 
 	nodeAffinity := c.nodeAffinity(c.OpConfig.NodeReadinessLabel, spec.NodeAffinity)
 	if c.OpConfig.EnablePodAntiAffinity {
-		labelsSet := labels.Set(c.connectionPoolerLabels(role, false).MatchLabels)
+		labelsSet := labels.Set(c.connectionPoolerLabels(false, role, false).MatchLabels)
 		podTemplate.Spec.Affinity = podAffinity(
 			labelsSet,
 			c.OpConfig.PodAntiAffinityTopologyKey,
@@ -469,7 +481,7 @@ func (c *Cluster) generateConnectionPoolerDeployment(connectionPooler *Connectio
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        connectionPooler.Name,
 			Namespace:   connectionPooler.Namespace,
-			Labels:      c.connectionPoolerLabels(connectionPooler.Role, true).MatchLabels,
+			Labels:      c.connectionPoolerLabels(true, connectionPooler.Role, false).MatchLabels,
 			Annotations: c.AnnotationsToPropagate(c.annotationsSet(nil)),
 			// make StatefulSet object its owner to represent the dependency.
 			// By itself StatefulSet is being deleted with "Orphaned"
@@ -481,7 +493,7 @@ func (c *Cluster) generateConnectionPoolerDeployment(connectionPooler *Connectio
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: numberOfInstances,
-			Selector: c.connectionPoolerLabels(connectionPooler.Role, false),
+			Selector: c.connectionPoolerLabels(false, connectionPooler.Role, false),
 			Template: *podTemplate,
 		},
 	}
@@ -514,7 +526,7 @@ func (c *Cluster) generateConnectionPoolerService(connectionPooler *ConnectionPo
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        connectionPooler.Name,
 			Namespace:   connectionPooler.Namespace,
-			Labels:      c.connectionPoolerLabels(connectionPooler.Role, false).MatchLabels,
+			Labels:      c.connectionPoolerLabels(false, connectionPooler.Role, true).MatchLabels,
 			Annotations: c.annotationsSet(c.generatePoolerServiceAnnotations(poolerRole, spec)),
 			// make StatefulSet object its owner to represent the dependency.
 			// By itself StatefulSet is being deleted with "Orphaned"
@@ -665,31 +677,21 @@ func (c *Cluster) deleteConnectionPoolerSecret() (err error) {
 	return nil
 }
 
-// Perform actual patching of a connection pooler deployment, assuming that all
+// Perform updating the connection pooler deployment, assuming that all
 // the check were already done before.
 func updateConnectionPoolerDeployment(KubeClient k8sutil.KubernetesClient, newDeployment *appsv1.Deployment) (*appsv1.Deployment, error) {
 	if newDeployment == nil {
 		return nil, fmt.Errorf("there is no connection pooler in the cluster")
 	}
 
-	patchData, err := specPatch(newDeployment.Spec)
-	if err != nil {
-		return nil, fmt.Errorf("could not form patch for the connection pooler deployment: %v", err)
-	}
-
-	// An update probably requires RetryOnConflict, but since only one operator
-	// worker at one time will try to update it chances of conflicts are
-	// minimal.
 	deployment, err := KubeClient.
-		Deployments(newDeployment.Namespace).Patch(
+		Deployments(newDeployment.Namespace).Update(
 		context.TODO(),
-		newDeployment.Name,
-		types.MergePatchType,
-		patchData,
-		metav1.PatchOptions{},
-		"")
+		newDeployment,
+		metav1.UpdateOptions{})
+
 	if err != nil {
-		return nil, fmt.Errorf("could not patch connection pooler deployment: %v", err)
+		return nil, fmt.Errorf("could not update connection pooler deployment: %v", err)
 	}
 
 	return deployment, nil
@@ -998,47 +1000,79 @@ func (c *Cluster) syncConnectionPoolerWorker(oldSpec, newSpec *cpov1.Postgresql,
 		c.ConnectionPooler[role].Deployment = deployment
 		// actual synchronization
 
-		var oldConnectionPooler *cpov1.ConnectionPooler
-
-		if oldSpec != nil {
-			oldConnectionPooler = oldSpec.Spec.ConnectionPooler
+		desired, err := c.generateConnectionPoolerDeployment(c.ConnectionPooler[role])
+		if err != nil {
+			return NoSync, fmt.Errorf("could not generate desired deployment: %v", err)
 		}
 
-		newConnectionPooler := newSpec.Spec.ConnectionPooler
-		// sync implementation below assumes that both old and new specs are
-		// not nil, but it can happen. To avoid any confusion like updating a
-		// deployment because the specification changed from nil to an empty
-		// struct (that was initialized somewhere before) replace any nil with
-		// an empty spec.
-		if oldConnectionPooler == nil {
-			oldConnectionPooler = &cpov1.ConnectionPooler{}
-		}
+		// Check if replacement is needed because of selector changes
+		if !reflect.DeepEqual(deployment.Spec.Selector, desired.Spec.Selector) {
+			c.logger.Warningf("selector changed for connection pooler %s, recreating deployment", deployment.Name)
 
-		if newConnectionPooler == nil {
-			newConnectionPooler = &cpov1.ConnectionPooler{}
+			policy := metav1.DeletePropagationForeground
+			options := metav1.DeleteOptions{PropagationPolicy: &policy}
+
+			err := c.KubeClient.Deployments(c.Namespace).Delete(context.TODO(), deployment.Name, options)
+			if err != nil && !k8sutil.ResourceNotFound(err) {
+				return NoSync, fmt.Errorf("could not delete pooler deployment for recreation: %v", err)
+			}
+
+			c.logger.Debugf("waiting for the pooler deployment %s to be deleted", deployment.Name)
+			err = retryutil.Retry(c.OpConfig.ResourceCheckInterval, c.OpConfig.ResourceCheckTimeout,
+				func() (bool, error) {
+					_, err2 := c.KubeClient.Deployments(c.Namespace).Get(context.TODO(), deployment.Name, metav1.GetOptions{})
+					if err2 == nil {
+						return false, nil
+					}
+					if k8sutil.ResourceNotFound(err2) {
+						return true, nil
+					}
+					return false, err2
+				})
+
+			if err != nil {
+				return NoSync, fmt.Errorf("timeout waiting for pooler deployment deletion: %v", err)
+			}
+
+			deployment, err = c.KubeClient.
+				Deployments(desired.Namespace).
+				Create(context.TODO(), desired, metav1.CreateOptions{})
+
+			if err != nil {
+				return NoSync, fmt.Errorf("could not recreate pooler deployment: %v", err)
+			}
+
+			c.ConnectionPooler[role].Deployment = deployment
+			c.logger.Infof("successfully recreated pooler deployment %s with new selector", deployment.Name)
+
 		}
 
 		var specSync bool
 		var specReason []string
 
+		labelsSync := !reflect.DeepEqual(deployment.Labels, desired.Labels)
+		if labelsSync {
+			syncReason = append(syncReason, "labels changed")
+		}
+
 		if oldSpec != nil {
-			specSync, specReason = needSyncConnectionPoolerSpecs(oldConnectionPooler, newConnectionPooler, c.logger)
+			specSync, specReason = needSyncConnectionPoolerSpecs(oldSpec.Spec.ConnectionPooler, newSpec.Spec.ConnectionPooler, c.logger)
 			syncReason = append(syncReason, specReason...)
 		}
 
-		defaultsSync, defaultsReason := c.needSyncConnectionPoolerDefaults(&c.Config, newConnectionPooler, deployment)
+		defaultsSync, defaultsReason := c.needSyncConnectionPoolerDefaults(&c.Config, newSpec.Spec.ConnectionPooler, deployment)
 		syncReason = append(syncReason, defaultsReason...)
 
-		if specSync || defaultsSync {
-			c.logger.Infof("update connection pooler deployment %s, reason: %+v",
-				c.connectionPoolerName(role), syncReason)
-			newDeployment, err = c.generateConnectionPoolerDeployment(c.ConnectionPooler[role])
-			if err != nil {
-				return syncReason, fmt.Errorf("could not generate deployment for connection pooler: %v", err)
-			}
+		// to ensure we're also fetching global-label changes
+		templateSync := !reflect.DeepEqual(deployment.Spec.Template.Labels, desired.Spec.Template.Labels)
+		if templateSync {
+			syncReason = append(syncReason, "pod template labels changed")
+		}
 
-			deployment, err = updateConnectionPoolerDeployment(c.KubeClient, newDeployment)
+		if labelsSync || specSync || defaultsSync || templateSync {
+			c.logger.Infof("update connection pooler deployment %s, reason: %+v", c.connectionPoolerName(role), syncReason)
 
+			deployment, err = updateConnectionPoolerDeployment(c.KubeClient, desired)
 			if err != nil {
 				return syncReason, err
 			}
@@ -1057,7 +1091,7 @@ func (c *Cluster) syncConnectionPoolerWorker(oldSpec, newSpec *cpov1.Postgresql,
 
 	// check if pooler pods must be replaced due to secret update
 	listOptions := metav1.ListOptions{
-		LabelSelector: labels.Set(c.connectionPoolerLabels(role, true).MatchLabels).String(),
+		LabelSelector: labels.Set(c.connectionPoolerLabels(true, role, false).MatchLabels).String(),
 	}
 	pods, err = c.listPoolerPods(listOptions)
 	if err != nil {

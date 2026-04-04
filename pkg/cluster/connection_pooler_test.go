@@ -65,7 +65,7 @@ func objectsAreSaved(cluster *Cluster, err error, reason SyncReason) error {
 	}
 
 	for _, role := range []PostgresRole{Master, Replica} {
-		poolerLabels := cluster.poolerLabelsSet(false)
+		poolerLabels := cluster.poolerLabelsSet(false, false)
 		poolerLabels["application"] = "db-connection-pooler"
 		poolerLabels["connection-pooler"] = cluster.connectionPoolerName(role)
 
@@ -86,7 +86,7 @@ func MasterObjectsAreSaved(cluster *Cluster, err error, reason SyncReason) error
 		return fmt.Errorf("Connection pooler resources are empty")
 	}
 
-	poolerLabels := cluster.poolerLabelsSet(false)
+	poolerLabels := cluster.poolerLabelsSet(false, false)
 	poolerLabels["application"] = "db-connection-pooler"
 	poolerLabels["connection-pooler"] = cluster.connectionPoolerName(Master)
 
@@ -106,7 +106,7 @@ func ReplicaObjectsAreSaved(cluster *Cluster, err error, reason SyncReason) erro
 		return fmt.Errorf("Connection pooler resources are empty")
 	}
 
-	poolerLabels := cluster.poolerLabelsSet(false)
+	poolerLabels := cluster.poolerLabelsSet(false, false)
 	poolerLabels["application"] = "db-connection-pooler"
 	poolerLabels["connection-pooler"] = cluster.connectionPoolerName(Replica)
 
@@ -924,9 +924,9 @@ func testResources(cluster *Cluster, podSpec *v1.PodTemplateSpec, role PostgresR
 func testLabels(cluster *Cluster, podSpec *v1.PodTemplateSpec, role PostgresRole) error {
 	poolerLabels := podSpec.ObjectMeta.Labels["connection-pooler"]
 
-	if poolerLabels != cluster.connectionPoolerLabels(role, true).MatchLabels["connection-pooler"] {
+	if poolerLabels != cluster.connectionPoolerLabels(true, role, true).MatchLabels["connection-pooler"] {
 		return fmt.Errorf("Pod labels do not match, got %+v, expected %+v",
-			podSpec.ObjectMeta.Labels, cluster.connectionPoolerLabels(role, true).MatchLabels)
+			podSpec.ObjectMeta.Labels, cluster.connectionPoolerLabels(true, role, true).MatchLabels)
 	}
 
 	return nil
@@ -934,7 +934,7 @@ func testLabels(cluster *Cluster, podSpec *v1.PodTemplateSpec, role PostgresRole
 
 func testSelector(cluster *Cluster, deployment *appsv1.Deployment) error {
 	labels := deployment.Spec.Selector.MatchLabels
-	expected := cluster.connectionPoolerLabels(Master, true).MatchLabels
+	expected := cluster.connectionPoolerLabels(true, Master, false).MatchLabels
 
 	if labels["connection-pooler"] != expected["connection-pooler"] {
 		return fmt.Errorf("Labels are incorrect, got %+v, expected %+v",

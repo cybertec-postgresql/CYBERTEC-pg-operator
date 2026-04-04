@@ -517,7 +517,7 @@ func testEnvs(cluster *Cluster, podSpec *v1.PodTemplateSpec, role PostgresRole) 
 	return nil
 }
 
-func TestGenerateSpiloPodEnvVars(t *testing.T) {
+func TestGeneratePostgresContainerEnvVars(t *testing.T) {
 	var dummyUUID = "efd12e58-5786-11e8-b5a7-06148230260c"
 
 	expectedClusterNameLabel := []ExpectedValue{
@@ -959,7 +959,7 @@ func TestGenerateSpiloPodEnvVars(t *testing.T) {
 		pgsql.Spec.StandbyCluster = tt.standbyDescription
 		c.Postgresql = pgsql
 
-		actualEnvs, err := c.generateSpiloPodEnvVars(&pgsql.Spec, types.UID(dummyUUID), exampleSpiloConfig)
+		actualEnvs, err := c.generatePostgresContainerEnvVars(&pgsql.Spec, types.UID(dummyUUID), exampleSpiloConfig)
 		assert.NoError(t, err)
 
 		for _, ev := range tt.expectedValues {

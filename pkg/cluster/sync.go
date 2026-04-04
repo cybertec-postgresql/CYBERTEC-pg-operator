@@ -23,6 +23,7 @@ import (
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/constants"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
+	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/retryutil"
 	batchv1 "k8s.io/api/batch/v1"
 	v1 "k8s.io/api/core/v1"
 	policyv1 "k8s.io/api/policy/v1"
@@ -172,6 +173,7 @@ func generateSerialNumber() (*big.Int, error) {
 // Unlike the update, sync does not error out if some objects do not exist and takes care of creating them.
 func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	var err error
+	var syncErrors []error
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -186,6 +188,26 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 			c.KubeClient.SetPostgresCRDStatus(c.clusterName(), cpov1.ClusterStatusRunning)
 		}
 	}()
+
+	// Label-check for pg-pods
+	pgLabelsChanged := !reflect.DeepEqual(oldSpec.Spec.Labels, newSpec.Spec.Labels) ||
+		!reflect.DeepEqual(oldSpec.Spec.PostgresqlParam.Labels, newSpec.Spec.PostgresqlParam.Labels)
+
+	// Label-check for pgbackrest-pods
+	var oldRepoL, newRepoL map[string]string
+	if oldSpec.Spec.Backup != nil && oldSpec.Spec.Backup.Pgbackrest != nil {
+		oldRepoL = oldSpec.Spec.Backup.Pgbackrest.Labels
+	}
+	if newSpec.Spec.Backup != nil && newSpec.Spec.Backup.Pgbackrest != nil {
+		newRepoL = newSpec.Spec.Backup.Pgbackrest.Labels
+	}
+
+	repoLabelsChanged := !reflect.DeepEqual(oldSpec.Spec.Labels, newSpec.Spec.Labels) ||
+		!reflect.DeepEqual(oldRepoL, newRepoL)
+
+	if pgLabelsChanged || repoLabelsChanged {
+		c.logger.Infof("Labels drift detected in Sync: pgLabelsChanged=%v, repoLabelsChanged=%v", pgLabelsChanged, repoLabelsChanged)
+	}
 
 	// Make sure we know about any in progress restores before touching other stuff
 	if err = c.refreshRestoreConfigMap(); err != nil {
@@ -208,13 +230,13 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		return err
 	}
 
-	if err = c.syncPgbackrestConfig(); err != nil {
-		err = fmt.Errorf("could not sync pgbackrest repo-host config: %v", err)
+	if err = c.syncPgbackrestRepoHostConfig(&c.Spec); err != nil {
+		err = fmt.Errorf("could not sync pgbackrest config: %v", err)
 		return err
 	}
 
 	if err = c.syncPgbackrestRepoHostConfig(&c.Spec); err != nil {
-		err = fmt.Errorf("could not sync pgbackrest config: %v", err)
+		err = fmt.Errorf("could not sync pgbackrest repo-host config: %v", err)
 		return err
 	}
 
@@ -234,7 +256,8 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	if err = c.syncStatefulSet(); err != nil {
 		if !k8sutil.ResourceAlreadyExists(err) {
 			err = fmt.Errorf("could not sync statefulsets: %v", err)
-			return err
+			syncErrors = append(syncErrors, err)
+			// return err
 		}
 	}
 
@@ -304,7 +327,9 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 
 	// sync connection pooler
 	if _, err = c.syncConnectionPooler(&oldSpec, newSpec, c.installLookupFunction); err != nil {
-		return fmt.Errorf("could not sync connection pooler: %v", err)
+		// return fmt.Errorf("could not sync connection pooler: %v", err)
+		err = fmt.Errorf("could not sync connection pooler: %v", err)
+		syncErrors = append(syncErrors, err)
 	}
 
 	if len(c.Spec.Streams) > 0 {
@@ -331,7 +356,11 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		c.logger.Errorf("major version upgrade failed: %v", err)
 	}
 
-	return err
+	if len(syncErrors) > 0 {
+		return fmt.Errorf("multiple sync errors: %v", syncErrors)
+	}
+	return nil
+	// return err
 }
 
 func (c *Cluster) deletePgbackrestRepoHostObjects() error {
@@ -1190,7 +1219,7 @@ func (c *Cluster) rotatePasswordInSecret(
 			// when password of connection pooler is rotated in place, pooler pods have to be replaced
 			if roleOrigin == spec.RoleOriginConnectionPooler {
 				listOptions := metav1.ListOptions{
-					LabelSelector: c.poolerLabelsSet(true).String(),
+					LabelSelector: c.poolerLabelsSet(true, false).String(),
 				}
 				poolerPods, err := c.listPoolerPods(listOptions)
 				if err != nil {
@@ -1662,21 +1691,58 @@ func (c *Cluster) syncPgbackrestJob(forceRemove bool) error {
 				for _, repo := range c.Postgresql.Spec.Backup.Pgbackrest.Repos {
 					for name, schedule := range repo.Schedule {
 						if rep == repo.Name && name == schedul {
-							job, err := c.generatePgbackrestJob(c.Postgresql.Spec.Backup.Pgbackrest, &repo, name, schedule)
+							job, err := c.generatePgbackrestJob(&c.Postgresql.Spec, c.Postgresql.Spec.Backup.Pgbackrest, &repo, name, schedule)
 							if err != nil {
 								return fmt.Errorf("could not generate pgbackrest job: %v", err)
 							}
 							remove = false
-							if _, err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Get(context.TODO(), c.getPgbackrestJobName(repo.Name, name), metav1.GetOptions{}); err == nil {
-								if err := c.patchPgbackrestJob(job); err != nil {
-									return fmt.Errorf("could not update a pgbackrest cronjob: %v", err)
+
+							currentJob, err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Get(context.TODO(), c.getPgbackrestJobName(repo.Name, name), metav1.GetOptions{})
+
+							if err == nil {
+								if !reflect.DeepEqual(currentJob.Spec.JobTemplate.Spec.Selector, job.Spec.JobTemplate.Spec.Selector) {
+									c.logger.Warningf("selector changed for pgbackrest cronjob %s, recreating to avoid immutable field error", job.Name)
+
+									err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Delete(context.TODO(), job.Name, metav1.DeleteOptions{})
+									if err != nil && !k8sutil.ResourceNotFound(err) {
+										return fmt.Errorf("could not delete pgbackrest cronjob for recreation: %v", err)
+									}
+
+									err = retryutil.Retry(c.OpConfig.ResourceCheckInterval, c.OpConfig.ResourceCheckTimeout,
+										func() (bool, error) {
+											_, err2 := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Get(context.TODO(), job.Name, metav1.GetOptions{})
+											return k8sutil.ResourceNotFound(err2), nil
+										})
+									if err != nil {
+										return fmt.Errorf("timeout waiting for pgbackrest cronjob deletion: %v", err)
+									}
+
+									if err := c.createPgbackrestJob(job); err != nil {
+										return fmt.Errorf("could not recreate pgbackrest cronjob: %v", err)
+									}
+									c.logger.Infof("pgbackrest cronjob for %v %v has been successfully recreated", rep, schedul)
+
+								} else {
+									currentJob.Labels = job.Labels
+									currentJob.Annotations = job.Annotations
+									currentJob.Spec.Schedule = job.Spec.Schedule
+									currentJob.Spec.JobTemplate.ObjectMeta.Labels = job.Spec.JobTemplate.ObjectMeta.Labels
+									currentJob.Spec.JobTemplate.Spec.Template.ObjectMeta.Labels = job.Spec.JobTemplate.Spec.Template.ObjectMeta.Labels
+									currentJob.Spec.JobTemplate.Spec.Template.Spec = job.Spec.JobTemplate.Spec.Template.Spec
+
+									_, err := c.KubeClient.CronJobsGetter.CronJobs(c.Namespace).Update(context.TODO(), currentJob, metav1.UpdateOptions{})
+									if err != nil {
+										return fmt.Errorf("could not update pgbackrest cronjob via Update call: %v", err)
+									}
+									c.logger.Infof("pgbackrest cronjob for %v %v has been successfully updated (history preserved)", rep, schedul)
 								}
-								c.logger.Infof("pgbackrest cronjob for %v %v has been successfully updated", rep, schedul)
-							} else {
+							} else if k8sutil.ResourceNotFound(err) {
 								if err := c.createPgbackrestJob(job); err != nil {
 									return fmt.Errorf("could not create a pgbackrest cronjob: %v", err)
 								}
 								c.logger.Infof("pgbackrest cronjob for %v %v has been successfully created", rep, schedul)
+							} else {
+								return fmt.Errorf("could not get pgbackrest cronjob: %v", err)
 							}
 						}
 					}

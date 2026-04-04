@@ -168,6 +168,7 @@ key, operator, value, effect and tolerationSeconds |
 
 | Name                           | Type    | required  | Description        |
 | ------------------------------ |:-------:| ---------:| ------------------:|
+| customQueries                  | string  | false     | Name of the ConfigMap containing custom queries  |
 | [env](#env)                    | array   | false     | Allows you to add custom environment variables to all expoerter-sidecar containers |
 | image                          | string  | true      | Docker-Image for the metric exporter  |
 
@@ -251,6 +252,8 @@ key, operator, value, effect and tolerationSeconds |
 | ------------------------------ |:-------:| ---------:| ------------------:|
 | standby_host                   | string  | true      | Endpoint of the primary cluster  |
 | standby_port                   | string  | true      | PostgreSQL port of the primary cluster  |
+| standby_primary_slot_name      | string  | true      | replication slot of the primary cluster  |
+
 
 {{< back >}}
 

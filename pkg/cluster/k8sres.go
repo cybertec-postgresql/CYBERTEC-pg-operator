@@ -81,11 +81,20 @@ type pgBootstrap struct {
 type spiloConfiguration struct {
 	PgLocalConfiguration map[string]interface{} `json:"postgresql"`
 	Bootstrap            pgBootstrap            `json:"bootstrap"`
+	Log                  *spiloLogConfiguration `json:"log,omitempty"`
 }
 
 type TDEConfig struct {
 	Enabled bool
 	KeyBits string
+}
+
+type spiloLogConfiguration struct {
+	Type                     string            `json:"type,omitempty"`
+	Level                    string            `json:"level,omitempty"`
+	TracebackLevel           string            `json:"traceback_level,omitempty"`
+	StaticFields             map[string]string `json:"static_fields,omitempty"`
+	DeduplicateHeartbeatLogs *bool             `json:"deduplicate_heartbeat_logs,omitempty"`
 }
 
 func (c *Cluster) statefulSetName() string {
@@ -466,6 +475,26 @@ PatroniInitDBParams:
 	// relevant section in the manifest.
 	if len(patroni.PgHba) > 0 {
 		config.PgLocalConfiguration[patroniPGHBAConfParameterName] = patroni.PgHba
+	}
+
+	if patroni.Log != nil {
+		logConfig := &spiloLogConfiguration{}
+		if patroni.Log.Type != "" {
+			logConfig.Type = patroni.Log.Type
+		}
+		if patroni.Log.Level != "" {
+			logConfig.Level = patroni.Log.Level
+		}
+		if patroni.Log.TracebackLevel != "" {
+			logConfig.TracebackLevel = patroni.Log.TracebackLevel
+		}
+		if patroni.Log.StaticFields != nil {
+			logConfig.StaticFields = patroni.Log.StaticFields
+		}
+		if patroni.Log.DeduplicateHeartbeatLogs != nil {
+			logConfig.DeduplicateHeartbeatLogs = patroni.Log.DeduplicateHeartbeatLogs
+		}
+		config.Log = logConfig
 	}
 
 	res, err := json.Marshal(config)

@@ -1027,6 +1027,12 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 		syncStatefulSet = true
 	}
 
+	//sync sts if there is a change in the monitor-section
+	if !reflect.DeepEqual(oldSpec.Spec.Monitoring, newSpec.Spec.Monitoring) {
+		c.logger.Infof("monitoring configuration changed, triggering statefulset sync")
+		syncStatefulSet = true
+	}
+
 	// Pgbackrest backup job
 	func() {
 		if specHasPgbackrestPVCRepo(&newSpec.Spec) || specHasPgbackrestPVCRepo(&oldSpec.Spec) {

@@ -4,6 +4,30 @@ date: 2024-03-11T14:26:51+01:00
 draft: false
 weight: 2500
 ---
+
+### 0.9.2 ###
+
+#### Features
+- Flexible environment variables: Introduction of custom environments, which can be defined both at container level and cluster-wide.
+- Advanced label configuration: Custom labels can now be flexibly configured for individual pods or the entire cluster.
+- Custom Metrics: Support for custom-queries in the exporter. These can now be easily added via ConfigMap without modifying the image.
+- logging: Conversion of Patroni logs from plain text to JSON format.
+
+#### Fixes
+- Optimized upgrade-readiness-check: The trigger for major upgrades has been optimized.
+- Standby-cluster: An error when promoting standby clusters has been resolved.
+
+#### Notification of upcoming deprecation
+- PG13 has reached its EoL - Support will be removed in the next release
+
+#### Supported Versions
+
+- PG: 13 - 18
+- Patroni: 4.1.0
+- pgBackRest: 2.57.0 - 2.58.0
+- Kubernetes: 1.21 - 1.34
+- Openshift: 4.8 - 4.20
+
 ### 0.9.1 ###
 
 #### Features

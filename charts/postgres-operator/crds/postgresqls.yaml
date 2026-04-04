@@ -206,6 +206,17 @@ spec:
                     type: string
                   user:
                     type: string
+                  env:
+                    type: array
+                    nullable: true
+                    items:
+                      type: object
+                      x-kubernetes-preserve-unknown-fields: true
+                  labels:
+                    type: object
+                    nullable: true
+                    additionalProperties:
+                      type: string
               databases:
                 type: object
                 additionalProperties:
@@ -375,6 +386,18 @@ spec:
                 type: object
                 additionalProperties:
                   type: string
+              monitor:
+                nullable: true
+                properties:
+                  image:
+                    type: string
+                  env:
+                    type: array
+                    nullable: true
+                    items:
+                      type: object
+                      x-kubernetes-preserve-unknown-fields: true
+                type: object
               nodeAffinity:
                 type: object
                 properties:
@@ -551,6 +574,17 @@ spec:
                       - "18"
                   parameters:
                     type: object
+                    additionalProperties:
+                      type: string
+                  env:
+                    type: array
+                    nullable: true
+                    items:
+                      type: object
+                      x-kubernetes-preserve-unknown-fields: true
+                  labels:
+                    type: object
+                    nullable: true
                     additionalProperties:
                       type: string
               preparedDatabases:
@@ -976,6 +1010,17 @@ spec:
                               memory:
                                 type: string
                                 pattern: '^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$'
+                      env:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                          x-kubernetes-preserve-unknown-fields: true
+                      labels:
+                        type: object
+                        nullable: true
+                        additionalProperties:
+                          type: string
                     required:
                       - image
                       - repos

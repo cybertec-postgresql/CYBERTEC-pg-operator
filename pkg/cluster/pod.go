@@ -34,7 +34,7 @@ func (c *Cluster) listPods() ([]v1.Pod, error) {
 
 func (c *Cluster) listPodsOfType(podType PodType) ([]v1.Pod, error) {
 	listOptions := metav1.ListOptions{
-		LabelSelector: c.labelsSetWithType(false, podType).String(),
+		LabelSelector: c.labelsSetWithType(false, podType, false).String(),
 	}
 
 	pods, err := c.KubeClient.Pods(c.Namespace).List(context.TODO(), listOptions)

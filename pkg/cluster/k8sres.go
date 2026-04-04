@@ -961,7 +961,7 @@ func (c *Cluster) generatePodTemplate(
 }
 
 // generatePodEnvVars generates environment variables for the Spilo Pod
-func (c *Cluster) generateSpiloPodEnvVars(
+func (c *Cluster) generatePostgresContainerEnvVars(
 	spec *cpov1.PostgresSpec,
 	uid types.UID,
 	spiloConfiguration string) ([]v1.EnvVar, error) {
@@ -1110,6 +1110,10 @@ func (c *Cluster) generateSpiloPodEnvVars(
 		envVars = append(envVars, v1.EnvVar{Name: "KUBERNETES_USE_CONFIGMAPS", Value: "true"})
 	}
 
+	// fetch postgres-specific variables that will override all subsequent global variables
+	if len(spec.PostgresqlParam.Env) > 0 {
+		envVars = appendEnvVars(envVars, spec.PostgresqlParam.Env...)
+	}
 	// fetch cluster-specific variables that will override all subsequent global variables
 	if len(spec.Env) > 0 {
 		envVars = appendEnvVars(envVars, spec.Env...)
@@ -1182,8 +1186,9 @@ func (c *Cluster) generateSpiloPodEnvVars(
 }
 
 // generatePodEnvVars generates environment variables for the Spilo Pod
-func (c *Cluster) generatepgBackRestPodEnvVars() []v1.EnvVar {
-	return []v1.EnvVar{
+func (c *Cluster) generatepgBackRestPodEnvVars(spec *cpov1.PostgresSpec) ([]v1.EnvVar, error) {
+
+	envVars := []v1.EnvVar{
 		{
 			Name:  "USE_PGBACKREST",
 			Value: "true",
@@ -1193,6 +1198,17 @@ func (c *Cluster) generatepgBackRestPodEnvVars() []v1.EnvVar {
 			Value: "repo",
 		},
 	}
+
+	// fetch pgbackrest-specific variables that will override all subsequent global variables
+	if len(spec.Backup.Pgbackrest.Env) > 0 {
+		envVars = appendEnvVars(envVars, spec.Backup.Pgbackrest.Env...)
+	}
+	// fetch cluster-specific variables that will override all subsequent global variables
+	if len(spec.Env) > 0 {
+		envVars = appendEnvVars(envVars, spec.Env...)
+	}
+
+	return envVars, nil
 }
 
 func copyEnvVars(envs []v1.EnvVar) []v1.EnvVar {
@@ -1464,10 +1480,10 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		return nil, fmt.Errorf("could not generate Spilo JSON configuration: %v", err)
 	}
 
-	// generate environment variables for the spilo container
-	spiloEnvVars, err := c.generateSpiloPodEnvVars(spec, c.Postgresql.GetUID(), spiloConfiguration)
+	// generate environment variables for the postgres container
+	spiloEnvVars, err := c.generatePostgresContainerEnvVars(spec, c.Postgresql.GetUID(), spiloConfiguration)
 	if err != nil {
-		return nil, fmt.Errorf("could not generate Spilo env vars: %v", err)
+		return nil, fmt.Errorf("could not generate Postgres-Container env vars: %v", err)
 	}
 
 	// pickup the docker image for the spilo container
@@ -1661,7 +1677,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
-		c.labelsSetWithType(true, TYPE_POSTGRESQL),
+		c.labelsSetWithType(true, TYPE_POSTGRESQL, true),
 		c.annotationsSet(podAnnotations),
 		spiloContainer,
 		initContainers,
@@ -1730,7 +1746,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		ObjectMeta: metav1.ObjectMeta{
 			Name:            c.statefulSetName(),
 			Namespace:       c.Namespace,
-			Labels:          c.labelsSetWithType(true, TYPE_POSTGRESQL),
+			Labels:          c.labelsSetWithType(true, TYPE_POSTGRESQL, false),
 			Annotations:     c.AnnotationsToPropagate(c.annotationsSet(nil)),
 			OwnerReferences: c.createOwnerReference(),
 		},
@@ -1814,6 +1830,7 @@ func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, r
 			},
 		},
 	}
+
 	if repo_host_mode {
 		pgbackrestRestoreEnvVars = appendEnvVars(
 			pgbackrestRestoreEnvVars, v1.EnvVar{
@@ -1833,6 +1850,15 @@ func (c *Cluster) generatePgbackrestRestoreContainer(spec *cpov1.PostgresSpec, r
 			},
 		},
 		})
+	}
+
+	// fetch pgbackrest-specific variables that will override all subsequent global variables
+	if len(spec.Backup.Pgbackrest.Env) > 0 {
+		pgbackrestRestoreEnvVars = appendEnvVars(pgbackrestRestoreEnvVars, spec.Backup.Pgbackrest.Env...)
+	}
+	// fetch cluster-specific variables that will override all subsequent global variables
+	if len(spec.Env) > 0 {
+		pgbackrestRestoreEnvVars = appendEnvVars(pgbackrestRestoreEnvVars, spec.Env...)
 	}
 
 	return v1.Container{
@@ -1869,7 +1895,10 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	}
 
 	// generate environment variables for the spilo container
-	repoEnvVars := c.generatepgBackRestPodEnvVars()
+	repoEnvVars, err := c.generatepgBackRestPodEnvVars(spec)
+	if err != nil {
+		return nil, fmt.Errorf("could not generate pgBackRest-RepoHost env vars: %v", err)
+	}
 
 	// determine the User, Group and FSGroup for the spilo pod
 	effectiveRunAsUser := c.OpConfig.Resources.SpiloRunAsUser
@@ -1915,12 +1944,11 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	effectivePodPriorityClassName := util.Coalesce(spec.PodPriorityClassName, c.OpConfig.PodPriorityClassName)
 
 	podAnnotations := c.generatePodAnnotations(spec)
-	repoHostLabels := c.labelsSetWithType(true, TYPE_REPOSITORY)
 
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
-		repoHostLabels,
+		c.labelsSetWithType(true, TYPE_REPOSITORY, true),
 		c.annotationsSet(podAnnotations),
 		repoContainer,
 		initContainers,
@@ -1992,7 +2020,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 		ObjectMeta: metav1.ObjectMeta{
 			Name:            c.getPgbackrestRepoHostName(),
 			Namespace:       c.Namespace,
-			Labels:          repoHostLabels,
+			Labels:          c.labelsSetWithType(true, TYPE_REPOSITORY, false),
 			Annotations:     c.AnnotationsToPropagate(c.annotationsSet(nil)),
 			OwnerReferences: c.createOwnerReference(),
 		},
@@ -2569,7 +2597,7 @@ func (c *Cluster) generateSingleUserSecret(namespace string, pgUser spec.PgUser)
 	lbls := c.labelsSet(true)
 
 	if username == constants.ConnectionPoolerUserName {
-		lbls = c.connectionPoolerLabels("", false).MatchLabels
+		lbls = c.connectionPoolerLabels(false, "", false).MatchLabels
 	}
 
 	secret := v1.Secret{
@@ -2898,7 +2926,7 @@ func (c *Cluster) generatePodDisruptionBudget() *policyv1.PodDisruptionBudget {
 		Spec: policyv1.PodDisruptionBudgetSpec{
 			MinAvailable: &minAvailable,
 			Selector: &metav1.LabelSelector{
-				MatchLabels: c.labelsSetWithType(false, "postgresql"), //c.roleLabelsSet(false, Master),
+				MatchLabels: c.labelsSetWithType(false, "postgresql", false), //c.roleLabelsSet(false, Master),
 			},
 		},
 	}
@@ -2962,7 +2990,7 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 	// re-use the method that generates DB pod templates
 	if podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
-		c.labelsSetWithType(true, TYPE_LOGICAL_BACKUP),
+		c.labelsSetWithType(true, TYPE_LOGICAL_BACKUP, false),
 		annotations,
 		logicalBackupContainer,
 		[]v1.Container{},
@@ -3015,7 +3043,7 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        c.getLogicalBackupJobName(),
 			Namespace:   c.Namespace,
-			Labels:      c.labelsSetWithType(true, TYPE_LOGICAL_BACKUP),
+			Labels:      c.labelsSetWithType(true, TYPE_LOGICAL_BACKUP, false),
 			Annotations: c.annotationsSet(nil),
 		},
 		Spec: batchv1.CronJobSpec{
@@ -3167,8 +3195,8 @@ func (c *Cluster) getMonitoringSecretName() string {
 		"tprgroup", cpo.GroupName)
 }
 
-func (c *Cluster) generateMonitoringEnvVars() []v1.EnvVar {
-	env := []v1.EnvVar{
+func (c *Cluster) generateMonitoringEnvVars(spec *cpov1.PostgresSpec, monitor *cpov1.Monitoring) []v1.EnvVar {
+	envVars := []v1.EnvVar{
 		{
 			Name:  "DATA_SOURCE_URI",
 			Value: "localhost:5432/postgres?sslmode=disable",
@@ -3189,7 +3217,17 @@ func (c *Cluster) generateMonitoringEnvVars() []v1.EnvVar {
 			},
 		},
 	}
-	return env
+
+	// fetch monitoring-specific variables that will override all subsequent global variables
+	if len(monitor.Env) > 0 {
+		envVars = appendEnvVars(envVars, monitor.Env...)
+	}
+	// fetch cluster-specific variables that will override all subsequent global variables
+	if len(spec.Env) > 0 {
+		envVars = appendEnvVars(envVars, spec.Env...)
+	}
+
+	return envVars
 }
 
 func (c *Cluster) getPgbackrestRestoreConfigmapName() (jobName string) {
@@ -3446,7 +3484,7 @@ func renderPgbackrestConfig(config map[string]map[string]string) (string, error)
 	return out.String(), nil
 }
 
-func (c *Cluster) generatePgbackrestJob(backup *cpov1.Pgbackrest, repo *cpov1.Repo, backupType string, schedule string) (*batchv1.CronJob, error) {
+func (c *Cluster) generatePgbackrestJob(spec *cpov1.PostgresSpec, backup *cpov1.Pgbackrest, repo *cpov1.Repo, backupType string, schedule string) (*batchv1.CronJob, error) {
 
 	var (
 		err                  error
@@ -3462,7 +3500,7 @@ func (c *Cluster) generatePgbackrestJob(backup *cpov1.Pgbackrest, repo *cpov1.Re
 	emptyResourceRequirements := v1.ResourceRequirements{}
 	resourceRequirements = &emptyResourceRequirements
 
-	envVars := c.generatePgbackrestBackupJobEnvVars(repo, backupType)
+	envVars := c.generatePgbackrestBackupJobEnvVars(spec, repo, backupType)
 	pgbackrestContainer := generateContainer(
 		constants.BackupContainerName,
 		&c.Postgresql.Spec.Backup.Pgbackrest.Image,
@@ -3496,7 +3534,7 @@ func (c *Cluster) generatePgbackrestJob(backup *cpov1.Pgbackrest, repo *cpov1.Re
 	// re-use the method that generates DB pod templates
 	if podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
-		c.labelsSetWithType(true, TYPE_BACKUP_JOB),
+		c.labelsSetWithType(true, TYPE_BACKUP_JOB, true),
 		annotations,
 		pgbackrestContainer,
 		[]v1.Container{},
@@ -3548,7 +3586,7 @@ func (c *Cluster) generatePgbackrestJob(backup *cpov1.Pgbackrest, repo *cpov1.Re
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        c.getPgbackrestJobName(repo.Name, backupType),
 			Namespace:   c.Namespace,
-			Labels:      c.labelsSetWithType(true, TYPE_BACKUP_JOB),
+			Labels:      c.labelsSetWithType(true, TYPE_BACKUP_JOB, false),
 			Annotations: c.annotationsSet(nil),
 		},
 		Spec: batchv1.CronJobSpec{
@@ -3561,13 +3599,13 @@ func (c *Cluster) generatePgbackrestJob(backup *cpov1.Pgbackrest, repo *cpov1.Re
 	return cronJob, nil
 }
 
-func (c *Cluster) generatePgbackrestBackupJobEnvVars(repo *cpov1.Repo, backupType string) []v1.EnvVar {
+func (c *Cluster) generatePgbackrestBackupJobEnvVars(spec *cpov1.PostgresSpec, repo *cpov1.Repo, backupType string) []v1.EnvVar {
 	selector := c.roleLabelsSet(false, Master).String()
 	targetContainer := constants.PostgresContainerName
 	if repo.Storage == "pvc" {
 		// With a PVC based repo the backup command needs to run on the repository system
 		// due to pgbackrest limitations
-		selector = c.labelsSetWithType(false, TYPE_REPOSITORY).String()
+		selector = c.labelsSetWithType(false, TYPE_REPOSITORY, false).String()
 		targetContainer = constants.RepoContainerName
 	}
 
@@ -3593,6 +3631,16 @@ func (c *Cluster) generatePgbackrestBackupJobEnvVars(repo *cpov1.Repo, backupTyp
 			Value: selector,
 		},
 	}
+
+	// fetch pgbackrest-specific variables that will override all subsequent global variables
+	if len(spec.Backup.Pgbackrest.Env) > 0 {
+		envVars = appendEnvVars(envVars, spec.Backup.Pgbackrest.Env...)
+	}
+	// fetch cluster-specific variables that will override all subsequent global variables
+	if len(spec.Env) > 0 {
+		envVars = appendEnvVars(envVars, spec.Env...)
+	}
+
 	return envVars
 }
 

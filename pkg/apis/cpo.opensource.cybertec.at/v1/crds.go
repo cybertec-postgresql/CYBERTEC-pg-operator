@@ -338,6 +338,26 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							"user": {
 								Type: "string",
 							},
+							"env": {
+								Type:     "array",
+								Nullable: true,
+								Items: &apiextv1.JSONSchemaPropsOrArray{
+									Schema: &apiextv1.JSONSchemaProps{
+										Type:                   "object",
+										XPreserveUnknownFields: util.True(),
+									},
+								},
+							},
+							"labels": {
+								Type:     "object",
+								Nullable: true,
+								AdditionalProperties: &apiextv1.JSONSchemaPropsOrBool{
+									Allows: true,
+									Schema: &apiextv1.JSONSchemaProps{
+										Type: "string",
+									},
+								},
+							},
 						},
 					},
 					"databases": {
@@ -382,6 +402,16 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							Schema: &apiextv1.JSONSchemaProps{
 								Type:                   "object",
 								XPreserveUnknownFields: util.True(),
+							},
+						},
+					},
+					"labels": {
+						Type:     "object",
+						Nullable: true,
+						AdditionalProperties: &apiextv1.JSONSchemaPropsOrBool{
+							Allows: true,
+							Schema: &apiextv1.JSONSchemaProps{
+								Type: "string",
 							},
 						},
 					},
@@ -797,6 +827,26 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							"parameters": {
 								Type: "object",
 								AdditionalProperties: &apiextv1.JSONSchemaPropsOrBool{
+									Schema: &apiextv1.JSONSchemaProps{
+										Type: "string",
+									},
+								},
+							},
+							"env": {
+								Type:     "array",
+								Nullable: true,
+								Items: &apiextv1.JSONSchemaPropsOrArray{
+									Schema: &apiextv1.JSONSchemaProps{
+										Type:                   "object",
+										XPreserveUnknownFields: util.True(),
+									},
+								},
+							},
+							"labels": {
+								Type:     "object",
+								Nullable: true,
+								AdditionalProperties: &apiextv1.JSONSchemaPropsOrBool{
+									Allows: true,
 									Schema: &apiextv1.JSONSchemaProps{
 										Type: "string",
 									},
@@ -1479,6 +1529,26 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 											},
 										},
 									},
+									"env": {
+										Type:     "array",
+										Nullable: true,
+										Items: &apiextv1.JSONSchemaPropsOrArray{
+											Schema: &apiextv1.JSONSchemaProps{
+												Type:                   "object",
+												XPreserveUnknownFields: util.True(),
+											},
+										},
+									},
+									"labels": {
+										Type:     "object",
+										Nullable: true,
+										AdditionalProperties: &apiextv1.JSONSchemaPropsOrBool{
+											Allows: true,
+											Schema: &apiextv1.JSONSchemaProps{
+												Type: "string",
+											},
+										},
+									},
 								},
 							},
 						},
@@ -1511,8 +1581,15 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							"image": {
 								Type: "string",
 							},
-							"customQueries": {
-								Type: "string",
+							"env": {
+								Type:     "array",
+								Nullable: true,
+								Items: &apiextv1.JSONSchemaPropsOrArray{
+									Schema: &apiextv1.JSONSchemaProps{
+										Type:                   "object",
+										XPreserveUnknownFields: util.True(),
+									},
+								},
 							},
 						},
 					},

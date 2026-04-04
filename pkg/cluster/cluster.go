@@ -1251,11 +1251,16 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	}
 
 	if !updateFailed {
-		// Major version upgrade must only fire after success of earlier operations and should stay last
-		if err := c.majorVersionUpgrade(); err != nil {
-			c.logger.Errorf("major version upgrade failed: %v", err)
+		if upgradeErr := c.executeMajorVersionUpgrade(); upgradeErr != nil {
+			c.logger.Errorf("major version upgrade failed: %v", upgradeErr)
 			updateFailed = true
 		}
+	}
+
+	if updateFailed {
+		c.logger.Errorf("Update for cluster %s/%s finished with errors..", c.Namespace, c.Name)
+	} else {
+		c.logger.Infof("Update for cluster %s/%s completed successfully.", c.Namespace, c.Name)
 	}
 
 	return nil

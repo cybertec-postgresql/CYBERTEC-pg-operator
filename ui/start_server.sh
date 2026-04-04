@@ -1,2 +1,2 @@
 #!/bin/bash
-/usr/bin/python3 -m operator_ui
+/usr/local/bin/python3 -m operator_ui

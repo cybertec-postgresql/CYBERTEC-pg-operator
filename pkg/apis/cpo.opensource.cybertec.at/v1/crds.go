@@ -1581,6 +1581,9 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							"image": {
 								Type: "string",
 							},
+							"customQueries": {
+								Type: "string",
+							},
 							"env": {
 								Type:     "array",
 								Nullable: true,

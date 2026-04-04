@@ -230,7 +230,7 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		return err
 	}
 
-	if err = c.syncPgbackrestRepoHostConfig(&c.Spec); err != nil {
+	if err = c.syncPgbackrestConfig(); err != nil {
 		err = fmt.Errorf("could not sync pgbackrest config: %v", err)
 		return err
 	}
@@ -358,21 +358,9 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 		}
 	}
 
-	if err != nil {
-		syncFailed = true
-	}
-	if !syncFailed {
-		err = c.executeMajorVersionUpgrade()
-		if err != nil {
-			c.logger.Errorf("major version upgrade failed after retries: %v", err)
-			syncFailed = true
-		}
-	}
-
-	if syncFailed {
-		c.logger.Errorf("Update for cluster %s/%s finished with errors..", c.Namespace, c.Name)
-	} else {
-		c.logger.Infof("Update for cluster %s/%s completed successfully.", c.Namespace, c.Name)
+	// Major version upgrade must only run after success of all earlier operations, must remain last item in sync
+	if err := c.majorVersionUpgrade(); err != nil {
+		c.logger.Errorf("major version upgrade failed: %v", err)
 	}
 
 	if len(syncErrors) > 0 {

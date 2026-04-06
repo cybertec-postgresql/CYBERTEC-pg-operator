@@ -6,8 +6,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#crd-for-kind-postgresql" class="gdoc-page__anchor clip flex align-center" title="Anchor to: CRD for kind postgresql" aria-label="Anchor to: CRD for kind postgresql" href="#crd-for-kind-postgresql">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -64,8 +63,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#spec" class="gdoc-page__anchor clip flex align-center" title="Anchor to: spec" aria-label="Anchor to: spec" href="#spec">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -187,7 +185,7 @@
 >env&lt;/a>&lt;/td>
  &lt;td style="text-align: center">array&lt;/td>
  &lt;td style="text-align: right">false&lt;/td>
- &lt;td style="text-align: right">Allows to add own Envs to the PostgreSQL containers&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom environment variables to all cluster containers&lt;/td>
  &lt;/tr>
  &lt;tr>
  &lt;td>&lt;a
@@ -197,6 +195,15 @@
  &lt;td style="text-align: center">array&lt;/td>
  &lt;td style="text-align: right">false&lt;/td>
  &lt;td style="text-align: right">Enables the definition of init-containers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#labels"
+>labels&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom labels to all cluster pods&lt;/td>
  &lt;/tr>
  &lt;tr>
  &lt;td>logicalBackupSchedule&lt;/td>
@@ -438,8 +445,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#additionalvolumes" class="gdoc-page__anchor clip flex align-center" title="Anchor to: additionalVolumes" aria-label="Anchor to: additionalVolumes" href="#additionalvolumes">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -500,8 +506,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#backup" class="gdoc-page__anchor clip flex align-center" title="Anchor to: backup" aria-label="Anchor to: backup" href="#backup">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -532,8 +537,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#clone" class="gdoc-page__anchor clip flex align-center" title="Anchor to: clone" aria-label="Anchor to: clone" href="#clone">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -570,8 +574,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#connectionpooler" class="gdoc-page__anchor clip flex align-center" title="Anchor to: connectionPooler" aria-label="Anchor to: connectionPooler" href="#connectionpooler">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -581,6 +584,30 @@
  &lt;/tr>
  &lt;/thead>
  &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#env"
+>env&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom environment variables to connection-pooler containers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#labels"
+>labels&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom labels to connection-pooler pods&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dockerImage&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Defines the used pgbouncer container image for this cluster&lt;/td>
+ &lt;/tr>
  &lt;tr>
  &lt;td>numberOfInstances&lt;/td>
  &lt;td style="text-align: center">int&lt;/td>
@@ -630,8 +657,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode19s4hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode19s4hbhb">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;div class="flex align-center gdoc-page__anchorwrap">
+&lt;/div>&lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h4 id="env"
  >
  env
@@ -639,8 +665,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#env" class="gdoc-page__anchor clip flex align-center" title="Anchor to: env" aria-label="Anchor to: env" href="#env">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -674,8 +699,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#initcontainers" class="gdoc-page__anchor clip flex align-center" title="Anchor to: initContainers" aria-label="Anchor to: initContainers" href="#initcontainers">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -735,15 +759,14 @@
 &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
 &lt;hr>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h4 id="monitor"
+ &lt;h4 id="labels"
  >
- monitor
+ labels
  &lt;/h4>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#monitor" class="gdoc-page__anchor clip flex align-center" title="Anchor to: monitor" aria-label="Anchor to: monitor" href="#monitor">
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#labels" class="gdoc-page__anchor clip flex align-center" title="Anchor to: labels" aria-label="Anchor to: labels" href="#labels">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -753,6 +776,55 @@
  &lt;/tr>
  &lt;/thead>
  &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;!-- raw HTML omitted -->&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Namefield for the label&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;!-- raw HTML omitted -->&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Value for the label&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="monitor"
+ >
+ monitor
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#monitor" class="gdoc-page__anchor clip flex align-center" title="Anchor to: monitor" aria-label="Anchor to: monitor" href="#monitor">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>customQueries&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Name of the ConfigMap containing custom queries&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#env"
+>env&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom environment variables to all expoerter-sidecar containers&lt;/td>
+ &lt;/tr>
  &lt;tr>
  &lt;td>image&lt;/td>
  &lt;td style="text-align: center">string&lt;/td>
@@ -771,8 +843,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#patroni" class="gdoc-page__anchor clip flex align-center" title="Anchor to: patroni" aria-label="Anchor to: patroni" href="#patroni">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -878,8 +949,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#postgresql" class="gdoc-page__anchor clip flex align-center" title="Anchor to: PostgreSQL" aria-label="Anchor to: PostgreSQL" href="#postgresql">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -889,6 +959,24 @@
  &lt;/tr>
  &lt;/thead>
  &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#env"
+>env&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom environment variables to all postgresql containers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#labels"
+>labels&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom labels to poostgresql pods&lt;/td>
+ &lt;/tr>
  &lt;tr>
  &lt;td>parameters&lt;/td>
  &lt;td style="text-align: center">map&lt;/td>
@@ -916,8 +1004,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#prepareddatabases" class="gdoc-page__anchor clip flex align-center" title="Anchor to: preparedDatabases" aria-label="Anchor to: preparedDatabases" href="#prepareddatabases">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -960,8 +1047,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#resources" class="gdoc-page__anchor clip flex align-center" title="Anchor to: resources" aria-label="Anchor to: resources" href="#resources">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1001,8 +1087,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#sidecars" class="gdoc-page__anchor clip flex align-center" title="Anchor to: sidecars" aria-label="Anchor to: sidecars" href="#sidecars">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1068,8 +1153,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#standby" class="gdoc-page__anchor clip flex align-center" title="Anchor to: standby" aria-label="Anchor to: standby" href="#standby">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1091,6 +1175,12 @@
  &lt;td style="text-align: right">true&lt;/td>
  &lt;td style="text-align: right">PostgreSQL port of the primary cluster&lt;/td>
  &lt;/tr>
+ &lt;tr>
+ &lt;td>standby_primary_slot_name&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">replication slot of the primary cluster&lt;/td>
+ &lt;/tr>
  &lt;/tbody>
 &lt;/table>
 &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
@@ -1103,8 +1193,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#streams" class="gdoc-page__anchor clip flex align-center" title="Anchor to: streams" aria-label="Anchor to: streams" href="#streams">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1168,8 +1257,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#tde" class="gdoc-page__anchor clip flex align-center" title="Anchor to: tde" aria-label="Anchor to: tde" href="#tde">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1206,8 +1294,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#tolerations" class="gdoc-page__anchor clip flex align-center" title="Anchor to: tolerations" aria-label="Anchor to: tolerations" href="#tolerations">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1259,8 +1346,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#volume" class="gdoc-page__anchor clip flex align-center" title="Anchor to: volume" aria-label="Anchor to: volume" href="#volume">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1321,8 +1407,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#volumesource" class="gdoc-page__anchor clip flex align-center" title="Anchor to: volumeSource" aria-label="Anchor to: volumeSource" href="#volumesource">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1368,8 +1453,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#volumesource-persistentvolumeclaim" class="gdoc-page__anchor clip flex align-center" title="Anchor to: volumeSource-PersistentVolumeClaim" aria-label="Anchor to: volumeSource-PersistentVolumeClaim" href="#volumesource-persistentvolumeclaim">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1403,8 +1487,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#volumesource-configmap" class="gdoc-page__anchor clip flex align-center" title="Anchor to: volumeSource-configMap" aria-label="Anchor to: volumeSource-configMap" href="#volumesource-configmap">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1432,8 +1515,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#multisite" class="gdoc-page__anchor clip flex align-center" title="Anchor to: multisite" aria-label="Anchor to: multisite" href="#multisite">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1488,8 +1570,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#slots" class="gdoc-page__anchor clip flex align-center" title="Anchor to: slots" aria-label="Anchor to: slots" href="#slots">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1520,15 +1601,14 @@
  &lt;/tbody>
 &lt;/table>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h2 id="hahahugoshortcode19s22hbhb"
+ &lt;h2 id="hahahugoshortcode19s23hbhb"
  >
  &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
  &lt;/h2>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode19s22hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode19s22hbhb">
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode19s23hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode19s23hbhb">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;div class="flex align-center gdoc-page__anchorwrap">
+&lt;/div>&lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h4 id="schemas"
  >
  schemas
@@ -1536,8 +1616,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#schemas" class="gdoc-page__anchor clip flex align-center" title="Anchor to: schemas" aria-label="Anchor to: schemas" href="#schemas">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1569,8 +1648,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#etcd" class="gdoc-page__anchor clip flex align-center" title="Anchor to: etcd" aria-label="Anchor to: etcd" href="#etcd">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1622,8 +1700,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#requests" class="gdoc-page__anchor clip flex align-center" title="Anchor to: requests" aria-label="Anchor to: requests" href="#requests">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1657,8 +1734,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#limits" class="gdoc-page__anchor clip flex align-center" title="Anchor to: limits" aria-label="Anchor to: limits" href="#limits">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1692,8 +1768,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#pgbackrest" class="gdoc-page__anchor clip flex align-center" title="Anchor to: pgbackrest" aria-label="Anchor to: pgbackrest" href="#pgbackrest">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1713,6 +1788,15 @@
  &lt;td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster&lt;/td>
  &lt;/tr>
  &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#env"
+>env&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom environment variables to all pgbackrest containers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
  &lt;td>global&lt;/td>
  &lt;td style="text-align: center">object&lt;/td>
  &lt;td style="text-align: right">false&lt;/td>
@@ -1723,6 +1807,15 @@
  &lt;td style="text-align: center">string&lt;/td>
  &lt;td style="text-align: right">true&lt;/td>
  &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#labels"
+>labels&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom labels to pgbackrest pods&lt;/td>
  &lt;/tr>
  &lt;tr>
  &lt;td>&lt;a
@@ -1754,8 +1847,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#configuration" class="gdoc-page__anchor clip flex align-center" title="Anchor to: configuration" aria-label="Anchor to: configuration" href="#configuration">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1792,8 +1884,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#protection" class="gdoc-page__anchor clip flex align-center" title="Anchor to: protection" aria-label="Anchor to: protection" href="#protection">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1821,8 +1912,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#repos" class="gdoc-page__anchor clip flex align-center" title="Anchor to: repos" aria-label="Anchor to: repos" href="#repos">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1883,8 +1973,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#schedule" class="gdoc-page__anchor clip flex align-center" title="Anchor to: schedule" aria-label="Anchor to: schedule" href="#schedule">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1924,8 +2013,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#status" class="gdoc-page__anchor clip flex align-center" title="Anchor to: status" aria-label="Anchor to: status" href="#status">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1951,8 +2039,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#crd-for-kind-operatorconfiguration" class="gdoc-page__anchor clip flex align-center" title="Anchor to: CRD for kind OperatorConfiguration" aria-label="Anchor to: CRD for kind OperatorConfiguration" href="#crd-for-kind-operatorconfiguration">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2000,8 +2087,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#configuration" class="gdoc-page__anchor clip flex align-center" title="Anchor to: configuration" aria-label="Anchor to: configuration" href="#configuration">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2236,8 +2322,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#kubernetes" class="gdoc-page__anchor clip flex align-center" title="Anchor to: kubernetes" aria-label="Anchor to: kubernetes" href="#kubernetes">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2439,8 +2524,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#users" class="gdoc-page__anchor clip flex align-center" title="Anchor to: users" aria-label="Anchor to: users" href="#users">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2492,8 +2576,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#connection_pooler" class="gdoc-page__anchor clip flex align-center" title="Anchor to: connection_pooler" aria-label="Anchor to: connection_pooler" href="#connection_pooler">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2575,8 +2658,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#logging_rest_api" class="gdoc-page__anchor clip flex align-center" title="Anchor to: logging_rest_api" aria-label="Anchor to: logging_rest_api" href="#logging_rest_api">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2616,8 +2698,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#load_balancer" class="gdoc-page__anchor clip flex align-center" title="Anchor to: load_balancer" aria-label="Anchor to: load_balancer" href="#load_balancer">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2699,8 +2780,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#major_version_upgrade" class="gdoc-page__anchor clip flex align-center" title="Anchor to: major_version_upgrade" aria-label="Anchor to: major_version_upgrade" href="#major_version_upgrade">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2746,8 +2826,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#teams_api" class="gdoc-page__anchor clip flex align-center" title="Anchor to: teams_api" aria-label="Anchor to: teams_api" href="#teams_api">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2847,8 +2926,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#timeouts" class="gdoc-page__anchor clip flex align-center" title="Anchor to: timeouts" aria-label="Anchor to: timeouts" href="#timeouts">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2918,8 +2996,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#debug" class="gdoc-page__anchor clip flex align-center" title="Anchor to: debug" aria-label="Anchor to: debug" href="#debug">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2953,8 +3030,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#logical_backup-deprecated" class="gdoc-page__anchor clip flex align-center" title="Anchor to: logical_backup (deprecated)" aria-label="Anchor to: logical_backup (deprecated)" href="#logical_backup-deprecated">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -3012,8 +3088,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#aws_or_gcp" class="gdoc-page__anchor clip flex align-center" title="Anchor to: aws_or_gcp" aria-label="Anchor to: aws_or_gcp" href="#aws_or_gcp">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>

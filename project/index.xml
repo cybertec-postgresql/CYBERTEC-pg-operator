@@ -7,8 +7,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/project/#main-components" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Main components" aria-label="Anchor to: Main components" href="#main-components">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;ul>
+&lt;/div>&lt;ul>
 &lt;li>&lt;a
  class="gdoc-markdown__link"
  href="https://github.com/cybertec-postgresql/CYBERTEC-pg-operator"
@@ -30,8 +29,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/project/#features" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Features" aria-label="Anchor to: Features" href="#features">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;ul>
+&lt;/div>&lt;ul>
 &lt;li>Cluster management:
 &lt;ul>
 &lt;li>Single-node and HA (High Availability) clusters via &lt;a
@@ -86,8 +84,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/project/#installation" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Installation" aria-label="Anchor to: Installation" href="#installation">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>Detailed instructions on installation and configuration can be found in the CYBERTEC operator tutorials and in the following chapters
+&lt;/div>&lt;p>Detailed instructions on installation and configuration can be found in the CYBERTEC operator tutorials and in the following chapters
 Example of installation via Helm:&lt;/p></description></item><item><title>Container Images</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/container_images/</link><pubDate>Mon, 11 Mar 2024 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/container_images/</guid><description>&lt;p>For each version of the operator and the required PostgreSQL and other required containers, the corresponding image is provided on Dockerhub.&lt;/p>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h4 id="operator-container-images"
@@ -97,5 +94,4 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/container_images/#operator-container-images" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Operator container images" aria-label="Anchor to: Operator container images" href="#operator-container-images">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>The operator images are the central components that control the operation and administration of the PostgreSQL databases. These images are available in the following repository on DockerHub:&lt;/p></description></item></channel></rss>
+&lt;/div>&lt;p>The operator images are the central components that control the operation and administration of the PostgreSQL databases. These images are available in the following repository on DockerHub:&lt;/p></description></item></channel></rss>

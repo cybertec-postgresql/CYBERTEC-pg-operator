@@ -7,8 +7,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/introduction/#backups-with-pgbackrest" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Backups with pgBackRest" aria-label="Anchor to: Backups with pgBackRest" href="#backups-with-pgbackrest">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>CPO relies on &lt;a
+&lt;/div>&lt;p>CPO relies on &lt;a
  class="gdoc-markdown__link"
  href="www.pgbackrest.org"
 >pgBackRest&lt;/a> as its backup solution, a tried-and-tested tool with extensive backup and restore options.
@@ -20,8 +19,7 @@ The backup is based on two elements:&lt;/p></description></item><item><title>via
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/pvc/#backups-on-pvc-persistentvolumeclaim" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Backups on PVC (PersistentVolumeClaim)" aria-label="Anchor to: Backups on PVC (PersistentVolumeClaim)" href="#backups-on-pvc-persistentvolumeclaim">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>When using block storage, the operator creates an additional pod that acts as a repo host. Based on a TLS connection, the repo host obtains the data for the Backup from the current primary of the cluster, which is compressed before being sent.
+&lt;/div>&lt;p>When using block storage, the operator creates an additional pod that acts as a repo host. Based on a TLS connection, the repo host obtains the data for the Backup from the current primary of the cluster, which is compressed before being sent.
 WAL archives are pushed from the primary pod to the repo host.&lt;/p></description></item><item><title>via S3</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/aws/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/aws/</guid><description>&lt;p>This chapter describes the use of pgBackRest in combination with AWS S3 or S3-compatible storage such as MinIO, Cloudian HyperStore, or SwiftStack. While it is not mandatory to operate Kubernetes on the AWS Cloud Platform, the efficiency and duration of a backup depend on the network connection to your storage provider.&lt;/p>
 
 
@@ -53,8 +51,7 @@ WAL archives are pushed from the primary pod to the repo host.&lt;/p></descripti
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/gcs/#modifying-the-cluster" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Modifying the Cluster" aria-label="Anchor to: Modifying the Cluster" href="#modifying-the-cluster">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>As soon as all requirements are met:&lt;/p></description></item><item><title>via Azure-Blob</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/azure_blob/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/azure_blob/</guid><description>&lt;p>This chapter describes the use of pgBackRest in combination with Azure Blob Storage. It is not absolutely necessary to operate a Kubernetes on the Azure Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.&lt;/p>
+&lt;/div>&lt;p>As soon as all requirements are met:&lt;/p></description></item><item><title>via Azure-Blob</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/azure_blob/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/azure_blob/</guid><description>&lt;p>This chapter describes the use of pgBackRest in combination with Azure Blob Storage. It is not absolutely necessary to operate a Kubernetes on the Azure Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.&lt;/p>
 
 
 
@@ -72,8 +69,7 @@ WAL archives are pushed from the primary pod to the repo host.&lt;/p></descripti
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/azure_blob/#modifying-the-cluster" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Modifying the Cluster" aria-label="Anchor to: Modifying the Cluster" href="#modifying-the-cluster">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>As soon as all requirements are met:&lt;/p></description></item><item><title>Encrypted Backups</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/encryption/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/encryption/</guid><description>&lt;p>pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.&lt;/p>
+&lt;/div>&lt;p>As soon as all requirements are met:&lt;/p></description></item><item><title>Encrypted Backups</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/encryption/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/encryption/</guid><description>&lt;p>pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.&lt;/p>
 &lt;p>Firstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the &lt;code>spec.backup.pgbackrest.configuration.secret&lt;/code> object.&lt;/p>
 &lt;pre tabindex="0">&lt;code>kind: Secret
 apiVersion: v1
@@ -99,8 +95,7 @@ One of these is to use pgBackRest within the container. This can be done both vi
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/check_backups/#pgbackrest-via-terminal-repo-host-pod" class="gdoc-page__anchor clip flex align-center" title="Anchor to: pgbackrest via terminal (Repo-Host-Pod)" aria-label="Anchor to: pgbackrest via terminal (Repo-Host-Pod)" href="#pgbackrest-via-terminal-repo-host-pod">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;pre tabindex="0">&lt;code>kubectl exec cluster-5-pgbackrest-repo-host-0 --stdin --tty -- pgbackrest info 
+&lt;/div>&lt;pre tabindex="0">&lt;code>kubectl exec cluster-5-pgbackrest-repo-host-0 --stdin --tty -- pgbackrest info 
 stanza: db
  status: ok
  cipher: none
@@ -135,8 +130,7 @@ stanza: db
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/check_backups/#pgbackrest-via-terminal-postgres-pod" class="gdoc-page__anchor clip flex align-center" title="Anchor to: pgbackrest via terminal (Postgres-Pod)" aria-label="Anchor to: pgbackrest via terminal (Postgres-Pod)" href="#pgbackrest-via-terminal-postgres-pod">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;pre tabindex="0">&lt;code>kubectl exec cluster-5-0 --stdin --tty -- pgbackrest info 
+&lt;/div>&lt;pre tabindex="0">&lt;code>kubectl exec cluster-5-0 --stdin --tty -- pgbackrest info 
 Defaulted container &amp;#34;postgres&amp;#34; out of: postgres, postgres-exporter, pgbackrest-restore (init)
 stanza: db
  status: ok

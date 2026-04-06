@@ -16,8 +16,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/operator_updates/#using-helm-chart" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Using Helm-Chart" aria-label="Anchor to: Using Helm-Chart" href="#using-helm-chart">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;ol>
+&lt;/div>&lt;ol>
 &lt;li>Update the Helm Repository&lt;/li>
 &lt;/ol>
 &lt;p>First, ensure your local Helm chart cache is up to date with the latest versions from the CYBERTEC repository:&lt;/p></description></item><item><title>Minor version update</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/minor_updates/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/minor_updates/</guid><description>&lt;p>Minor version updates for PostgreSQL are performed by updating the PostgreSQL container image in use.
@@ -39,5 +38,4 @@ With the update object &lt;code>spec.dockerImage&lt;/code> of the cluster manife
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/major_upgrades/#how-to-trigger-an-in-place-upgrade" class="gdoc-page__anchor clip flex align-center" title="Anchor to: How to trigger an In-Place Upgrade" aria-label="Anchor to: How to trigger an In-Place Upgrade" href="#how-to-trigger-an-in-place-upgrade">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>To trigger the upgrade, simply increase the version number in your cluster manifest. If the version is valid, the Operator automatically initiates the procedure described below.&lt;/p></description></item></channel></rss>
+&lt;/div>&lt;p>To trigger the upgrade, simply increase the version number in your cluster manifest. If the version is valid, the Operator automatically initiates the procedure described below.&lt;/p></description></item></channel></rss>

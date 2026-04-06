@@ -1,4 +1,109 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Customize Cluster on CYBERTEC-PG-Operator</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/</link><description>Recent content in Customize Cluster on CYBERTEC-PG-Operator</description><generator>Hugo</generator><language>en</language><lastBuildDate>Thu, 28 Dec 2023 14:26:51 +0100</lastBuildDate><atom:link href="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/index.xml" rel="self" type="application/rss+xml"/><item><title>Sidecars</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/sidecars/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/sidecars/</guid><description>&lt;p>Starting with the Single-Node-Cluster from the previous section, we want to modify the Instance a bit to see.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Customize Cluster on CYBERTEC-PG-Operator</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/</link><description>Recent content in Customize Cluster on CYBERTEC-PG-Operator</description><generator>Hugo</generator><language>en</language><lastBuildDate>Thu, 28 Dec 2023 14:26:51 +0100</lastBuildDate><atom:link href="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/index.xml" rel="self" type="application/rss+xml"/><item><title>Environment variables</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/env/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/env/</guid><description>&lt;p>To flexibly manage containers within a cluster, the operator allows environment variables to be defined at various levels. This enables both global settings and specific configurations for individual components.
+Hierarchy and Scope
+The variables are defined within the Custom Resource (CR). The following logic applies for inheritance and assignment:&lt;/p>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th style="text-align: left">object&lt;/th>
+ &lt;th style="text-align: left">Scope&lt;/th>
+ &lt;th style="text-align: left">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.env&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>Global&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These ENVs are inherited by &lt;strong>all&lt;/strong> containers within the cluster (PostgreSQL, Backup, Monitoring, etc.).&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.postgresql.env&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>PostgreSQL&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These ENVs apply exclusively to the &lt;strong>PostgreSQL containers&lt;/strong>.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.backup.pgbackrest.env&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>pgBackRest&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These ENVs apply exclusively to the &lt;strong>Backup containers&lt;/strong>.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.monitor.env&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>Exporter-Sidecar&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These ENVs apply exclusively to the &lt;strong>ConnectionPooler containers&lt;/strong>.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.connectionPooler.env&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>ConnectionPooler&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These ENVs apply exclusively to the &lt;strong>Monitoring sidecars&lt;/strong>.&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+
+
+
+&lt;blockquote class="gdoc-hint warning">
+ &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa warning">&lt;/i>
+ &lt;span>Warning&lt;/span>&lt;/div>
+ &lt;div class="gdoc-hint__text">Updating the ENVs triggers a rolling update to the respective containers.&lt;/div>
+&lt;/blockquote>
+
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h3 id="configuration-logic"
+ >
+ Configuration Logic
+ &lt;/h3>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/env/#configuration-logic" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Configuration Logic" aria-label="Anchor to: Configuration Logic" href="#configuration-logic">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>&lt;p>The definition of variables follows the standard Kubernetes schema for key-value pairs.&lt;/p></description></item><item><title>Custom Labels</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/labels/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/labels/</guid><description>&lt;p>To manage and organise pods flexibly within a cluster, the operator allows labels to be defined at various levels. This enables both global labelling and specific metadata for individual components. Unlike environment variables, labels always refer to the pod as a whole, not to individual containers.&lt;/p>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th style="text-align: left">object&lt;/th>
+ &lt;th style="text-align: left">Scope&lt;/th>
+ &lt;th style="text-align: left">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.labels&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>Global&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These labels are adopted by &lt;strong>all&lt;/strong> pods within the cluster (&lt;strong>PostgreSQL&lt;/strong>, &lt;strong>Backup&lt;/strong>, &lt;strong>Pooler&lt;/strong>, etc.).&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.postgresql.labels&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>PostgreSQL&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These labels apply exclusively to the PostgreSQL pods. &lt;strong>PostgreSQL pods&lt;/strong>.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.backup.pgbackrest.labels&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>pgBackRest&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These labels apply exclusively to the backup pods &lt;strong>pgBackRest pods&lt;/strong>.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.connectionPooler.labels&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>ConnectionPooler&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These labels apply exclusively to the &lt;strong>ConnectionPooler pods&lt;/strong>.&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+
+
+
+&lt;blockquote class="gdoc-hint warning">
+ &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa warning">&lt;/i>
+ &lt;span>Warning&lt;/span>&lt;/div>
+ &lt;div class="gdoc-hint__text">Updating the labels triggers a rolling update to the respective pods.&lt;/div>
+&lt;/blockquote>
+
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h3 id="configuration-logic"
+ >
+ Configuration Logic
+ &lt;/h3>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/labels/#configuration-logic" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Configuration Logic" aria-label="Anchor to: Configuration Logic" href="#configuration-logic">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>&lt;p>The definition of labels follows the standard Kubernetes schema for key-value pairs.&lt;/p></description></item><item><title>Sidecars</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/sidecars/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/sidecars/</guid><description>&lt;p>Starting with the Single-Node-Cluster from the previous section, we want to modify the Instance a bit to see.&lt;/p>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h2 id="cpu-and-memory"
  >
@@ -7,8 +112,7 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/sidecars/#cpu-and-memory" class="gdoc-page__anchor clip flex align-center" title="Anchor to: CPU and Memory" aria-label="Anchor to: CPU and Memory" href="#cpu-and-memory">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;pre tabindex="0">&lt;code>spec:
+&lt;/div>&lt;pre tabindex="0">&lt;code>spec:
  resources:
  limits:
  cpu: 1000m

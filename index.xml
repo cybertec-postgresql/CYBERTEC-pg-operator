@@ -1,4 +1,60 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CPO (CYBERTEC-PG-Operator) on CYBERTEC-PG-Operator</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/</link><description>Recent content in CPO (CYBERTEC-PG-Operator) on CYBERTEC-PG-Operator</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sun, 28 Dec 2025 14:26:51 +0100</lastBuildDate><atom:link href="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/index.xml" rel="self" type="application/rss+xml"/><item><title>Introduction</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/introduction/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/introduction/</guid><description>&lt;p>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CPO (CYBERTEC-PG-Operator) on CYBERTEC-PG-Operator</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/</link><description>Recent content in CPO (CYBERTEC-PG-Operator) on CYBERTEC-PG-Operator</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sun, 28 Dec 2025 14:26:51 +0100</lastBuildDate><atom:link href="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/index.xml" rel="self" type="application/rss+xml"/><item><title>Environment variables</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/env/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/env/</guid><description>&lt;p>To flexibly manage containers within a cluster, the operator allows environment variables to be defined at various levels. This enables both global settings and specific configurations for individual components.
+Hierarchy and Scope
+The variables are defined within the Custom Resource (CR). The following logic applies for inheritance and assignment:&lt;/p>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th style="text-align: left">object&lt;/th>
+ &lt;th style="text-align: left">Scope&lt;/th>
+ &lt;th style="text-align: left">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.env&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>Global&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These ENVs are inherited by &lt;strong>all&lt;/strong> containers within the cluster (PostgreSQL, Backup, Monitoring, etc.).&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.postgresql.env&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>PostgreSQL&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These ENVs apply exclusively to the &lt;strong>PostgreSQL containers&lt;/strong>.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.backup.pgbackrest.env&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>pgBackRest&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These ENVs apply exclusively to the &lt;strong>Backup containers&lt;/strong>.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.monitor.env&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>Exporter-Sidecar&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These ENVs apply exclusively to the &lt;strong>ConnectionPooler containers&lt;/strong>.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.connectionPooler.env&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>ConnectionPooler&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These ENVs apply exclusively to the &lt;strong>Monitoring sidecars&lt;/strong>.&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+
+
+
+&lt;blockquote class="gdoc-hint warning">
+ &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa warning">&lt;/i>
+ &lt;span>Warning&lt;/span>&lt;/div>
+ &lt;div class="gdoc-hint__text">Updating the ENVs triggers a rolling update to the respective containers.&lt;/div>
+&lt;/blockquote>
+
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h3 id="configuration-logic"
+ >
+ Configuration Logic
+ &lt;/h3>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/env/#configuration-logic" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Configuration Logic" aria-label="Anchor to: Configuration Logic" href="#configuration-logic">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>&lt;p>The definition of variables follows the standard Kubernetes schema for key-value pairs.&lt;/p></description></item><item><title>Introduction</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/introduction/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/introduction/</guid><description>&lt;p>Backups are essential for databases. From broken storage to deployments gone wrong, backups often save the day. Starting with pg_dump, which was released in the late 1990s, to the archiving of WAL files (PostgreSQL 8.0 / 2005) and pg_basebackup (PostgreSQL 9.0 / 2010), PostgreSQL already offers built-in options for backups and restores based on logical and physical backups.&lt;/p>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h3 id="backups-with-pgbackrest"
  >
@@ -7,12 +63,69 @@
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/introduction/#backups-with-pgbackrest" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Backups with pgBackRest" aria-label="Anchor to: Backups with pgBackRest" href="#backups-with-pgbackrest">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>CPO relies on &lt;a
+&lt;/div>&lt;p>CPO relies on &lt;a
  class="gdoc-markdown__link"
  href="www.pgbackrest.org"
 >pgBackRest&lt;/a> as its backup solution, a tried-and-tested tool with extensive backup and restore options.
-The backup is based on two elements:&lt;/p></description></item><item><title>Sidecars</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/sidecars/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/sidecars/</guid><description>&lt;p>Starting with the Single-Node-Cluster from the previous section, we want to modify the Instance a bit to see.&lt;/p>
+The backup is based on two elements:&lt;/p></description></item><item><title>via Blockstorage (pvc)</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/pvc/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/pvc/</guid><description>&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h3 id="backups-on-pvc-persistentvolumeclaim"
+ >
+ Backups on PVC (PersistentVolumeClaim)
+ &lt;/h3>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/pvc/#backups-on-pvc-persistentvolumeclaim" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Backups on PVC (PersistentVolumeClaim)" aria-label="Anchor to: Backups on PVC (PersistentVolumeClaim)" href="#backups-on-pvc-persistentvolumeclaim">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>&lt;p>When using block storage, the operator creates an additional pod that acts as a repo host. Based on a TLS connection, the repo host obtains the data for the Backup from the current primary of the cluster, which is compressed before being sent.
+WAL archives are pushed from the primary pod to the repo host.&lt;/p></description></item><item><title>Custom Labels</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/labels/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/labels/</guid><description>&lt;p>To manage and organise pods flexibly within a cluster, the operator allows labels to be defined at various levels. This enables both global labelling and specific metadata for individual components. Unlike environment variables, labels always refer to the pod as a whole, not to individual containers.&lt;/p>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th style="text-align: left">object&lt;/th>
+ &lt;th style="text-align: left">Scope&lt;/th>
+ &lt;th style="text-align: left">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.labels&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>Global&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These labels are adopted by &lt;strong>all&lt;/strong> pods within the cluster (&lt;strong>PostgreSQL&lt;/strong>, &lt;strong>Backup&lt;/strong>, &lt;strong>Pooler&lt;/strong>, etc.).&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.postgresql.labels&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>PostgreSQL&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These labels apply exclusively to the PostgreSQL pods. &lt;strong>PostgreSQL pods&lt;/strong>.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.backup.pgbackrest.labels&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>pgBackRest&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These labels apply exclusively to the backup pods &lt;strong>pgBackRest pods&lt;/strong>.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td style="text-align: left">&lt;code>spec.connectionPooler.labels&lt;/code>&lt;/td>
+ &lt;td style="text-align: left">&lt;strong>ConnectionPooler&lt;/strong>&lt;/td>
+ &lt;td style="text-align: left">These labels apply exclusively to the &lt;strong>ConnectionPooler pods&lt;/strong>.&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+
+
+
+&lt;blockquote class="gdoc-hint warning">
+ &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa warning">&lt;/i>
+ &lt;span>Warning&lt;/span>&lt;/div>
+ &lt;div class="gdoc-hint__text">Updating the labels triggers a rolling update to the respective pods.&lt;/div>
+&lt;/blockquote>
+
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h3 id="configuration-logic"
+ >
+ Configuration Logic
+ &lt;/h3>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/labels/#configuration-logic" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Configuration Logic" aria-label="Anchor to: Configuration Logic" href="#configuration-logic">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>&lt;p>The definition of labels follows the standard Kubernetes schema for key-value pairs.&lt;/p></description></item><item><title>Sidecars</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/sidecars/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/sidecars/</guid><description>&lt;p>Starting with the Single-Node-Cluster from the previous section, we want to modify the Instance a bit to see.&lt;/p>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h2 id="cpu-and-memory"
  >
@@ -21,8 +134,7 @@ The backup is based on two elements:&lt;/p></description></item><item><title>Sid
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/sidecars/#cpu-and-memory" class="gdoc-page__anchor clip flex align-center" title="Anchor to: CPU and Memory" aria-label="Anchor to: CPU and Memory" href="#cpu-and-memory">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;pre tabindex="0">&lt;code>spec:
+&lt;/div>&lt;pre tabindex="0">&lt;code>spec:
  resources:
  limits:
  cpu: 1000m
@@ -31,17 +143,7 @@ The backup is based on two elements:&lt;/p></description></item><item><title>Sid
  cpu: 500m
  memory: 500mi
 &lt;/code>&lt;/pre>&lt;p>Based on the ressources-Definiton we&amp;rsquo;re able to modify the reserved Hardware (requests) and the limits, which allows use to consume more than the reserved definitons if the k8s-worker has this hardware available. There are some Restrictions when modifiying the limits-section. Because of the behaviour of Databases we should never define a diff between requests.memory and limits.memory. A Database is after some time using all available Memory, for Cache and other things. Limits are optional and the worker node can force them back. forcing back memory will create big problems inside a database like creating corruption, forcing OutOfMemory-Killer and so on.
-CPU on the other side is a ressource we can use inside the limits definiton to allow our database using more cpu if needed and available.&lt;/p></description></item><item><title>via Blockstorage (pvc)</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/pvc/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/pvc/</guid><description>&lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h3 id="backups-on-pvc-persistentvolumeclaim"
- >
- Backups on PVC (PersistentVolumeClaim)
- &lt;/h3>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/pvc/#backups-on-pvc-persistentvolumeclaim" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Backups on PVC (PersistentVolumeClaim)" aria-label="Anchor to: Backups on PVC (PersistentVolumeClaim)" href="#backups-on-pvc-persistentvolumeclaim">
- &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
- &lt;/a>
-&lt;/div>
-&lt;p>When using block storage, the operator creates an additional pod that acts as a repo host. Based on a TLS connection, the repo host obtains the data for the Backup from the current primary of the cluster, which is compressed before being sent.
-WAL archives are pushed from the primary pod to the repo host.&lt;/p></description></item><item><title>via S3</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/aws/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/aws/</guid><description>&lt;p>This chapter describes the use of pgBackRest in combination with AWS S3 or S3-compatible storage such as MinIO, Cloudian HyperStore, or SwiftStack. While it is not mandatory to operate Kubernetes on the AWS Cloud Platform, the efficiency and duration of a backup depend on the network connection to your storage provider.&lt;/p>
+CPU on the other side is a ressource we can use inside the limits definiton to allow our database using more cpu if needed and available.&lt;/p></description></item><item><title>via S3</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/aws/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/aws/</guid><description>&lt;p>This chapter describes the use of pgBackRest in combination with AWS S3 or S3-compatible storage such as MinIO, Cloudian HyperStore, or SwiftStack. While it is not mandatory to operate Kubernetes on the AWS Cloud Platform, the efficiency and duration of a backup depend on the network connection to your storage provider.&lt;/p>
 
 
 
@@ -65,8 +167,7 @@ In addition to reliable operation, this should also ensure efficient development
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/architecture/compontens/#1-cybertec-pg-operator" class="gdoc-page__anchor clip flex align-center" title="Anchor to: 1. CYBERTEC-pg-operator" aria-label="Anchor to: 1. CYBERTEC-pg-operator" href="#1-cybertec-pg-operator">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>The CYBERTEC-pg-operator is a Kubernetes operator that automates the operation and management of PostgreSQL databases on Kubernetes clusters. It facilitates the provisioning, scaling, backup and recovery of PostgreSQL clusters and integrates tools such as Patroni and pgBackRest for high availability and backup management.&lt;/p></description></item><item><title>Additional Volumes</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/additional-volumes/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/additional-volumes/</guid><description>&lt;pre tabindex="0">&lt;code> additionalVolumes:
+&lt;/div>&lt;p>The CYBERTEC-pg-operator is a Kubernetes operator that automates the operation and management of PostgreSQL databases on Kubernetes clusters. It facilitates the provisioning, scaling, backup and recovery of PostgreSQL clusters and integrates tools such as Patroni and pgBackRest for high availability and backup management.&lt;/p></description></item><item><title>Additional Volumes</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/additional-volumes/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/customize_cluster/additional-volumes/</guid><description>&lt;pre tabindex="0">&lt;code> additionalVolumes:
  - name: empty
  mountPath: /opt/empty
  targetContainers:
@@ -107,8 +208,7 @@ In addition to reliable operation, this should also ensure efficient development
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/gcs/#modifying-the-cluster" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Modifying the Cluster" aria-label="Anchor to: Modifying the Cluster" href="#modifying-the-cluster">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>As soon as all requirements are met:&lt;/p></description></item><item><title>Rolling-Updates</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/architecture/rolling_update/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/architecture/rolling_update/</guid><description>&lt;p>Whether updating the minor version, changing the hardware definitions of the cluster or other adjustments that require a pod restart, CPO ensures that the update is as uninterrupted as possible.&lt;/p>
+&lt;/div>&lt;p>As soon as all requirements are met:&lt;/p></description></item><item><title>Rolling-Updates</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/architecture/rolling_update/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/architecture/rolling_update/</guid><description>&lt;p>Whether updating the minor version, changing the hardware definitions of the cluster or other adjustments that require a pod restart, CPO ensures that the update is as uninterrupted as possible.&lt;/p>
 &lt;p>This means that adjustments are carried out on the various pods of a particular cluster one after the other and in a sensible sequence. This happens as soon as a cluster consists of more than 1 PostgreSQL node.&lt;/p>
 &lt;p>In the event of a necessary restart, the operator independently stops the pods and does not leave this to Kubernetes. The idea behind this is that all replica pods are restarted one after the other first. The operator recognises these by the label cpo.opensource.cybertec.at/role=replica set by Patroni&lt;/p></description></item><item><title>via Azure-Blob</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/azure_blob/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/azure_blob/</guid><description>&lt;p>This chapter describes the use of pgBackRest in combination with Azure Blob Storage. It is not absolutely necessary to operate a Kubernetes on the Azure Cloud Platform. However, as with any cloud storage, the efficiency and therefore the duration of a backup depends on the connection.&lt;/p>
 
@@ -128,8 +228,7 @@ In addition to reliable operation, this should also ensure efficient development
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/azure_blob/#modifying-the-cluster" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Modifying the Cluster" aria-label="Anchor to: Modifying the Cluster" href="#modifying-the-cluster">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>As soon as all requirements are met:&lt;/p></description></item><item><title>Encrypted Backups</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/encryption/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/encryption/</guid><description>&lt;p>pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.&lt;/p>
+&lt;/div>&lt;p>As soon as all requirements are met:&lt;/p></description></item><item><title>Encrypted Backups</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/encryption/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/encryption/</guid><description>&lt;p>pgBackRest also allows you to encrypt your backups on the client side before uploading them. This is possible with any type of storage and is very easy to activate.&lt;/p>
 &lt;p>Firstly, we need to define an encryption key. This must be specified separately for each repo and stored in the same secret that is defined in the &lt;code>spec.backup.pgbackrest.configuration.secret&lt;/code> object.&lt;/p>
 &lt;pre tabindex="0">&lt;code>kind: Secret
 apiVersion: v1
@@ -155,8 +254,7 @@ One of these is to use pgBackRest within the container. This can be done both vi
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/check_backups/#pgbackrest-via-terminal-repo-host-pod" class="gdoc-page__anchor clip flex align-center" title="Anchor to: pgbackrest via terminal (Repo-Host-Pod)" aria-label="Anchor to: pgbackrest via terminal (Repo-Host-Pod)" href="#pgbackrest-via-terminal-repo-host-pod">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;pre tabindex="0">&lt;code>kubectl exec cluster-5-pgbackrest-repo-host-0 --stdin --tty -- pgbackrest info 
+&lt;/div>&lt;pre tabindex="0">&lt;code>kubectl exec cluster-5-pgbackrest-repo-host-0 --stdin --tty -- pgbackrest info 
 stanza: db
  status: ok
  cipher: none
@@ -191,8 +289,7 @@ stanza: db
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/backup/check_backups/#pgbackrest-via-terminal-postgres-pod" class="gdoc-page__anchor clip flex align-center" title="Anchor to: pgbackrest via terminal (Postgres-Pod)" aria-label="Anchor to: pgbackrest via terminal (Postgres-Pod)" href="#pgbackrest-via-terminal-postgres-pod">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;pre tabindex="0">&lt;code>kubectl exec cluster-5-0 --stdin --tty -- pgbackrest info 
+&lt;/div>&lt;pre tabindex="0">&lt;code>kubectl exec cluster-5-0 --stdin --tty -- pgbackrest info 
 Defaulted container &amp;#34;postgres&amp;#34; out of: postgres, postgres-exporter, pgbackrest-restore (init)
 stanza: db
  status: ok
@@ -229,8 +326,7 @@ stanza: db
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/project/#main-components" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Main components" aria-label="Anchor to: Main components" href="#main-components">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;ul>
+&lt;/div>&lt;ul>
 &lt;li>&lt;a
  class="gdoc-markdown__link"
  href="https://github.com/cybertec-postgresql/CYBERTEC-pg-operator"
@@ -252,8 +348,7 @@ stanza: db
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/project/#features" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Features" aria-label="Anchor to: Features" href="#features">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;ul>
+&lt;/div>&lt;ul>
 &lt;li>Cluster management:
 &lt;ul>
 &lt;li>Single-node and HA (High Availability) clusters via &lt;a
@@ -308,8 +403,7 @@ stanza: db
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/project/#installation" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Installation" aria-label="Anchor to: Installation" href="#installation">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>Detailed instructions on installation and configuration can be found in the CYBERTEC operator tutorials and in the following chapters
+&lt;/div>&lt;p>Detailed instructions on installation and configuration can be found in the CYBERTEC operator tutorials and in the following chapters
 Example of installation via Helm:&lt;/p></description></item><item><title>Container Images</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/container_images/</link><pubDate>Mon, 11 Mar 2024 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/container_images/</guid><description>&lt;p>For each version of the operator and the required PostgreSQL and other required containers, the corresponding image is provided on Dockerhub.&lt;/p>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h4 id="operator-container-images"
@@ -319,8 +413,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/project/container_images/#operator-container-images" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Operator container images" aria-label="Anchor to: Operator container images" href="#operator-container-images">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>The operator images are the central components that control the operation and administration of the PostgreSQL databases. These images are available in the following repository on DockerHub:&lt;/p></description></item><item><title>PostgreSQL</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/</guid><description>&lt;div class="flex align-center gdoc-page__anchorwrap">
+&lt;/div>&lt;p>The operator images are the central components that control the operation and administration of the PostgreSQL databases. These images are available in the following repository on DockerHub:&lt;/p></description></item><item><title>PostgreSQL</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/</guid><description>&lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h4 id="crd-for-kind-postgresql"
  >
  CRD for kind postgresql
@@ -328,8 +421,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#crd-for-kind-postgresql" class="gdoc-page__anchor clip flex align-center" title="Anchor to: CRD for kind postgresql" aria-label="Anchor to: CRD for kind postgresql" href="#crd-for-kind-postgresql">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -386,8 +478,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#spec" class="gdoc-page__anchor clip flex align-center" title="Anchor to: spec" aria-label="Anchor to: spec" href="#spec">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -509,7 +600,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
 >env&lt;/a>&lt;/td>
  &lt;td style="text-align: center">array&lt;/td>
  &lt;td style="text-align: right">false&lt;/td>
- &lt;td style="text-align: right">Allows to add own Envs to the PostgreSQL containers&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom environment variables to all cluster containers&lt;/td>
  &lt;/tr>
  &lt;tr>
  &lt;td>&lt;a
@@ -519,6 +610,15 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;td style="text-align: center">array&lt;/td>
  &lt;td style="text-align: right">false&lt;/td>
  &lt;td style="text-align: right">Enables the definition of init-containers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#labels"
+>labels&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom labels to all cluster pods&lt;/td>
  &lt;/tr>
  &lt;tr>
  &lt;td>logicalBackupSchedule&lt;/td>
@@ -760,8 +860,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#additionalvolumes" class="gdoc-page__anchor clip flex align-center" title="Anchor to: additionalVolumes" aria-label="Anchor to: additionalVolumes" href="#additionalvolumes">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -822,8 +921,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#backup" class="gdoc-page__anchor clip flex align-center" title="Anchor to: backup" aria-label="Anchor to: backup" href="#backup">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -854,8 +952,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#clone" class="gdoc-page__anchor clip flex align-center" title="Anchor to: clone" aria-label="Anchor to: clone" href="#clone">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -892,8 +989,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#connectionpooler" class="gdoc-page__anchor clip flex align-center" title="Anchor to: connectionPooler" aria-label="Anchor to: connectionPooler" href="#connectionpooler">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -903,6 +999,30 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;/tr>
  &lt;/thead>
  &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#env"
+>env&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom environment variables to connection-pooler containers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#labels"
+>labels&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom labels to connection-pooler pods&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>dockerImage&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Defines the used pgbouncer container image for this cluster&lt;/td>
+ &lt;/tr>
  &lt;tr>
  &lt;td>numberOfInstances&lt;/td>
  &lt;td style="text-align: center">int&lt;/td>
@@ -952,8 +1072,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode19s4hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode19s4hbhb">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;div class="flex align-center gdoc-page__anchorwrap">
+&lt;/div>&lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h4 id="env"
  >
  env
@@ -961,8 +1080,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#env" class="gdoc-page__anchor clip flex align-center" title="Anchor to: env" aria-label="Anchor to: env" href="#env">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -996,8 +1114,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#initcontainers" class="gdoc-page__anchor clip flex align-center" title="Anchor to: initContainers" aria-label="Anchor to: initContainers" href="#initcontainers">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1057,15 +1174,14 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
 &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
 &lt;hr>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h4 id="monitor"
+ &lt;h4 id="labels"
  >
- monitor
+ labels
  &lt;/h4>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#monitor" class="gdoc-page__anchor clip flex align-center" title="Anchor to: monitor" aria-label="Anchor to: monitor" href="#monitor">
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#labels" class="gdoc-page__anchor clip flex align-center" title="Anchor to: labels" aria-label="Anchor to: labels" href="#labels">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1075,6 +1191,55 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;/tr>
  &lt;/thead>
  &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;!-- raw HTML omitted -->&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Namefield for the label&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;!-- raw HTML omitted -->&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">Value for the label&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="monitor"
+ >
+ monitor
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#monitor" class="gdoc-page__anchor clip flex align-center" title="Anchor to: monitor" aria-label="Anchor to: monitor" href="#monitor">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>customQueries&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Name of the ConfigMap containing custom queries&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#env"
+>env&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom environment variables to all expoerter-sidecar containers&lt;/td>
+ &lt;/tr>
  &lt;tr>
  &lt;td>image&lt;/td>
  &lt;td style="text-align: center">string&lt;/td>
@@ -1093,8 +1258,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#patroni" class="gdoc-page__anchor clip flex align-center" title="Anchor to: patroni" aria-label="Anchor to: patroni" href="#patroni">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1200,8 +1364,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#postgresql" class="gdoc-page__anchor clip flex align-center" title="Anchor to: PostgreSQL" aria-label="Anchor to: PostgreSQL" href="#postgresql">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1211,6 +1374,24 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;/tr>
  &lt;/thead>
  &lt;tbody>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#env"
+>env&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom environment variables to all postgresql containers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#labels"
+>labels&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom labels to poostgresql pods&lt;/td>
+ &lt;/tr>
  &lt;tr>
  &lt;td>parameters&lt;/td>
  &lt;td style="text-align: center">map&lt;/td>
@@ -1238,8 +1419,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#prepareddatabases" class="gdoc-page__anchor clip flex align-center" title="Anchor to: preparedDatabases" aria-label="Anchor to: preparedDatabases" href="#prepareddatabases">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1282,8 +1462,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#resources" class="gdoc-page__anchor clip flex align-center" title="Anchor to: resources" aria-label="Anchor to: resources" href="#resources">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1323,8 +1502,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#sidecars" class="gdoc-page__anchor clip flex align-center" title="Anchor to: sidecars" aria-label="Anchor to: sidecars" href="#sidecars">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1390,8 +1568,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#standby" class="gdoc-page__anchor clip flex align-center" title="Anchor to: standby" aria-label="Anchor to: standby" href="#standby">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1413,6 +1590,12 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;td style="text-align: right">true&lt;/td>
  &lt;td style="text-align: right">PostgreSQL port of the primary cluster&lt;/td>
  &lt;/tr>
+ &lt;tr>
+ &lt;td>standby_primary_slot_name&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">true&lt;/td>
+ &lt;td style="text-align: right">replication slot of the primary cluster&lt;/td>
+ &lt;/tr>
  &lt;/tbody>
 &lt;/table>
 &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
@@ -1425,8 +1608,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#streams" class="gdoc-page__anchor clip flex align-center" title="Anchor to: streams" aria-label="Anchor to: streams" href="#streams">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1490,8 +1672,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#tde" class="gdoc-page__anchor clip flex align-center" title="Anchor to: tde" aria-label="Anchor to: tde" href="#tde">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1528,8 +1709,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#tolerations" class="gdoc-page__anchor clip flex align-center" title="Anchor to: tolerations" aria-label="Anchor to: tolerations" href="#tolerations">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1581,8 +1761,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#volume" class="gdoc-page__anchor clip flex align-center" title="Anchor to: volume" aria-label="Anchor to: volume" href="#volume">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1643,8 +1822,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#volumesource" class="gdoc-page__anchor clip flex align-center" title="Anchor to: volumeSource" aria-label="Anchor to: volumeSource" href="#volumesource">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1690,8 +1868,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#volumesource-persistentvolumeclaim" class="gdoc-page__anchor clip flex align-center" title="Anchor to: volumeSource-PersistentVolumeClaim" aria-label="Anchor to: volumeSource-PersistentVolumeClaim" href="#volumesource-persistentvolumeclaim">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1725,8 +1902,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#volumesource-configmap" class="gdoc-page__anchor clip flex align-center" title="Anchor to: volumeSource-configMap" aria-label="Anchor to: volumeSource-configMap" href="#volumesource-configmap">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1754,8 +1930,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#multisite" class="gdoc-page__anchor clip flex align-center" title="Anchor to: multisite" aria-label="Anchor to: multisite" href="#multisite">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1810,8 +1985,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#slots" class="gdoc-page__anchor clip flex align-center" title="Anchor to: slots" aria-label="Anchor to: slots" href="#slots">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1842,15 +2016,14 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;/tbody>
 &lt;/table>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h2 id="hahahugoshortcode19s22hbhb"
+ &lt;h2 id="hahahugoshortcode19s23hbhb"
  >
  &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
  &lt;/h2>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode19s22hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode19s22hbhb">
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode19s23hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode19s23hbhb">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;div class="flex align-center gdoc-page__anchorwrap">
+&lt;/div>&lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h4 id="schemas"
  >
  schemas
@@ -1858,8 +2031,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#schemas" class="gdoc-page__anchor clip flex align-center" title="Anchor to: schemas" aria-label="Anchor to: schemas" href="#schemas">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1891,8 +2063,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#etcd" class="gdoc-page__anchor clip flex align-center" title="Anchor to: etcd" aria-label="Anchor to: etcd" href="#etcd">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1944,8 +2115,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#requests" class="gdoc-page__anchor clip flex align-center" title="Anchor to: requests" aria-label="Anchor to: requests" href="#requests">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -1979,8 +2149,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#limits" class="gdoc-page__anchor clip flex align-center" title="Anchor to: limits" aria-label="Anchor to: limits" href="#limits">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2014,8 +2183,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#pgbackrest" class="gdoc-page__anchor clip flex align-center" title="Anchor to: pgbackrest" aria-label="Anchor to: pgbackrest" href="#pgbackrest">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2035,6 +2203,15 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;td style="text-align: right">Enables the definition of a pgbackrest-setup for the cluster&lt;/td>
  &lt;/tr>
  &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#env"
+>env&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">array&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom environment variables to all pgbackrest containers&lt;/td>
+ &lt;/tr>
+ &lt;tr>
  &lt;td>global&lt;/td>
  &lt;td style="text-align: center">object&lt;/td>
  &lt;td style="text-align: right">false&lt;/td>
@@ -2045,6 +2222,15 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;td style="text-align: center">string&lt;/td>
  &lt;td style="text-align: right">true&lt;/td>
  &lt;td style="text-align: right">&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#labels"
+>labels&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Allows you to add custom labels to pgbackrest pods&lt;/td>
  &lt;/tr>
  &lt;tr>
  &lt;td>&lt;a
@@ -2076,8 +2262,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#configuration" class="gdoc-page__anchor clip flex align-center" title="Anchor to: configuration" aria-label="Anchor to: configuration" href="#configuration">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2114,8 +2299,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#protection" class="gdoc-page__anchor clip flex align-center" title="Anchor to: protection" aria-label="Anchor to: protection" href="#protection">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2143,8 +2327,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#repos" class="gdoc-page__anchor clip flex align-center" title="Anchor to: repos" aria-label="Anchor to: repos" href="#repos">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2205,8 +2388,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#schedule" class="gdoc-page__anchor clip flex align-center" title="Anchor to: schedule" aria-label="Anchor to: schedule" href="#schedule">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2246,8 +2428,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#status" class="gdoc-page__anchor clip flex align-center" title="Anchor to: status" aria-label="Anchor to: status" href="#status">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2273,8 +2454,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#crd-for-kind-operatorconfiguration" class="gdoc-page__anchor clip flex align-center" title="Anchor to: CRD for kind OperatorConfiguration" aria-label="Anchor to: CRD for kind OperatorConfiguration" href="#crd-for-kind-operatorconfiguration">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2322,8 +2502,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#configuration" class="gdoc-page__anchor clip flex align-center" title="Anchor to: configuration" aria-label="Anchor to: configuration" href="#configuration">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2558,8 +2737,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#kubernetes" class="gdoc-page__anchor clip flex align-center" title="Anchor to: kubernetes" aria-label="Anchor to: kubernetes" href="#kubernetes">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2761,8 +2939,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#users" class="gdoc-page__anchor clip flex align-center" title="Anchor to: users" aria-label="Anchor to: users" href="#users">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2814,8 +2991,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#connection_pooler" class="gdoc-page__anchor clip flex align-center" title="Anchor to: connection_pooler" aria-label="Anchor to: connection_pooler" href="#connection_pooler">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2897,8 +3073,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#logging_rest_api" class="gdoc-page__anchor clip flex align-center" title="Anchor to: logging_rest_api" aria-label="Anchor to: logging_rest_api" href="#logging_rest_api">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -2938,8 +3113,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#load_balancer" class="gdoc-page__anchor clip flex align-center" title="Anchor to: load_balancer" aria-label="Anchor to: load_balancer" href="#load_balancer">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -3021,8 +3195,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#major_version_upgrade" class="gdoc-page__anchor clip flex align-center" title="Anchor to: major_version_upgrade" aria-label="Anchor to: major_version_upgrade" href="#major_version_upgrade">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -3068,8 +3241,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#teams_api" class="gdoc-page__anchor clip flex align-center" title="Anchor to: teams_api" aria-label="Anchor to: teams_api" href="#teams_api">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -3169,8 +3341,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#timeouts" class="gdoc-page__anchor clip flex align-center" title="Anchor to: timeouts" aria-label="Anchor to: timeouts" href="#timeouts">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -3240,8 +3411,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#debug" class="gdoc-page__anchor clip flex align-center" title="Anchor to: debug" aria-label="Anchor to: debug" href="#debug">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -3275,8 +3445,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#logical_backup-deprecated" class="gdoc-page__anchor clip flex align-center" title="Anchor to: logical_backup (deprecated)" aria-label="Anchor to: logical_backup (deprecated)" href="#logical_backup-deprecated">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -3334,8 +3503,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-operator-configurator/#aws_or_gcp" class="gdoc-page__anchor clip flex align-center" title="Anchor to: aws_or_gcp" aria-label="Anchor to: aws_or_gcp" href="#aws_or_gcp">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;table>
+&lt;/div>&lt;table>
  &lt;thead>
  &lt;tr>
  &lt;th>Name&lt;/th>
@@ -3385,8 +3553,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/dev-k8s/#minikube" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Minikube" aria-label="Anchor to: Minikube" href="#minikube">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>Minikube is a tool that makes it possible to run Kubernetes locally on a single computer. It sets up a minimal but functional Kubernetes environment suitable for development and testing purposes. Minikube supports most Kubernetes features and provides an easy way to launch and manage Kubernetes clusters on local machines without the need for a complex cloud infrastructure.&lt;/p></description></item><item><title>Install CPO</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/install_operator/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/install_operator/</guid><description>&lt;div class="flex align-center gdoc-page__anchorwrap">
+&lt;/div>&lt;p>Minikube is a tool that makes it possible to run Kubernetes locally on a single computer. It sets up a minimal but functional Kubernetes environment suitable for development and testing purposes. Minikube supports most Kubernetes features and provides an easy way to launch and manage Kubernetes clusters on local machines without the need for a complex cloud infrastructure.&lt;/p></description></item><item><title>Install CPO</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/install_operator/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/install_operator/</guid><description>&lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h2 id="prerequisites"
  >
  Prerequisites
@@ -3394,8 +3561,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/install_operator/#prerequisites" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Prerequisites" aria-label="Anchor to: Prerequisites" href="#prerequisites">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>For the installation you either need our CPO tutorial repository or you install CPO directly from our registry.&lt;!-- raw HTML omitted -->
+&lt;/div>&lt;p>For the installation you either need our CPO tutorial repository or you install CPO directly from our registry.&lt;!-- raw HTML omitted -->
 Exception: Installation via Operatorhub (Openshift only)&lt;/p>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h3 id="cpo-tutorial-repository"
@@ -3405,24 +3571,15 @@ Exception: Installation via Operatorhub (Openshift only)&lt;/p>
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/install_operator/#cpo-tutorial-repository" class="gdoc-page__anchor clip flex align-center" title="Anchor to: CPO-Tutorial-Repository" aria-label="Anchor to: CPO-Tutorial-Repository" href="#cpo-tutorial-repository">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>To get started, you can fork our tutorial repository on Github and then download it.
+&lt;/div>&lt;p>To get started, you can fork our tutorial repository on Github and then download it.
 &lt;a
  class="gdoc-markdown__link"
  href="https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorials/fork"
->CYBERTEC-operator-tutorials&lt;/a>&lt;/p></description></item><item><title>Operator-Configuration</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/configuration_operator/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/configuration_operator/</guid><description>&lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h1 id="configuring-the-postgresql-operator"
- >
- Configuring the PostgreSQL Operator
- &lt;/h1>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/configuration_operator/#configuring-the-postgresql-operator" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Configuring the PostgreSQL Operator" aria-label="Anchor to: Configuring the PostgreSQL Operator" href="#configuring-the-postgresql-operator">
- &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
- &lt;/a>
-&lt;/div>
-&lt;p>The PostgreSQL Operator is configured based on the custom resource type &lt;strong>&lt;code>OperatorConfiguration&lt;/code>&lt;/strong>.
+>CYBERTEC-operator-tutorials&lt;/a>&lt;/p></description></item><item><title>Operator-Configuration</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/configuration_operator/</link><pubDate>Tue, 07 Mar 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/installation/configuration_operator/</guid><description>&lt;p>The PostgreSQL Operator is configured based on the custom resource type &lt;strong>&lt;code>OperatorConfiguration&lt;/code>&lt;/strong>.
 This resource allows you to control the behaviour of the operator in detail and adapt it to individual requirements.&lt;/p>
 &lt;p>The supplied &lt;strong>Helm chart&lt;/strong> already contains a &lt;strong>default configuration&lt;/strong> that is suitable for most use cases.
-These default values cover typical operating requirements and enable a quick start without additional adjustments.&lt;/p></description></item><item><title>PostgreSQL 13</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/pg13/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/pg13/</guid><description>&lt;blockquote class="gdoc-hint info">
+These default values cover typical operating requirements and enable a quick start without additional adjustments.&lt;/p>
+&lt;p>The assignment to OperatorConfiguration is based on the ENV section in the operator deployment:&lt;/p></description></item><item><title>PostgreSQL 13</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/pg13/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/extensions/pg13/</guid><description>&lt;blockquote class="gdoc-hint info">
  &lt;div class="gdoc-hint__title flex gap-8 align-center">&lt;i class="fa info">&lt;/i>
  &lt;span>Info&lt;/span>&lt;/div>
  &lt;div class="gdoc-hint__text">The extensions listed are included in the standard images. This list refers to PostgreSQL 13.&lt;/div>
@@ -5415,8 +5572,7 @@ These default values cover typical operating requirements and enable a quick sta
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/operator_updates/#using-helm-chart" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Using Helm-Chart" aria-label="Anchor to: Using Helm-Chart" href="#using-helm-chart">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;ol>
+&lt;/div>&lt;ol>
 &lt;li>Update the Helm Repository&lt;/li>
 &lt;/ol>
 &lt;p>First, ensure your local Helm chart cache is up to date with the latest versions from the CYBERTEC repository:&lt;/p></description></item><item><title>Minor version update</title><link>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/minor_updates/</link><pubDate>Thu, 28 Dec 2023 14:26:51 +0100</pubDate><guid>https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/minor_updates/</guid><description>&lt;p>Minor version updates for PostgreSQL are performed by updating the PostgreSQL container image in use.
@@ -5438,5 +5594,4 @@ With the update object &lt;code>spec.dockerImage&lt;/code> of the cluster manife
  &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/lifecycle/major_upgrades/#how-to-trigger-an-in-place-upgrade" class="gdoc-page__anchor clip flex align-center" title="Anchor to: How to trigger an In-Place Upgrade" aria-label="Anchor to: How to trigger an In-Place Upgrade" href="#how-to-trigger-an-in-place-upgrade">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
-&lt;/div>
-&lt;p>To trigger the upgrade, simply increase the version number in your cluster manifest. If the version is valid, the Operator automatically initiates the procedure described below.&lt;/p></description></item></channel></rss>
+&lt;/div>&lt;p>To trigger the upgrade, simply increase the version number in your cluster manifest. If the version is valid, the Operator automatically initiates the procedure described below.&lt;/p></description></item></channel></rss>

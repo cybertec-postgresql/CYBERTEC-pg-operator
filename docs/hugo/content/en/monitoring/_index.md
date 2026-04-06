@@ -13,6 +13,14 @@ These Stack is based on:
 
 CPO has prepared an own Exporter for the PostgreSQl-Pod which can used as a sidecar.
 
+#### Configure Cluster for monitoring
+To deploy a monitoring exporter for Prometheus and create the necessary users and permissions in the cluster, the cluster manifest must be extended to include the `monitor` object. 
+- `customQueries`: Name of the ConfigMap containing custom queries for PostgreSQL and Prometheus.
+- `env`: Additional environment variables for the sidecar container
+- `image`: Image for the monitoring sidecar. For example: `containers.cybertec.at/cybertec-pg-container/exporter:rocky9-18.3-2`
+ 
+{{< hint type=Info >}}The ConfigMap is mounted in the sidecar container. Any additional permissions required for the queries must be manually granted to the monitoring user if necessary.{{< /hint >}}
+
 #### Setting up the Monitoring Stack
 To setup the Monitoring-Stack we suggest that you create an own namespace and use the prepared kustomization file inside the Operator-Tutorials.
 ```
@@ -24,7 +32,7 @@ No resources found in cpo-monitoring namespace.
 git clone https://github.com/cybertec-postgresql/CYBERTEC-operator-tutorial
 cd CYBERTEC-operator-tutorial/setup/monitoring
 
-# Hint: Please check if youn want to use a specific storage-class the file pvcs.yaml and add your storageclass on the commented part. Please ensure that you removed the comment-char.
+{{< hint type=Info >}}Hint: Please check if you want to use a specific storage-class the file pvcs.yaml and add your storageclass on the commented part. Please ensure that you removed the comment-char.{{< /hint >}}
 
 $ kubectl apply -n cpo-monitoring -k .
 serviceaccount/cpo-monitoring created
@@ -47,9 +55,9 @@ deployment.apps/cpo-monitoring-alertmanager created
 deployment.apps/cpo-monitoring-grafana created
 deployment.apps/cpo-monitoring-prometheus created
 
-Hint: If you're not running Openshift you will get a error like this: 
+{{< hint type=Info >}}Hint: If you're not running Openshift you will get a error like this: 
 error: resource mapping not found for name: "grafana" namespace: "" from ".":
-no matches for kind "Route" in version "route.openshift.io/v1" ensure CRDs are installed first
+no matches for kind "Route" in version "route.openshift.io/v1" ensure CRDs are installed first{{< /hint >}}
 
 You can ignore this, because it depends on an object with the type route which is part of Openshift. 
 It is not needed replaced by ingress-rules or an loadbalancer-service.

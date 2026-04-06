@@ -19,7 +19,7 @@ spec:
       serviceAccountName: postgres-operator
       containers:
       - name: postgres-operator
-        image: registry.opensource.zalan.do/acid/postgres-operator:v1.10.1
+        image: cybertecpostgresql/cybertec-pg-operator:v0.9.2
         imagePullPolicy: IfNotPresent
         resources:
           requests:

@@ -1052,6 +1052,12 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 		syncStatefulSet = true
 	}
 
+	//sync sts if there is a change in the monitor-section
+	if !reflect.DeepEqual(oldSpec.Spec.Monitoring, newSpec.Spec.Monitoring) {
+		c.logger.Infof("monitoring configuration changed, triggering statefulset sync")
+		syncStatefulSet = true
+	}
+
 	// Pgbackrest backup job
 	func() {
 
@@ -1151,6 +1157,13 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 			}
 		}
 	}()
+
+	// add or remove standby_cluster section from Patroni config depending on changes in standby section
+	if !reflect.DeepEqual(oldSpec.Spec.StandbyCluster, newSpec.Spec.StandbyCluster) {
+		if err := c.syncStandbyClusterConfiguration(); err != nil {
+			return fmt.Errorf("could not set StandbyCluster configuration options: %v", err)
+		}
+	}
 
 	// pod disruption budget
 	if oldSpec.Spec.NumberOfInstances != newSpec.Spec.NumberOfInstances {
@@ -1274,11 +1287,16 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	}
 
 	if !updateFailed {
-		// Major version upgrade must only fire after success of earlier operations and should stay last
-		if err := c.majorVersionUpgrade(); err != nil {
-			c.logger.Errorf("major version upgrade failed: %v", err)
+		if upgradeErr := c.executeMajorVersionUpgrade(); upgradeErr != nil {
+			c.logger.Errorf("major version upgrade failed: %v", upgradeErr)
 			updateFailed = true
 		}
+	}
+
+	if updateFailed {
+		c.logger.Errorf("Update for cluster %s/%s finished with errors..", c.Namespace, c.Name)
+	} else {
+		c.logger.Infof("Update for cluster %s/%s completed successfully.", c.Namespace, c.Name)
 	}
 
 	return nil

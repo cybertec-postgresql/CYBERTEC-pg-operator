@@ -737,6 +737,49 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 							"ttl": {
 								Type: "integer",
 							},
+							"log": {
+								Type: "object",
+								Properties: map[string]apiextv1.JSONSchemaProps{
+									"type": {
+										Type: "string",
+										Enum: []apiextv1.JSON{
+											{Raw: []byte(`"plain"`)},
+											{Raw: []byte(`"json"`)},
+										},
+									},
+									"level": {
+										Type: "string",
+										Enum: []apiextv1.JSON{
+											{Raw: []byte(`"DEBUG"`)},
+											{Raw: []byte(`"INFO"`)},
+											{Raw: []byte(`"WARNING"`)},
+											{Raw: []byte(`"ERROR"`)},
+											{Raw: []byte(`"CRITICAL"`)},
+										},
+									},
+									"traceback_level": {
+										Type: "string",
+										Enum: []apiextv1.JSON{
+											{Raw: []byte(`"DEBUG"`)},
+											{Raw: []byte(`"INFO"`)},
+											{Raw: []byte(`"WARNING"`)},
+											{Raw: []byte(`"ERROR"`)},
+											{Raw: []byte(`"CRITICAL"`)},
+										},
+									},
+									"static_fields": {
+										Type: "object",
+										AdditionalProperties: &apiextv1.JSONSchemaPropsOrBool{
+											Schema: &apiextv1.JSONSchemaProps{
+												Type: "string",
+											},
+										},
+									},
+									"deduplicate_heartbeat_logs": {
+										Type: "boolean",
+									},
+								},
+							},
 						},
 					},
 					"podAnnotations": {
@@ -937,6 +980,9 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 								Type: "string",
 							},
 							"standby_port": {
+								Type: "string",
+							},
+							"standby_primary_slot_name": {
 								Type: "string",
 							},
 						},
@@ -1533,6 +1579,9 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 						Nullable: true,
 						Properties: map[string]apiextv1.JSONSchemaProps{
 							"image": {
+								Type: "string",
+							},
+							"customQueries": {
 								Type: "string",
 							},
 							"env": {

@@ -81,11 +81,20 @@ type pgBootstrap struct {
 type spiloConfiguration struct {
 	PgLocalConfiguration map[string]interface{} `json:"postgresql"`
 	Bootstrap            pgBootstrap            `json:"bootstrap"`
+	Log                  *spiloLogConfiguration `json:"log,omitempty"`
 }
 
 type TDEConfig struct {
 	Enabled bool
 	KeyBits string
+}
+
+type spiloLogConfiguration struct {
+	Type                     string            `json:"type,omitempty"`
+	Level                    string            `json:"level,omitempty"`
+	TracebackLevel           string            `json:"traceback_level,omitempty"`
+	StaticFields             map[string]string `json:"static_fields,omitempty"`
+	DeduplicateHeartbeatLogs *bool             `json:"deduplicate_heartbeat_logs,omitempty"`
 }
 
 func (c *Cluster) statefulSetName() string {
@@ -466,6 +475,26 @@ PatroniInitDBParams:
 	// relevant section in the manifest.
 	if len(patroni.PgHba) > 0 {
 		config.PgLocalConfiguration[patroniPGHBAConfParameterName] = patroni.PgHba
+	}
+
+	if patroni.Log != nil {
+		logConfig := &spiloLogConfiguration{}
+		if patroni.Log.Type != "" {
+			logConfig.Type = patroni.Log.Type
+		}
+		if patroni.Log.Level != "" {
+			logConfig.Level = patroni.Log.Level
+		}
+		if patroni.Log.TracebackLevel != "" {
+			logConfig.TracebackLevel = patroni.Log.TracebackLevel
+		}
+		if patroni.Log.StaticFields != nil {
+			logConfig.StaticFields = patroni.Log.StaticFields
+		}
+		if patroni.Log.DeduplicateHeartbeatLogs != nil {
+			logConfig.DeduplicateHeartbeatLogs = patroni.Log.DeduplicateHeartbeatLogs
+		}
+		config.Log = logConfig
 	}
 
 	res, err := json.Marshal(config)
@@ -1639,6 +1668,12 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		additionalVolumes = append(additionalVolumes, c.generatePgbackrestCloneConfigVolumes(spec.Clone)...)
 	}
 
+	if c.Spec.Monitoring != nil && c.Spec.Monitoring.CustomQueries != "" {
+		if queryVol := c.generateCustomQueriesVolume(c.Spec.Monitoring.CustomQueries); queryVol != nil {
+			additionalVolumes = append(additionalVolumes, *queryVol)
+		}
+	}
+
 	// generate pod template for the statefulset, based on the spilo container and sidecars
 	podTemplate, err = c.generatePodTemplate(
 		c.Namespace,
@@ -2169,6 +2204,24 @@ func (c *Cluster) generateCertSecretVolume() cpov1.AdditionalVolume {
 					},
 					},
 				},
+			},
+		},
+	}
+}
+
+func (c *Cluster) generateCustomQueriesVolume(customQueryConfigMap string) *cpov1.AdditionalVolume {
+	defaultMode := int32(0640)
+	return &cpov1.AdditionalVolume{
+		Name:             "custom-queries-vol",
+		MountPath:        "/postgres_exporter/custom_queries",
+		SubPath:          "",
+		TargetContainers: []string{"postgres-exporter"},
+		VolumeSource: v1.VolumeSource{
+			ConfigMap: &v1.ConfigMapVolumeSource{
+				LocalObjectReference: v1.LocalObjectReference{
+					Name: customQueryConfigMap,
+				},
+				DefaultMode: &defaultMode,
 			},
 		},
 	}

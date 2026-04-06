@@ -1,7 +1,7 @@
 image:
   registry: docker.io
   repository: cybertecpostgresql/cybertec-pg-operator
-  tag: v0.8.0-1
+  tag: v0.9.2-1
   pullPolicy: "IfNotPresent"
 
 # Optionally specify an array of imagePullSecrets.
@@ -38,7 +38,7 @@ configGeneral:
   # etcd connection string for Patroni. Empty uses K8s-native DCS.
   etcd_host: ""
   # Database pod docker image
-  docker_image: docker.io/cybertecpostgresql/cybertec-pg-container:postgres-17.0-2
+  docker_image: containers.cybertec.at/cybertec-pg-container/postgres:rocky9-18.3-2
 
   # key name for annotation to ignore globally configured instance limits
   # ignore_instance_limits_annotation_key: ""
@@ -355,8 +355,6 @@ configLogicalBackup:
   # logical_backup_memory_limit: ""
   # logical_backup_memory_request: ""
 
-  # image for pods of the logical backup job (example runs pg_dumpall)
-  logical_backup_docker_image: "registry.opensource.zalan.do/acid/logical-backup:v1.10.1"
   # path of google cloud service account json file
   # logical_backup_google_application_credentials: ""
 

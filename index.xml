@@ -1065,11 +1065,11 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;/tbody>
 &lt;/table>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h2 id="hahahugoshortcode19s4hbhb"
+ &lt;h2 id="hahahugoshortcode21s4hbhb"
  >
  &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
  &lt;/h2>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode19s4hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode19s4hbhb">
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode21s4hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode21s4hbhb">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
 &lt;/div>&lt;div class="flex align-center gdoc-page__anchorwrap">
@@ -1284,6 +1284,15 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;td style="text-align: right">a map of key-value pairs describing initdb parameters&lt;/td>
  &lt;/tr>
  &lt;tr>
+ &lt;td>&lt;a
+ class="gdoc-markdown__link"
+ href="#log"
+>log&lt;/a>&lt;/td>
+ &lt;td style="text-align: center">object&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Log configuration for patroni&lt;/td>
+ &lt;/tr>
+ &lt;tr>
  &lt;td>loop_wait&lt;/td>
  &lt;td style="text-align: center">string&lt;/td>
  &lt;td style="text-align: right">false&lt;/td>
@@ -1332,7 +1341,7 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;td>synchronous_mode&lt;/td>
  &lt;td style="text-align: center">boolean&lt;/td>
  &lt;td style="text-align: right">false&lt;/td>
- &lt;td style="text-align: right">DPatroni &lt;code>synchronous_mode&lt;/code> parameter value, optional. The default is false.&lt;/td>
+ &lt;td style="text-align: right">Patroni &lt;code>synchronous_mode&lt;/code> parameter value, optional. The default is false.&lt;/td>
  &lt;/tr>
  &lt;tr>
  &lt;td>synchronous_mode_strict&lt;/td>
@@ -1923,6 +1932,58 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
 &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
 &lt;hr>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
+ &lt;h4 id="log"
+ >
+ log
+ &lt;/h4>
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#log" class="gdoc-page__anchor clip flex align-center" title="Anchor to: log" aria-label="Anchor to: log" href="#log">
+ &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
+ &lt;/a>
+&lt;/div>&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>Name&lt;/th>
+ &lt;th style="text-align: center">Type&lt;/th>
+ &lt;th style="text-align: right">required&lt;/th>
+ &lt;th style="text-align: right">Description&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>deduplicate_heartbeat_logs&lt;/td>
+ &lt;td style="text-align: center">boolean&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Whether to deduplicate consecutive heartbeat logs to reduce log volume.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>level&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">The Patroni log level. Allowed values: &lt;code>DEBUG&lt;/code>, &lt;code>INFO&lt;/code>, &lt;code>WARNING&lt;/code>, &lt;code>ERROR&lt;/code>, &lt;code>CRITICAL&lt;/code>.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>static_fields&lt;/td>
+ &lt;td style="text-align: center">map&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">A map of key-value pairs (strings) that are statically added to every log record.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>traceback_level&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">Determines the level from which Python tracebacks are logged. Allowed values: &lt;code>DEBUG&lt;/code>, &lt;code>INFO&lt;/code>, &lt;code>WARNING&lt;/code>, &lt;code>ERROR&lt;/code>, &lt;code>CRITICAL&lt;/code>.&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>type&lt;/td>
+ &lt;td style="text-align: center">string&lt;/td>
+ &lt;td style="text-align: right">false&lt;/td>
+ &lt;td style="text-align: right">The format of the log output. Either &lt;code>plain&lt;/code> or &lt;code>json&lt;/code>.&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
+&lt;hr>
+&lt;div class="flex align-center gdoc-page__anchorwrap">
  &lt;h4 id="multisite"
  >
  multisite
@@ -2016,11 +2077,11 @@ Example of installation via Helm:&lt;/p></description></item><item><title>Contai
  &lt;/tbody>
 &lt;/table>
 &lt;div class="flex align-center gdoc-page__anchorwrap">
- &lt;h2 id="hahahugoshortcode19s23hbhb"
+ &lt;h2 id="hahahugoshortcode21s24hbhb"
  >
  &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>
  &lt;/h2>
- &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode19s23hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode19s23hbhb">
+ &lt;a data-clipboard-text="https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/crd/crd-postgresql/#hahahugoshortcode21s24hbhb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" aria-label="Anchor to: &lt;a href="javascript:history.back()">⬅ Back to Parent&lt;/a>" href="#hahahugoshortcode21s24hbhb">
  &lt;svg class="gdoc-icon gdoc_link">&lt;use xlink:href="#gdoc_link">&lt;/use>&lt;/svg>
  &lt;/a>
 &lt;/div>&lt;div class="flex align-center gdoc-page__anchorwrap">

@@ -182,13 +182,14 @@ key, operator, value, effect and tolerationSeconds |
 | ------------------------------ |:-------:| ---------:| ------------------:|
 | failsafe_mode                  | boolean | false     | Patroni failsafe_mode parameter value. See the [Patroni documentation](https://patroni.readthedocs.io/en/master/dcs_failsafe_mode.html) for more details.  |
 | initdb                         | map     | false     | a map of key-value pairs describing initdb parameters  |
+| [log](#log)                    | object  | false     | Log configuration for patroni  |
 | loop_wait                      | string  | false     | Patroni `loop_wait` parameter value, optional. The default is set by the PostgreSQL image.  |
 | maximum_lag_on_failover        | string  | false     | Patroni `maximum_lag_on_failover` parameter value, optional. The default is set by the PostgreSQL image.  |
 | [multisite](#multisite)        | map     | false     | Multisite configuration - Check the [Documentation](CYBERTEC-pg-operator/multisite/) first  |
 | pg_hba                         | array   | false     | list of custom pg_hba lines to replace default ones. One entry per item (example: - hostssl all all 0.0.0.0/0 scram-sha-256)  |
 | retry_timeout                  | int     | false     | Patroni `retry_timeout` parameter value, optional. The default is set by the PostgreSQL image.  |
 | [slots](#slots)                | map     | false     | permanent replication slots that Patroni preserves after failover by re-creating them on the new primary immediately. after doing a promote. Use preferred slot-name as map-item |
-| synchronous_mode               | boolean | false     | DPatroni `synchronous_mode` parameter value, optional. The default is false.  |
+| synchronous_mode               | boolean | false     | Patroni `synchronous_mode` parameter value, optional. The default is false.  |
 | synchronous_mode_strict        | boolean | false     | Patroni `synchronous_mode_strict` parameter value, optional. The default is false.  |
 | synchronous_node_count         | int     | false     | Patroni `synchronous_node_count` parameter value, optional. The default is set to 1. Only used if `synchronous_mode_strict` is true  |
 | ttl                            | int     | false     | Patroni `ttl` parameter value, optional. The default is set by the PostgreSQL image.  |
@@ -344,6 +345,20 @@ key, operator, value, effect and tolerationSeconds |
 | Name                           | Type    | required  | Description        |
 | ------------------------------ |:-------:| ---------:| ------------------:|
 | name                           | string  | true      | Name of the Configmap  |
+
+{{< back >}}
+
+---
+
+#### log
+
+| Name                           | Type    | required  | Description        |
+| ------------------------------ |:-------:| ---------:| ------------------:|
+| deduplicate_heartbeat_logs     | boolean | false     | Whether to deduplicate consecutive heartbeat logs to reduce log volume. |
+| level                          | string  | false     | The Patroni log level. Allowed values: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. |
+| static_fields                  | map     | false     | A map of key-value pairs (strings) that are statically added to every log record. |
+| traceback_level                | string  | false     | Determines the level from which Python tracebacks are logged. Allowed values: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. |
+| type                           | string  | false     | The format of the log output. Either `plain` or `json`. |
 
 {{< back >}}
 

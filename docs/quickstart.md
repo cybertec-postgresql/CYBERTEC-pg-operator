@@ -1,240 +1,122 @@
-<h1>Quickstart</h1>
+# CYBERTEC PostgreSQL Operator for Kubernetes: Complete Guide
 
-This guide aims to give you a quick look and feel for using the Postgres
-Operator on a local Kubernetes environment.
+## Part 1: Choosing a PostgreSQL Operator for Kubernetes
 
-## Prerequisites
+There are several good open-source PostgreSQL operators. This is an honest evaluation framework, the questions to ask of any of them, and where the **CYBERTEC PG Operator (CPO)** focuses rather than a scorecard. Operator features move fast; verify each project's current capabilities at evaluation time.
 
-Since the Postgres Operator is designed for the Kubernetes (K8s) framework,
-hence set it up first. For local tests we recommend to use one of the following
-solutions:
+### Main Open-Source PostgreSQL Operators
+* **CYBERTEC PG Operator (CPO)**
+* **CloudNativePG**
+* **Zalando postgres-operator**
+* **Crunchy PGO**
+* **StackGres**
 
-* [minikube](https://github.com/kubernetes/minikube/releases), which creates a
-  single-node K8s cluster inside a VM (requires KVM or VirtualBox),
-* [kind](https://kind.sigs.k8s.io/) and [k3d](https://k3d.io), which allows creating multi-nodes K8s
-  clusters running on Docker (requires Docker)
+All are credible; they differ in HA mechanism, cross-cluster story, ecosystem, and support model.
 
-To interact with the K8s infrastructure install its CLI runtime [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-binary-via-curl).
+---
 
-This quickstart assumes that you have started minikube or created a local kind
-cluster. Note that you can also use built-in K8s support in the Docker Desktop
-for Mac to follow the steps of this tutorial. You would have to replace
-`minikube start` and `minikube delete` with your launch actions for the Docker
-built-in K8s support.
+### The Dimensions That Matter
 
-## Configuration Options
+* **High-availability mechanism:** How is the leader elected and failover performed? CPO uses Patroni, the widely-deployed, battle-tested HA layer for PostgreSQL. *Ask:* How mature is the failover logic, and how is split-brain prevented?
+* **Cross-cluster / multi-site DR:** Can it fail across clusters (regions/data centres) automatically, not just across nodes? This is where CPO invests heavily: multi-site with an external quorum and automatic cross-site failover and failback. Many operators stop at in-cluster HA or one-way standby.
+* **Day-2 operations:** Rolling resize/reconfigure, scaling, minor and major version upgrades, backups & PITR, connection pooling, monitoring—how much is automated vs. DIY?
+* **Backups & recovery:** Which backup tool, what object stores, and how simple is point-in-time recovery and restore-to-new-cluster?
+* **Configuration model & CRDs:** Is everything declarative? How readable is the CRD, and how much PostgreSQL can you actually tune through it?
+* **Footprint & dependencies:** External etcd/consul vs. Kubernetes-native DCS; sidecars; resource overhead.
+* **License & governance:** Open-source license, who governs the project, and how active it is.
+* **Commercial support:** Can you buy 24×7 support with real SLAs from a team with deep PostgreSQL expertise, and will they fix issues at the source?
 
-Configuring the Postgres Operator is only possible before deploying a new
-Postgres cluster. This can work in two ways: via a ConfigMap or a custom
-`OperatorConfiguration` object. More details on configuration can be found
-[here](reference/operator_parameters.md).
+> **Key Strength:** CPO is backed by CYBERTEC, a dedicated PostgreSQL company with experts who actively contribute to PostgreSQL and provide executive-level support.
 
-## Deployment options
+---
 
-The Postgres Operator can be deployed in the following ways:
+### Where CPO Fits
 
-* Manual deployment
-* Kustomization
-* Helm chart
+* **Patroni-based HA:** Proven reliability with a strong multi-site story (validated: automatic cross-site failover in ≈ 90s, clean automatic failback in ≈ 20s).
+* **Open Source:** No lock-in, deployable on any Kubernetes or OpenShift cluster.
+* **Expert Backing:** 24×7 support, consulting, and training directly from contributors to PostgreSQL and Patroni.
 
-### Manual deployment setup on Kubernetes
+It is a particularly good fit when **cross-site / regional disaster recovery is a hard requirement** and when you want a commercial support partner behind your open-source database.
 
-The Postgres Operator can be installed simply by applying yaml manifests. Note,
-we provide the `/manifests` directory as an example only; you should consider
-adjusting the manifests to your K8s environment (e.g. namespaces).
+---
 
-```bash
-# First, clone the repository and change to the directory
-git clone https://github.com/cybertec-postgresql/cybertec-pg-operator.git
-cd postgres-operator
+### How to Evaluate Fairly
 
-# apply the manifests in the following order
-kubectl create -f manifests/configmap.yaml  # configuration
-kubectl create -f manifests/operator-service-account-rbac.yaml  # identity and permissions
-kubectl create -f manifests/postgres-operator.yaml  # deployment
-kubectl create -f manifests/api-service.yaml  # operator API to be used by UI
-```
+1. **Run a spike:** Execute the same workload across two or three operators.
+2. **Test real failover:** Kill the leader or simulate a site outage to measure real RTO/RPO. *(CPO's tutorials and multi-site scaffold simplify this setup).*
+3. **Exercise recovery:** Test point-in-time restores, not just backup creation.
+4. **Evaluate actual support costs:** Price the support tier you would realistically purchase, rather than relying solely on free tier capabilities.
 
-There is a [Kustomization](https://github.com/kubernetes-sigs/kustomize)
-manifest that [combines the mentioned resources](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/kustomization.yaml)
-(except for the CRD) - it can be used with kubectl 1.14 or newer as easy as:
+---
 
-```bash
-kubectl apply -k github.com/cybertec-postgresql/cybertec-pg-operator/manifests
-```
+### Where to Go Next
+* **Whitepaper & Architecture:** Check the multi-site operator whitepaper in the resources section.
+* **Source Code:** [CYBERTEC PG Operator GitHub Repository](https://github.com/cybertec-postgresql/CYBERTEC-pg-operator)
+* **Documentation:** [CYBERTEC PG Operator Official Docs](https://cybertec-postgresql.github.io/CYBERTEC-pg-operator/)
+* **Commercial Support:** Visit CYBERTEC 24×7 support services to resolve enterprise queries.
 
-For convenience, we have automated starting the operator with minikube using the
-`run_operator_locally` script. It applies the [`acid-minimal-cluster`](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/minimal-postgres-manifest.yaml).
-manifest.
+<br>
 
-```bash
-./run_operator_locally.sh
-```
+---
 
-### Manual deployment setup on OpenShift
+## Part 2: How the CYBERTEC PG Operator Works
 
-To install the Postgres Operator in OpenShift you have to change the config
-parameter `kubernetes_use_configmaps` to `"true"`. Otherwise, the operator
-and Patroni will store leader and config keys in `Endpoints` that are not
-supported in OpenShift. This requires also a slightly different set of rules
-for the `postgres-operator` and `postgres-pod` cluster roles.
+A concept guide for engineers who want to understand what's happening under the YAML, the reconcile loop, where high availability actually lives, and which component is responsible for what.
 
-```bash
-oc create -f manifests/operator-service-account-rbac-openshift.yaml
-```
+---
 
-### Helm chart
+### The Mental Model: Desired State, Reconciled Continuously
 
-Alternatively, the operator can be installed by using the provided
-[Helm](https://helm.sh/) chart which saves you the manual steps. The charts
-for both the Postgres Operator and its UI are hosted via the `gh-pages` branch.
-They only work only with Helm v3. Helm v2 support was dropped with v1.8.0.
+The operator is a Kubernetes controller. You don't tell it how to build a cluster; you declare what you want as a `postgresql` custom resource, and the operator continuously drives reality toward that declaration.
 
-```bash
-# add repo for postgres-operator
-helm repo add postgres-operator-charts https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+#### The Loop, Concretely
 
-# install the postgres-operator
-helm install postgres-operator postgres-operator-charts/postgres-operator
+1. **Apply Manifest:** You `kubectl apply` a `postgresql` resource (desired state), or edit an existing one.
+2. **Reconcile:** The operator's informer wakes on the change and reconciles: it diffs desired vs. actual and creates/updates the StatefulSet, Services, Secrets, ConfigMaps, and (if configured) the pgBackRest repo host and backup CronJobs.
+3. **Continuous Watching:** It keeps watching. Drift, a deleted Service, a changed replica count, or a new parameter is corrected on the next sync. This is why *"change the manifest, let the operator reconcile"* is the answer to almost every day-2 task.
 
-# add repo for postgres-operator-ui
-helm repo add postgres-operator-ui-charts https://opensource.zalando.com/postgres-operator/charts/postgres-operator-ui
+---
 
-# install the postgres-operator-ui
-helm install postgres-operator-ui postgres-operator-ui-charts/postgres-operator-ui
-```
+### Two Layers of High Availability and Who Owns Each
 
-## Check if Postgres Operator is running
+This is the single most important thing to internalise: **Kubernetes and Patroni protect different things.**
 
-Starting the operator may take a few seconds. Check if the operator pod is
-running before applying a Postgres cluster manifest.
+| Concern | Owner | What it does |
+| :--- | :--- | :--- |
+| **Pod/process liveness** | Kubernetes (StatefulSet) | Recreates a crashed or evicted database pod, even if the operator is down. |
+| **Which pod is primary, replication, failover** | Patroni (inside every DB pod) | Holds a leader lease in a DCS, streams WAL, promotes a replica on leader loss. |
+| **Cluster shape, config, lifecycle** | The operator | Turns your manifest into the right pods/Services/Secrets and reconciles changes. |
 
-```bash
-# if you've created the operator using yaml manifests
-kubectl get pod -l name=postgres-operator
+Because Patroni runs inside the database pods and uses the Kubernetes API as its distributed configuration store (DCS), **failover does not depend on the operator being up**. The operator builds and evolves the cluster; Patroni keeps PostgreSQL correct moment-to-moment. That separation is why an operator restart never risks your data path.
 
-# if you've created the operator using helm chart
-kubectl get pod -l app.kubernetes.io/name=postgres-operator
-```
+---
 
-If the operator doesn't get into `Running` state, either check the latest K8s
-events of the deployment or pod with `kubectl describe` or inspect the operator
-logs:
+### What the Operator Creates per Cluster
 
-```bash
-kubectl logs "$(kubectl get pod -l name=postgres-operator --output='name')"
-```
+* **StatefulSet:** Database pods (`<cluster>-0`, `-1`, …), each running PostgreSQL + Patroni.
+* **Services (3x):**
+  * `<cluster>` (always points at the current leader, for writes)
+  * `<cluster>-repl` (replicas, for read-only)
+  * `<cluster>-clusterpods` (headless)
+* **Secrets:** Generated credentials (superuser, replication, application users).
+* **Labels:** Tracks state across failovers:
+  * `cluster.cpo.opensource.cybertec.at/name=<cluster>` on pods
+  * `member.cpo.opensource.cybertec.at/role=master|replica` kept in sync with Patroni's view (ensures leader/replica Services route correctly).
+* **Backups (if configured):** A pgBackRest repo-host pod and backup CronJobs.
 
-## Deploy the operator UI
+---
 
-In the following paragraphs we describe how to access and manage PostgreSQL
-clusters from the command line with kubectl. But it can also be done from the
-browser-based [Postgres Operator UI](operator-ui.md). Before deploying the UI
-make sure the operator is running and its REST API is reachable through a
-[K8s service](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/manifests/api-service.yaml). The URL to this API must be
-configured in the [deployment manifest](https://github.com/cybertec-postgresql/cybertec-pg-operator/blob/master/ui/manifests/deployment.yaml#L43)
-of the UI.
+### Day-to-Day Operations, Mechanically
 
-To deploy the UI simply apply all its manifests files or use the UI helm chart:
+Every operation follows the same pattern: an edit to the `postgresql` resource that the operator turns into a safe, rolling change:
 
-```bash
-# manual deployment
-kubectl apply -f ui/manifests/
+* **Resize / Reconfigure:** Update `spec.resources` / `spec.postgresql.parameters` → rolling update, replica-first, with a leader switchover so there's no full outage.
+* **Scale:** Change `spec.numberOfInstances` → a new pod is cloned from the leader and starts streaming; removing one drains it (failing over first if it's the leader).
+* **Version Update:** Change `spec.dockerImage` → the pod restarts onto the new image on the same data directory (rolling on multi-instance clusters).
+* **Backups / PITR:** Edit `spec.backup.pgbackrest` and a restore block → pgBackRest, driven by the operator.
 
-# or kustomization
-kubectl apply -k github.com/cybertec-postgresql/cybertec-pg-operator/ui/manifests
+---
 
-# or helm chart
-helm install postgres-operator-ui ./charts/postgres-operator-ui
-```
+### Beyond One Cluster: Multi-Site
 
-Like with the operator, check if the UI pod gets into `Running` state:
-
-```bash
-# if you've created the operator using yaml manifests
-kubectl get pod -l name=postgres-operator-ui
-
-# if you've created the operator using helm chart
-kubectl get pod -l app.kubernetes.io/name=postgres-operator-ui
-```
-
-You can now access the web interface by port forwarding the UI pod (mind the
-label selector) and enter `localhost:8081` in your browser:
-
-```bash
-kubectl port-forward svc/postgres-operator-ui 8081:80
-```
-
-Available option are explained in detail in the [UI docs](operator-ui.md).
-
-## Create a Postgres cluster
-
-If the operator pod is running it listens to new events regarding `postgresql`
-resources. Now, it's time to submit your first Postgres cluster manifest.
-
-```bash
-# create a Postgres cluster
-kubectl create -f manifests/minimal-postgres-manifest.yaml
-```
-
-After the cluster manifest is submitted and passed the validation the operator
-will create Service and Endpoint resources and a StatefulSet which spins up new
-Pod(s) given the number of instances specified in the manifest. All resources
-are named like the cluster. The database pods can be identified by their number
-suffix, starting from `-0`. They run the [Spilo](https://github.com/zalando/spilo)
-container image by Zalando. As for the services and endpoints, there will be one
-for the master pod and another one for all the replicas (`-repl` suffix). Check
-if all components are coming up. Use the label `application=cpo` to filter and
-list the label `member.cpo.opensource.cybertec.at/role` to see who is currently the master.
-
-```bash
-# check the deployed cluster
-kubectl get postgresql
-
-# check created database pods
-kubectl get pods -l application=cpo -L member.cpo.opensource.cybertec.at/role
-
-# check created service resources
-kubectl get svc -l application=cpo -L member.cpo.opensource.cybertec.at/role
-```
-
-## Connect to the Postgres cluster via psql
-
-You can create a port-forward on a database pod to connect to Postgres. See the
-[user guide](user.md#connect-to-postgresql) for instructions. With minikube it's
-also easy to retrieve the connections string from the K8s service that is
-pointing to the master pod:
-
-```bash
-export HOST_PORT=$(minikube service acid-minimal-cluster --url | sed 's,.*/,,')
-export PGHOST=$(echo $HOST_PORT | cut -d: -f 1)
-export PGPORT=$(echo $HOST_PORT | cut -d: -f 2)
-```
-
-Retrieve the password from the K8s Secret that is created in your cluster.
-Non-encrypted connections are rejected by default, so set the SSL mode to
-require:
-
-```bash
-export PGPASSWORD=$(kubectl get secret postgres.acid-minimal-cluster.credentials.postgresql.cpo.opensource.cybertec.at -o 'jsonpath={.data.password}' | base64 -d)
-export PGSSLMODE=require
-psql -U postgres
-```
-
-## Delete a Postgres cluster
-
-To delete a Postgres cluster simply delete the `postgresql` custom resource.
-
-```bash
-kubectl delete postgresql acid-minimal-cluster
-```
-
-This should remove the associated StatefulSet, database Pods, Services and
-Endpoints. The PersistentVolumes are released and the PodDisruptionBudget is
-deleted. Secrets however are not deleted and backups will remain in place.
-
-When deleting a cluster while it is still starting up or got stuck during that
-phase it can [happen](https://github.com/cybertec-postgresql/cybertec-pg-operator/issues/551)
-that the `postgresql` resource is deleted leaving orphaned components behind.
-This can cause troubles when creating a new Postgres cluster. For a fresh setup
-you can delete your local minikube or kind cluster and start again.
+A single Kubernetes cluster is still one failure domain. Multi-site layers a second consensus (an external etcd holding a per-cluster leader lease) on top of each site's own Patroni HA. Consequently, the loss of an entire site triggers an automatic cross-site failover under the same declarative model with one extra coordination layer.

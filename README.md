@@ -107,3 +107,9 @@ This project is licensed under the **Apache 2.0 licence**. Further information c
 Pull requests and feedback are always welcome. Please read our [Contribution Guidelines](CONTRIBUTING.md) in advance if you would like to participate.
 
 ---
+
+
+## Additional Docs
+- [Quickstart](docs/quickstart.md)
+- [Choosing a PostgreSQL operator for Kubernetes](docs/choosing_k8s_operator.md)
+

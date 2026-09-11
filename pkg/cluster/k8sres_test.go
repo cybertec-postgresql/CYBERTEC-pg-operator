@@ -3176,22 +3176,29 @@ func TestGenerateCapabilities(t *testing.T) {
 		err          error
 	}{
 		{
-			subTest:      "no capabilities",
-			configured:   nil,
-			capabilities: nil,
-			err:          fmt.Errorf("could not parse capabilities configuration of nil"),
+			subTest:    "no capabilities",
+			configured: nil,
+			capabilities: &v1.Capabilities{
+				Drop: []v1.Capability{"ALL"},
+				Add:  []v1.Capability{},
+			},
+			err: fmt.Errorf("expected drop-all with no additional capabilities"),
 		},
 		{
-			subTest:      "empty capabilities",
-			configured:   []string{},
-			capabilities: nil,
-			err:          fmt.Errorf("could not parse empty capabilities configuration"),
+			subTest:    "empty capabilities",
+			configured: []string{},
+			capabilities: &v1.Capabilities{
+				Drop: []v1.Capability{"ALL"},
+				Add:  []v1.Capability{},
+			},
+			err: fmt.Errorf("expected drop-all with no additional capabilities"),
 		},
 		{
 			subTest:    "configured capability",
 			configured: []string{"SYS_NICE"},
 			capabilities: &v1.Capabilities{
-				Add: []v1.Capability{"SYS_NICE"},
+				Drop: []v1.Capability{"ALL"},
+				Add:  []v1.Capability{"SYS_NICE"},
 			},
 			err: fmt.Errorf("could not generate one configured capability"),
 		},
@@ -3199,7 +3206,8 @@ func TestGenerateCapabilities(t *testing.T) {
 			subTest:    "configured capabilities",
 			configured: []string{"SYS_NICE", "CHOWN"},
 			capabilities: &v1.Capabilities{
-				Add: []v1.Capability{"SYS_NICE", "CHOWN"},
+				Drop: []v1.Capability{"ALL"},
+				Add:  []v1.Capability{"SYS_NICE", "CHOWN"},
 			},
 			err: fmt.Errorf("could not generate multiple configured capabilities"),
 		},

@@ -967,6 +967,21 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 					"spiloFSGroup": {
 						Type: "integer",
 					},
+					"seccompProfile": {
+						Description: "The seccomp options to use by the containers in this pod.",
+						Type:        "object",
+						Properties: map[string]apiextv1.JSONSchemaProps{
+							"type": {
+								Description: "Valid options are: Localhost, RuntimeDefault, Unconfined.",
+								Type:        "string",
+							},
+							"localhostProfile": {
+								Description: "Must be set if type is \"Localhost\". Must NOT be set for any other type.",
+								Type:        "string",
+							},
+						},
+						Required: []string{"type"},
+					},
 					"standby": {
 						Type: "object",
 						Properties: map[string]apiextv1.JSONSchemaProps{

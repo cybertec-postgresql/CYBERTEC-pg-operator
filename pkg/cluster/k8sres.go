@@ -525,6 +525,13 @@ func generateCapabilities(capabilities []string) *v1.Capabilities {
 	}
 }
 
+func effectiveSeccompProfile(spec *v1.SeccompProfile) *v1.SeccompProfile {
+	if spec != nil {
+		return spec
+	}
+	return &v1.SeccompProfile{Type: v1.SeccompProfileTypeRuntimeDefault}
+}
+
 func (c *Cluster) nodeAffinity(nodeReadinessLabel map[string]string, nodeAffinity *v1.NodeAffinity) *v1.Affinity {
 	if len(nodeReadinessLabel) == 0 && nodeAffinity == nil {
 		return nil
@@ -845,6 +852,7 @@ func (c *Cluster) generatePodTemplate(
 	spiloRunAsUser *int64,
 	spiloRunAsGroup *int64,
 	spiloFSGroup *int64,
+	seccompProfile *v1.SeccompProfile,
 	nodeAffinity *v1.Affinity,
 	schedulerName *string,
 	terminateGracePeriod int64,
@@ -877,6 +885,8 @@ func (c *Cluster) generatePodTemplate(
 	if spiloFSGroup != nil {
 		securityContext.FSGroup = spiloFSGroup
 	}
+
+	securityContext.SeccompProfile = effectiveSeccompProfile(seccompProfile)
 
 	podSpec := v1.PodSpec{
 		ServiceAccountName:            podServiceAccountName,
@@ -1503,6 +1513,9 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		effectiveFSGroup = spec.SpiloFSGroup
 	}
 
+	// Cluster-level override; falls nicht gesetzt, greift der RuntimeDefault-Fallback in effectiveSeccompProfile()
+	effectiveSeccompProfileType := spec.SeccompProfile
+
 	volumeMounts := generateVolumeMounts(spec.Volume)
 
 	// configure TLS with a custom secret volume
@@ -1686,6 +1699,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		effectiveRunAsUser,
 		effectiveRunAsGroup,
 		effectiveFSGroup,
+		effectiveSeccompProfileType,
 		c.nodeAffinity(c.OpConfig.NodeReadinessLabel, spec.NodeAffinity),
 		spec.SchedulerName,
 		int64(c.OpConfig.PodTerminateGracePeriod.Seconds()),
@@ -1902,6 +1916,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 	effectiveRunAsUser := c.OpConfig.Resources.SpiloRunAsUser
 	effectiveRunAsGroup := c.OpConfig.Resources.SpiloRunAsGroup
 	effectiveFSGroup := c.OpConfig.Resources.SpiloFSGroup
+	effectiveSeccompProfileType := spec.SeccompProfile
 	effectiveDockerImage := c.Spec.Backup.Pgbackrest.Image
 
 	repoHostMountPath := ""
@@ -1957,6 +1972,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 		effectiveRunAsUser,
 		effectiveRunAsGroup,
 		effectiveFSGroup,
+		effectiveSeccompProfileType,
 		c.nodeAffinity(c.OpConfig.NodeReadinessLabel, spec.NodeAffinity),
 		spec.SchedulerName,
 		int64(c.OpConfig.PodTerminateGracePeriod.Seconds()),
@@ -2999,6 +3015,7 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 		nil,
 		nil,
 		nil,
+		nil,
 		c.nodeAffinity(c.OpConfig.NodeReadinessLabel, nil),
 		nil,
 		int64(c.OpConfig.PodTerminateGracePeriod.Seconds()),
@@ -3540,6 +3557,7 @@ func (c *Cluster) generatePgbackrestJob(spec *cpov1.PostgresSpec, backup *cpov1.
 		util.False(),
 		&[]v1.Toleration{},
 		&[]v1.TopologySpreadConstraint{},
+		nil,
 		nil,
 		nil,
 		nil,

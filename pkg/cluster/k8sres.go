@@ -519,12 +519,10 @@ func generateCapabilities(capabilities []string) *v1.Capabilities {
 	for _, capability := range capabilities {
 		additionalCapabilities = append(additionalCapabilities, v1.Capability(strings.ToUpper(capability)))
 	}
-	if len(additionalCapabilities) > 0 {
-		return &v1.Capabilities{
-			Add: additionalCapabilities,
-		}
+	return &v1.Capabilities{
+		Drop: []v1.Capability{"ALL"},
+		Add:  additionalCapabilities,
 	}
-	return nil
 }
 
 func (c *Cluster) nodeAffinity(nodeReadinessLabel map[string]string, nodeAffinity *v1.NodeAffinity) *v1.Affinity {
@@ -2973,7 +2971,7 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 		c.OpConfig.SpiloPrivileged, // use same value as for normal DB pods
 		c.OpConfig.SpiloAllowPrivilegeEscalation,
 		util.False(),
-		nil,
+		generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
 	)
 
 	nodeAffinity := c.nodeAffinity(c.OpConfig.NodeReadinessLabel, nil)
@@ -3510,7 +3508,7 @@ func (c *Cluster) generatePgbackrestJob(spec *cpov1.PostgresSpec, backup *cpov1.
 		c.OpConfig.SpiloPrivileged, // use same value as for normal DB pods
 		c.OpConfig.SpiloAllowPrivilegeEscalation,
 		c.OpConfig.Resources.ReadOnlyRootFilesystem,
-		nil,
+		generateCapabilities(c.OpConfig.AdditionalPodCapabilities),
 	)
 
 	// Patch securityContext - readOnlyRootFilesystem

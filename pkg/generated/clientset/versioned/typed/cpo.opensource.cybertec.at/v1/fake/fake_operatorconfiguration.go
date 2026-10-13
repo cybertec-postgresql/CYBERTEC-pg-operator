@@ -1,5 +1,5 @@
 /*
-Copyright 2025 Compose, Zalando SE
+Copyright 2026 Compose, Zalando SE
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,9 +27,8 @@ package fake
 import (
 	"context"
 
-	cpoopensourcecybertecatv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	schema "k8s.io/apimachinery/pkg/runtime/schema"
+	v1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	testing "k8s.io/client-go/testing"
 )
 
@@ -39,17 +38,17 @@ type FakeOperatorConfigurations struct {
 	ns   string
 }
 
-var operatorconfigurationsResource = schema.GroupVersionResource{Group: "cpo.opensource.cybertec.at", Version: "v1", Resource: "operatorconfigurations"}
+var operatorconfigurationsResource = v1.SchemeGroupVersion.WithResource("operatorconfigurations")
 
-var operatorconfigurationsKind = schema.GroupVersionKind{Group: "cpo.opensource.cybertec.at", Version: "v1", Kind: "OperatorConfiguration"}
+var operatorconfigurationsKind = v1.SchemeGroupVersion.WithKind("OperatorConfiguration")
 
 // Get takes name of the operatorConfiguration, and returns the corresponding operatorConfiguration object, and an error if there is any.
-func (c *FakeOperatorConfigurations) Get(ctx context.Context, name string, options v1.GetOptions) (result *cpoopensourcecybertecatv1.OperatorConfiguration, err error) {
+func (c *FakeOperatorConfigurations) Get(ctx context.Context, name string, options metav1.GetOptions) (result *v1.OperatorConfiguration, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(operatorconfigurationsResource, c.ns, name), &cpoopensourcecybertecatv1.OperatorConfiguration{})
+		Invokes(testing.NewGetAction(operatorconfigurationsResource, c.ns, name), &v1.OperatorConfiguration{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*cpoopensourcecybertecatv1.OperatorConfiguration), err
+	return obj.(*v1.OperatorConfiguration), err
 }

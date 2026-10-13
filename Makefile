@@ -22,8 +22,8 @@ VERSION ?= $(shell git describe --tags --always --dirty)
 DIRS := cmd pkg
 PKG := `go list ./... | grep -v /vendor/`
 
-BASE_IMAGE ?= rockylinux/rockylinux:9
-# BASE_IMAGE ?= rockylinux/rockylinux:10
+#BASE_IMAGE ?= rockylinux/rockylinux:9
+BASE_IMAGE ?= rockylinux/rockylinux:10
 PACKAGER ?= dnf
 BUILD ?= 1
 ROOTPATH = $(GOPATH)/src/github.com/cybertec/cybertec-pg-operator

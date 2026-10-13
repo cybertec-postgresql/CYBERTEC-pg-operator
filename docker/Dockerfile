@@ -10,8 +10,7 @@ WORKDIR /go/src/github.com/cybertec-postgresql/cybertec-pg-operator
 
 ENV OPERATOR_LDFLAGS="-X=main.version=${VERSION}"
 
-RUN ${PACKAGER} -y install --nodocs  https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && ${PACKAGER} -y update && ${PACKAGER} -y install dpkg wget && ${PACKAGER} clean all;
-
+RUN ${PACKAGER} -y install --nodocs  https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %{rhel}).noarch.rpm && ${PACKAGER} -y update && ${PACKAGER} -y install wget && ${PACKAGER} clean all;
 RUN bash docker/build_operator.sh
 
 FROM ${BASE_IMAGE}

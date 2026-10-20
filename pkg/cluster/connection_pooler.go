@@ -187,7 +187,7 @@ func (c *Cluster) createConnectionPooler(LookupFunction InstallFunction) (SyncRe
 //
 // RESERVE_SIZE is how many additional connections to allow for a pooler.
 
-func (c *Cluster) getConnectionPoolerEnvVars() []v1.EnvVar {
+func (c *Cluster) getConnectionPoolerEnvVars() ([]v1.EnvVar, error) {
 	spec := &c.Spec
 	connectionPoolerSpec := spec.ConnectionPooler
 	if connectionPoolerSpec == nil {
@@ -250,6 +250,29 @@ func (c *Cluster) getConnectionPoolerEnvVars() []v1.EnvVar {
 		},
 	}
 
+	// user defined pgBouncer parameters, passed on as a single JSON object.
+	// The container applies them on top of the generated configuration.
+	if connectionPoolerSpec.Mode != "" {
+		c.logger.Warningf("connectionPooler.mode is deprecated, use connectionPooler.parameters.pool_mode instead")
+	}
+	if connectionPoolerSpec.MaxDBConnections != nil {
+		c.logger.Warningf("connectionPooler.maxDBConnections is deprecated, use connectionPooler.parameters.max_db_connections instead (applies per pooler pod)")
+	}
+	encodedParams, rejectedParams, err := encodeConnectionPoolerParameters(connectionPoolerSpec.Parameters)
+	// invalid parameters are skipped and reported, they must not break the sync
+	for _, rejected := range rejectedParams {
+		c.logger.Warningf("ignoring connection pooler parameter: %v", rejected)
+	}
+	if err != nil {
+		return nil, err
+	}
+	if encodedParams != "" {
+		envVars = append(envVars, v1.EnvVar{
+			Name:  connectionPoolerParametersEnv,
+			Value: encodedParams,
+		})
+	}
+
 	// fetch connection_pooler-specific variables that will override all subsequent global variables
 	if len(connectionPoolerSpec.Env) > 0 {
 		envVars = appendEnvVars(envVars, connectionPoolerSpec.Env...)
@@ -259,7 +282,7 @@ func (c *Cluster) getConnectionPoolerEnvVars() []v1.EnvVar {
 		envVars = appendEnvVars(envVars, spec.Env...)
 	}
 
-	return envVars
+	return envVars, nil
 }
 
 func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (
@@ -328,7 +351,11 @@ func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (
 			},
 		},
 	}
-	envVars = append(envVars, c.getConnectionPoolerEnvVars()...)
+	poolerEnvVars, err := c.getConnectionPoolerEnvVars()
+	if err != nil {
+		return nil, err
+	}
+	envVars = append(envVars, poolerEnvVars...)
 
 	poolerContainer := v1.Container{
 		Name:            connectionPoolerContainer,
@@ -724,6 +751,10 @@ func needSyncConnectionPoolerSpecs(oldSpec, newSpec *cpov1.ConnectionPooler, log
 	reasons = []string{}
 	sync = false
 
+	// ignored parameters are not applied, so they must not count as a change
+	oldSpec = withValidConnectionPoolerParameters(oldSpec)
+	newSpec = withValidConnectionPoolerParameters(newSpec)
+
 	changelog, err := diff.Diff(oldSpec, newSpec)
 	if err != nil {
 		logger.Infof("cannot get diff, do not do anything, %+v", err)
@@ -792,6 +823,11 @@ func (c *Cluster) needSyncConnectionPoolerDefaults(Config *Config, spec *cpov1.C
 
 	if err != nil {
 		return false, reasons
+	}
+
+	if paramsSync, paramsReasons := needSyncConnectionPoolerParameters(spec, poolerContainer); paramsSync {
+		sync = true
+		reasons = append(reasons, paramsReasons...)
 	}
 
 	for _, env := range poolerContainer.Env {

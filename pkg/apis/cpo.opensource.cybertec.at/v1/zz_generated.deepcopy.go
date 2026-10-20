@@ -148,6 +148,13 @@ func (in *ConnectionPooler) DeepCopyInto(out *ConnectionPooler) {
 		*out = new(int32)
 		**out = **in
 	}
+	if in.Parameters != nil {
+		in, out := &in.Parameters, &out.Parameters
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
+	}
 	if in.Env != nil {
 		in, out := &in.Env, &out.Env
 		*out = make([]corev1.EnvVar, len(*in))

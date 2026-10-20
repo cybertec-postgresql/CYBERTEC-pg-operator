@@ -110,8 +110,8 @@ func encodeConnectionPoolerParameters(params map[string]string) (string, []error
 // needSyncConnectionPoolerParameters compares the parameters requested in the
 // spec with the ones in the env of the running pooler container. In contrast
 // to the spec diff this works without the previous spec, e.g. after a restart
-// of the operator.
-func needSyncConnectionPoolerParameters(spec *cpov1.ConnectionPooler, container v1.Container) (bool, string) {
+// of the operator. It returns one reason per changed parameter.
+func needSyncConnectionPoolerParameters(spec *cpov1.ConnectionPooler, container v1.Container) (bool, []string) {
 	var requested map[string]string
 	if spec != nil {
 		requested = spec.Parameters
@@ -120,7 +120,7 @@ func needSyncConnectionPoolerParameters(spec *cpov1.ConnectionPooler, container 
 	// deployment is generated
 	want, _, err := encodeConnectionPoolerParameters(requested)
 	if err != nil {
-		return false, ""
+		return false, nil
 	}
 
 	have := ""
@@ -132,9 +132,55 @@ func needSyncConnectionPoolerParameters(spec *cpov1.ConnectionPooler, container 
 	}
 
 	if have == want {
-		return false, ""
+		return false, nil
 	}
-	return true, fmt.Sprintf("connection pooler parameters are different (having %q, required %q)", have, want)
+
+	var running, wanted map[string]string
+	if have != "" {
+		// an unreadable value is treated as empty, so everything is re-applied
+		_ = json.Unmarshal([]byte(have), &running)
+	}
+	if want != "" {
+		_ = json.Unmarshal([]byte(want), &wanted)
+	}
+
+	reasons := diffConnectionPoolerParameters(running, wanted)
+	if len(reasons) == 0 {
+		reasons = []string{"connection pooler parameters changed"}
+	}
+	return true, reasons
+}
+
+// diffConnectionPoolerParameters describes what changed between two parameter
+// sets, one entry per parameter, sorted by name.
+func diffConnectionPoolerParameters(have, want map[string]string) []string {
+	names := make(map[string]struct{}, len(have)+len(want))
+	for k := range have {
+		names[k] = struct{}{}
+	}
+	for k := range want {
+		names[k] = struct{}{}
+	}
+	sorted := make([]string, 0, len(names))
+	for k := range names {
+		sorted = append(sorted, k)
+	}
+	sort.Strings(sorted)
+
+	var reasons []string
+	for _, k := range sorted {
+		oldVal, hadOld := have[k]
+		newVal, hasNew := want[k]
+		switch {
+		case !hadOld:
+			reasons = append(reasons, fmt.Sprintf("parameter %s added: '%s'", k, newVal))
+		case !hasNew:
+			reasons = append(reasons, fmt.Sprintf("parameter %s removed (was '%s')", k, oldVal))
+		case oldVal != newVal:
+			reasons = append(reasons, fmt.Sprintf("parameter %s changed from '%s' to '%s'", k, oldVal, newVal))
+		}
+	}
+	return reasons
 }
 
 // withValidConnectionPoolerParameters returns a shallow copy of the pooler

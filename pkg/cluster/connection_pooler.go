@@ -825,9 +825,9 @@ func (c *Cluster) needSyncConnectionPoolerDefaults(Config *Config, spec *cpov1.C
 		return false, reasons
 	}
 
-	if paramsSync, reason := needSyncConnectionPoolerParameters(spec, poolerContainer); paramsSync {
+	if paramsSync, paramsReasons := needSyncConnectionPoolerParameters(spec, poolerContainer); paramsSync {
 		sync = true
-		reasons = append(reasons, reason)
+		reasons = append(reasons, paramsReasons...)
 	}
 
 	for _, env := range poolerContainer.Env {

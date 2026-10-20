@@ -95,10 +95,11 @@ func TestNeedSyncConnectionPoolerParameters(t *testing.T) {
 	}
 
 	tests := []struct {
-		name      string
-		spec      *cpov1.ConnectionPooler
-		container v1.Container
-		want      bool
+		name        string
+		spec        *cpov1.ConnectionPooler
+		container   v1.Container
+		want        bool
+		wantReasons []string
 	}{
 		{name: "nothing requested, nothing running", spec: nil, container: container(""), want: false},
 		{
@@ -108,22 +109,37 @@ func TestNeedSyncConnectionPoolerParameters(t *testing.T) {
 			want:      false,
 		},
 		{
-			name:      "parameter added",
-			spec:      &cpov1.ConnectionPooler{Parameters: map[string]string{"query_timeout": "60"}},
-			container: container(""),
-			want:      true,
+			name:        "parameter added",
+			spec:        &cpov1.ConnectionPooler{Parameters: map[string]string{"query_timeout": "60"}},
+			container:   container(""),
+			want:        true,
+			wantReasons: []string{"parameter query_timeout added: '60'"},
 		},
 		{
-			name:      "value changed",
-			spec:      &cpov1.ConnectionPooler{Parameters: map[string]string{"query_timeout": "90"}},
-			container: container(`{"query_timeout":"60"}`),
-			want:      true,
+			name:        "value changed",
+			spec:        &cpov1.ConnectionPooler{Parameters: map[string]string{"query_timeout": "90"}},
+			container:   container(`{"query_timeout":"60"}`),
+			want:        true,
+			wantReasons: []string{"parameter query_timeout changed from '60' to '90'"},
 		},
 		{
-			name:      "parameters removed",
-			spec:      &cpov1.ConnectionPooler{},
-			container: container(`{"query_timeout":"60"}`),
+			name:        "parameters removed",
+			spec:        &cpov1.ConnectionPooler{},
+			container:   container(`{"query_timeout":"60"}`),
+			want:        true,
+			wantReasons: []string{"parameter query_timeout removed (was '60')"},
+		},
+		{
+			name: "only changed parameters are listed",
+			spec: &cpov1.ConnectionPooler{Parameters: map[string]string{
+				"max_client_conn": "5000", "query_timeout": "90", "server_lifetime": "3600",
+			}},
+			container: container(`{"max_client_conn":"5000","query_timeout":"60"}`),
 			want:      true,
+			wantReasons: []string{
+				"parameter query_timeout changed from '60' to '90'",
+				"parameter server_lifetime added: '3600'",
+			},
 		},
 		{
 			name:      "only rejected parameter requested, nothing running",
@@ -135,9 +151,9 @@ func TestNeedSyncConnectionPoolerParameters(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, reason := needSyncConnectionPoolerParameters(tt.spec, tt.container)
+			got, reasons := needSyncConnectionPoolerParameters(tt.spec, tt.container)
 			assert.Equal(t, tt.want, got)
-			assert.Equal(t, tt.want, reason != "")
+			assert.Equal(t, tt.wantReasons, reasons)
 		})
 	}
 }

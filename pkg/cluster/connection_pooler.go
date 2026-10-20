@@ -187,7 +187,7 @@ func (c *Cluster) createConnectionPooler(LookupFunction InstallFunction) (SyncRe
 //
 // RESERVE_SIZE is how many additional connections to allow for a pooler.
 
-func (c *Cluster) getConnectionPoolerEnvVars() []v1.EnvVar {
+func (c *Cluster) getConnectionPoolerEnvVars() ([]v1.EnvVar, error) {
 	spec := &c.Spec
 	connectionPoolerSpec := spec.ConnectionPooler
 	if connectionPoolerSpec == nil {
@@ -250,6 +250,25 @@ func (c *Cluster) getConnectionPoolerEnvVars() []v1.EnvVar {
 		},
 	}
 
+	// user defined pgBouncer parameters, passed on as a single JSON object.
+	// The container applies them on top of the generated configuration.
+	if connectionPoolerSpec.Mode != "" {
+		c.logger.Warningf("connectionPooler.mode is deprecated, use connectionPooler.parameters.pool_mode instead")
+	}
+	if connectionPoolerSpec.MaxDBConnections != nil {
+		c.logger.Warningf("connectionPooler.maxDBConnections is deprecated, use connectionPooler.parameters.max_db_connections instead (applies per pooler pod)")
+	}
+	encodedParams, err := encodeConnectionPoolerParameters(connectionPoolerSpec.Parameters)
+	if err != nil {
+		return nil, err
+	}
+	if encodedParams != "" {
+		envVars = append(envVars, v1.EnvVar{
+			Name:  connectionPoolerParametersEnv,
+			Value: encodedParams,
+		})
+	}
+
 	// fetch connection_pooler-specific variables that will override all subsequent global variables
 	if len(connectionPoolerSpec.Env) > 0 {
 		envVars = appendEnvVars(envVars, connectionPoolerSpec.Env...)
@@ -259,7 +278,7 @@ func (c *Cluster) getConnectionPoolerEnvVars() []v1.EnvVar {
 		envVars = appendEnvVars(envVars, spec.Env...)
 	}
 
-	return envVars
+	return envVars, nil
 }
 
 func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (
@@ -328,7 +347,11 @@ func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (
 			},
 		},
 	}
-	envVars = append(envVars, c.getConnectionPoolerEnvVars()...)
+	poolerEnvVars, err := c.getConnectionPoolerEnvVars()
+	if err != nil {
+		return nil, err
+	}
+	envVars = append(envVars, poolerEnvVars...)
 
 	poolerContainer := v1.Container{
 		Name:            connectionPoolerContainer,

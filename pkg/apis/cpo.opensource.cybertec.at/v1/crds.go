@@ -284,10 +284,12 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 								Type: "string",
 							},
 							"maxDBConnections": {
-								Type: "integer",
+								Description: "Deprecated: use parameters.max_db_connections instead (per pod, not divided by numberOfInstances).",
+								Type:        "integer",
 							},
 							"mode": {
-								Type: "string",
+								Description: "Deprecated: use parameters.pool_mode instead.",
+								Type:        "string",
 								Enum: []apiextv1.JSON{
 									{
 										Raw: []byte(`"session"`),
@@ -295,11 +297,23 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 									{
 										Raw: []byte(`"transaction"`),
 									},
+									{
+										Raw: []byte(`"statement"`),
+									},
 								},
 							},
 							"numberOfInstances": {
 								Type:    "integer",
 								Minimum: &min1,
+							},
+							"parameters": {
+								Type: "object",
+								AdditionalProperties: &apiextv1.JSONSchemaPropsOrBool{
+									Allows: true,
+									Schema: &apiextv1.JSONSchemaProps{
+										Type: "string",
+									},
+								},
 							},
 							"resources": {
 								Type: "object",

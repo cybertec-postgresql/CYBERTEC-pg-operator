@@ -751,6 +751,10 @@ func needSyncConnectionPoolerSpecs(oldSpec, newSpec *cpov1.ConnectionPooler, log
 	reasons = []string{}
 	sync = false
 
+	// ignored parameters are not applied, so they must not count as a change
+	oldSpec = withValidConnectionPoolerParameters(oldSpec)
+	newSpec = withValidConnectionPoolerParameters(newSpec)
+
 	changelog, err := diff.Diff(oldSpec, newSpec)
 	if err != nil {
 		logger.Infof("cannot get diff, do not do anything, %+v", err)

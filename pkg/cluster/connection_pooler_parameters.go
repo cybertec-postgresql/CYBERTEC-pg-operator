@@ -136,3 +136,20 @@ func needSyncConnectionPoolerParameters(spec *cpov1.ConnectionPooler, container 
 	}
 	return true, fmt.Sprintf("connection pooler parameters are different (having %q, required %q)", have, want)
 }
+
+// withValidConnectionPoolerParameters returns a shallow copy of the pooler
+// spec which only contains the parameters that are actually applied. It is
+// used to compare specs, so that ignored parameters do not show up as changes.
+// The given spec is not modified.
+func withValidConnectionPoolerParameters(spec *cpov1.ConnectionPooler) *cpov1.ConnectionPooler {
+	if spec == nil {
+		return nil
+	}
+	filtered := *spec
+	valid, _ := splitConnectionPoolerParameters(spec.Parameters)
+	if len(valid) == 0 {
+		valid = nil
+	}
+	filtered.Parameters = valid
+	return &filtered
+}

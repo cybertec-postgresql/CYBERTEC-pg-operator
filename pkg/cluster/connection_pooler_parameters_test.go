@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/core/v1"
 )
@@ -139,4 +140,61 @@ func TestNeedSyncConnectionPoolerParameters(t *testing.T) {
 			assert.Equal(t, tt.want, reason != "")
 		})
 	}
+}
+
+func TestNeedSyncConnectionPoolerSpecsIgnoresRejectedParameters(t *testing.T) {
+	logger := logrus.NewEntry(logrus.New())
+	spec := func(params map[string]string) *cpov1.ConnectionPooler {
+		return &cpov1.ConnectionPooler{Mode: "transaction", Parameters: params}
+	}
+
+	tests := []struct {
+		name    string
+		oldSpec *cpov1.ConnectionPooler
+		newSpec *cpov1.ConnectionPooler
+		want    bool
+	}{
+		{
+			name:    "rejected parameter added",
+			oldSpec: spec(nil),
+			newSpec: spec(map[string]string{"auth_type": "md5"}),
+			want:    false,
+		},
+		{
+			name:    "rejected parameter changed",
+			oldSpec: spec(map[string]string{"auth_type": "md5"}),
+			newSpec: spec(map[string]string{"auth_type": "scram-sha-256"}),
+			want:    false,
+		},
+		{
+			name:    "valid parameter added",
+			oldSpec: spec(nil),
+			newSpec: spec(map[string]string{"query_timeout": "60"}),
+			want:    true,
+		},
+		{
+			name:    "valid parameter changed next to rejected one",
+			oldSpec: spec(map[string]string{"auth_type": "md5", "query_timeout": "60"}),
+			newSpec: spec(map[string]string{"auth_type": "md5", "query_timeout": "90"}),
+			want:    true,
+		},
+		{
+			name:    "other field changed",
+			oldSpec: spec(nil),
+			newSpec: &cpov1.ConnectionPooler{Mode: "session"},
+			want:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, reasons := needSyncConnectionPoolerSpecs(tt.oldSpec, tt.newSpec, logger)
+			assert.Equal(t, tt.want, got, "reasons: %v", reasons)
+		})
+	}
+
+	// the specs passed in must not be modified
+	in := spec(map[string]string{"auth_type": "md5"})
+	_, _ = needSyncConnectionPoolerSpecs(in, in, logger)
+	assert.Equal(t, map[string]string{"auth_type": "md5"}, in.Parameters)
 }

@@ -3,7 +3,9 @@ package cluster
 import (
 	"testing"
 
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/stretchr/testify/assert"
+	v1 "k8s.io/api/core/v1"
 )
 
 func TestEncodeConnectionPoolerParameters(t *testing.T) {
@@ -78,6 +80,63 @@ func TestEncodeConnectionPoolerParameters(t *testing.T) {
 					assert.ErrorContains(t, rejected[i], sub)
 				}
 			}
+		})
+	}
+}
+
+func TestNeedSyncConnectionPoolerParameters(t *testing.T) {
+	container := func(value string) v1.Container {
+		c := v1.Container{Env: []v1.EnvVar{{Name: "PGHOST", Value: "h"}}}
+		if value != "" {
+			c.Env = append(c.Env, v1.EnvVar{Name: connectionPoolerParametersEnv, Value: value})
+		}
+		return c
+	}
+
+	tests := []struct {
+		name      string
+		spec      *cpov1.ConnectionPooler
+		container v1.Container
+		want      bool
+	}{
+		{name: "nothing requested, nothing running", spec: nil, container: container(""), want: false},
+		{
+			name:      "same parameters",
+			spec:      &cpov1.ConnectionPooler{Parameters: map[string]string{"query_timeout": "60"}},
+			container: container(`{"query_timeout":"60"}`),
+			want:      false,
+		},
+		{
+			name:      "parameter added",
+			spec:      &cpov1.ConnectionPooler{Parameters: map[string]string{"query_timeout": "60"}},
+			container: container(""),
+			want:      true,
+		},
+		{
+			name:      "value changed",
+			spec:      &cpov1.ConnectionPooler{Parameters: map[string]string{"query_timeout": "90"}},
+			container: container(`{"query_timeout":"60"}`),
+			want:      true,
+		},
+		{
+			name:      "parameters removed",
+			spec:      &cpov1.ConnectionPooler{},
+			container: container(`{"query_timeout":"60"}`),
+			want:      true,
+		},
+		{
+			name:      "only rejected parameter requested, nothing running",
+			spec:      &cpov1.ConnectionPooler{Parameters: map[string]string{"auth_type": "md5"}},
+			container: container(""),
+			want:      false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, reason := needSyncConnectionPoolerParameters(tt.spec, tt.container)
+			assert.Equal(t, tt.want, got)
+			assert.Equal(t, tt.want, reason != "")
 		})
 	}
 }

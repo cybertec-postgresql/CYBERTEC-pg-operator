@@ -821,6 +821,11 @@ func (c *Cluster) needSyncConnectionPoolerDefaults(Config *Config, spec *cpov1.C
 		return false, reasons
 	}
 
+	if paramsSync, reason := needSyncConnectionPoolerParameters(spec, poolerContainer); paramsSync {
+		sync = true
+		reasons = append(reasons, reason)
+	}
+
 	for _, env := range poolerContainer.Env {
 		if spec.User == "" && env.Name == "PGUSER" {
 			ref := env.ValueFrom.SecretKeyRef.LocalObjectReference

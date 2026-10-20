@@ -6,6 +6,9 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+
+	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	v1 "k8s.io/api/core/v1"
 )
 
 // connectionPoolerParametersEnv is the name of the environment variable which
@@ -102,4 +105,34 @@ func encodeConnectionPoolerParameters(params map[string]string) (string, []error
 		return "", rejected, fmt.Errorf("could not encode connection pooler parameters: %v", err)
 	}
 	return string(b), rejected, nil
+}
+
+// needSyncConnectionPoolerParameters compares the parameters requested in the
+// spec with the ones in the env of the running pooler container. In contrast
+// to the spec diff this works without the previous spec, e.g. after a restart
+// of the operator.
+func needSyncConnectionPoolerParameters(spec *cpov1.ConnectionPooler, container v1.Container) (bool, string) {
+	var requested map[string]string
+	if spec != nil {
+		requested = spec.Parameters
+	}
+	// rejected parameters are ignored here, they are reported when the
+	// deployment is generated
+	want, _, err := encodeConnectionPoolerParameters(requested)
+	if err != nil {
+		return false, ""
+	}
+
+	have := ""
+	for _, env := range container.Env {
+		if env.Name == connectionPoolerParametersEnv {
+			have = env.Value
+			break
+		}
+	}
+
+	if have == want {
+		return false, ""
+	}
+	return true, fmt.Sprintf("connection pooler parameters are different (having %q, required %q)", have, want)
 }

@@ -258,7 +258,11 @@ func (c *Cluster) getConnectionPoolerEnvVars() ([]v1.EnvVar, error) {
 	if connectionPoolerSpec.MaxDBConnections != nil {
 		c.logger.Warningf("connectionPooler.maxDBConnections is deprecated, use connectionPooler.parameters.max_db_connections instead (applies per pooler pod)")
 	}
-	encodedParams, err := encodeConnectionPoolerParameters(connectionPoolerSpec.Parameters)
+	encodedParams, rejectedParams, err := encodeConnectionPoolerParameters(connectionPoolerSpec.Parameters)
+	// invalid parameters are skipped and reported, they must not break the sync
+	for _, rejected := range rejectedParams {
+		c.logger.Warningf("ignoring connection pooler parameter: %v", rejected)
+	}
 	if err != nil {
 		return nil, err
 	}

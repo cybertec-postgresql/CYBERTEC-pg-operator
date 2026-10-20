@@ -48,45 +48,58 @@ var poolerForbiddenParameters = map[string]struct{}{
 	"server_tls_ca_file":   {},
 }
 
-// validateConnectionPoolerParameters checks user supplied pgBouncer
-// parameters and returns a descriptive error for the first problem found
-// (keys are checked in sorted order so the message is deterministic).
-func validateConnectionPoolerParameters(params map[string]string) error {
+// validateConnectionPoolerParameter checks a single user supplied pgBouncer
+// parameter and returns a descriptive error if it must not be used.
+func validateConnectionPoolerParameter(key, value string) error {
+	if !poolerParameterNameRegexp.MatchString(key) {
+		return fmt.Errorf("invalid connection pooler parameter name %q: must match %s",
+			key, poolerParameterNameRegexp.String())
+	}
+	if _, forbidden := poolerForbiddenParameters[key]; forbidden {
+		return fmt.Errorf("connection pooler parameter %q is managed by the operator and cannot be set", key)
+	}
+	if strings.ContainsAny(value, "\n\r\x00") {
+		return fmt.Errorf("invalid value for connection pooler parameter %q: must not contain line breaks or NUL", key)
+	}
+	return nil
+}
+
+// splitConnectionPoolerParameters separates usable parameters from rejected
+// ones. Rejected parameters are reported as errors (sorted by key, so the
+// output is deterministic) and must be ignored by the caller.
+func splitConnectionPoolerParameters(params map[string]string) (map[string]string, []error) {
 	keys := make([]string, 0, len(params))
 	for k := range params {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 
+	valid := make(map[string]string, len(params))
+	var rejected []error
 	for _, k := range keys {
-		if !poolerParameterNameRegexp.MatchString(k) {
-			return fmt.Errorf("invalid connection pooler parameter name %q: must match %s",
-				k, poolerParameterNameRegexp.String())
+		if err := validateConnectionPoolerParameter(k, params[k]); err != nil {
+			rejected = append(rejected, err)
+			continue
 		}
-		if _, forbidden := poolerForbiddenParameters[k]; forbidden {
-			return fmt.Errorf("connection pooler parameter %q is managed by the operator and cannot be set", k)
-		}
-		if strings.ContainsAny(params[k], "\n\r\x00") {
-			return fmt.Errorf("invalid value for connection pooler parameter %q: must not contain line breaks or NUL", k)
-		}
+		valid[k] = params[k]
 	}
-	return nil
+	return valid, rejected
 }
 
-// encodeConnectionPoolerParameters validates the parameters and serializes
-// them to JSON. It returns an empty string if there is nothing to pass on.
-// json.Marshal sorts map keys, so the output is stable and does not trigger
-// needless rollouts.
-func encodeConnectionPoolerParameters(params map[string]string) (string, error) {
-	if len(params) == 0 {
-		return "", nil
+// encodeConnectionPoolerParameters serializes the usable parameters to JSON
+// and returns the rejected ones as errors. Rejected parameters are skipped,
+// they do not make the encoding fail. The JSON string is empty if there is
+// nothing to pass on. json.Marshal sorts map keys, so the output is stable
+// and does not trigger needless rollouts. The final error is only set if
+// the JSON encoding itself fails.
+func encodeConnectionPoolerParameters(params map[string]string) (string, []error, error) {
+	valid, rejected := splitConnectionPoolerParameters(params)
+	if len(valid) == 0 {
+		return "", rejected, nil
 	}
-	if err := validateConnectionPoolerParameters(params); err != nil {
-		return "", err
-	}
-	b, err := json.Marshal(params)
+	b, err := json.Marshal(valid)
 	if err != nil {
-		return "", fmt.Errorf("could not encode connection pooler parameters: %v", err)
+		return "", rejected, fmt.Errorf("could not encode connection pooler parameters: %v", err)
 	}
-	return string(b), nil
+	return string(b), rejected, nil
 }

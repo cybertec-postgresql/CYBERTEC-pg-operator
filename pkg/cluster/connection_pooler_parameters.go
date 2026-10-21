@@ -154,7 +154,7 @@ func needSyncConnectionPoolerParameters(spec *cpov1.ConnectionPooler, container 
 // diffConnectionPoolerParameters describes what changed between two parameter
 // sets, one entry per parameter, sorted by name.
 func diffConnectionPoolerParameters(have, want map[string]string) []string {
-	names := make(map[string]struct{}, len(have)+len(want))
+	names := make(map[string]struct{})
 	for k := range have {
 		names[k] = struct{}{}
 	}

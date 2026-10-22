@@ -17,6 +17,7 @@ metadata:
   name: cluster-1
 spec:
   dockerImage: "docker.io/cybertecpostgresql/cybertec-pg-container:postgres-18.0-1"
+  teamId: "acid"
   numberOfInstances: 1
   postgresql:
     version: "18"
@@ -42,7 +43,7 @@ cluster-1-0                      | 1/1    | Running          | 0        | 50s
 
 ```
 
-{{< hint type=Info >}}[Here](documentation/crd/crd-postgresql/) you will find a complete overview of the available options within the cluster manifest.{{< /hint >}}
+{{< hint type=Info >}}[Here](../crd/crd-postgresql/) you will find a complete overview of the available options within the cluster manifest.{{< /hint >}}
 
 ### Use a specific Storageclass
 ```

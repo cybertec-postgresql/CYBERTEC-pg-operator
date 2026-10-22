@@ -31,6 +31,7 @@ metadata:
   name: cluster-1
 spec:
   dockerImage: "docker.io/cybertecpostgresql/cybertec-pg-container:postgres-18.0-1"
+  teamId: "acid"
   numberOfInstances: 2
   postgresql:
     version: "18"

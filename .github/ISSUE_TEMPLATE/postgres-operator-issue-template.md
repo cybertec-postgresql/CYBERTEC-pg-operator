@@ -10,7 +10,7 @@ assignees: ''
 To quickly narrow down the problem, we need details about your infrastructure.
 
 - **Operator version / image:** [e.g. docker.io/cybertecpostgresql/cybertec-pg-operator:v0.9.0-1]
-- **Postgres Docker Image:** [e.g., containers.cybertec.at/cybertec-pg-container/postgres:rocky9-18.1-1]
+- **Postgres Docker Image:** [e.g., containers.cybertec.at/cybertec-pg-container/postgres:rocky9-18.6-2]
 - **Kubernetes Platform:** [Please check or add]
     - [ ] Vanilla Kubernetes (Bare Metal / VM)
     - [ ] OpenShift

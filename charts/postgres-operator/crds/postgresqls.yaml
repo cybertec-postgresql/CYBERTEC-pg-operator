@@ -681,6 +681,18 @@ spec:
                 type: integer
               spiloFSGroup:
                 type: integer
+              seccompProfile:
+                type: object
+                description: "The seccomp options to use by the containers in this pod."
+                required:
+                  - type
+                properties:
+                  type:
+                    type: string
+                    description: "Valid options are: Localhost, RuntimeDefault, Unconfined."
+                  localhostProfile:
+                    type: string
+                    description: "Must be set if type is Localhost. Must NOT be set for any other type."
               standby:
                 type: object
                 properties:

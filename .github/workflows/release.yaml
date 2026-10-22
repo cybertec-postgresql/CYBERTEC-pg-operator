@@ -1,0 +1,165 @@
+name: release
+
+# Baut bei einem Release den Operator (amd64 + arm64) und pusht ihn in die eigene
+# Container-Registry. Gleichzeitig werden die Helm-Charts (operator + cluster)
+# gepackt, als OCI-Artefakte nach ghcr.io gepusht und an das GitHub-Release gehaengt.
+#
+# Benoetigt im Repo:
+#   (Image: containers.cybertec.at/cybertec-pg-operator/rocky10:<version>)
+#   secrets.REGISTRY_USERNAME  (Zugang zu containers.cybertec.at)
+#   secrets.REGISTRY_PASSWORD
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release-Tag (z.B. v0.9.3-1)"
+        required: true
+
+env:
+  TAG: ${{ github.event.release.tag_name || inputs.tag }}   # Git-Tag, z.B. 0.9.3-1 oder v0.9.3-1
+  REGISTRY: containers.cybertec.at
+  IMAGE_REPOSITORY: cybertec-pg-operator/rocky10
+  IMAGE: containers.cybertec.at/cybertec-pg-operator/rocky10
+  BASE_IMAGE: rockylinux/rockylinux:10
+  PACKAGER: dnf
+
+jobs:
+  build:
+    name: Build ${{ matrix.platform }}
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-24.04
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile
+          platforms: ${{ matrix.platform }}
+          build-args: |
+            BASE_IMAGE=${{ env.BASE_IMAGE }}
+            PACKAGER=${{ env.PACKAGER }}
+            VERSION=${{ env.TAG }}
+          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ matrix.platform == 'linux/amd64' && 'amd64' || 'arm64' }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    name: Multi-arch manifest
+    runs-on: ubuntu-24.04
+    needs: build
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create \
+            -t "${IMAGE}:${TAG#v}" \
+            $(printf "${IMAGE}@sha256:%s " *)
+
+      - name: Inspect
+        run: docker buildx imagetools inspect "${IMAGE}:${TAG#v}"
+
+  helm:
+    name: Helm charts
+    runs-on: ubuntu-24.04
+    needs: merge
+    permissions:
+      contents: write   # Release-Assets
+      packages: write   # ghcr.io
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+
+      - uses: azure/setup-helm@v4
+
+      - name: Set chart versions and image
+        run: |
+          # Chart-Version = SemVer ohne fuehrendes "v" (v0.9.3-1 -> 0.9.3-1)
+          VERSION="${TAG#v}"
+          echo "CHART_VERSION=${VERSION}" >> "$GITHUB_ENV"
+
+          # Operator-Chart zeigt auf das eben gebaute Image
+          f=charts/postgres-operator/values.yaml
+          sed -i -E "0,/^  registry:.*/s||  registry: ${REGISTRY}|" "$f"
+          sed -i -E "0,/^  repository:.*/s||  repository: ${IMAGE_REPOSITORY}|" "$f"
+          sed -i -E "0,/^  tag:.*/s||  tag: ${TAG#v}|" "$f"
+          sed -n 1,6p "$f"
+
+      - name: Lint
+        run: |
+          helm lint charts/postgres-operator
+          helm lint charts/postgres-cluster
+
+      - name: Package
+        run: |
+          mkdir -p dist
+          for c in postgres-operator postgres-cluster; do
+            helm package "charts/${c}" \
+              --version "${CHART_VERSION}" \
+              --app-version "${CHART_VERSION}" \
+              --destination dist
+          done
+          ls -l dist
+
+      - name: Push charts to ghcr.io (OCI)
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          for f in dist/*.tgz; do
+            helm push "$f" "oci://ghcr.io/${OWNER}/charts"
+          done
+
+      - name: Attach charts to GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${TAG}" dist/*.tgz --clobber --repo "${{ github.repository }}"

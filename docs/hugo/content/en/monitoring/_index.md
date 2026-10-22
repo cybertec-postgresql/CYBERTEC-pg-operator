@@ -17,7 +17,7 @@ CPO has prepared an own Exporter for the PostgreSQl-Pod which can used as a side
 To deploy a monitoring exporter for Prometheus and create the necessary users and permissions in the cluster, the cluster manifest must be extended to include the `monitor` object. 
 - `customQueries`: Name of the ConfigMap containing custom queries for PostgreSQL and Prometheus.
 - `env`: Additional environment variables for the sidecar container
-- `image`: Image for the monitoring sidecar. For example: `containers.cybertec.at/cybertec-pg-container/exporter:rocky9-18.3-2`
+- `image`: Image for the monitoring sidecar. For example: `containers.cybertec.at/cybertec-pg-container/exporter:rocky9-18.6-2`
  
 {{< hint type=Info >}}The ConfigMap is mounted in the sidecar container. Any additional permissions required for the queries must be manually granted to the monitoring user if necessary.{{< /hint >}}
 

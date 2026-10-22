@@ -63,6 +63,7 @@ This architecture forms the basis for a modern, highly available and scalable Po
     - [pg_cron](https://github.com/citusdata/pg_cron)
     - [credcheck](https://github.com/MigOpsRepos/credcheck)
     - [set_user](https://github.com/pgaudit/set_user)
+    - [pg_partman](https://github.com/pgpartman/pg_partman)
 - Minimal downtime during upgrades thanks to rolling updates and failover mechanisms
 - Self-healing, redundancy and pod anti-affinity for maximum availability
 
@@ -72,10 +73,10 @@ This architecture forms the basis for a modern, highly available and scalable Po
 
 | Release | PostgreSQL | pgBackRest | Patroni | Kubernetes | Go      |
 |---------|------------|------------|---------|------------|---------|
-| 0.8.0   | 13 - 17    | 2.53       | 4.0.2   | 1.21+      | 1.21.7  |
-| 0.8.3   | 13 - 17    | 2.54+      | 4.0.5   | 1.21+      | 1.22.12 |
 | 0.9.0   | 13 - 18    | 2.56+      | 4.1.0   | 1.21+      | 1.25.2  |
 | 0.9.1   | 13 - 18    | 2.56+      | 4.1.0   | 1.21+      | 1.25.6  |
+| 0.9.2   | 13 - 18    | 2.56+      | 4.1.0   | 1.21+      | 1.25.6  |
+| 0.9.3   | 14 - 18    | 2.58+      | 4.1.5   | 1.21+      | 1.26.8  |
 
 --- 
 

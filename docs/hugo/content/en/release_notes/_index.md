@@ -5,6 +5,17 @@ draft: false
 weight: 2500
 ---
 
+### 0.9.3 ###
+
+#### Features
+- Operator image is now based on Rocky Linux 10 and built for amd64 and arm64.
+- connectionPooler: New `parameters` map for arbitrary pgBouncer settings, including pool mode `statement`. `mode` and `maxDBConnections` are deprecated. See [Connection Pooler](connection_pooler).
+- Security: Containers now drop all capabilities by default; additional ones can be added via configuration. New `seccompProfile` in the cluster manifest, default `RuntimeDefault`.
+
+#### Changes
+- Updated default images: PostgreSQL `rocky9-18.6-2`, pgBouncer `rocky9-1.26-1`, exporter and pgBackRest `rocky9-18.6-2`.
+- Updated code generation (Kubernetes 0.30.4) and dependencies.
+
 ### 0.9.2 ###
 
 #### Features

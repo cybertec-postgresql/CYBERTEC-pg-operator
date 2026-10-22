@@ -170,15 +170,22 @@ spec:
                   dockerImage:
                     type: string
                   maxDBConnections:
+                    description: "Deprecated: use parameters.max_db_connections instead (per pod, not divided by numberOfInstances)."
                     type: integer
                   mode:
+                    description: "Deprecated: use parameters.pool_mode instead."
                     type: string
                     enum:
                       - "session"
                       - "transaction"
+                      - "statement"
                   numberOfInstances:
                     type: integer
                     minimum: 1
+                  parameters:
+                    type: object
+                    additionalProperties:
+                      type: string
                   resources:
                     type: object
                     properties:
@@ -638,6 +645,18 @@ spec:
                 type: integer
               spiloFSGroup:
                 type: integer
+              seccompProfile:
+                type: object
+                description: "The seccomp options to use by the containers in this pod."
+                required:
+                  - type
+                properties:
+                  type:
+                    type: string
+                    description: "Valid options are: Localhost, RuntimeDefault, Unconfined."
+                  localhostProfile:
+                    type: string
+                    description: "Must be set if type is Localhost. Must NOT be set for any other type."
               standby:
                 type: object
                 properties:

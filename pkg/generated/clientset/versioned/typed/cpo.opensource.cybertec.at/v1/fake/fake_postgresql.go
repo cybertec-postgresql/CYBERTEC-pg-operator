@@ -1,5 +1,5 @@
 /*
-Copyright 2025 Compose, Zalando SE
+Copyright 2026 Compose, Zalando SE
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,10 +27,9 @@ package fake
 import (
 	"context"
 
-	cpoopensourcecybertecatv1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	v1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
-	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	testing "k8s.io/client-go/testing"
@@ -42,25 +41,25 @@ type FakePostgresqls struct {
 	ns   string
 }
 
-var postgresqlsResource = schema.GroupVersionResource{Group: "cpo.opensource.cybertec.at", Version: "v1", Resource: "postgresqls"}
+var postgresqlsResource = v1.SchemeGroupVersion.WithResource("postgresqls")
 
-var postgresqlsKind = schema.GroupVersionKind{Group: "cpo.opensource.cybertec.at", Version: "v1", Kind: "Postgresql"}
+var postgresqlsKind = v1.SchemeGroupVersion.WithKind("Postgresql")
 
 // Get takes name of the postgresql, and returns the corresponding postgresql object, and an error if there is any.
-func (c *FakePostgresqls) Get(ctx context.Context, name string, options v1.GetOptions) (result *cpoopensourcecybertecatv1.Postgresql, err error) {
+func (c *FakePostgresqls) Get(ctx context.Context, name string, options metav1.GetOptions) (result *v1.Postgresql, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(postgresqlsResource, c.ns, name), &cpoopensourcecybertecatv1.Postgresql{})
+		Invokes(testing.NewGetAction(postgresqlsResource, c.ns, name), &v1.Postgresql{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*cpoopensourcecybertecatv1.Postgresql), err
+	return obj.(*v1.Postgresql), err
 }
 
 // List takes label and field selectors, and returns the list of Postgresqls that match those selectors.
-func (c *FakePostgresqls) List(ctx context.Context, opts v1.ListOptions) (result *cpoopensourcecybertecatv1.PostgresqlList, err error) {
+func (c *FakePostgresqls) List(ctx context.Context, opts metav1.ListOptions) (result *v1.PostgresqlList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(postgresqlsResource, postgresqlsKind, c.ns, opts), &cpoopensourcecybertecatv1.PostgresqlList{})
+		Invokes(testing.NewListAction(postgresqlsResource, postgresqlsKind, c.ns, opts), &v1.PostgresqlList{})
 
 	if obj == nil {
 		return nil, err
@@ -70,8 +69,8 @@ func (c *FakePostgresqls) List(ctx context.Context, opts v1.ListOptions) (result
 	if label == nil {
 		label = labels.Everything()
 	}
-	list := &cpoopensourcecybertecatv1.PostgresqlList{ListMeta: obj.(*cpoopensourcecybertecatv1.PostgresqlList).ListMeta}
-	for _, item := range obj.(*cpoopensourcecybertecatv1.PostgresqlList).Items {
+	list := &v1.PostgresqlList{ListMeta: obj.(*v1.PostgresqlList).ListMeta}
+	for _, item := range obj.(*v1.PostgresqlList).Items {
 		if label.Matches(labels.Set(item.Labels)) {
 			list.Items = append(list.Items, item)
 		}
@@ -80,69 +79,69 @@ func (c *FakePostgresqls) List(ctx context.Context, opts v1.ListOptions) (result
 }
 
 // Watch returns a watch.Interface that watches the requested postgresqls.
-func (c *FakePostgresqls) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (c *FakePostgresqls) Watch(ctx context.Context, opts metav1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
 		InvokesWatch(testing.NewWatchAction(postgresqlsResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a postgresql and creates it.  Returns the server's representation of the postgresql, and an error, if there is any.
-func (c *FakePostgresqls) Create(ctx context.Context, postgresql *cpoopensourcecybertecatv1.Postgresql, opts v1.CreateOptions) (result *cpoopensourcecybertecatv1.Postgresql, err error) {
+func (c *FakePostgresqls) Create(ctx context.Context, postgresql *v1.Postgresql, opts metav1.CreateOptions) (result *v1.Postgresql, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(postgresqlsResource, c.ns, postgresql), &cpoopensourcecybertecatv1.Postgresql{})
+		Invokes(testing.NewCreateAction(postgresqlsResource, c.ns, postgresql), &v1.Postgresql{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*cpoopensourcecybertecatv1.Postgresql), err
+	return obj.(*v1.Postgresql), err
 }
 
 // Update takes the representation of a postgresql and updates it. Returns the server's representation of the postgresql, and an error, if there is any.
-func (c *FakePostgresqls) Update(ctx context.Context, postgresql *cpoopensourcecybertecatv1.Postgresql, opts v1.UpdateOptions) (result *cpoopensourcecybertecatv1.Postgresql, err error) {
+func (c *FakePostgresqls) Update(ctx context.Context, postgresql *v1.Postgresql, opts metav1.UpdateOptions) (result *v1.Postgresql, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(postgresqlsResource, c.ns, postgresql), &cpoopensourcecybertecatv1.Postgresql{})
+		Invokes(testing.NewUpdateAction(postgresqlsResource, c.ns, postgresql), &v1.Postgresql{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*cpoopensourcecybertecatv1.Postgresql), err
+	return obj.(*v1.Postgresql), err
 }
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakePostgresqls) UpdateStatus(ctx context.Context, postgresql *cpoopensourcecybertecatv1.Postgresql, opts v1.UpdateOptions) (*cpoopensourcecybertecatv1.Postgresql, error) {
+func (c *FakePostgresqls) UpdateStatus(ctx context.Context, postgresql *v1.Postgresql, opts metav1.UpdateOptions) (*v1.Postgresql, error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceAction(postgresqlsResource, "status", c.ns, postgresql), &cpoopensourcecybertecatv1.Postgresql{})
+		Invokes(testing.NewUpdateSubresourceAction(postgresqlsResource, "status", c.ns, postgresql), &v1.Postgresql{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*cpoopensourcecybertecatv1.Postgresql), err
+	return obj.(*v1.Postgresql), err
 }
 
 // Delete takes name of the postgresql and deletes it. Returns an error if one occurs.
-func (c *FakePostgresqls) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *FakePostgresqls) Delete(ctx context.Context, name string, opts metav1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteActionWithOptions(postgresqlsResource, c.ns, name, opts), &cpoopensourcecybertecatv1.Postgresql{})
+		Invokes(testing.NewDeleteActionWithOptions(postgresqlsResource, c.ns, name, opts), &v1.Postgresql{})
 
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakePostgresqls) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (c *FakePostgresqls) DeleteCollection(ctx context.Context, opts metav1.DeleteOptions, listOpts metav1.ListOptions) error {
 	action := testing.NewDeleteCollectionAction(postgresqlsResource, c.ns, listOpts)
 
-	_, err := c.Fake.Invokes(action, &cpoopensourcecybertecatv1.PostgresqlList{})
+	_, err := c.Fake.Invokes(action, &v1.PostgresqlList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched postgresql.
-func (c *FakePostgresqls) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *cpoopensourcecybertecatv1.Postgresql, err error) {
+func (c *FakePostgresqls) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts metav1.PatchOptions, subresources ...string) (result *v1.Postgresql, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(postgresqlsResource, c.ns, name, pt, data, subresources...), &cpoopensourcecybertecatv1.Postgresql{})
+		Invokes(testing.NewPatchSubresourceAction(postgresqlsResource, c.ns, name, pt, data, subresources...), &v1.Postgresql{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*cpoopensourcecybertecatv1.Postgresql), err
+	return obj.(*v1.Postgresql), err
 }

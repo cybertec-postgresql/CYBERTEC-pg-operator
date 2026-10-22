@@ -12,7 +12,7 @@
 #  my-annotation: value
 
 cluster:
-  dockerImage: containers.cybertec.at/cybertec-pg-container/postgres:rocky9-18.1-1
+  dockerImage: containers.cybertec.at/cybertec-pg-container/postgres:rocky9-18.6-2
   numberOfInstances: 2
 
   postgresql:
@@ -102,12 +102,12 @@ cluster:
     maximum_lag_on_failover: 33554432
 
   #monitor:
-  #  image: "containers.cybertec.at/cybertec-pg-container/exporter:rocky9-18.1-2"
+  #  image: "containers.cybertec.at/cybertec-pg-container/exporter:rocky9-18.6-2"
 
 
   #backup:
   #  pgbackrest:
-  #    image: "containers.cybertec.at/cybertec-pg-container/pgbackrest:rocky9-18.1-1"
+  #    image: "containers.cybertec.at/cybertec-pg-container/pgbackrest:rocky9-18.6-2"
   #    configuration:
   #      secret: "xyz"
   #      protection:
@@ -193,7 +193,7 @@ cluster:
   #  cluster: name-of-cluster-to-clone
 
   #connectionPooler:
-  #  dockerImage: containers-cybertec.at/cybertec-pg-container/pgbouncer:rocky9-1.25-1
+  #  dockerImage: containers.cybertec.at/cybertec-pg-container/pgbouncer:rocky9-1.26-1
   #  numberOfInstances: 2
   #  mode: transaction # session/transaction mode pooling
   #  schema: "pooler"

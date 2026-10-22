@@ -43,6 +43,9 @@ type PostgresSpec struct {
 	SpiloRunAsGroup *int64 `json:"spiloRunAsGroup,omitempty"`
 	SpiloFSGroup    *int64 `json:"spiloFSGroup,omitempty"`
 
+	// securityContext
+	SeccompProfile *v1.SeccompProfile `json:"seccompProfile,omitempty"`
+
 	// vars that enable load balancers are pointers because it is important to know if any of them is omitted from the Postgres manifest
 	// in that case the var evaluates to nil and the value is taken from the operator config
 	EnableMasterLoadBalancer        *bool `json:"enableMasterLoadBalancer,omitempty"`
@@ -254,9 +257,12 @@ type ConnectionPooler struct {
 	NumberOfInstances *int32            `json:"numberOfInstances,omitempty"`
 	Schema            string            `json:"schema,omitempty"`
 	User              string            `json:"user,omitempty"`
+	// Deprecated: use Parameters["pool_mode"] instead.
 	Mode              string            `json:"mode,omitempty"`
 	DockerImage       string            `json:"dockerImage,omitempty"`
+	// Deprecated: use Parameters["max_db_connections"] instead (note: that value applies per pooler pod).
 	MaxDBConnections  *int32            `json:"maxDBConnections,omitempty"`
+	Parameters        map[string]string `json:"parameters,omitempty"`
 	Env               []v1.EnvVar       `json:"env,omitempty"`
 	Labels            map[string]string `json:"labels,omitempty" name:"labels" default:""`
 

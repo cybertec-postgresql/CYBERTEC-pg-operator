@@ -1,7 +1,5 @@
 name: release
 
-# Required secrets: REGISTRY_USERNAME, REGISTRY_PASSWORD
-
 on:
   release:
     types: [published]

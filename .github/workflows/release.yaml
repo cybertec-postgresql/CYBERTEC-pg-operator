@@ -8,12 +8,16 @@ on:
       tag:
         description: "Release tag (e.g. 0.9.3-1)"
         required: true
+      dev:
+        description: "Build as dev (-dev repository)"
+        type: boolean
+        default: false
 
 env:
   TAG: ${{ github.event.release.tag_name || inputs.tag }}
   REGISTRY: containers.cybertec.at
-  IMAGE_REPOSITORY: cybertec-pg-operator/rocky10
-  IMAGE: containers.cybertec.at/cybertec-pg-operator/rocky10
+  IMAGE_REPOSITORY: ${{ (github.event.release.prerelease || inputs.dev) && 'cybertec-pg-operator-dev/rocky10' || 'cybertec-pg-operator/rocky10' }}
+  IMAGE: containers.cybertec.at/${{ (github.event.release.prerelease || inputs.dev) && 'cybertec-pg-operator-dev/rocky10' || 'cybertec-pg-operator/rocky10' }}
   BASE_IMAGE: rockylinux/rockylinux:10
   PACKAGER: dnf
 
@@ -103,6 +107,7 @@ jobs:
     name: Helm charts
     runs-on: ubuntu-24.04
     needs: merge
+    if: ${{ !(github.event.release.prerelease || inputs.dev) }}
     permissions:
       contents: write
       packages: write

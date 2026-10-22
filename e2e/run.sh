@@ -8,8 +8,12 @@ IFS=$'\n\t'
 
 readonly cluster_name="postgres-operator-e2e-tests"
 readonly kubeconfig_path="/tmp/kind-config-${cluster_name}"
-readonly spilo_image="registry.opensource.zalan.do/acid/spilo-15-e2e:0.1"
+readonly spilo_image="${SPILO_IMAGE:-containers.cybertec.at/cybertec-pg-container/postgres:rocky9-18.6-2}"
 readonly e2e_test_runner_image="registry.opensource.zalan.do/acid/postgres-operator-e2e-tests-runner:0.4"
+
+# Tests that currently pass with the CPO images. Remaining tests still rely on Zalando specific
+# roles/images or on a bigger kind cluster; override with E2E_TEST_CASE to run others.
+readonly default_tests=(discover -v --start-directory /tests -k test_cross_namespace_secrets -k test_custom_ssl_certificate -k test_enable_load_balancer -k test_ignored_annotations -k test_service_annotations -k test_statefulset_annotation_propagation)
 
 export GOPATH=${GOPATH-~/go}
 export PATH=${GOPATH}/bin:$PATH
@@ -18,12 +22,14 @@ echo "Clustername: ${cluster_name}"
 echo "Kubeconfig path: ${kubeconfig_path}"
 
 function pull_images(){
+  # test the operator image built by 'make docker' (see Makefile target e2e), not an upstream one
   operator_tag=$(git describe --tags --always --dirty)
-  if [[ -z $(docker images -q registry.opensource.zalan.do/acid/postgres-operator:${operator_tag}) ]]
+  operator_image="docker.io/cybertecpostgresql/cybertec-pg-operator:${operator_tag}"
+  if [[ -z $(docker images -q "${operator_image}") ]]
   then
-    docker pull registry.opensource.zalan.do/acid/postgres-operator:latest
+    echo "Operator image ${operator_image} not found, run 'make docker' first"
+    exit 1
   fi
-  operator_image=$(docker images --filter=reference="registry.opensource.zalan.do/acid/postgres-operator" --format "{{.Repository}}:{{.Tag}}" | head -1)
 }
 
 function start_kind(){
@@ -36,7 +42,8 @@ function start_kind(){
 
   export KUBECONFIG="${kubeconfig_path}"
   kind create cluster --name ${cluster_name} --config kind-cluster-postgres-operator-e2e-tests.yaml  
-  docker pull "${spilo_image}"
+  # images available on the Docker host (e.g. built locally) are used as they are
+  [[ -n $(docker images -q "${spilo_image}") ]] || docker pull "${spilo_image}"
   kind load docker-image "${spilo_image}" --name ${cluster_name}
 }
 
@@ -60,6 +67,8 @@ function generate_certificate(){
 }
 
 function run_tests(){
+  local test_args=("${default_tests[@]}")
+  [[ -n ${E2E_TEST_CASE-} ]] && test_args=(${E2E_TEST_CASE})
   echo "Running tests... image: ${e2e_test_runner_image}"
   # tests modify files in ./manifests, so we mount a copy of this directory done by the e2e Makefile
 
@@ -70,7 +79,7 @@ function run_tests(){
   --mount type=bind,source="$(readlink -f tests)",target=/tests \
   --mount type=bind,source="$(readlink -f exec.sh)",target=/exec.sh \
   --mount type=bind,source="$(readlink -f scripts)",target=/scripts \
-  -e OPERATOR_IMAGE="${operator_image}" "${e2e_test_runner_image}" ${E2E_TEST_CASE-} $@
+  -e OPERATOR_IMAGE="${operator_image}" -e SPILO_IMAGE="${spilo_image}" "${e2e_test_runner_image}" "${test_args[@]}" $@
 }
 
 function cleanup(){

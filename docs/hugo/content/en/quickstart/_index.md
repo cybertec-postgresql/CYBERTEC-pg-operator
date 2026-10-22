@@ -26,12 +26,12 @@ cd CYBERTEC-operator-tutorials
 
 ### Step 2 - Install the Operator
 Two options are available for the installation: 
-- Installation via Helm-Chart (local or via helmn-repo)
+- Installation via Helm-Chart (local or via Helm repo)
 - Installation via apply
 
 #### Installation via Helm-Chart
 
-If you want to use the helm-chart, YOU can decide for yourself whether you want to use the helm-cahrt from the operator-tutorials on github or directly connect the helm-repo for the cpo-project and install the helm-chart over it.
+If you want to use the Helm chart, you can decide whether to use the chart from the operator-tutorials on GitHub or to add the Helm repo of the CPO project and install the chart from there.
 
 ```
 #add helm-repo (optional)
@@ -52,9 +52,13 @@ kubectl apply -n cpo -k setup/namespace/.
 kubectl apply -n cpo -k setup/helm/operator/.
 ```
 
+{{< hint type=Warning >}}If the operator pod stays in `ErrImagePull` / `ImagePullBackOff`, the image tag set in the chart's `values.yaml` (`operatorSettings.operatorImage`) is not available in the registry. Until the latest version is published, use the last released operator image `v0.9.2-1`:
+
+`helm install -n cpo cpo setup/helm/operator/ --set operatorSettings.operatorImage=docker.io/cybertecpostgresql/cybertec-pg-operator:v0.9.2-1`{{< /hint >}}
+
 You can check if the operator pod is in operation.
 ```
-kubectl get pods -n cpo --selector=cpo.cybertec.at/pod/type=postgres-operator
+kubectl get pods -n cpo --selector=cpo.cybertec.at/pod-type=postgres-operator
 ```
 The result should look like this:
 ```
@@ -71,11 +75,11 @@ kubectl apply -n cpo -f cluster-tutorials/single-cluster
 ```
 
 ```
-watch kubectl get pods -n cpo --selector cluster-name=cluster-1
+watch kubectl get pods -n cpo --selector cluster.cpo.opensource.cybertec.at/name=cluster-1
 ```
 The result should look like this:
 ```
-Alle 2.0s: kubectl get pods -n cpo --selector cluster-name=cluster-1                                                                                                            
+Every 2.0s: kubectl get pods -n cpo --selector cluster.cpo.opensource.cybertec.at/name=cluster-1                                                                                                            
 
 NAME          READY   STATUS            RESTARTS   AGE
 cluster-1-0   2/2     Running           0          28s
@@ -90,7 +94,7 @@ kubectl get secret -n cpo postgres.cluster-1.credentials.postgresql.cpo.opensour
 The result should look like this:
 ```
 {
-  "password": "2rZG1Kx9asdHscswQGzff4Ru0xW6uasacy3GQ0sjdCH3wWr0kguUXUZek6dkemsf",
+  "password": "<password-from-secret>",
   "username": "postgres"
 }
 ```
@@ -102,10 +106,10 @@ kubectl port-forward -n cpo cluster-1-0 5432:5432
 
 ```
 # using psql
-PGPASSWORD=2rZG1Kx9asdHscswQGzffjdCH3wWr0kguUXUZek6dkemsf psql -h 127.0.0.1 -p 5432 -U postgres
+PGPASSWORD='<password-from-secret>' psql -h 127.0.0.1 -p 5432 -U postgres
 
 # using usql
-PGPASSWORD=2rZG1Kx9asdHscswQGzffjdCH3wWr0kguUXUZek6dkemsf usql postgresql://postgres@127.0.0.1/postgres
+PGPASSWORD='<password-from-secret>' usql postgresql://postgres@127.0.0.1/postgres
 ```
 
 ## Next Steps

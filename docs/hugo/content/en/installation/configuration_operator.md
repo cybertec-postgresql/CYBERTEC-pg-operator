@@ -97,7 +97,7 @@ The operator enables detailed configuration of the **connection pooler** via the
     connection_pooler_default_memory_request: 100Mi
     connection_pooler_max_db_connections: 60
     connection_pooler_default_cpu_request: 500m
-    connection_pooler_image: 'docker.io/cybertecpostgresql/cybertec-pg-container:pgbouncer-1.24.1-4'
+    connection_pooler_image: 'containers.cybertec.at/cybertec-pg-container/pgbouncer:rocky9-1.26.1-3'
     connection_pooler_default_memory_limit: 100Mi
     connection_pooler_default_cpu_limit: '1'
     connection_pooler_schema: pooler

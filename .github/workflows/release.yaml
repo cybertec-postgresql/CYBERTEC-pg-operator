@@ -107,6 +107,7 @@ jobs:
     name: Helm charts
     runs-on: ubuntu-24.04
     needs: merge
+    if: ${{ !(github.event.release.prerelease || inputs.dev) }}
     permissions:
       contents: write
       packages: write

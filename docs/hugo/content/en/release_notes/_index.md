@@ -13,7 +13,7 @@ weight: 2500
 - Security: Containers now drop all capabilities by default; additional ones can be added via configuration. New `seccompProfile` in the cluster manifest, default `RuntimeDefault`.
 
 #### Changes
-- Updated default images: PostgreSQL `rocky9-18.6-2`, pgBouncer `rocky9-1.26-1`, exporter and pgBackRest `rocky9-18.6-2`.
+- Updated default images: PostgreSQL `rocky9-18.6-2`, pgBouncer `rocky9-1.26.1-3`, exporter and pgBackRest `rocky9-18.6-2`.
 - Updated code generation (Kubernetes 0.30.4) and dependencies.
 
 ### 0.9.2 ###

@@ -1,6 +1,6 @@
 ---
 title: "CPO (CYBERTEC-PG-Operator)"
-date: 2024-03-11T14:26:51+01:00
+date: 2026-10-22T14:26:51+01:00
 draft: false
 weight: 1
 ---

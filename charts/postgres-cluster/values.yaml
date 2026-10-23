@@ -193,7 +193,7 @@ cluster:
   #  cluster: name-of-cluster-to-clone
 
   #connectionPooler:
-  #  dockerImage: containers.cybertec.at/cybertec-pg-container/pgbouncer:rocky9-1.26-1
+  #  dockerImage: containers.cybertec.at/cybertec-pg-container/pgbouncer:rocky9-1.26.1-3
   #  numberOfInstances: 2
   #  mode: transaction # session/transaction mode pooling
   #  schema: "pooler"

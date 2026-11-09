@@ -24,12 +24,16 @@ cpu specifications are based on millicores
 ```
   resources:
     limits:
-      cpu: 500m
-      memory: 1Gi
-    requests:
       cpu: 1000m
       memory: 1Gi
+      ephemeral-storage: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+      ephemeral-storage: 512Mi
 ```
+
+`ephemeral-storage` is optional. It uses the standard Kubernetes quantity format, must not be negative, and its request cannot be greater than an explicitly configured limit. When omitted, the operator keeps the existing resource output unchanged.
 
 This example corresponds to a guaranteed availability of half a core and 1 Gibibyte. However, if necessary and available, the container can use up to one core. The allocation takes place dynamically and for the required time.
 

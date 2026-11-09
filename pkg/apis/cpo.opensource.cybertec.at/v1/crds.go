@@ -329,6 +329,7 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 												Type:    "string",
 												Pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$",
 											},
+											"ephemeral-storage": {Type: "string"},
 										},
 									},
 									"requests": {
@@ -342,6 +343,7 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 												Type:    "string",
 												Pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$",
 											},
+											"ephemeral-storage": {Type: "string"},
 										},
 									},
 								},
@@ -934,6 +936,7 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 										Type:    "string",
 										Pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$",
 									},
+									"ephemeral-storage": {Type: "string"},
 								},
 							},
 							"requests": {
@@ -947,6 +950,7 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 										Type:    "string",
 										Pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$",
 									},
+									"ephemeral-storage": {Type: "string"},
 								},
 							},
 						},
@@ -1541,6 +1545,7 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 														Type:    "string",
 														Pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$",
 													},
+													"ephemeral-storage": {Type: "string"},
 												},
 											},
 											"requests": {
@@ -1554,6 +1559,7 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 														Type:    "string",
 														Pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$",
 													},
+													"ephemeral-storage": {Type: "string"},
 												},
 											},
 										},

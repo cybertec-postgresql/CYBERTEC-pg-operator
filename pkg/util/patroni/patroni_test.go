@@ -10,9 +10,9 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/cybertec-postgresql/cybertec-pg-operator/mocks"
 	"github.com/golang/mock/gomock"
 	"github.com/sirupsen/logrus"
-	"github.com/cybertec-postgresql/cybertec-pg-operator/mocks"
 
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	v1 "k8s.io/api/core/v1"
@@ -132,7 +132,7 @@ func TestGetClusterMembers(t *testing.T) {
 	mockClient := mocks.NewMockHTTPClient(ctrl)
 	mockClient.EXPECT().Get(gomock.Any()).Return(&response, nil)
 
-	p := New(logger, mockClient)
+	p := New(logger, mockClient, "")
 
 	clusterMemberData, err := p.GetClusterMembers(newMockPod("192.168.100.1"))
 
@@ -171,7 +171,7 @@ func TestGetMemberData(t *testing.T) {
 	mockClient := mocks.NewMockHTTPClient(ctrl)
 	mockClient.EXPECT().Get(gomock.Any()).Return(&response, nil)
 
-	p := New(logger, mockClient)
+	p := New(logger, mockClient, "")
 
 	memberData, err := p.GetMemberData(newMockPod("192.168.100.1"))
 
@@ -240,7 +240,7 @@ func TestGetConfig(t *testing.T) {
 	mockClient := mocks.NewMockHTTPClient(ctrl)
 	mockClient.EXPECT().Get(gomock.Any()).Return(&response, nil)
 
-	p := New(logger, mockClient)
+	p := New(logger, mockClient, "")
 
 	patroniConfig, pgParameters, err := p.GetConfig(newMockPod("192.168.100.1"))
 	if err != nil {
@@ -275,7 +275,7 @@ func TestSetPostgresParameters(t *testing.T) {
 	mockClient := mocks.NewMockHTTPClient(ctrl)
 	mockClient.EXPECT().Do(gomock.Any()).Return(&response, nil)
 
-	p := New(logger, mockClient)
+	p := New(logger, mockClient, "")
 
 	err := p.SetPostgresParameters(newMockPod("192.168.100.1"), parametersToSet)
 	if err != nil {

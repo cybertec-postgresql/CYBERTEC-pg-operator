@@ -12,7 +12,7 @@ from kubernetes import client
 from tests.k8s_api import K8s
 from kubernetes.client.rest import ApiException
 
-SPILO_CURRENT = os.environ.get("SPILO_IMAGE", "containers.cybertec.at/cybertec-pg-container/postgres:rocky9-18.6-2")
+SPILO_CURRENT = os.environ.get("SPILO_IMAGE", "containers.cybertec.at/cybertec-pg-container/postgres:rocky9-18.6-3")
 SPILO_LAZY = "registry.opensource.zalan.do/acid/spilo-15-e2e:0.2"
 
 

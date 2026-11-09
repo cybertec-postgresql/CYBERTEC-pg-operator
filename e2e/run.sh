@@ -37,7 +37,7 @@ function pull_images(){
   # test the operator image built by 'make docker' (see Makefile target e2e), not an upstream one
   operator_tag=$(git describe --tags --always --dirty)
   operator_image="docker.io/cybertecpostgresql/cybertec-pg-operator:${operator_tag}"
-  if [[ -z $(docker images -q "${operator_image}") ]]
+  if ! docker image inspect "${operator_image}" >/dev/null 2>&1
   then
     echo "Operator image ${operator_image} not found, run 'make docker' first"
     exit 1
@@ -55,7 +55,7 @@ function start_kind(){
   export KUBECONFIG="${kubeconfig_path}"
   kind create cluster --name ${cluster_name} --config kind-cluster-postgres-operator-e2e-tests.yaml  
   # images available on the Docker host (e.g. built locally) are used as they are
-  [[ -n $(docker images -q "${spilo_image}") ]] || docker pull "${spilo_image}"
+  docker image inspect "${spilo_image}" >/dev/null 2>&1 || docker pull "${spilo_image}"
   kind_load "${spilo_image}"
 }
 

@@ -171,8 +171,7 @@ func generateSerialNumber() (*big.Int, error) {
 
 // Sync syncs the cluster, making sure the actual Kubernetes objects correspond to what is defined in the manifest.
 // Unlike the update, sync does not error out if some objects do not exist and takes care of creating them.
-func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
-	var err error
+func (c *Cluster) Sync(newSpec *cpov1.Postgresql) (err error) {
 	var syncErrors []error
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -300,20 +299,31 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	}
 	// create database objects unless we are running without pods or disabled that feature explicitly
 	if needDBAccess && !leaderNotReady {
+		if needDBAccess, err = c.sqlWritesAllowed(); err != nil {
+			return fmt.Errorf("could not verify SQL role: %w", err)
+		}
+	}
+	if needDBAccess && !leaderNotReady {
 
 		c.logger.Debug("syncing roles")
 		if err = c.syncRoles(); err != nil {
-			c.logger.Errorf("could not sync roles: %v", err)
+			err = fmt.Errorf("could not sync roles: %w", err)
+			c.logger.Error(err)
+			syncErrors = append(syncErrors, err)
 		}
 
 		c.logger.Debug("syncing databases")
 		if err = c.syncDatabases(); err != nil {
-			c.logger.Errorf("could not sync databases: %v", err)
+			err = fmt.Errorf("could not sync databases: %w", err)
+			c.logger.Error(err)
+			syncErrors = append(syncErrors, err)
 		}
 
 		c.logger.Debug("syncing prepared databases with schemas")
 		if err = c.syncPreparedDatabases(); err != nil {
-			c.logger.Errorf("could not sync prepared database: %v", err)
+			err = fmt.Errorf("could not sync prepared databases: %w", err)
+			c.logger.Error(err)
+			syncErrors = append(syncErrors, err)
 		}
 	}
 

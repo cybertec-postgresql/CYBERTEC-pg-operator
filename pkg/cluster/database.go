@@ -3,6 +3,7 @@ package cluster
 import (
 	"bytes"
 	"database/sql"
+	"errors"
 	"fmt"
 	"net"
 	"strings"
@@ -243,7 +244,7 @@ func (c *Cluster) closeDbConn() (err error) {
 		}
 		c.pgDb = nil
 
-		return nil
+		return err
 	}
 	c.logger.Warning("attempted to close an empty db connection object")
 	return nil
@@ -802,26 +803,26 @@ func (c *Cluster) installLookupFunction(poolerSchema, poolerUser string) error {
 	return nil
 }
 
-// Creates the needes structure and grant needed permissions for the Monitoring
-func (c *Cluster) addMonitoringPermissions() error {
+// Creates the needed structure and grants the required monitoring permissions.
+func (c *Cluster) addMonitoringPermissions() (err error) {
 	c.logger.Info("setting up CPO monitoring")
 
-	// Open a new connection to the postgres db tp setup monitoring struc and permissions
-	if err := c.initDbConnWithName("postgres"); err != nil {
-		return fmt.Errorf("could not init database connection")
+	// Open a new connection to the postgres database to set up monitoring objects and permissions.
+	if err = c.initDbConnWithName("postgres"); err != nil {
+		return fmt.Errorf("could not init monitoring database connection: %w", err)
 	}
 	defer func() {
 		if c.connectionIsClosed() {
 			return
 		}
 
-		if err := c.closeDbConn(); err != nil {
-			c.logger.Errorf("could not close database connection: %v", err)
+		if closeErr := c.closeDbConn(); closeErr != nil {
+			err = errors.Join(err, fmt.Errorf("could not close monitoring database connection: %w", closeErr))
 		}
 	}()
-	_, err := c.pgDb.Exec(cpoMonitoring)
+	_, err = c.pgDb.Exec(cpoMonitoring)
 	if err != nil {
-		return fmt.Errorf("CPO monitoring could not be setup: %v", err)
+		return fmt.Errorf("CPO monitoring could not be setup: %w", err)
 	}
 	return nil
 }

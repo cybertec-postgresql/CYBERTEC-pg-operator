@@ -455,7 +455,9 @@ func (c *Cluster) Create() (err error) {
 	c.createConnectionPooler(c.installLookupFunction)
 
 	if c.Spec.Monitoring != nil {
-		c.addMonitoringPermissions()
+		if err = c.addMonitoringPermissions(); err != nil {
+			return fmt.Errorf("could not add monitoring permissions: %w", err)
+		}
 	}
 
 	// remember slots to detect deletion from manifest

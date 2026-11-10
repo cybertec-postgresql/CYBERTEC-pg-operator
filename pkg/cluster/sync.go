@@ -327,6 +327,14 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) (err error) {
 		}
 	}
 
+	if c.Spec.Monitoring != nil && !leaderNotReady {
+		if monitoringErr := c.addMonitoringPermissions(); monitoringErr != nil {
+			monitoringErr = fmt.Errorf("could not add monitoring permissions: %w", monitoringErr)
+			c.logger.Error(monitoringErr)
+			syncErrors = append(syncErrors, monitoringErr)
+		}
+	}
+
 	// if !(c.databaseAccessDisabled() || c.getNumberOfInstances(&newSpec.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress()) {
 	// 	c.logger.Debug("syncing roles")
 	// 	if err = c.syncRoles(); err != nil {

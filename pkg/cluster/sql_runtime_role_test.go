@@ -30,11 +30,13 @@ func (recoveryDriver) Open(string) (driver.Conn, error) {
 }
 
 type recoveryConn struct {
-	values   []driver.Value
-	queryErr error
-	closeErr error
-	calls    int
-	closed   bool
+	values    []driver.Value
+	queryErr  error
+	execErr   error
+	closeErr  error
+	calls     int
+	execCalls int
+	closed    bool
 }
 
 func (*recoveryConn) Prepare(string) (driver.Stmt, error) {
@@ -62,6 +64,17 @@ func (conn *recoveryConn) QueryContext(ctx context.Context, query string, args [
 		return nil, conn.queryErr
 	}
 	return &recoveryRows{values: conn.values}, nil
+}
+
+func (conn *recoveryConn) ExecContext(_ context.Context, query string, args []driver.NamedValue) (driver.Result, error) {
+	if query != cpoMonitoring || len(args) != 0 {
+		return nil, errors.New("unexpected SQL")
+	}
+	conn.execCalls++
+	if conn.execErr != nil {
+		return nil, conn.execErr
+	}
+	return driver.RowsAffected(1), nil
 }
 
 type recoveryRows struct {
@@ -132,6 +145,63 @@ func TestPhysicalSQLStandbyRechecksAfterPromotion(t *testing.T) {
 	}
 	if conn.calls != 2 {
 		t.Fatalf("expected two role queries, got %d", conn.calls)
+	}
+}
+
+func TestReconcileMonitoringPermissionsChecksRuntimeRole(t *testing.T) {
+	execErr := errors.New("monitoring DDL failed")
+	queryErr := errors.New("role query failed")
+
+	for _, test := range []struct {
+		name      string
+		conn      *recoveryConn
+		written   bool
+		wantExec  int
+		wantError error
+	}{
+		{
+			name:     "primary writes",
+			conn:     &recoveryConn{values: []driver.Value{false}},
+			written:  true,
+			wantExec: 1,
+		},
+		{
+			name: "standby skips",
+			conn: &recoveryConn{values: []driver.Value{true}},
+		},
+		{
+			name:      "role query error fails closed",
+			conn:      &recoveryConn{queryErr: queryErr},
+			wantError: queryErr,
+		},
+		{
+			name:      "DDL error is returned",
+			conn:      &recoveryConn{values: []driver.Value{false}, execErr: execErr},
+			wantExec:  1,
+			wantError: execErr,
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			db := sql.OpenDB(recoveryConnector{conn: test.conn})
+			defer db.Close()
+
+			written, err := reconcileMonitoringPermissions(db)
+			if written != test.written {
+				t.Fatalf("written=%v, want %v", written, test.written)
+			}
+			if test.wantError == nil && err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if test.wantError != nil && !errors.Is(err, test.wantError) {
+				t.Fatalf("error=%v, want %v", err, test.wantError)
+			}
+			if test.conn.calls != 1 {
+				t.Fatalf("role queries=%d, want 1", test.conn.calls)
+			}
+			if test.conn.execCalls != test.wantExec {
+				t.Fatalf("DDL executions=%d, want %d", test.conn.execCalls, test.wantExec)
+			}
+		})
 	}
 }
 

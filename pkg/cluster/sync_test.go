@@ -210,7 +210,7 @@ func TestCheckAndSetGlobalPostgreSQLConfiguration(t *testing.T) {
 	mockClient := mocks.NewMockHTTPClient(ctrl)
 	mockClient.EXPECT().Do(gomock.Any()).Return(&response, nil).AnyTimes()
 
-	p := patroni.New(patroniLogger, mockClient)
+	p := patroni.New(patroniLogger, mockClient, "")
 	cluster.patroni = p
 	mockPod := newMockPod("192.168.100.1")
 

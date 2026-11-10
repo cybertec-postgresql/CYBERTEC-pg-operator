@@ -50,13 +50,9 @@ type Patroni struct {
 }
 
 // New create patroni
-func New(logger *logrus.Entry, client httpclient.HTTPClient) *Patroni {
+func New(logger *logrus.Entry, client httpclient.HTTPClient, serverName string) *Patroni {
 	if client == nil {
-
-		client = &http.Client{
-			Timeout: timeout,
-		}
-
+		client = newVerifiedHTTPClient(serverName)
 	}
 
 	return &Patroni{
@@ -77,7 +73,7 @@ func apiURL(masterPod *v1.Pod) (string, error) {
 			return "", fmt.Errorf("%s is not a valid IPv4/IPv6 address", masterPod.Status.PodIP)
 		}
 	}
-	return fmt.Sprintf("http://%s", net.JoinHostPort(ip.String(), strconv.Itoa(ApiPort))), nil
+	return fmt.Sprintf("%s://%s", podAPIScheme(masterPod), net.JoinHostPort(ip.String(), strconv.Itoa(ApiPort))), nil
 }
 
 func (p *Patroni) httpPostOrPatch(method string, url string, body *bytes.Buffer) (err error) {

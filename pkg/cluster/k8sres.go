@@ -529,7 +529,7 @@ func getLocalAndBoostrapPostgreSQLParameters(parameters map[string]string) (loca
 }
 
 func generateCapabilities(capabilities []string) *v1.Capabilities {
-	additionalCapabilities := make([]v1.Capability, 0, len(capabilities))
+	var additionalCapabilities []v1.Capability
 	for _, capability := range capabilities {
 		additionalCapabilities = append(additionalCapabilities, v1.Capability(strings.ToUpper(capability)))
 	}

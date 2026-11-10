@@ -942,6 +942,11 @@ func (in *PostgresSpec) DeepCopyInto(out *PostgresSpec) {
 		*out = new(int64)
 		**out = **in
 	}
+	if in.SpiloSupplementalGroupsPolicy != nil {
+		in, out := &in.SpiloSupplementalGroupsPolicy, &out.SpiloSupplementalGroupsPolicy
+		*out = new(corev1.SupplementalGroupsPolicy)
+		**out = **in
+	}
 	if in.SeccompProfile != nil {
 		in, out := &in.SeccompProfile, &out.SeccompProfile
 		*out = new(corev1.SeccompProfile)

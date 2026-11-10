@@ -2,6 +2,7 @@ package cluster
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"sort"
@@ -3180,7 +3181,6 @@ func TestGenerateCapabilities(t *testing.T) {
 			configured: nil,
 			capabilities: &v1.Capabilities{
 				Drop: []v1.Capability{"ALL"},
-				Add:  []v1.Capability{},
 			},
 			err: fmt.Errorf("expected drop-all with no additional capabilities"),
 		},
@@ -3189,7 +3189,6 @@ func TestGenerateCapabilities(t *testing.T) {
 			configured: []string{},
 			capabilities: &v1.Capabilities{
 				Drop: []v1.Capability{"ALL"},
-				Add:  []v1.Capability{},
 			},
 			err: fmt.Errorf("expected drop-all with no additional capabilities"),
 		},
@@ -3217,6 +3216,24 @@ func TestGenerateCapabilities(t *testing.T) {
 		if !reflect.DeepEqual(caps, tt.capabilities) {
 			t.Errorf("%s %s: expected `%v` but got `%v`",
 				t.Name(), tt.subTest, tt.capabilities, caps)
+		}
+	}
+}
+
+func TestCapabilitiesRemainCanonicalAfterAPIRoundTrip(t *testing.T) {
+	for _, configured := range [][]string{nil, {}, {"SYS_NICE"}} {
+		want := generateCapabilities(configured)
+		raw, err := json.Marshal(want)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		var persisted v1.Capabilities
+		if err := json.Unmarshal(raw, &persisted); err != nil {
+			t.Fatal(err)
+		}
+		if !reflect.DeepEqual(want, &persisted) {
+			t.Fatalf("capabilities changed after API serialization: %#v -> %#v", want, persisted)
 		}
 	}
 }

@@ -406,7 +406,13 @@ func (c *Cluster) Create() (err error) {
 
 	// create database objects unless we are running without pods or disabled
 	// that feature explicitly
-	if !(c.databaseAccessDisabled() || c.getNumberOfInstances(&c.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress()) {
+	needDBAccess := !(c.databaseAccessDisabled() || c.getNumberOfInstances(&c.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress())
+	if needDBAccess {
+		if needDBAccess, err = c.sqlWritesAllowed(); err != nil {
+			return fmt.Errorf("could not verify SQL role: %w", err)
+		}
+	}
+	if needDBAccess {
 		c.logger.Infof("Create roles")
 		if err = c.createRoles(); err != nil {
 			return fmt.Errorf("could not create users: %v", err)
@@ -1220,7 +1226,16 @@ func (c *Cluster) Update(oldSpec, newSpec *cpov1.Postgresql) error {
 	}
 
 	// Roles and Databases
-	if !leaderNotReady && !userInitFailed && !(c.databaseAccessDisabled() || c.getNumberOfInstances(&c.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress()) {
+	needDBAccess := !leaderNotReady && !userInitFailed && !(c.databaseAccessDisabled() || c.getNumberOfInstances(&c.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress())
+	if needDBAccess {
+		allowed, roleErr := c.sqlWritesAllowed()
+		if roleErr != nil {
+			c.logger.Errorf("could not verify SQL role: %v", roleErr)
+			updateFailed = true
+		}
+		needDBAccess = allowed && roleErr == nil
+	}
+	if needDBAccess {
 		c.logger.Debugf("syncing roles")
 		if err := c.syncRoles(); err != nil {
 			c.logger.Errorf("could not sync roles: %v", err)

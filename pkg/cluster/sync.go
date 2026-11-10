@@ -300,6 +300,11 @@ func (c *Cluster) Sync(newSpec *cpov1.Postgresql) error {
 	}
 	// create database objects unless we are running without pods or disabled that feature explicitly
 	if needDBAccess && !leaderNotReady {
+		if needDBAccess, err = c.sqlWritesAllowed(); err != nil {
+			return fmt.Errorf("could not verify SQL role: %w", err)
+		}
+	}
+	if needDBAccess && !leaderNotReady {
 
 		c.logger.Debug("syncing roles")
 		if err = c.syncRoles(); err != nil {

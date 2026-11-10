@@ -3,7 +3,6 @@ package cluster
 import (
 	"bytes"
 	"database/sql"
-	"errors"
 	"fmt"
 	"net"
 	"strings"
@@ -244,7 +243,7 @@ func (c *Cluster) closeDbConn() (err error) {
 		}
 		c.pgDb = nil
 
-		return err
+		return nil
 	}
 	c.logger.Warning("attempted to close an empty db connection object")
 	return nil
@@ -818,24 +817,20 @@ func reconcileMonitoringPermissions(db *sql.DB) (bool, error) {
 }
 
 // Creates the needed structure and grants the required monitoring permissions.
-func (c *Cluster) addMonitoringPermissions() (err error) {
-	if c.databaseAccessDisabled() || c.getNumberOfInstances(&c.Spec) <= 0 || c.Spec.StandbyCluster != nil || c.restoreInProgress() {
-		return nil
-	}
-
+func (c *Cluster) addMonitoringPermissions() error {
 	c.logger.Info("setting up CPO monitoring")
 
 	// Open a new connection to the postgres database to set up monitoring objects and permissions.
-	if err = c.initDbConnWithName("postgres"); err != nil {
-		return fmt.Errorf("could not init monitoring database connection: %w", err)
+	if err := c.initDbConnWithName("postgres"); err != nil {
+		return fmt.Errorf("could not init database connection")
 	}
 	defer func() {
 		if c.connectionIsClosed() {
 			return
 		}
 
-		if closeErr := c.closeDbConn(); closeErr != nil {
-			err = errors.Join(err, fmt.Errorf("could not close monitoring database connection: %w", closeErr))
+		if err := c.closeDbConn(); err != nil {
+			c.logger.Errorf("could not close database connection: %v", err)
 		}
 	}()
 

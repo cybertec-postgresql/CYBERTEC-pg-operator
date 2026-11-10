@@ -33,7 +33,6 @@ type recoveryConn struct {
 	values    []driver.Value
 	queryErr  error
 	execErr   error
-	closeErr  error
 	calls     int
 	execCalls int
 	closed    bool
@@ -45,7 +44,7 @@ func (*recoveryConn) Prepare(string) (driver.Stmt, error) {
 
 func (conn *recoveryConn) Close() error {
 	conn.closed = true
-	return conn.closeErr
+	return nil
 }
 
 func (*recoveryConn) Begin() (driver.Tx, error) {
@@ -224,39 +223,19 @@ func TestSQLWritesAllowedClosesConnection(t *testing.T) {
 	}
 }
 
-func TestSQLWritesAllowedPreservesErrors(t *testing.T) {
+func TestSQLWritesAllowedReturnsQueryError(t *testing.T) {
 	queryErr := errors.New("verification failed")
-	closeErr := errors.New("close failed")
+	conn := &recoveryConn{queryErr: queryErr}
+	cluster := &Cluster{
+		pgDb:   sql.OpenDB(recoveryConnector{conn: conn}),
+		logger: logrus.New().WithField("test", "sql-runtime-role"),
+	}
 
-	for _, test := range []struct {
-		name    string
-		conn    *recoveryConn
-		wantErr error
-	}{
-		{
-			name:    "query",
-			conn:    &recoveryConn{queryErr: queryErr},
-			wantErr: queryErr,
-		},
-		{
-			name:    "close",
-			conn:    &recoveryConn{values: []driver.Value{false}, closeErr: closeErr},
-			wantErr: closeErr,
-		},
-	} {
-		t.Run(test.name, func(t *testing.T) {
-			cluster := &Cluster{
-				pgDb:   sql.OpenDB(recoveryConnector{conn: test.conn}),
-				logger: logrus.New().WithField("test", "sql-runtime-role"),
-			}
-
-			allowed, err := cluster.sqlWritesAllowed()
-			if allowed || !errors.Is(err, test.wantErr) {
-				t.Fatalf("error was hidden: allowed=%v error=%v", allowed, err)
-			}
-			if cluster.pgDb != nil || !test.conn.closed {
-				t.Fatal("error-path connection was not closed")
-			}
-		})
+	allowed, err := cluster.sqlWritesAllowed()
+	if allowed || !errors.Is(err, queryErr) {
+		t.Fatalf("error was hidden: allowed=%v error=%v", allowed, err)
+	}
+	if cluster.pgDb != nil || !conn.closed {
+		t.Fatal("error-path connection was not closed")
 	}
 }

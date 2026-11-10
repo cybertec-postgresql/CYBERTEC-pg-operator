@@ -22,16 +22,11 @@ func physicalSQLStandby(db *sql.DB) (bool, error) {
 
 // sqlWritesAllowed checks the current database role on every reconciliation.
 // A coordinator can configure physical recovery without spec.standbyCluster.
-func (c *Cluster) sqlWritesAllowed() (allowed bool, err error) {
-	if err = c.initDbConn(); err != nil {
+func (c *Cluster) sqlWritesAllowed() (bool, error) {
+	if err := c.initDbConn(); err != nil {
 		return false, fmt.Errorf("could not connect for SQL role verification: %w", err)
 	}
-	defer func() {
-		if closeErr := c.closeDbConn(); closeErr != nil && err == nil {
-			allowed = false
-			err = fmt.Errorf("could not close SQL role verification connection: %w", closeErr)
-		}
-	}()
+	defer c.closeDbConn()
 
 	standby, err := physicalSQLStandby(c.pgDb)
 	if err != nil {

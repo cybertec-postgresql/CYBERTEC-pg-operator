@@ -981,6 +981,14 @@ var PostgresCRDResourceValidation = apiextv1.CustomResourceValidation{
 					"spiloFSGroup": {
 						Type: "integer",
 					},
+					"spiloSupplementalGroupsPolicy": {
+						Description: "Controls whether supplementary groups from the container image are merged into the process credentials.",
+						Type:        "string",
+						Enum: []apiextv1.JSON{
+							{Raw: []byte(`"Merge"`)},
+							{Raw: []byte(`"Strict"`)},
+						},
+					},
 					"seccompProfile": {
 						Description: "The seccomp options to use by the containers in this pod.",
 						Type:        "object",

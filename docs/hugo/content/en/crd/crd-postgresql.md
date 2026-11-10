@@ -54,6 +54,7 @@ weight: 331
 | ServiceAnnotations             | map     | false     | A map of key value pairs that gets attached as annotations to each Service created for the database. |
 | [sidecars](#sidecars)          | array   | false     | Enables the definition of custom sidecars |
 | spiloFSGroup                   | int     | false    |  the Persistent Volumes for the Spilo pods in the StatefulSet will be owned and writable by the group ID specified. This will override the spilo_fsgroup operator parameter |
+| spiloSupplementalGroupsPolicy | string  | false     | Controls supplementary group handling for database and pgBackRest repository Pods. Accepted values are `Merge` and `Strict`. Requires Kubernetes 1.31 or newer and a compatible container runtime. |
 | spiloRunAsGroup                | int     | false     | sets the group ID which should be used in the container to run the process. |
 | spiloRunAsUser                 | int     | false     | Sets the user ID which should be used in the container to run the process. This must be set to run the container without root. |
 | [standby](#standby)            | map     | false     | Enables the creation of a standby cluster at the time of the creation of a new cluster |

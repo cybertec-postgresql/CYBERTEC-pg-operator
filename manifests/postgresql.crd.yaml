@@ -645,6 +645,12 @@ spec:
                 type: integer
               spiloFSGroup:
                 type: integer
+              spiloSupplementalGroupsPolicy:
+                description: "Controls whether supplementary groups from the container image are merged into the process credentials."
+                type: string
+                enum:
+                  - "Merge"
+                  - "Strict"
               seccompProfile:
                 type: object
                 description: "The seccomp options to use by the containers in this pod."

@@ -162,10 +162,11 @@ type PostgresqlParam struct {
 	Labels     map[string]string `json:"labels,omitempty" name:"labels" default:""`
 }
 
-// ResourceDescription describes CPU and memory resources defined for a cluster.
+// ResourceDescription describes compute and local ephemeral storage resources.
 type ResourceDescription struct {
-	CPU    string `json:"cpu"`
-	Memory string `json:"memory"`
+	CPU              string `json:"cpu"`
+	Memory           string `json:"memory"`
+	EphemeralStorage string `json:"ephemeral-storage,omitempty"`
 }
 
 // Resources describes requests and limits for the cluster resouces.

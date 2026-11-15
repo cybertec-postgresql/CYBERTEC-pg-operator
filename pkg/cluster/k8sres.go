@@ -293,6 +293,15 @@ func fillResourceList(spec cpov1.ResourceDescription, defaults cpov1.ResourceDes
 		}
 	}
 
+	ephemeralStorage := util.Coalesce(spec.EphemeralStorage, defaults.EphemeralStorage)
+	if ephemeralStorage != "" {
+		quantity, parseErr := resource.ParseQuantity(ephemeralStorage)
+		if parseErr != nil || quantity.Sign() < 0 {
+			return nil, fmt.Errorf("invalid ephemeral-storage quantity %q: expected a non-negative Kubernetes quantity", ephemeralStorage)
+		}
+		requests[v1.ResourceEphemeralStorage] = quantity
+	}
+
 	return requests, nil
 }
 
@@ -318,6 +327,11 @@ func (c *Cluster) generateResourceRequirements(
 	result.Limits, err = fillResourceList(specLimits, defaultResources.ResourceLimits)
 	if err != nil {
 		return nil, fmt.Errorf("could not fill resource limits: %v", err)
+	}
+	if request, ok := result.Requests[v1.ResourceEphemeralStorage]; ok {
+		if limit, bounded := result.Limits[v1.ResourceEphemeralStorage]; bounded && request.Cmp(limit) > 0 {
+			return nil, fmt.Errorf("ephemeral-storage request exceeds limit for %s", containerName)
+		}
 	}
 
 	// enforce minimum cpu and memory limits for Postgres containers only

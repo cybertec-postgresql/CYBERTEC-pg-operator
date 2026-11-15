@@ -200,6 +200,8 @@ spec:
                           memory:
                             type: string
                             pattern: '^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$'
+                          ephemeral-storage:
+                            type: string
                       requests:
                         type: object
                         properties:
@@ -209,6 +211,8 @@ spec:
                           memory:
                             type: string
                             pattern: '^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$'
+                          ephemeral-storage:
+                            type: string
                   schema:
                     type: string
                   user:
@@ -654,6 +658,8 @@ spec:
                         pattern: '^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$'
                         # Note: the value specified here must not be zero or be higher
                         # than the corresponding limit.
+                      ephemeral-storage:
+                        type: string
                   requests:
                     type: object
                     properties:
@@ -663,6 +669,8 @@ spec:
                       memory:
                         type: string
                         pattern: '^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$'
+                      ephemeral-storage:
+                        type: string
               schedulerName:
                 type: string
               serviceAnnotations:
@@ -1020,6 +1028,8 @@ spec:
                               memory:
                                 type: string
                                 pattern: '^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$'
+                              ephemeral-storage:
+                                type: string
                           requests:
                             type: object
                             properties:
@@ -1029,6 +1039,8 @@ spec:
                               memory:
                                 type: string
                                 pattern: '^(\d+(e\d+)?|\d+(\.\d+)?(e\d+)?[EPTGMK]i?)$'
+                              ephemeral-storage:
+                                type: string
                       env:
                         type: array
                         nullable: true

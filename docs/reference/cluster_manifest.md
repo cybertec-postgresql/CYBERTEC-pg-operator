@@ -85,6 +85,16 @@ These parameters are grouped directly under  the `spec` key in the manifest.
   requires a custom Spilo image. Note the FSGroup of a Pod cannot be changed
   without recreating a new Pod. Optional.
 
+* **spiloSupplementalGroupsPolicy**
+  controls whether supplementary groups from the container image are merged into
+  the process credentials. `Strict` limits supplementary groups to those defined
+  by the Pod security context; `Merge` preserves the Kubernetes default behavior.
+  Omission leaves the field unset. This requires Kubernetes 1.31 or newer and a
+  compatible container runtime. The feature is beta and enabled by default from
+  Kubernetes 1.33, and GA from Kubernetes 1.35. On supported clusters, verify
+  `node.status.features.supplementalGroupsPolicy` before selecting `Strict`.
+  Optional.
+
 * **enableMasterLoadBalancer**
   boolean flag to override the operator defaults (set by the
   `enable_master_load_balancer` parameter) to define whether to enable the load

@@ -39,9 +39,10 @@ type PostgresSpec struct {
 	// deprecated field storing cluster name without teamId prefix
 	ClusterName string `json:"-"`
 
-	SpiloRunAsUser  *int64 `json:"spiloRunAsUser,omitempty"`
-	SpiloRunAsGroup *int64 `json:"spiloRunAsGroup,omitempty"`
-	SpiloFSGroup    *int64 `json:"spiloFSGroup,omitempty"`
+	SpiloRunAsUser                *int64                       `json:"spiloRunAsUser,omitempty"`
+	SpiloRunAsGroup               *int64                       `json:"spiloRunAsGroup,omitempty"`
+	SpiloFSGroup                  *int64                       `json:"spiloFSGroup,omitempty"`
+	SpiloSupplementalGroupsPolicy *v1.SupplementalGroupsPolicy `json:"spiloSupplementalGroupsPolicy,omitempty"`
 
 	// securityContext
 	SeccompProfile *v1.SeccompProfile `json:"seccompProfile,omitempty"`

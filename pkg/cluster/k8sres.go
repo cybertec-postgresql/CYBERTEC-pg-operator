@@ -852,6 +852,7 @@ func (c *Cluster) generatePodTemplate(
 	spiloRunAsUser *int64,
 	spiloRunAsGroup *int64,
 	spiloFSGroup *int64,
+	spiloSupplementalGroupsPolicy *v1.SupplementalGroupsPolicy,
 	seccompProfile *v1.SeccompProfile,
 	nodeAffinity *v1.Affinity,
 	schedulerName *string,
@@ -884,6 +885,15 @@ func (c *Cluster) generatePodTemplate(
 
 	if spiloFSGroup != nil {
 		securityContext.FSGroup = spiloFSGroup
+	}
+
+	if spiloSupplementalGroupsPolicy != nil {
+		switch *spiloSupplementalGroupsPolicy {
+		case v1.SupplementalGroupsPolicyMerge, v1.SupplementalGroupsPolicyStrict:
+			securityContext.SupplementalGroupsPolicy = spiloSupplementalGroupsPolicy
+		default:
+			return nil, fmt.Errorf("invalid supplemental groups policy %q: expected Merge or Strict", *spiloSupplementalGroupsPolicy)
+		}
 	}
 
 	securityContext.SeccompProfile = effectiveSeccompProfile(seccompProfile)
@@ -1699,6 +1709,7 @@ func (c *Cluster) generateStatefulSet(spec *cpov1.PostgresSpec) (*appsv1.Statefu
 		effectiveRunAsUser,
 		effectiveRunAsGroup,
 		effectiveFSGroup,
+		spec.SpiloSupplementalGroupsPolicy,
 		effectiveSeccompProfileType,
 		c.nodeAffinity(c.OpConfig.NodeReadinessLabel, spec.NodeAffinity),
 		spec.SchedulerName,
@@ -1972,6 +1983,7 @@ func (c *Cluster) generateRepoHostStatefulSet(spec *cpov1.PostgresSpec) (*appsv1
 		effectiveRunAsUser,
 		effectiveRunAsGroup,
 		effectiveFSGroup,
+		spec.SpiloSupplementalGroupsPolicy,
 		effectiveSeccompProfileType,
 		c.nodeAffinity(c.OpConfig.NodeReadinessLabel, spec.NodeAffinity),
 		spec.SchedulerName,
@@ -3016,6 +3028,7 @@ func (c *Cluster) generateLogicalBackupJob() (*batchv1.CronJob, error) {
 		nil,
 		nil,
 		nil,
+		nil,
 		c.nodeAffinity(c.OpConfig.NodeReadinessLabel, nil),
 		nil,
 		int64(c.OpConfig.PodTerminateGracePeriod.Seconds()),
@@ -3557,6 +3570,7 @@ func (c *Cluster) generatePgbackrestJob(spec *cpov1.PostgresSpec, backup *cpov1.
 		util.False(),
 		&[]v1.Toleration{},
 		&[]v1.TopologySpreadConstraint{},
+		nil,
 		nil,
 		nil,
 		nil,

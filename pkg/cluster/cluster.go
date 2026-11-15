@@ -158,7 +158,11 @@ func New(cfg Config, kubeClient k8sutil.KubernetesClient, pgSpec cpov1.Postgresq
 	cluster.logger = logger.WithField("pkg", "cluster").WithField("cluster.cpo.opensource.cybertec.at/name", cluster.clusterName())
 	cluster.teamsAPIClient = teams.NewTeamsAPI(cfg.OpConfig.TeamsAPIUrl, logger)
 	cluster.oauthTokenGetter = newSecretOauthTokenGetter(&kubeClient, cfg.OpConfig.OAuthTokenSecretName)
-	cluster.patroni = patroni.New(cluster.logger, nil)
+	cluster.patroni = patroni.New(
+		cluster.logger,
+		nil,
+		fmt.Sprintf("%s.%s.svc.%s", cluster.Name, cluster.Namespace, cluster.OpConfig.ClusterDomain),
+	)
 	cluster.eventRecorder = eventRecorder
 
 	cluster.EBSVolumes = make(map[string]volumes.VolumeProperties)

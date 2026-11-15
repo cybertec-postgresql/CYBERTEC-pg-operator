@@ -8,13 +8,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/mocks"
 	cpov1 "github.com/cybertec-postgresql/cybertec-pg-operator/pkg/apis/cpo.opensource.cybertec.at/v1"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/spec"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/config"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/k8sutil"
 	"github.com/cybertec-postgresql/cybertec-pg-operator/pkg/util/patroni"
+	"github.com/golang/mock/gomock"
 )
 
 func TestGetSwitchoverCandidate(t *testing.T) {
@@ -89,7 +89,7 @@ func TestGetSwitchoverCandidate(t *testing.T) {
 		mockClient := mocks.NewMockHTTPClient(ctrl)
 		mockClient.EXPECT().Get(gomock.Any()).Return(&response, nil).AnyTimes()
 
-		p := patroni.New(patroniLogger, mockClient)
+		p := patroni.New(patroniLogger, mockClient, "")
 		cluster.patroni = p
 		mockMasterPod := newMockPod("192.168.100.1")
 		mockMasterPod.Namespace = namespace

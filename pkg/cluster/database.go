@@ -802,11 +802,25 @@ func (c *Cluster) installLookupFunction(poolerSchema, poolerUser string) error {
 	return nil
 }
 
-// Creates the needes structure and grant needed permissions for the Monitoring
+func reconcileMonitoringPermissions(db *sql.DB) (bool, error) {
+	standby, err := physicalSQLStandby(db)
+	if err != nil {
+		return false, fmt.Errorf("could not verify SQL role for CPO monitoring: %w", err)
+	}
+	if standby {
+		return false, nil
+	}
+	if _, err = db.Exec(cpoMonitoring); err != nil {
+		return false, fmt.Errorf("CPO monitoring could not be setup: %w", err)
+	}
+	return true, nil
+}
+
+// Creates the needed structure and grants the required monitoring permissions.
 func (c *Cluster) addMonitoringPermissions() error {
 	c.logger.Info("setting up CPO monitoring")
 
-	// Open a new connection to the postgres db tp setup monitoring struc and permissions
+	// Open a new connection to the postgres database to set up monitoring objects and permissions.
 	if err := c.initDbConnWithName("postgres"); err != nil {
 		return fmt.Errorf("could not init database connection")
 	}
@@ -819,9 +833,13 @@ func (c *Cluster) addMonitoringPermissions() error {
 			c.logger.Errorf("could not close database connection: %v", err)
 		}
 	}()
-	_, err := c.pgDb.Exec(cpoMonitoring)
+
+	written, err := reconcileMonitoringPermissions(c.pgDb)
 	if err != nil {
-		return fmt.Errorf("CPO monitoring could not be setup: %v", err)
+		return err
+	}
+	if !written {
+		c.logger.Info("physical SQL standby detected; skipping CPO monitoring DDL")
 	}
 	return nil
 }

@@ -3,9 +3,9 @@ name: postgres-cluster
 description: Deploys a PostgreSQL cluster using the PostgreSQL operator
 
 type: application
-version: 0.9.1
+version: 18.6-3
 
-appVersion: "0.9.1-1"
+appVersion: "0.9.3"
 
 maintainers:
   - name: CYBERTEC PostgreSQL International GmbH

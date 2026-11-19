@@ -12,7 +12,7 @@ from kubernetes import client
 from tests.k8s_api import K8s
 from kubernetes.client.rest import ApiException
 
-SPILO_CURRENT = "registry.opensource.zalan.do/acid/spilo-15-e2e:0.1"
+SPILO_CURRENT = os.environ.get("SPILO_IMAGE", "containers.cybertec.at/cybertec-pg-container/postgres:rocky9-18.6-3")
 SPILO_LAZY = "registry.opensource.zalan.do/acid/spilo-15-e2e:0.2"
 
 
@@ -88,12 +88,6 @@ class EndToEndTestCase(unittest.TestCase):
         k8s = cls.k8s = K8s()
         cluster_label = 'application=cpo,cluster.cpo.opensource.cybertec.at/name=acid-minimal-cluster'
 
-        # remove existing local storage class and create hostpath class
-        try:
-            k8s.api.storage_v1_api.delete_storage_class("standard")
-        except ApiException as e:
-            print("Failed to delete the 'standard' storage class: {0}".format(e))
-
         # operator deploys pod service account there on start up
         # needed for test_multi_namespace_support()
         cls.test_namespace = "test"
@@ -114,6 +108,7 @@ class EndToEndTestCase(unittest.TestCase):
         with open("manifests/configmap.yaml", 'r+') as f:
             configmap = yaml.safe_load(f)
             configmap["data"]["workers"] = "1"
+            configmap["data"]["kubernetes_use_configmaps"] = "true"
             configmap["data"]["docker_image"] = SPILO_CURRENT
 
         with open("manifests/configmap.yaml", 'w') as f:
@@ -128,8 +123,7 @@ class EndToEndTestCase(unittest.TestCase):
                          "api-service.yaml",
                          "infrastructure-roles.yaml",
                          "infrastructure-roles-new.yaml",
-                         "custom-team-membership.yaml",
-                         "e2e-storage-class.yaml"]:
+                         "custom-team-membership.yaml"]:
             result = k8s.create_with_kubectl("manifests/" + filename)
             print("stdout: {}, stderr: {}".format(result.stdout, result.stderr))
 
